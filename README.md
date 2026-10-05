@@ -14,11 +14,11 @@ It does **not** read game memory, does not change any game files and sends nothi
 | Page | Content |
 |---|---|
 | Overview | EXP/h, gold/h (incl. sold items), runs/h, DPS per run, time to the next level |
+| Character Stats | Your character sheet, kept separately for each of your characters |
 | Stages | Your stages compared: time, EXP/h, gold/h, enemy damage types |
-| Items | Item comparison with F8: values like in the game, differences, effects, verdict |
 | Drops | Drops by rarity, gems by tier, runes, keys |
 | Deaths | Who killed you and with what |
-| Character | Your character sheet, kept separately for each of your characters |
+| Item Comparer | Item comparison with F8: values like in the game, differences, effects, verdict |
 | Gems | Which gem helps you most |
 | Weights | Your own values for effects that cannot be calculated |
 

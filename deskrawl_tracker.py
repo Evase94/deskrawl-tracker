@@ -1303,11 +1303,11 @@ class App:
         self.tab_stages = tk.Frame(self.nb, bg=BG)
         self.tab_gems = tk.Frame(self.nb, bg=BG)
         self.nb.add(self.tab_farm, text="Overview")
+        self.nb.add(self.tab_char, text="Character Stats")
         self.nb.add(self.tab_stages, text="Stages")
-        self.nb.add(self.tab_items, text="Items")
         self.nb.add(self.tab_drops, text="Drops")
         self.nb.add(self.tab_death, text="Deaths")
-        self.nb.add(self.tab_char, text="Character")
+        self.nb.add(self.tab_items, text="Item Comparer")
         self.nb.add(self.tab_gems, text="Gems")
         self.nb.add(self.tab_w, text="Weights")
         self._build_farm(self.tab_farm)
@@ -1443,7 +1443,7 @@ class App:
                 f"{self.hk.get('attributes', 'F9')}.\n\nMode: what matters to you right now – damage, "
                 f"survival, both, or farming (gold/items/EXP).\nRoll % after a stat: how well it rolled "
                 f"(0 % worst, 100 % best possible value).")
-        hdr = ui.page_header(page, "Item comparison", hint)
+        hdr = ui.page_header(page, "Item Comparer", hint)
         self.var_mode = tk.StringVar(value=self.cfg.get("item_mode", "Balanced"))
         cb = ttk.Combobox(hdr, textvariable=self.var_mode, values=list(item_eval.MODES), width=11, state="readonly")
         cb.pack(side="right")
@@ -1647,7 +1647,7 @@ class App:
 
     def _build_char(self, p):
         key = self.hk.get("attributes", "F9")
-        hdr = ui.page_header(p, "Character", f"In the game open the character window on the “Attributes” tab and press "
+        hdr = ui.page_header(p, "Character Stats", f"In the game open the character window on the “Attributes” tab and press "
                                              f"{key}. Then scroll down and press {key} again – both parts are merged. "
                                              f"Read again after every gear change. Values belong to the character "
                                              f"that is logged in.")
@@ -1673,7 +1673,7 @@ class App:
                   ) if isinstance(sc, dict) else str(sc)
         top = ui.page_header(p, "Gems", (
             f"What a gem of the chosen tier brings your character in each slot type (in the mode chosen on the "
-            f"Items page). Gems without effect are hidden. ★ = best gem for the slot type.\n\n"
+            f"Item Comparer page). Gems without effect are hidden. ★ = best gem for the slot type.\n\n"
             f"Sockets per slot: {sockets}. Sockets from item level 300, Ancient from 300 with all sockets.\n"
             f"Adding a socket: {sc_txt} per socket.\nCombining: {g.get('combine', '?')}"))
         self._btn(top, "Recalculate", self._fill_gems, side="right")
@@ -1701,7 +1701,7 @@ class App:
                   ) if isinstance(sc, dict) else str(sc)
         tk.Label(p, bg=BG, fg=MUTED, font=("Segoe UI", 8), anchor="w", justify="left", wraplength=640, text=(
             f"Value = effect of a gem of the chosen tier on your character in the chosen item mode "
-            f"(Items page). ★ = best gem for this slot type.\nSockets per slot: {sockets}. Sockets from item level 300; "
+            f"(Item Comparer page). ★ = best gem for this slot type.\nSockets per slot: {sockets}. Sockets from item level 300; "
             f"Ancient from 300 with all sockets. Adding a socket: {sc_txt} per socket. "
             f"Combining: {g.get('combine', '?')}")).pack(fill="x", padx=6, pady=(0, 6))
         self._fill_gems()
