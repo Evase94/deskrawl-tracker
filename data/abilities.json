@@ -1,0 +1,896 @@
+{
+ "abilities": [
+  {
+   "slug": "valiant-strike",
+   "name": "Valiant Strike",
+   "hero": "Warrior",
+   "slot": "Basic Attack",
+   "description": "A swift melee strike on a single enemy. Deals 80% weapon damage with 10% chance inflict Vulnerable to the target.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "1",
+   "damage_l1": null,
+   "damage_l10": 107.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/31a19cfc-4bb1-4816-9e79-d48f917a27f1-warriorskill_02_attack__5793.png"
+  },
+  {
+   "slug": "cleave",
+   "name": "Cleave",
+   "hero": "Warrior",
+   "slot": "Basic Attack",
+   "description": "Sweep your weapon in a wide arc, striking all enemies in front for 50% weapon damage.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "15",
+   "damage_l1": 50.0,
+   "damage_l10": 72.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/86fc4bf5-9f3d-40c7-ae43-e5c2299c39f3-warriorskill_21_blades__5424.png"
+  },
+  {
+   "slug": "bloodblade",
+   "name": "Bloodblade",
+   "hero": "Warrior",
+   "slot": "Basic Attack",
+   "description": "Pierce one enemy for 50% weapon damage and inflict Bleeding, which deals 250% weapon damage over 5s.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "30",
+   "damage_l1": 50.0,
+   "damage_l10": 72.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/2e6b2a68-23f9-4b22-b8d0-f2ed623f073a-warriorskill_07_wampirichit__5624.png"
+  },
+  {
+   "slug": "steady-blow",
+   "name": "Steady Blow",
+   "hero": "Warrior",
+   "slot": "Basic Attack",
+   "description": "Strike one enemy for 60% weapon damage and steel yourself, gaining a stack of Bulwark.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "45",
+   "damage_l1": 60.0,
+   "damage_l10": 82.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/30244915-a6e0-4ef9-89a9-db1a1f930a8a-skill_maceattack__5625.png"
+  },
+  {
+   "slug": "flame-strike",
+   "name": "Flame Strike",
+   "hero": "Warrior",
+   "slot": "Strong Attack",
+   "description": "Channel flame into a devastating single-target blow, dealing 250% weapon damage as Fire Damage.",
+   "tags": [
+    "Fire"
+   ],
+   "mana": "35",
+   "cooldown": null,
+   "unlock_level": "5",
+   "damage_l1": 250.0,
+   "damage_l10": 340.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/23cd7b25-caaf-47dd-b362-7dc38fbe3604-assassinskill_28_fireweapon__5914.png"
+  },
+  {
+   "slug": "half-moon-slash",
+   "name": "Half Moon Slash",
+   "hero": "Warrior",
+   "slot": "Strong Attack",
+   "description": "Hurl a crescent blade that pierces every enemy in its path, dealing 150% weapon damage to each.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": "55",
+   "cooldown": null,
+   "unlock_level": "20",
+   "damage_l1": 150.0,
+   "damage_l10": 213.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/1d3577f8-d1bb-4760-8bb9-380497d6fa11-paladinskill_04_holyfire__5713.png"
+  },
+  {
+   "slug": "whirlwind",
+   "name": "Whirlwind",
+   "hero": "Warrior",
+   "slot": "Strong Attack",
+   "description": "Spin towards enemies and attack surrounding enemies for 100% weapon damage rapidly.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": "85",
+   "cooldown": null,
+   "unlock_level": "35",
+   "damage_l1": 100.0,
+   "damage_l10": 145.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/f6ac2aad-fe3e-49a1-95d1-73a75d312541-warriorskill_06_spinning__5410.png"
+  },
+  {
+   "slug": "rending-onslaught",
+   "name": "Rending Onslaught",
+   "hero": "Warrior",
+   "slot": "Strong Attack",
+   "description": "Carve 3 savage cuts across nearby enemies, each dealing 100% weapon damage and inflicting Bleeding, which deals 250% weapon damage over 5s.",
+   "tags": [
+    "Bleed"
+   ],
+   "mana": "28",
+   "cooldown": null,
+   "unlock_level": "50",
+   "damage_l1": 100.0,
+   "damage_l10": 127.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/fa2e2607-4b74-4b3a-b400-195fe5156537-warriorskill_28_axe__5783.png"
+  },
+  {
+   "slug": "rage-shout",
+   "name": "Rage Shout",
+   "hero": "Warrior",
+   "slot": "Special",
+   "description": "Increase 25% attack speed for 4 seconds.",
+   "tags": [
+    "Warcry"
+   ],
+   "mana": null,
+   "cooldown": "25 s",
+   "unlock_level": "10",
+   "damage_l1": null,
+   "damage_l10": 34.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/438a617b-0cc5-4b7e-8fcd-019b2d194a59-skill_65__5580.png"
+  },
+  {
+   "slug": "rage-shield",
+   "name": "Rage Shield",
+   "hero": "Warrior",
+   "slot": "Special",
+   "description": "Surround yourself with a barrier of rage that absorbs up to 40% of your Max HP in damage, lasting 8s.",
+   "tags": [
+    "Warcry"
+   ],
+   "mana": null,
+   "cooldown": "28 s",
+   "unlock_level": "15",
+   "damage_l1": null,
+   "damage_l10": 53.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/d5d41f75-2181-4c9f-8cf4-78954133e5fc-aura_redshield__5862.png"
+  },
+  {
+   "slug": "deadly-hook",
+   "name": "Deadly Hook",
+   "hero": "Warrior",
+   "slot": "Special",
+   "description": "Hurl a hook that pierces every enemy in its path, dealing 75% weapon damage, then reels them back to you and leaves them Vulnerable.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "10 s",
+   "unlock_level": "25",
+   "damage_l1": 75.0,
+   "damage_l10": 88.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/747bfe2f-4f9f-4b0d-b8ef-d0d0d7763030-engineerskill_33_hook__5789.png"
+  },
+  {
+   "slug": "earthstrike",
+   "name": "Earthstrike",
+   "hero": "Warrior",
+   "slot": "Special",
+   "description": "Smash the ground with a deafening crack, tearing a shockwave through the ground ahead of you. Deals 300% weapon damage to every enemy in its path and stuns them.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "16 s",
+   "unlock_level": "30",
+   "damage_l1": 300.0,
+   "damage_l10": 408.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/59c113cb-3096-4908-91a6-fdea704c1ee6-skill_earthdivide__5614.png"
+  },
+  {
+   "slug": "iron-thorn",
+   "name": "Iron Thorn",
+   "hero": "Warrior",
+   "slot": "Special",
+   "description": "Clad yourself in iron spikes for 8s. Thorns is increased by 100%, and every second you lash out at enemies around you for 100% of your Thorns as physical damage.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "25 s",
+   "unlock_level": "40",
+   "damage_l1": null,
+   "damage_l10": 190.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/8cae50f4-a0a1-4dfe-8a9c-6dd5077b1769-druideskill_29_stop__5553.png"
+  },
+  {
+   "slug": "molten-might",
+   "name": "Molten Might",
+   "hero": "Warrior",
+   "slot": "Special",
+   "description": "Stoke the forge within: instantly recover 40% of your Max Mana, then for 8s your Strong Attack damage is increased by 25% and abilities cost 35% less Mana.",
+   "tags": [
+    "Fire"
+   ],
+   "mana": null,
+   "cooldown": "10 s",
+   "unlock_level": "45",
+   "damage_l1": null,
+   "damage_l10": 49.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/a3964986-ab49-4b8c-86e7-fa0abfff0fc2-skill_firedemon__5929.png"
+  },
+  {
+   "slug": "fire-ball",
+   "name": "Fire Ball",
+   "hero": "Sorcerer",
+   "slot": "Basic Attack",
+   "description": "Conjure a homing fireball that explodes on impact, dealing 75% weapon damage to all enemies in a small area.",
+   "tags": [
+    "Fire"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "1",
+   "damage_l1": 75.0,
+   "damage_l10": 97.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/09546a2b-6cc6-44bd-b83a-b13cc54eaf62-fire_arrow__5366.png"
+  },
+  {
+   "slug": "ice-shards",
+   "name": "Ice Shards",
+   "hero": "Sorcerer",
+   "slot": "Basic Attack",
+   "description": "Hurl an icy shard that strikes a single enemy for 90% weapon damage.",
+   "tags": [
+    "Frost"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "15",
+   "damage_l1": 90.0,
+   "damage_l10": 117.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/ce211529-7a44-43ef-9f92-074f40fee02d-frost_arrow__5716.png"
+  },
+  {
+   "slug": "electrocute",
+   "name": "Electrocute",
+   "hero": "Sorcerer",
+   "slot": "Basic Attack",
+   "description": "Unleash a fan of crackling lightning that strikes every enemy in front for 70% weapon damage.",
+   "tags": [
+    "Lightning"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "30",
+   "damage_l1": 70.0,
+   "damage_l10": 92.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/e20b21e9-f68d-4605-ad2f-d880741f4315-skill_lightningmultiattack__5242.png"
+  },
+  {
+   "slug": "flame-lightning",
+   "name": "Flame Lightning",
+   "hero": "Sorcerer",
+   "slot": "Basic Attack",
+   "description": "Call down a bolt of flame and lightning on a random enemy, dealing 50% weapon damage as Fire and 50% weapon damage as Lightning.",
+   "tags": [
+    "Lightning"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "45",
+   "damage_l1": null,
+   "damage_l10": 63.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/af8cd627-4776-405d-9c52-512a50f18b02-skill_6_firelight__5871.png"
+  },
+  {
+   "slug": "flame-breath",
+   "name": "Flame Breath",
+   "hero": "Sorcerer",
+   "slot": "Strong Attack",
+   "description": "Unleash a stream of roaring flame in a line, dealing 180% weapon damage to enemies in its path and setting them Burning.",
+   "tags": [
+    "Fire"
+   ],
+   "mana": "65",
+   "cooldown": "1.5 s",
+   "unlock_level": "5",
+   "damage_l1": 180.0,
+   "damage_l10": 234.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/7a4ded8e-1d43-4042-9a11-0158ea4d4887-dragon_firebreath__5754.png"
+  },
+  {
+   "slug": "ice-meteor",
+   "name": "Ice Meteor",
+   "hero": "Sorcerer",
+   "slot": "Strong Attack",
+   "description": "Call down a frozen meteor that leaves a chilling field for 3 seconds, dealing 65% weapon damage per tick and chilling enemies caught inside.",
+   "tags": [
+    "Frost"
+   ],
+   "mana": "80",
+   "cooldown": "4 s",
+   "unlock_level": "20",
+   "damage_l1": 65.0,
+   "damage_l10": 83.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/ba87c765-945d-46ab-a61e-5fad6b8bcb8e-skill_49_blizzard__5741.png"
+  },
+  {
+   "slug": "lightning-storm",
+   "name": "Lightning Storm",
+   "hero": "Sorcerer",
+   "slot": "Strong Attack",
+   "description": "Conjure a storm of lightning that strikes 3 random enemies, dealing 150% weapon damage to each.",
+   "tags": [
+    "Lightning"
+   ],
+   "mana": "50",
+   "cooldown": null,
+   "unlock_level": "35",
+   "damage_l1": 150.0,
+   "damage_l10": 217.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/7a756f87-b7ec-44b0-9ef8-af81b0bae225-shamanskill_27_lightning__5292.png"
+  },
+  {
+   "slug": "frost-beam",
+   "name": "Frost Beam",
+   "hero": "Sorcerer",
+   "slot": "Strong Attack",
+   "description": "Channel a beam of frost for 3 seconds, striking every enemy in its path for 60% weapon damage each tick.",
+   "tags": [
+    "Frost"
+   ],
+   "mana": "45",
+   "cooldown": "3.25 s",
+   "unlock_level": "50",
+   "damage_l1": 60.0,
+   "damage_l10": 78.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/4751bbff-0e5f-44da-a98c-dc5c3a42b357-skill_46_iceshock__5278.png"
+  },
+  {
+   "slug": "ice-nova",
+   "name": "Ice Nova",
+   "hero": "Sorcerer",
+   "slot": "Special",
+   "description": "Release a nova of frost around you, dealing 30% weapon damage to nearby enemies and freezing them solid.",
+   "tags": [
+    "Frost"
+   ],
+   "mana": null,
+   "cooldown": "22 s",
+   "unlock_level": "10",
+   "damage_l1": null,
+   "damage_l10": 39.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/536ab861-eea2-46f6-a662-0f947133785f-skill_frostnova__5281.png"
+  },
+  {
+   "slug": "fire-elemental",
+   "name": "Fire Elemental",
+   "hero": "Sorcerer",
+   "slot": "Special",
+   "description": "Summon a fire elemental that shoots fireballs at an enemy for 80% of your weapon damage.",
+   "tags": [
+    "Summon"
+   ],
+   "mana": null,
+   "cooldown": "30 s",
+   "unlock_level": "15",
+   "damage_l1": 80.0,
+   "damage_l10": 107.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/edd73357-614f-4208-9929-ec67de784105-fire_elemental__5729.png"
+  },
+  {
+   "slug": "ice-block",
+   "name": "Ice Block",
+   "hero": "Sorcerer",
+   "slot": "Special",
+   "description": "Encase yourself in ice for 4s, unable to act but immune to all damage. The ice then shatters, dealing Cold damage to all nearby enemies.",
+   "tags": [
+    "Frost"
+   ],
+   "mana": null,
+   "cooldown": "30 s",
+   "unlock_level": "25",
+   "damage_l1": null,
+   "damage_l10": null,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/c01acf99-b776-4aa4-b722-efc44174a115-mageskill_28_nova__5297.png"
+  },
+  {
+   "slug": "fire-meteor",
+   "name": "Fire Meteor",
+   "hero": "Sorcerer",
+   "slot": "Special",
+   "description": "Call down a blazing meteor that erupts on impact, dealing 400% weapon damage to all enemies in the blast and setting them Burning.",
+   "tags": [
+    "Fire"
+   ],
+   "mana": null,
+   "cooldown": "24 s",
+   "unlock_level": "30",
+   "damage_l1": 400.0,
+   "damage_l10": 490.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/7c82f28e-4135-439e-b8ba-ddbc64304554-mageskill_09_meteor__5317.png"
+  },
+  {
+   "slug": "flame-aura",
+   "name": "Flame Aura",
+   "hero": "Sorcerer",
+   "slot": "Special",
+   "description": "Wreathe yourself in flame for 5s, gaining 10% critical hit chance and 50% critical hit damage.",
+   "tags": [],
+   "mana": null,
+   "cooldown": "21 s",
+   "unlock_level": "40",
+   "damage_l1": null,
+   "damage_l10": 68.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/6039bb7a-3ecd-40e6-b23b-1be89b5e4b44-skill_firering__5304.png"
+  },
+  {
+   "slug": "lightning-cloud",
+   "name": "Lightning Cloud",
+   "hero": "Sorcerer",
+   "slot": "Special",
+   "description": "Summon a storm cloud over the target that calls down 8 lightning bolts over 4 seconds, each dealing 50% weapon damage to nearby enemies with a 20% chance to inflict Short Stun.",
+   "tags": [
+    "Lightning"
+   ],
+   "mana": null,
+   "cooldown": "24 s",
+   "unlock_level": "45",
+   "damage_l1": null,
+   "damage_l10": 68.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/8d1a2ac3-6111-4efe-9f1f-a9e5e0f03023-skill_stormandrain__5236.png"
+  },
+  {
+   "slug": "poison-shot",
+   "name": "Poison Shot",
+   "hero": "Hunter",
+   "slot": "Basic Attack",
+   "description": "Fire a poisoned arrow that deals 100% weapon damage as Poison damage, with a 20% chance to inflict Poisoned.",
+   "tags": [
+    "Poison"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "1",
+   "damage_l1": null,
+   "damage_l10": 131.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/f8e5d003-3449-4203-9400-fe0074e8ac64-archerskill_11_poison__5512.png"
+  },
+  {
+   "slug": "arcane-bomb",
+   "name": "Arcane Bomb",
+   "hero": "Hunter",
+   "slot": "Basic Attack",
+   "description": "Launch a homing arcane charge that detonates on impact, dealing 70% weapon damage as Arcane damage to all enemies caught in the blast.",
+   "tags": [
+    "Arcane"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "15",
+   "damage_l1": 70.0,
+   "damage_l10": 88.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/d172cab7-a7af-49d4-b73f-07fa109cfeb9-mageskill_11_arcane__5873.png"
+  },
+  {
+   "slug": "knife-barrage",
+   "name": "Knife Barrage",
+   "hero": "Hunter",
+   "slot": "Basic Attack",
+   "description": "Hurl a flurry of throwing knives at up to three nearby enemies in quick succession, each knife dealing 90% weapon damage as Physical damage.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "30",
+   "damage_l1": 90.0,
+   "damage_l10": 117.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/dbb6cf0e-8011-4590-ad0b-f7d424d0279c-assassinskill_42_blade_vortex__5792.png"
+  },
+  {
+   "slug": "twin-arrows",
+   "name": "Twin Arrows",
+   "hero": "Hunter",
+   "slot": "Basic Attack",
+   "description": "Fire two arrows in quick succession at up to two nearby enemies, each dealing 70% weapon damage as Physical damage. If only one enemy is available, both arrows strike it.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "45",
+   "damage_l1": 70.0,
+   "damage_l10": 88.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/af5c71d7-29a7-4944-a1cf-1f92f07634d3-aura_archer__5654.png"
+  },
+  {
+   "slug": "steady-shot",
+   "name": "Steady Shot",
+   "hero": "Hunter",
+   "slot": "Strong Attack",
+   "description": "Loose a powerful arrow that pierces every enemy in its path, dealing 250% weapon damage as Physical damage.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": "55",
+   "cooldown": "0.75 s",
+   "unlock_level": "5",
+   "damage_l1": 250.0,
+   "damage_l10": 322.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/ff9a3761-fd0c-46da-8812-7f4948189b24-hunterheavyattack1__5284.png"
+  },
+  {
+   "slug": "multishot",
+   "name": "Multishot",
+   "hero": "Hunter",
+   "slot": "Strong Attack",
+   "description": "Loose a storm of arrows in a wide cone, striking every enemy caught in it for 200% weapon damage as Arcane damage.",
+   "tags": [
+    "Arcane"
+   ],
+   "mana": "65",
+   "cooldown": "0.75 s",
+   "unlock_level": "20",
+   "damage_l1": 200.0,
+   "damage_l10": 258.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/60628071-8509-41dd-bead-aecec8f88d3b-hunterheavyattack2__5412.png"
+  },
+  {
+   "slug": "rapid-fire",
+   "name": "Rapid Fire",
+   "hero": "Hunter",
+   "slot": "Strong Attack",
+   "description": "Plant your feet and pour a stream of arrows into your target for 2 seconds, each arrow dealing 35% weapon damage as Physical damage.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": "70",
+   "cooldown": "2.5 s",
+   "unlock_level": "35",
+   "damage_l1": 35.0,
+   "damage_l10": 45.8,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/fdd17788-a3b5-4e0b-8c85-59c7f82caaff-hunterheavyattack3__5594.png"
+  },
+  {
+   "slug": "venom-bolt",
+   "name": "Venom Bolt",
+   "hero": "Hunter",
+   "slot": "Strong Attack",
+   "description": "Fire a powerful poisoned projectile that bursts on impact, dealing 120% weapon damage as Poison damage to all nearby enemies and inflicting Poisoned.",
+   "tags": [
+    "Poison"
+   ],
+   "mana": "80",
+   "cooldown": "0.75 s",
+   "unlock_level": "50",
+   "damage_l1": 120.0,
+   "damage_l10": 147.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/b1e723eb-b7a6-4999-b62c-938c724a0a1c-skill_poisoncloud__5422.png"
+  },
+  {
+   "slug": "poison-trap",
+   "name": "Poison Trap",
+   "hero": "Hunter",
+   "slot": "Special",
+   "description": "Set a trap that detonates when an enemy steps on it, dealing 200% weapon damage as Poison damage to everything nearby with a 100% chance to inflict 2 stacks of Poisoned.",
+   "tags": [
+    "Poison"
+   ],
+   "mana": null,
+   "cooldown": "30 s",
+   "unlock_level": "10",
+   "damage_l1": 200.0,
+   "damage_l10": 236.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/2003982e-09d4-462a-9ad2-709e88f66af8-archerskill_24_trapnature__5893.png"
+  },
+  {
+   "slug": "shockwave",
+   "name": "Shockwave",
+   "hero": "Hunter",
+   "slot": "Special",
+   "description": "Fire a concussive shot that erupts into a shockwave, dealing 100% weapon damage as Physical damage to all enemies in front of you, knocking them back with a 100% chance to inflict Short Stun.",
+   "tags": [
+    "Blinding Shot"
+   ],
+   "mana": null,
+   "cooldown": "20 s",
+   "unlock_level": "15",
+   "damage_l1": 100.0,
+   "damage_l10": 127.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/745b123d-ebfc-4e03-b219-79874b834c56-skill_bombardshot__5381.png"
+  },
+  {
+   "slug": "flare",
+   "name": "Flare",
+   "hero": "Hunter",
+   "slot": "Special",
+   "description": "Fire a flare that bursts on impact, inflicting Vulnerable and Dizzy on all nearby enemies for 3s.",
+   "tags": [
+    "Blinding Shot"
+   ],
+   "mana": null,
+   "cooldown": "30 s at level 1, 25.5 s at level 10",
+   "unlock_level": "25",
+   "damage_l1": null,
+   "damage_l10": null,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/6002d7a5-a483-4b69-9e73-aaa8d1f97e01-archerskill_03_nobg__5479.png"
+  },
+  {
+   "slug": "arcane-arrowstorm",
+   "name": "Arcane Arrowstorm",
+   "hero": "Hunter",
+   "slot": "Special",
+   "description": "Call down a rain of arcane arrows that repeatedly deals 160% weapon damage as Arcane damage to enemies caught beneath it.",
+   "tags": [
+    "Arcane"
+   ],
+   "mana": null,
+   "cooldown": "24 s",
+   "unlock_level": "30",
+   "damage_l1": 160.0,
+   "damage_l10": 205.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/77ffde02-153f-49de-9fc0-c418c306919d-hunterspecial4__5448.png"
+  },
+  {
+   "slug": "phantom-form",
+   "name": "Phantom Form",
+   "hero": "Hunter",
+   "slot": "Special",
+   "description": "Take on a phantom form for 5s, gaining 15% Dodge Chance and 50% Attack Speed.",
+   "tags": [],
+   "mana": null,
+   "cooldown": "24 s",
+   "unlock_level": "40",
+   "damage_l1": null,
+   "damage_l10": null,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/26718bb1-a6ee-4458-b334-9c65c1861abe-archerskill_20_jump__5935.png"
+  },
+  {
+   "slug": "frost-trap",
+   "name": "Frost Trap",
+   "hero": "Hunter",
+   "slot": "Special",
+   "description": "Set a trap that detonates when an enemy steps on it, dealing 300% weapon damage as Cold damage to everything nearby with a 100% chance to inflict Deep Freeze.",
+   "tags": [
+    "Trap"
+   ],
+   "mana": null,
+   "cooldown": "30 s",
+   "unlock_level": "45",
+   "damage_l1": 300.0,
+   "damage_l10": 390.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/ff0dd00f-aa25-4e28-b410-faa193c865a5-archerskill_23_trapfrost__5288.png"
+  },
+  {
+   "slug": "threefold-strike",
+   "name": "Threefold Strike",
+   "hero": "Monk",
+   "slot": "Basic Attack",
+   "description": "Strike a single enemy for 85% weapon damage. Every third blow flows into an empowered finisher, dealing 200% weapon damage to the target.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "1",
+   "damage_l1": null,
+   "damage_l10": 107.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/9cfe1bce-ae8b-4112-8c77-d7df7bf4380c-skill_battlestaffhit__5669.png"
+  },
+  {
+   "slug": "furious-fist",
+   "name": "Furious Fist",
+   "hero": "Monk",
+   "slot": "Basic Attack",
+   "description": "Unleash a furious fist at one enemy for 75% weapon damage, building momentum - each strike grants +5% Attack Speed (up to 20 stacks) for 4 seconds.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "15",
+   "damage_l1": 75.0,
+   "damage_l10": 97.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/51f052a9-34b6-44c9-a050-2b3a0b80b8dc-warriorskill_05_strong__5440.png"
+  },
+  {
+   "slug": "seismic-strike",
+   "name": "Seismic Strike",
+   "hero": "Monk",
+   "slot": "Basic Attack",
+   "description": "Attack a single target with your weapon. Every 3rd attack strikes heavily and unleashes a shockwave, dealing area damage. Deals 85% weapon damage to the target; the 3rd strike deals an additional 100% weapon damage to nearby enemies.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "30",
+   "damage_l1": null,
+   "damage_l10": 107.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/e9941f79-f78f-4d6d-881f-22251d66dcde-assassinskill_27_cut__5691.png"
+  },
+  {
+   "slug": "chi-bolt",
+   "name": "Chi Bolt",
+   "hero": "Monk",
+   "slot": "Basic Attack",
+   "description": "Hurl a bolt of focused chi at a single enemy for 85% weapon damage. Every third bolt also restores 5% of your Max Health when it hits.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "Weapon speed",
+   "unlock_level": "45",
+   "damage_l1": 85.0,
+   "damage_l10": 107.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/d2677ecf-11f6-43de-b2a9-5625bab57118-skill_punch__5863.png"
+  },
+  {
+   "slug": "sacred-judgment",
+   "name": "Sacred Judgment",
+   "hero": "Monk",
+   "slot": "Strong Attack",
+   "description": "Whirl and bring down a weapon strike crackling with holy lightning, dealing 400% weapon damage as Lightning to the target and 100% weapon damage as Lightning to nearby enemies.",
+   "tags": [
+    "Lightning"
+   ],
+   "mana": "45",
+   "cooldown": null,
+   "unlock_level": "5",
+   "damage_l1": null,
+   "damage_l10": 508.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/602d6354-8eb2-431f-8835-5de224c78dcd-staff_strike__5503.png"
+  },
+  {
+   "slug": "piercing-lunge",
+   "name": "Piercing Lunge",
+   "hero": "Monk",
+   "slot": "Strong Attack",
+   "description": "Lunge forward with a piercing thrust, skewering every enemy along its path for 200% weapon damage.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": "32",
+   "cooldown": null,
+   "unlock_level": "20",
+   "damage_l1": 200.0,
+   "damage_l10": 290.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/7551b11f-f67c-4ca2-98db-58bf95e878e7-archerskill_05_firearrow__5857.png"
+  },
+  {
+   "slug": "whirlwind-staff",
+   "name": "Whirlwind Staff",
+   "hero": "Monk",
+   "slot": "Strong Attack",
+   "description": "Conjure two tornados before you that wander toward enemies, dealing 70% weapon damage to any enemy caught inside.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": "65",
+   "cooldown": "1 s",
+   "unlock_level": "35",
+   "damage_l1": 70.0,
+   "damage_l10": 83.5,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/252efd60-0f54-473f-8ad3-56618c2ce612-shamanskill_43_wind__5511.png"
+  },
+  {
+   "slug": "golden-palms",
+   "name": "Golden Palms",
+   "hero": "Monk",
+   "slot": "Strong Attack",
+   "description": "Thrust both palms forward, conjuring two golden hands that sweep every enemy in a wide arc before you for 160% weapon damage and drive them back.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": "40",
+   "cooldown": "1 s",
+   "unlock_level": "50",
+   "damage_l1": 160.0,
+   "damage_l10": 223.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/90abea18-8b1b-4e99-9314-f1c8fc0bb001-push__5403.png"
+  },
+  {
+   "slug": "sacred-orbs",
+   "name": "Sacred Orbs",
+   "hero": "Monk",
+   "slot": "Special",
+   "description": "Conjure a sacred orb that circles you, striking each enemy it passes through for 86.5% weapon damage as Lightning damage.",
+   "tags": [
+    "Lightning"
+   ],
+   "mana": null,
+   "cooldown": "18 s",
+   "unlock_level": "10",
+   "damage_l1": 86.5,
+   "damage_l10": 100.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/aa98e7ce-8b2b-4b05-b9cf-cdbc4e31a379-skill_228_nobg__5562.png"
+  },
+  {
+   "slug": "spirit-stream",
+   "name": "Spirit Stream",
+   "hero": "Monk",
+   "slot": "Special",
+   "description": "Channel a stream of spirit through your body, healing 11% of your Max Health every second for 4 seconds.",
+   "tags": [
+    "Chi"
+   ],
+   "mana": null,
+   "cooldown": "16 s",
+   "unlock_level": "15",
+   "damage_l1": null,
+   "damage_l10": 20.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/94d6e273-ed9f-44d6-b127-12488d98db9f-skill_healingtouch__5352.png"
+  },
+  {
+   "slug": "charge",
+   "name": "Charge",
+   "hero": "Monk",
+   "slot": "Special",
+   "description": "Charge the target, then slam every enemy around you for 180% weapon damage and stun them for 2s.",
+   "tags": [
+    "Physical"
+   ],
+   "mana": null,
+   "cooldown": "12 s",
+   "unlock_level": "25",
+   "damage_l1": 180.0,
+   "damage_l10": 252.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/6a4c3de8-2005-45e6-a898-1a8b22225b4a-skill_246__5927.png"
+  },
+  {
+   "slug": "spirit-twin",
+   "name": "Spirit Twin",
+   "hero": "Monk",
+   "slot": "Special",
+   "description": "Summon a spirit twin at your side for 8s. It mirrors your Basic and Strong attacks, striking the enemies you strike.",
+   "tags": [
+    "Chi"
+   ],
+   "mana": null,
+   "cooldown": "28 s",
+   "unlock_level": "30",
+   "damage_l1": null,
+   "damage_l10": null,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/92dbb6bb-0a51-4a8c-b794-699e4b24b0c7-skill_13__5262.png"
+  },
+  {
+   "slug": "wind-steps",
+   "name": "Wind Steps",
+   "hero": "Monk",
+   "slot": "Special",
+   "description": "Ride the wind for 4s, gaining 30% Dodge Chance.",
+   "tags": [
+    "Chi"
+   ],
+   "mana": null,
+   "cooldown": "16 s",
+   "unlock_level": "40",
+   "damage_l1": null,
+   "damage_l10": null,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/2c20c4b3-6a39-4bae-9001-d0e1f9bbddc1-shamanskill_45_wind__5226.png"
+  },
+  {
+   "slug": "divine-thunder",
+   "name": "Divine Thunder",
+   "hero": "Monk",
+   "slot": "Special",
+   "description": "Stand fast and call down holy lightning, each pulse striking nearby enemies for 280% weapon damage and leaving them Dazed for 5s.",
+   "tags": [
+    "AOE"
+   ],
+   "mana": null,
+   "cooldown": "18 s",
+   "unlock_level": "45",
+   "damage_l1": 280.0,
+   "damage_l10": 370.0,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/18a34573-fe0d-4fec-9b99-b4de7c1e759d-paladinskill_27_smite__5272.png"
+  }
+ ]
+}

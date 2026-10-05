@@ -20,6 +20,7 @@ It does **not** read game memory, does not change any game files and sends nothi
 | Deaths | Who killed you and with what |
 | Item Comparer | Item comparison with F8: values like in the game, differences, effects, verdict |
 | BiS Gear | Best theoretical item per slot for your class and mode, compared with what you wear, and where it drops |
+| Talents | Talent calculator: build your tree, compare it with your current build, let it find the best build for a mode |
 | Gems | Which gem helps you most |
 | Weights | Your own values for effects that cannot be calculated |
 

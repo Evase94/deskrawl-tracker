@@ -1,0 +1,1623 @@
+{
+ "source_rows": [
+  0,
+  5,
+  10,
+  15,
+  20,
+  30,
+  40,
+  50,
+  60
+ ],
+ "heroes": {
+  "Warrior": [
+   {
+    "name": "Strength",
+    "points": 0,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+5 Strength",
+    "rank_max": "+50 Strength",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Vitality",
+    "points": 0,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+50 Max HP and +3 Life Regen",
+    "rank_max": "+300 Max HP and +18 Life Regen",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Armor",
+    "points": 0,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "+40 Armor and +40 Magic Resist",
+    "rank_max": "+200 Armor and +200 Magic Resist",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Critical Hit Chance",
+    "points": 0,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "+2% Critical Hit Chance",
+    "rank_max": "+10% Critical Hit Chance",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Thorn",
+    "points": 0,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+8 Thorn",
+    "rank_max": "+64 Thorn",
+    "note": "5 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Critical Hit Damage",
+    "points": 5,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+10% Critical Hit Damage",
+    "rank_max": "+80% Critical Hit Damage",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Cleaving Rage",
+    "points": 5,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Casting a Basic Attack ability grants +1% Attack Speed per stack (up to 10 stacks).",
+    "rank_max": "Casting a Basic Attack ability grants +6% Attack Speed per stack (up to 10 stacks).",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Hold the Line",
+    "points": 5,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Take 3% less damage while at least 3 living enemies are nearby.",
+    "rank_max": "Take 15% less damage while at least 3 living enemies are nearby.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Valiant Strike: Vulnerable Chance",
+    "points": 5,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Valiant Strike has an additional 10% chance to inflict Vulnerable.",
+    "rank_max": "Valiant Strike has an additional 50% chance to inflict Vulnerable.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Thorn Boost",
+    "points": 5,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+10% Thorn",
+    "rank_max": "+100% Thorn",
+    "note": "10 points spent · Choose 1 · Capstone Talent I",
+    "icon_url": null
+   },
+   {
+    "name": "Heavy Blow",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Strong Attack direct critical hits inflict Vulnerable for 3s.",
+    "rank_max": "Strong Attack direct critical hits inflict Vulnerable for 3s.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Vicious Thorns",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Thorn can trigger Critical Hit.",
+    "rank_max": "Thorn can trigger Critical Hit.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Focused Technique",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Basic Attack damage +100%, but Mana gained from Basic Attacks −50%.",
+    "rank_max": "Basic Attack damage +100%, but Mana gained from Basic Attacks −50%.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Defensive Stance",
+    "points": 15,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+10% Armor",
+    "rank_max": "+55% Armor",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Rage Channeling",
+    "points": 15,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Generate 8 Mana upon activating Rage Shield",
+    "rank_max": "Generate 64 Mana upon activating Rage Shield",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Rage Shout",
+    "points": 15,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Rage Shout's Attack Speed bonus is 15% stronger and lasts 0.5s longer.",
+    "rank_max": "Rage Shout's Attack Speed bonus is 75% stronger and lasts 2.5s longer.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Valiant Strike: Mana Gain",
+    "points": 15,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+2 Mana Gain from Valiant Strike.",
+    "rank_max": "+16 Mana Gain from Valiant Strike.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Strong Attack: Mana",
+    "points": 15,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "+5% Strong Attack Mana Cost reduction.",
+    "rank_max": "+25% Strong Attack Mana Cost reduction.",
+    "note": "20 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Warcry: Cooldown",
+    "points": 20,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+5% Warcry Abilities Cooldown reduction.",
+    "rank_max": "+30% Warcry Abilities Cooldown reduction.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Concussive Strikes",
+    "points": 20,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Basic Attack have 3% to stun the enemy.",
+    "rank_max": "Basic Attack have 15% to stun the enemy.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Spreading Flame",
+    "points": 20,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "Flame Strike splashes 20% weapon damage as Fire to nearby enemies.",
+    "rank_max": "Flame Strike splashes 200% weapon damage as Fire to nearby enemies.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Weakness Mastery",
+    "points": 20,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+10% Damage to Vulnerable targets",
+    "rank_max": "+80% Damage to Vulnerable targets",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Crescent Harvest",
+    "points": 20,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "Half Moon Slash deals +10% Damage. Each enemy killed by Half Moon Slash restores 3% of your Max Mana.",
+    "rank_max": "Half Moon Slash deals +100% Damage. Each enemy killed by Half Moon Slash restores 30% of your Max Mana.",
+    "note": "30 points spent · Choose 1 · Capstone Talent II",
+    "icon_url": null
+   },
+   {
+    "name": "Charged and Ready",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Basic Attack hits grant a charge. At 10 charges, gain +30% to all damage for 3s.",
+    "rank_max": "Basic Attack hits grant a charge. At 10 charges, gain +30% to all damage for 3s.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Battle Inspiration",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Casting a Warcry reduces the other Special ability’s remaining cooldown by 1 second.",
+    "rank_max": "Casting a Warcry reduces the other Special ability’s remaining cooldown by 1 second.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Returning Fury",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Each direct enemy hit restores 1% of your Max Mana.",
+    "rank_max": "Each direct enemy hit restores 1% of your Max Mana.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Press the Advantage",
+    "points": 40,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+20% Damage on Stunned targets.",
+    "rank_max": "+160% Damage on Stunned targets.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Hemorrhage",
+    "points": 40,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "When you kill a Bleeding enemy, deal 15% of its remaining Bleed damage as a Physical blood explosion to other enemies within 3 meters.",
+    "rank_max": "When you kill a Bleeding enemy, deal 150% of its remaining Bleed damage as a Physical blood explosion to other enemies within 3 meters.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Peak Condition",
+    "points": 40,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "+15% All Damage while you are Healthy (above 80% HP).",
+    "rank_max": "+75% All Damage while you are Healthy (above 80% HP).",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Demoralizing Shout",
+    "points": 40,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Casting a Warcry reduces nearby enemies’ damage dealt by 5% for 3s.",
+    "rank_max": "Casting a Warcry reduces nearby enemies’ damage dealt by 30% for 3s.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Reaper's Toll",
+    "points": 40,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "Whirlwind strikes and spins 10% faster. +5% Movement Speed while channeling Whirlwind.",
+    "rank_max": "Whirlwind strikes and spins 100% faster. +50% Movement Speed while channeling Whirlwind.",
+    "note": "50 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Rage Infusion",
+    "points": 50,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+15% Strong Attack Damage, but also +10% Mana Cost.",
+    "rank_max": "+150% Strong Attack Damage, but also +100% Mana Cost.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Deepening Wounds",
+    "points": 50,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Bleed Ability hits have a 5% chance to execute non-Boss enemies below 30% HP.",
+    "rank_max": "Bleed Ability hits have a 30% chance to execute non-Boss enemies below 30% HP.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Butcher's Rhythm",
+    "points": 50,
+    "ranks": 3,
+    "capstone": "",
+    "rank1": "Rending Onslaught carves 1 additional cuts.",
+    "rank_max": "Rending Onslaught carves 3 additional cuts.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Second Wind",
+    "points": 50,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Heal 10% when HP drop below 50% Max HP. (6 seconds cooldown)",
+    "rank_max": "Heal 50% when HP drop below 50% Max HP. (6 seconds cooldown)",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Ironblood",
+    "points": 50,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "3% of your Max HP is added to your Thorn.",
+    "rank_max": "30% of your Max HP is added to your Thorn.",
+    "note": "60 points spent · Choose 1 · Capstone Talent III",
+    "icon_url": null
+   },
+   {
+    "name": "Forge Within",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "Consumes 1% of your Max Mana each second to gain +75% Strong Attack damage and 20% reduced ability Mana cost.",
+    "rank_max": "Consumes 1% of your Max Mana each second to gain +75% Strong Attack damage and 20% reduced ability Mana cost.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Bloodlust",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "When an enemy dies while Bleeding, or is slain by a Bleed Ability, gain a stack of Bloodlust for 15s, increasing your Damage by 50% per stack, up to 10 stacks.",
+    "rank_max": "When an enemy dies while Bleeding, or is slain by a Bleed Ability, gain a stack of Bloodlust for 15s, increasing your Damage by 50% per stack, up to 10 stacks.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Ironward",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "Each Basic Attack hit adds a shield equal to 3% of your Max HP for 4s.",
+    "rank_max": "Each Basic Attack hit adds a shield equal to 3% of your Max HP for 4s.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Counterattack Storm",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "After every 5 direct enemy hits, counterattack nearby enemies for 250% weapon damage as Physical damage.",
+    "rank_max": "After every 5 direct enemy hits, counterattack nearby enemies for 250% weapon damage as Physical damage.",
+    "note": "Rows open at 0, 5, 10, 15, 20, 30, 40, 50 and 60 points spent in the tree. The rows at 10, 30 and 60 points hold capstones: one capstone per row can be chosen. Capstones are highlighted. List view Tree view Strength 0/10 Strength Vitality 0/6 Vitality Armor 0/5 Armor Critical Hit Chance 0/5 Critical",
+    "icon_url": null
+   }
+  ],
+  "Sorcerer": [
+   {
+    "name": "Arcane Insight",
+    "points": 0,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+5 Intelligence",
+    "rank_max": "+50 Intelligence",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Searing Edge",
+    "points": 0,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+2.5% Basic Attack Critical Hit Chance.",
+    "rank_max": "+15% Basic Attack Critical Hit Chance.",
+    "note": "The in-game text shows +3% for +2.5% at rank 1.",
+    "icon_url": null
+   },
+   {
+    "name": "Frost Armor",
+    "points": 0,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Gain 35 Armor and increase your total Armor by 3%.",
+    "rank_max": "Gain 280 Armor and increase your total Armor by 24%.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Arcane Reach",
+    "points": 0,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+6% Basic Attack Range.",
+    "rank_max": "+36% Basic Attack Range.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Mana Flow",
+    "points": 0,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+4 Max Mana",
+    "rank_max": "+32 Max Mana",
+    "note": "5 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Flame Ward",
+    "points": 5,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+5% Fire Damage. +4% Magic Resist.",
+    "rank_max": "+40% Fire Damage. +32% Magic Resist.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Mana Conduit",
+    "points": 5,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Basic Attack generates +1 Mana.",
+    "rank_max": "Basic Attack generates +6 Mana.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Frost Mastery",
+    "points": 5,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+7% Cold Damage",
+    "rank_max": "+70% Cold Damage",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Storm Executioner",
+    "points": 5,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+4% Lightning Damage. +3% Damage to Elite enemies.",
+    "rank_max": "+40% Lightning Damage. +30% Damage to Elite enemies.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Mana Regeneration",
+    "points": 5,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+1 Mana Regen",
+    "rank_max": "+6 Mana Regen",
+    "note": "10 points spent · Choose 1 · Capstone Talent I",
+    "icon_url": null
+   },
+   {
+    "name": "Arcane Momentum",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Casting a Special Ability increases Basic Attack damage by 40% for 5s.",
+    "rank_max": "Casting a Special Ability increases Basic Attack damage by 40% for 5s.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Immolation",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Fire Ball has a 15% chance to apply Burn to the target.",
+    "rank_max": "Fire Ball has a 15% chance to apply Burn to the target.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Cold Retribution",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Gain 10% increased Armor. Melee attackers have a 100% chance to receive Chill for 4s.",
+    "rank_max": "Gain 10% increased Armor. Melee attackers have a 100% chance to receive Chill for 4s.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Thunderstruck",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Lightning Storm has a 15% chance to apply Short Stun to enemies it hits for 1s.",
+    "rank_max": "Lightning Storm has a 15% chance to apply Short Stun to enemies it hits for 1s.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Flame Breath: Crit Damage",
+    "points": 15,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+20% Flame Breath Critical Hit Damage.",
+    "rank_max": "+120% Flame Breath Critical Hit Damage.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Elemental Fury",
+    "points": 15,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Fire Elemental attacks 15% faster.",
+    "rank_max": "Fire Elemental attacks 90% faster.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Frost Alacrity",
+    "points": 15,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Reduces the cooldown of Frost abilities by 4%.",
+    "rank_max": "Reduces the cooldown of Frost abilities by 24%.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Deep Chill",
+    "points": 15,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Your Chill is 6% more potent, slowing enemies more and lasting longer.",
+    "rank_max": "Your Chill is 48% more potent, slowing enemies more and lasting longer.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Electrical Shield",
+    "points": 15,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+2% Armor. Melee attackers have a 4% chance to grant you 5 Mana.",
+    "rank_max": "+16% Armor. Melee attackers have a 32% chance to grant you 5 Mana.",
+    "note": "20 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Arcane Reservoir",
+    "points": 20,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "5% of your Max Mana is added to Intelligence.",
+    "rank_max": "40% of your Max Mana is added to Intelligence.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Conflagration",
+    "points": 20,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+12% Damage to Burning targets",
+    "rank_max": "+96% Damage to Burning targets",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Ice Meteor: Mana Cost",
+    "points": 20,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+4% Ice Meteor Mana Cost reduction.",
+    "rank_max": "+32% Ice Meteor Mana Cost reduction.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Ice Shards: Damage",
+    "points": 20,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+10% Ice Shards Damage.",
+    "rank_max": "+80% Ice Shards Damage.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Storm Mastery",
+    "points": 20,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Gain +12% Critical Hit Damage to Lightning Abilities and +3% Lightning Damage Reduction.",
+    "rank_max": "Gain +96% Critical Hit Damage to Lightning Abilities and +24% Lightning Damage Reduction.",
+    "note": "30 points spent · Choose 1 · Capstone Talent II",
+    "icon_url": null
+   },
+   {
+    "name": "Ignite",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Critical Hits have a 100% chance to apply Burn to the victim.",
+    "rank_max": "Critical Hits have a 100% chance to apply Burn to the victim.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Flash Freeze",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Applying Chill to an enemy has a 15% chance to also apply Frozen.",
+    "rank_max": "Applying Chill to an enemy has a 15% chance to also apply Frozen.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Static Charge",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Lightning abilities have a 100% chance to apply Electrostatic to enemies they hit.",
+    "rank_max": "Lightning abilities have a 100% chance to apply Electrostatic to enemies they hit.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Cataclysm",
+    "points": 40,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Fire Meteor deals +8% Damage but has a 5% longer Cooldown.",
+    "rank_max": "Fire Meteor deals +64% Damage but has a 40% longer Cooldown.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Frozen Reservoir",
+    "points": 40,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Casting Ice Nova has a 12.5% chance to restore 60 Mana.",
+    "rank_max": "Casting Ice Nova has a 100% chance to restore 130 Mana.",
+    "note": "The in-game text shows 13% for 12.5% at rank 1.",
+    "icon_url": null
+   },
+   {
+    "name": "Permafrost",
+    "points": 40,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Frozen applied by you lasts 8% longer.",
+    "rank_max": "Frozen applied by you lasts 48% longer.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Frozen Renewal",
+    "points": 40,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Restore 5% of your maximum Health every second during Ice Block.",
+    "rank_max": "Restore 25% of your maximum Health every second during Ice Block.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Electrocute: Mana Gain",
+    "points": 40,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+2 Mana Gain from Electrocute.",
+    "rank_max": "+12 Mana Gain from Electrocute.",
+    "note": "50 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Plasma Conduction",
+    "points": 50,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Flame Lightning deals +6% damage to enemies affected by Burn and +6% damage per stack of Electrostatic on the enemy. Both bonuses apply when the enemy has both effects.",
+    "rank_max": "Flame Lightning deals +48% damage to enemies affected by Burn and +48% damage per stack of Electrostatic on the enemy. Both bonuses apply when the enemy has both effects.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Frost Beam Expansion",
+    "points": 50,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Frost Beam's length and width are increased by 10%.",
+    "rank_max": "Frost Beam's length and width are increased by 50%.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Current Transfer",
+    "points": 50,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "When an enemy affected by Electrostatic dies, it has a 20% chance to apply Electrostatic to enemies within 1.",
+    "rank_max": "When an enemy affected by Electrostatic dies, it has a 100% chance to apply Electrostatic to enemies within 1.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Lingering Storm",
+    "points": 50,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Lightning Cloud's ground effect lasts 10% longer.",
+    "rank_max": "Lightning Cloud's ground effect lasts 80% longer.",
+    "note": "60 points spent · Choose 1 · Capstone Talent III",
+    "icon_url": null
+   },
+   {
+    "name": "Arcane Exposure",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "Every 6 casts of Strong Attack apply Vulnerable to targets hit.",
+    "rank_max": "Every 6 casts of Strong Attack apply Vulnerable to targets hit.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Combustion",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "When you kill an enemy affected by Burn, there is a 50% chance to trigger a fiery explosion, dealing 100% weapon damage to nearby enemies.",
+    "rank_max": "When you kill an enemy affected by Burn, there is a 50% chance to trigger a fiery explosion, dealing 100% weapon damage to nearby enemies.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Shattering Ice",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "+50% Critical Hit Chance against Frozen enemies.",
+    "rank_max": "+50% Critical Hit Chance against Frozen enemies.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Storm Conduit",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "Electrocute has a 20% chance to also cast Lightning Storm.",
+    "rank_max": "Electrocute has a 20% chance to also cast Lightning Storm.",
+    "note": "Rows open at 0, 5, 10, 15, 20, 30, 40, 50 and 60 points spent in the tree. The rows at 10, 30 and 60 points hold capstones: one capstone per row can be chosen. Capstones are highlighted. List view Tree view Arcane Insight 0/10 Arcane Insight Searing Edge 0/6 Searing Edge Frost Armor 0/8 Frost Armor ",
+    "icon_url": null
+   }
+  ],
+  "Hunter": [
+   {
+    "name": "Dexterity",
+    "points": 0,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+5 Dexterity",
+    "rank_max": "+50 Dexterity",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Attack Speed",
+    "points": 0,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+2.5% Attack Speed and +0.5 Damage.",
+    "rank_max": "+25% Attack Speed and +5 Damage.",
+    "note": "The in-game text shows +3% for +2.5% at rank 1.",
+    "icon_url": null
+   },
+   {
+    "name": "Long Shot",
+    "points": 0,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+15% Damage to Distant enemies.",
+    "rank_max": "+120% Damage to Distant enemies.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Dodge Chance",
+    "points": 0,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+1.5% Dodge Chance",
+    "rank_max": "+12% Dodge Chance",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Fleet Footed",
+    "points": 0,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+4% Move Speed.",
+    "rank_max": "+24% Move Speed.",
+    "note": "5 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Steady Aim",
+    "points": 5,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+6% Strong Attack Range.",
+    "rank_max": "+36% Strong Attack Range.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Sharpshooter",
+    "points": 5,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+3% Critical Hit Chance against Distant enemies.",
+    "rank_max": "+18% Critical Hit Chance against Distant enemies.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Arcane Knowledge",
+    "points": 5,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+5% Arcane Damage and +2% Magic Resist.",
+    "rank_max": "+50% Arcane Damage and +20% Magic Resist.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Venom Lore",
+    "points": 5,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+8% Damage to Poisoned enemies and +2% Poison Damage Reduction.",
+    "rank_max": "+64% Damage to Poisoned enemies and +16% Poison Damage Reduction.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Deadly Toxin",
+    "points": 5,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+6% Poisoned Damage and +0.2s Duration.",
+    "rank_max": "+48% Poisoned Damage and +1.6s Duration.",
+    "note": "10 points spent · Choose 1 · Capstone Talent I",
+    "icon_url": null
+   },
+   {
+    "name": "Efficient Assault",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "+25% Strong Attack Mana Cost reduction.",
+    "rank_max": "+25% Strong Attack Mana Cost reduction.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Rapid Reset",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Casting a Strong Attack reduces all Trap ability cooldowns by 2s.",
+    "rank_max": "Casting a Strong Attack reduces all Trap ability cooldowns by 2s.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Cornered Beast",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Taking damage while below 60% Health inflicts Stunned on enemies within 5m for 2s. This can trigger once every 10s.",
+    "rank_max": "Taking damage while below 60% Health inflicts Stunned on enemies within 5m for 2s. This can trigger once every 10s.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Physical Brutality",
+    "points": 15,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+15% Critical Hit Damage to Physical Abilities",
+    "rank_max": "+120% Critical Hit Damage to Physical Abilities",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Improved Arcane Bomb",
+    "points": 15,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Arcane Bomb splash radius increased by 8%.",
+    "rank_max": "Arcane Bomb splash radius increased by 48%.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Concussive Force",
+    "points": 15,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Shockwave knocks enemies back an additional 0.5.",
+    "rank_max": "Shockwave knocks enemies back an additional 2.5.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Oversized Traps",
+    "points": 15,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Trap size and trigger range increased by 10%.",
+    "rank_max": "Trap size and trigger range increased by 60%.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Second Wind",
+    "points": 15,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "While out of combat, gain +3 Mana Regeneration.",
+    "rank_max": "While out of combat, gain +24 Mana Regeneration.",
+    "note": "20 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Improved Steady Shot",
+    "points": 20,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Steady Shot deals 3% more damage for each enemy its projectile has already pierced.",
+    "rank_max": "Steady Shot deals 24% more damage for each enemy its projectile has already pierced.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Forceful Volley",
+    "points": 20,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Multishot hits have a 4% chance to knock enemies back 2.",
+    "rank_max": "Multishot hits have a 24% chance to knock enemies back 2.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Improved Poison Shot",
+    "points": 20,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Poison Shot has +5% chance to apply Poisoned.",
+    "rank_max": "Poison Shot has +30% chance to apply Poisoned.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Quick Traps",
+    "points": 20,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+5% Trap Abilities Cooldown reduction.",
+    "rank_max": "+30% Trap Abilities Cooldown reduction.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Survival Instinct",
+    "points": 20,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+3% Dodge Chance while surrounded by at least 3 enemies.",
+    "rank_max": "+24% Dodge Chance while surrounded by at least 3 enemies.",
+    "note": "30 points spent · Choose 1 · Capstone Talent II",
+    "icon_url": null
+   },
+   {
+    "name": "Double Tap",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Basic Attack has a 35% chance to strike twice.",
+    "rank_max": "Basic Attack has a 35% chance to strike twice.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Arcane Charge",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Casting an Arcane ability grants Arcane Charge for 5s, increasing Arcane Damage by 6% per stack (Max 50 stacks).",
+    "rank_max": "Casting an Arcane ability grants Arcane Charge for 5s, increasing Arcane Damage by 6% per stack (Max 50 stacks).",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Venomous Leech",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Poisoned ticks have a 100% chance to trigger Life on Hit.",
+    "rank_max": "Poisoned ticks have a 100% chance to trigger Life on Hit.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Sustained Fire",
+    "points": 40,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Rapid Fire's channel duration is increased by 6%.",
+    "rank_max": "Rapid Fire's channel duration is increased by 48%.",
+    "note": "It also makes Deadeye’s Resolve last 6% longer per rank (48% at rank 8); the in-game text does not say so.",
+    "icon_url": null
+   },
+   {
+    "name": "Deadly Knife Barrage",
+    "points": 40,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Knife Barrage gains +4.0% Critical Hit Chance.",
+    "rank_max": "Knife Barrage gains +24.0% Critical Hit Chance.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Hardened Hide",
+    "points": 40,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+6% Critical Damage Reduction.",
+    "rank_max": "+48% Critical Damage Reduction.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Rapid Flare",
+    "points": 40,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "+6% Flare Cooldown reduction.",
+    "rank_max": "+30% Flare Cooldown reduction.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Marked for Death",
+    "points": 40,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Vulnerable applied by you lasts 6% longer.",
+    "rank_max": "Vulnerable applied by you lasts 36% longer.",
+    "note": "50 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Knife Storm",
+    "points": 50,
+    "ranks": 3,
+    "capstone": "",
+    "rank1": "Knife Barrage targets 1 additional enemies.",
+    "rank_max": "Knife Barrage targets 3 additional enemies.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Improved Twin Arrows",
+    "points": 50,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "After hitting an enemy each Twin Arrows projectile ricochets to another random enemy. Twin Arrows deals 5% more damage.",
+    "rank_max": "After hitting an enemy each Twin Arrows projectile ricochets to another random enemy. Twin Arrows deals 80% more damage.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Deadly Traps",
+    "points": 50,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+4.0% Critical Hit Chance to Trap Abilities",
+    "rank_max": "+32.0% Critical Hit Chance to Trap Abilities",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Dazzling Recovery",
+    "points": 50,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Casting a Blinding Shot ability restores 10 Mana.",
+    "rank_max": "Casting a Blinding Shot ability restores 80 Mana.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Empowered Phantom Form",
+    "points": 50,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Phantom Form's Dodge Chance and Attack Speed bonuses are increased by 8%.",
+    "rank_max": "Phantom Form's Dodge Chance and Attack Speed bonuses are increased by 64%.",
+    "note": "60 points spent · Choose 1 · Capstone Talent III",
+    "icon_url": null
+   },
+   {
+    "name": "Lone Hunter",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "While no enemies are nearby, gain 30% Attack Speed and 70% Physical, Poison, and Arcane Damage.",
+    "rank_max": "While no enemies are nearby, gain 30% Attack Speed and 70% Physical, Poison, and Arcane Damage.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Arcane Corrosion",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "Arcane Arrowstorm hits have a 100% chance to apply Arcane Corrosion. A hit from Arcane Bomb or Multishot consumes all stacks and deals 250% weapon damage at 1 stack or 400% at 2 stacks as Arcane damage.",
+    "rank_max": "Arcane Arrowstorm hits have a 100% chance to apply Arcane Corrosion. A hit from Arcane Bomb or Multishot consumes all stacks and deals 250% weapon damage at 1 stack or 400% at 2 stacks as Arcane damage.",
+    "note": "A Multishot hit deals 250% weapon damage at 1 stack and 400% at 2 stacks; the in-game text shows Arcane Bomb's 250% and 400% for both.",
+    "icon_url": null
+   },
+   {
+    "name": "Critical Injection",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "Critical Hits with Poison abilities have a 100% chance to apply an additional stack of Poisoned.",
+    "rank_max": "Critical Hits with Poison abilities have a 100% chance to apply an additional stack of Poisoned.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Exposing Traps",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "Trap hits have a 100% chance to inflict Vulnerable for 3s.",
+    "rank_max": "Trap hits have a 100% chance to inflict Vulnerable for 3s.",
+    "note": "Rows open at 0, 5, 10, 15, 20, 30, 40, 50 and 60 points spent in the tree. The rows at 10, 30 and 60 points hold capstones: one capstone per row can be chosen. Capstones are highlighted. List view Tree view Dexterity 0/10 Dexterity Attack Speed 0/10 Attack Speed Long Shot 0/8 Long Shot Dodge Chance ",
+    "icon_url": null
+   }
+  ],
+  "Monk": [
+   {
+    "name": "Dodge Chance",
+    "points": 0,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+1.5% Dodge Chance",
+    "rank_max": "+12% Dodge Chance",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Vitality",
+    "points": 0,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+75 Max HP",
+    "rank_max": "+600 Max HP",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Dexterity",
+    "points": 0,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+5 Dexterity",
+    "rank_max": "+50 Dexterity",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Physical Damage",
+    "points": 0,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+8% Physical Damage",
+    "rank_max": "+80% Physical Damage",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Max Mana",
+    "points": 0,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "+6 Max Mana",
+    "rank_max": "+30 Max Mana",
+    "note": "5 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Movement Speed",
+    "points": 5,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "+5% Movement Speed",
+    "rank_max": "+25% Movement Speed",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Healing & Magic Resist",
+    "points": 5,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+5% Healing Received and +40 Magic Resist",
+    "rank_max": "+40% Healing Received and +320 Magic Resist",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Attack Speed",
+    "points": 5,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "+4% Attack Speed",
+    "rank_max": "+24% Attack Speed",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Mana On Kill",
+    "points": 5,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "+2 Mana On Kill",
+    "rank_max": "+10 Mana On Kill",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Lightning Damage",
+    "points": 5,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+8% Lightning Damage",
+    "rank_max": "+80% Lightning Damage",
+    "note": "10 points spent · Choose 1 · Capstone Talent I",
+    "icon_url": null
+   },
+   {
+    "name": "Mirror Steps",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "After dodging, gain +60% Physical Damage for 4s",
+    "rank_max": "After dodging, gain +60% Physical Damage for 4s",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Chain Force",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Every 7 casts of Basic Attack inflicts Vulnerable on enemies hit.",
+    "rank_max": "Every 7 casts of Basic Attack inflicts Vulnerable on enemies hit.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Illumination",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Critical Hit from Lightning abilities will have 30% chance to trigger your Mana On Kill",
+    "rank_max": "Critical Hit from Lightning abilities will have 30% chance to trigger your Mana On Kill",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Zephyr's Flow",
+    "points": 15,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Each Dodge will generate 2 Mana",
+    "rank_max": "Each Dodge will generate 10 Mana",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Vigor",
+    "points": 15,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+2.5% Critical Hit Chance to Physical Abilities",
+    "rank_max": "+20% Critical Hit Chance to Physical Abilities",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Thunderclap",
+    "points": 15,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Sacred Judgment's shockwave has a 15% chance to stun the enemies it strikes",
+    "rank_max": "Sacred Judgment's shockwave has a 75% chance to stun the enemies it strikes",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Sacred Orbs: Speed",
+    "points": 15,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+20% rotation speed to Sacred Orbs",
+    "rank_max": "+200% rotation speed to Sacred Orbs",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Lightning Abilities: Critical Hit Chance",
+    "points": 15,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+2.5% Critical Hit Chance to Lightning Abilities",
+    "rank_max": "+20.0% Critical Hit Chance to Lightning Abilities",
+    "note": "20 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Sheltering Breath",
+    "points": 20,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Casting Spirit Stream reduces damage taken by 3% for 3s.",
+    "rank_max": "Casting Spirit Stream reduces damage taken by 15% for 3s.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Threefold Strike: Critical Damage",
+    "points": 20,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+20% Critical Damage to Threefold Strike",
+    "rank_max": "+160% Critical Damage to Threefold Strike",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Heavy Hands",
+    "points": 20,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "+20% Critical Damage to Strong Attack abilities",
+    "rank_max": "+100% Critical Damage to Strong Attack abilities",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Piercing Lunge: Damage",
+    "points": 20,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "+20% Damage to Piercing Lunge",
+    "rank_max": "+160% Damage to Piercing Lunge",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Fundamentals",
+    "points": 20,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+10% Damage to Basic Attack Abilities",
+    "rank_max": "+100% Damage to Basic Attack Abilities",
+    "note": "30 points spent · Choose 1 · Capstone Talent II",
+    "icon_url": null
+   },
+   {
+    "name": "Gathered Force",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Every 3 Basic Attack casts store one charge. Each Strong Attack spends one charge to deal 30% more damage. Charges accumulate.",
+    "rank_max": "Every 3 Basic Attack casts store one charge. Each Strong Attack spends one charge to deal 30% more damage. Charges accumulate.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Shared Chi",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Casting a different Chi ability from your previous Chi ability restores 8% of Max Mana. The first cast restores no mana.",
+    "rank_max": "Casting a different Chi ability from your previous Chi ability restores 8% of Max Mana. The first cast restores no mana.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Chi Ward",
+    "points": 30,
+    "ranks": 1,
+    "capstone": "Capstone Talent II",
+    "rank1": "Restore 15 Health for each Mana spent.",
+    "rank_max": "Restore 15 Health for each Mana spent.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Slipstream",
+    "points": 40,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Charge grants +5% Dodge Chance for 4s",
+    "rank_max": "Charge grants +30% Dodge Chance for 4s",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Spirit Twin: Duration",
+    "points": 40,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Spirit Twin lingers 5% longer",
+    "rank_max": "Spirit Twin lingers 30% longer",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Aftershock",
+    "points": 40,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "The third strike from Seismic Strike has a 10% chance to inflict Dazed status",
+    "rank_max": "The third strike from Seismic Strike has a 80% chance to inflict Dazed status",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Sweeping Discipline",
+    "points": 40,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+10% Damage to AOE abilities",
+    "rank_max": "+100% Damage to AOE abilities",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Charged Orb",
+    "points": 40,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Sacred Orbs hits have a 10% chance to apply 1 stack of Electrostatic.",
+    "rank_max": "Sacred Orbs hits have a 80% chance to apply 1 stack of Electrostatic.",
+    "note": "50 points spent",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Chi Bolt: Healing",
+    "points": 50,
+    "ranks": 6,
+    "capstone": "",
+    "rank1": "Chi Bolt's third bolt restores an additional 4% of your Max Health",
+    "rank_max": "Chi Bolt's third bolt restores an additional 24% of your Max Health",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Golden Palms: Damage & Mana Cost",
+    "points": 50,
+    "ranks": 8,
+    "capstone": "",
+    "rank1": "Golden Palms costs 5% less Mana and deals +10% Damage",
+    "rank_max": "Golden Palms costs 40% less Mana and deals +80% Damage",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Cyclone Repulse",
+    "points": 50,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "Whirlwind Staff hits knock enemies back 0.1 meters.",
+    "rank_max": "Whirlwind Staff hits knock enemies back 0.5 meters.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Enhance Divine Thunder: Damage",
+    "points": 50,
+    "ranks": 5,
+    "capstone": "",
+    "rank1": "+40% Damage to Divine Thunder",
+    "rank_max": "+200% Damage to Divine Thunder",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Exploit Weakness",
+    "points": 50,
+    "ranks": 10,
+    "capstone": "",
+    "rank1": "+15% Damage to Dazed enemies.",
+    "rank_max": "+150% Damage to Dazed enemies.",
+    "note": "60 points spent · Choose 1 · Capstone Talent III",
+    "icon_url": null
+   },
+   {
+    "name": "Thundering",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "A Lightning hit on an enemy with 5 stacks of Electrostatic consumes them, calling down a lightning strike for 250% weapon damage as Lightning damage",
+    "rank_max": "A Lightning hit on an enemy with 5 stacks of Electrostatic consumes them, calling down a lightning strike for 250% weapon damage as Lightning damage",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Formless",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "Gain bonus Critical Damage equal to 200% of your Dodge Chance.",
+    "rank_max": "Gain bonus Critical Damage equal to 200% of your Dodge Chance.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Iron Constitution",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "A lethal blow restores you to full health and reduces damage taken by 20% for 3s. Cooldown: 30s.",
+    "rank_max": "A lethal blow restores you to full health and reduces damage taken by 20% for 3s. Cooldown: 30s.",
+    "note": "",
+    "icon_url": null
+   },
+   {
+    "name": "Chi Expenditure",
+    "points": 60,
+    "ranks": 1,
+    "capstone": "Capstone Talent III",
+    "rank1": "After casting a Strong Attack, spend all remaining Mana. Each extra Mana spent increases that attack’s direct damage by 1%.",
+    "rank_max": "After casting a Strong Attack, spend all remaining Mana. Each extra Mana spent increases that attack’s direct damage by 1%.",
+    "note": "Rows open at 0, 5, 10, 15, 20, 30, 40, 50 and 60 points spent in the tree. The rows at 10, 30 and 60 points hold capstones: one capstone per row can be chosen. Capstones are highlighted. List view Tree view Dodge Chance 0/8 Dodge Chance Vitality 0/8 Vitality Dexterity 0/10 Dexterity Physical Damage ",
+    "icon_url": null
+   }
+  ]
+ }
+}
