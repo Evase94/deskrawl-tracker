@@ -1010,18 +1010,27 @@ def find_gold(lines: list[Line]) -> int | None:
 
 # ----------------------------------------------------------------------------- death screen
 
-DEATH_PATTERNS = [r"\byou\s+(have\s+)?died\b", r"\byou\s+are\s+dead\b", r"\bdefeated\b", r"\bgame\s+over\b",
-                  r"\brevive\b", r"\bresurrect", r"\brespawn", r"\byou\s+were\s+slain\b", r"\bslain\b"]
+# The death screen: "YOU DIED!" (red), "AUTO REVIVE AFTER 11 SECONDS" and a "TOWN" button in the middle.
+# The stylised letters are often read with gaps ("Y O U  D I E D"), so spaces are removed before matching.
+# "Revive Cooldown: -6s" on item tooltips must not count.
+DEATH_PATTERNS = [r"y[o0]ud[i1l]ed", r"auto-?rev[i1l]ve", r"rev[i1l]veafter\d*", r"rev[i1l]vein\d+",
+                  r"y[o0]uaredead", r"y[o0]uwereslain"]
 _RE_DEATH = re.compile("|".join(DEATH_PATTERNS), re.I)
 
 
-def find_death_text(lines: list[Line]) -> str | None:
-    """Return the on-screen line that announces a death, if any. Item effect lines like
-    "after a kill" do not match; tooltips describing "revive" effects could - they are long
-    sentences, so lines with more than 6 words are ignored."""
+def find_death_text(lines: list[Line], size=None) -> str | None:
+    """The on-screen line that announces a death, if any. size=(W, H) of the frame: then a lone
+    "TOWN" (the death screen's button) in the middle of the picture counts too."""
     for l in lines:
-        if len(l.text.split()) <= 6 and _RE_DEATH.search(l.text):
+        compact = re.sub(r"[^a-z0-9-]", "", l.text.lower())
+        if len(l.text.split()) <= 8 and "cooldown" not in compact and _RE_DEATH.search(compact):
             return l.text
+    if size:
+        W, H = size
+        for l in lines:
+            if re.fullmatch(r"\W*T\s*[O0]\s*W\s*N\W*", l.text) and abs(l.x + l.w / 2 - W / 2) < W * 0.2 \
+                    and H * 0.3 < l.y < H * 0.85:
+                return "TOWN"
     return None
 
 

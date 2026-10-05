@@ -367,7 +367,7 @@ class GameState:
         killer: needed after a death, while no stage is known, or when the run's settings
         (difficulty, waves) differ from the last stage the log named - then the stage changed."""
         with self.lock:
-            return bool(r.death) or not self.stage_name or self.stage_key != (r.difficulty, r.waves)
+            return not self.stage_name or self.stage_key != (r.difficulty, r.waves)
 
     def add_casts(self, events):
         """Ability casts from the skill bar: count them on the running run."""
@@ -960,7 +960,7 @@ class GoldWatcher(threading.Thread):
                 gold = item_ocr.find_gold(lines)
                 if gold is not None:
                     self.state.observe_gold(time.time(), gold)
-                death = item_ocr.find_death_text(lines)
+                death = item_ocr.find_death_text(lines, (frame.shape[1], frame.shape[0]))
                 if death:
                     self.state.mark_death_seen(time.time(), death)
                 hdr = item_ocr.find_log_header(lines)
@@ -2427,19 +2427,50 @@ class App:
         threading.Thread(target=work, daemon=True).start()
 
     def _tal_current_done(self, r):
+        """Merge what the talent window showed (a second read after scrolling completes the first)."""
         if isinstance(r, str) or r is None:
             self.lbl_tal_share.configure(text=r or "Talent window not found – open it in the game and try again.",
                                          fg=C_BAD)
             return
-        build, unsure = r
+        build, unsure, seen = r
+        hero = self._tal_hero()
+        prev = getattr(self, "_tal_partial", None)
+        if prev and time.time() - prev[3] < 300 and prev[4] == hero:
+            pb, pu, ps = prev[0], prev[1], prev[2]
+            keep = {k: v for k, v in pb.items() if k not in seen}
+            build = {**keep, **build}
+            names_now = {t["name"] for t in talents.tree(hero) if talents.key(t) in seen}
+            unsure = [n for n in pu if n not in names_now] + list(unsure)
+            seen = set(ps) | set(seen)
+        self._tal_partial = (dict(build), list(unsure), set(seen), time.time(), hero)
+        tree = talents.tree(hero)
+        missing_rows = sorted({t["points"] for t in tree if talents.key(t) not in seen})
+        # all points must add up to the hero level: one unreadable number follows from the others
+        level = self._tal_points()
+        if not missing_rows and len(unsure) == 1 and level:
+            t = next((x for x in tree if x["name"] == unsure[0]), None)
+            if t is not None:
+                rest = sum(v for k, v in build.items() if k != talents.key(t))
+                if 1 <= level - rest <= t["ranks"]:
+                    build[talents.key(t)] = level - rest
+                    unsure = []
         self.tal_build = dict(build)
-        self.cfg["talents_mine"] = dict(build)
+        if not missing_rows:
+            self.cfg["talents_mine"] = dict(build)
         self._tal_store()
         self._tal_fill()
-        msg = f"Current build read: {sum(build.values())} points, saved as my build."
+        used = sum(build.values())
+        if missing_rows:
+            msg = (f"Read {used} points so far. Rows {', '.join(map(str, missing_rows))} were not visible – "
+                   f"scroll the talent window and click “Load current build” again.")
+            col = C_MEH
+        else:
+            msg = f"Current build read: {used} points, saved as my build."
+            col = self.TC["green"]
         if unsure:
-            msg += f" Check: {', '.join(unsure)}."
-        self.lbl_tal_share.configure(text=msg, fg=self.TC["green"] if not unsure else C_MEH)
+            msg += f" Please check: {', '.join(unsure)}."
+            col = C_MEH
+        self.lbl_tal_share.configure(text=msg, fg=col)
 
     def _tal_builds_window(self):
         """Window with every saved build: values against my build, load, delete."""
