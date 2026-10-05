@@ -1744,113 +1744,287 @@ class App:
                                  values=(label[group], ("★ " if first else "") + gem, bonus, eff))
 
     # -- best in slot ----------------------------------------------------------
+    BIS_ORDER = ["Weapon", "Helm", "Chest Armor", "Necklace", "Pants", "Ring 1", "Boots", "Ring 2", "Gloves",
+                 "Belt", "Shoulder", "Back"]
+    ICON_BG = "#2b241b"  # warm dark behind item pictures, like the game's slots
+
     def _build_bis(self, p):
         hdr = ui.page_header(p, "BiS Gear", (
             "The best theoretical item per slot for the logged-in character in the chosen mode: the Legendary "
             "or Divine whose effect is worth most, with the best attributes the slot can roll for your class "
             "(item level 850, top roll – Ancient) and the best gem of the tier chosen on the Gems page in "
-            "every socket.\n\nScore: what the item adds on top of your current stats in this mode – only for "
-            "ranking items against each other. vs yours: what swapping your equipped item for it changes "
-            "(weighted %, like the Item Comparer) – read each equipped item once with F8.\n"
-            "“?” = effect cannot be calculated; enter your own value on the Weights page."))
+            "every socket.\n\nBig number: what swapping your equipped item for it changes (weighted %, like the "
+            "Item Comparer) – read each equipped item once with F8. Score: what it adds on top of your current "
+            "stats, only for ranking items against each other.\n“?” = effect cannot be calculated; enter your "
+            "own value on the Weights page. Item pictures are loaded from wikily.gg once and kept."))
         self.var_bis_mode = tk.StringVar(value=self.cfg.get("bis_mode") or self.cfg.get("item_mode", "Balanced"))
         cb = ttk.Combobox(hdr, textvariable=self.var_bis_mode, values=list(item_eval.MODES), width=11, state="readonly")
         cb.pack(side="right")
         cb.bind("<<ComboboxSelected>>", lambda _: (self._set_cfg("bis_mode", self.var_bis_mode.get()), self._fill_bis()))
         tk.Label(hdr, text="Mode", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="right", padx=(14, 6))
-        self.lbl_bis = ui.autowrap(tk.Label(p, bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w", justify="left"))
+        sf = ui.ScrollFrame(p)
+        sf.pack(fill="both", expand=True)
+        self.bis_sf = sf
+        body = sf.inner
+        self.lbl_bis = ui.autowrap(tk.Label(body, bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w", justify="left"))
         self.lbl_bis.pack(fill="x", padx=16, pady=(0, 6))
-        cols = [("slot", "Slot", 86, "w"), ("item", "Best item", 220, "w"), ("val", "Score", 66, "e"),
-                ("vs", "vs yours", 74, "e"), ("farm", "Where", 230, "w")]
-        f, self.bis_tree = self._tree(p, cols, 12)
-        f.pack(fill="x", padx=14, pady=(0, 6))
-        for tag, col in (("leg", ui.RARITY["Legendary"]), ("div", ui.ACCENT), ("up", C_GOOD), ("meh", MUTED)):
-            self.bis_tree.tag_configure(tag, foreground=col)
-        self.bis_tree.bind("<<TreeviewSelect>>", self._bis_select)
-        det = ui.card(p, fill="both", expand=True, padx=14, pady=(0, 12))
-        self.lbl_bis_detail = ui.autowrap(tk.Label(det, bg=PANEL, fg=FG, font=ui.F_SMALL, anchor="nw", justify="left",
-                                                   text="Click a slot for details."), 24)
-        self.lbl_bis_detail.pack(fill="both", expand=True, padx=12, pady=10)
-        self._bis_rows = []
+        self.bis_grid = tk.Frame(body, bg=BG)
+        self.bis_grid.pack(fill="x", padx=10)
+        for c in (0, 1):
+            self.bis_grid.columnconfigure(c, weight=1, uniform="bis")
+        self.bis_detail = ui.card(body, fill="x", padx=14, pady=(8, 14))
+        self._bis_rows = {}
+        self._bis_sel = None
+        self._bis_photos = []
+        self._icon_cache = {}
+        self._icon_loading = set()
+
+    # item pictures: loaded from the wiki in the background once, kept in the user folder
+    def _item_photo(self, url, size):
+        if not url:
+            return None
+        import hashlib
+        key = (url, size)
+        if key in self._icon_cache:
+            return self._icon_cache[key]
+        path = paths.user("cache", "icons", hashlib.sha1(url.encode()).hexdigest()[:16] + ".png")
+        if os.path.exists(path):
+            try:
+                from PIL import Image, ImageTk
+                img = Image.open(path).convert("RGBA")
+                img.thumbnail((size, size), Image.LANCZOS)
+                ph = ImageTk.PhotoImage(img)
+                self._icon_cache[key] = ph
+                return ph
+            except Exception:
+                return None
+        if url not in self._icon_loading:
+            self._icon_loading.add(url)
+
+            def load():
+                import base64
+                import urllib.request
+                try:
+                    b64 = base64.urlsafe_b64encode(url.encode()).decode().rstrip("=")
+                    req = urllib.request.Request(f"https://img.wikily.gg/unsafe/w:128/{b64}",
+                                                 headers={"User-Agent": "DeskrawlTracker"})
+                    data = urllib.request.urlopen(req, timeout=20).read()
+                    os.makedirs(os.path.dirname(path), exist_ok=True)
+                    with open(path, "wb") as f:
+                        f.write(data)
+                    self.events.put(("icon_ready", url))
+                except Exception:
+                    pass
+            threading.Thread(target=load, daemon=True).start()
+        return None
+
+    def _icon_box(self, parent, photo, rarity, size, fallback=None):
+        """Item picture on the game's slot background with a rarity coloured frame."""
+        rcol = ui.RARITY.get(rarity or "", LINE)
+        box = tk.Frame(parent, bg=rcol, width=size + 4, height=size + 4)
+        box.pack_propagate(False)
+        lab = tk.Label(box, bg=self.ICON_BG, image=photo or "", text="" if photo else (fallback or "…"),
+                       fg=MUTED, font=ui.F_SMALL)
+        lab.pack(expand=True, fill="both", padx=2, pady=2)
+        return box
 
     def _bis_stage_level(self, stage):
         info = stages.stage_info(stage, getattr(self, "enemy_data", {}))
         return info.get("level_min") if info else None
 
     def _fill_bis(self):
-        if not hasattr(self, "bis_tree"):
+        if not hasattr(self, "bis_grid"):
             return
+        for w in self.bis_grid.winfo_children():
+            w.destroy()
+        self._bis_photos = []
         ctx = self._eval_context()
         mode = self.var_bis_mode.get() if self.var_bis_mode.get() in item_eval.MODES else "Balanced"
-        self.bis_tree.delete(*self.bis_tree.get_children())
-        self._bis_rows = []
+        self._bis_rows = {}
         if not ctx.char:
             self.lbl_bis.configure(text="Read your character with F9 first – the best items depend on your stats.")
+            self._bis_detail_show(None)
             return
-        self.lbl_bis.configure(text=f"{self.state.char_name} · {ctx.hero or 'class unknown'} · {mode} mode · "
-                                    f"gems tier {ctx.gem_tier}"
-                                    + ("" if ctx.weapon else " · weapon damage unknown (F8 on your weapon)"))
         eq = self.cfg.get("equipped", {})
-        rows = self.stage_stats.rows(self.cfg.get("profile") or self.state.char_name)
+        self.lbl_bis.configure(text=f"{self.state.char_name} · {ctx.hero or 'class unknown'} · {mode} mode · "
+                                    f"gems tier {ctx.gem_tier} · {len(eq)} of 11 equipped items known"
+                                    + ("" if ctx.weapon else " · weapon damage unknown (F8 on your weapon)"))
         for slot in bis.SLOTS:
             cands = bis.candidates(slot, ctx, mode)
-            picks = cands[:2] if slot == "Ring" else cands[:1]
-            if not picks:
-                self.bis_tree.insert("", "end", values=(slot, "none for this class", "-", "-", ""), tags=("meh",))
-                continue
-            for n, c in enumerate(picks):
-                it = c["item"]
-                label = f"Ring {n + 1}" if slot == "Ring" else slot
-                vs = "-"
-                if slot in eq and n == 0:
-                    vs = f"{bis.swap(c, eq[slot], ctx, mode).score:+.1f} %"
-                elif slot not in eq:
-                    vs = "F8 yours"
-                value = "cosmetic" if slot == "Back" and not c["stats"] and not it.get("effect") else (
-                    f"{c['score']:+.1f} %" + ("" if c["effect_known"] else " ?"))
-                farm = bis.farm_text(it, rows, self._bis_stage_level)
-                tag = "div" if it["rarity"] == "Divine" else "leg"
-                iid = str(len(self._bis_rows))
-                self._bis_rows.append((label, c, cands))
-                self.bis_tree.insert("", "end", iid=iid, values=(label, it["name"], value, vs,
-                                                                 farm[0] if farm else "-"), tags=(tag,))
+            if slot == "Ring":
+                for n in (0, 1):
+                    self._bis_rows[f"Ring {n + 1}"] = (cands[n] if len(cands) > n else None, cands, "Ring")
+            else:
+                self._bis_rows[slot] = (cands[0] if cands else None, cands, slot)
+        for idx, label in enumerate(self.BIS_ORDER):
+            c, cands, slot = self._bis_rows.get(label, (None, [], label))
+            card = self._bis_card(label, slot, c, eq.get(slot) if label != "Ring 2" else None, ctx, mode)
+            card.grid(row=idx // 2, column=idx % 2, sticky="nsew", padx=4, pady=4)
+        if self._bis_sel not in self._bis_rows:
+            self._bis_sel = "Weapon"
+        self._bis_detail_show(self._bis_sel)
 
-    def _bis_select(self, _=None):
-        sel = self.bis_tree.selection()
-        if not sel:
+    def _bis_card(self, label, slot, c, eq, ctx, mode):
+        sel = label == self._bis_sel
+        outer = tk.Frame(self.bis_grid, bg=ui.ACCENT if sel else PANEL)
+        card = tk.Frame(outer, bg=PANEL, cursor="hand2")
+        card.pack(fill="both", expand=True, padx=1, pady=1)
+        if c is None:
+            tk.Label(card, text=label, bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=12, pady=(10, 0))
+            tk.Label(card, text="nothing for this class", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(
+                fill="x", padx=12, pady=(0, 10))
+            return outer
+        it = c["item"]
+        rcol = ui.RARITY.get(it["rarity"], FG)
+        row = tk.Frame(card, bg=PANEL)
+        row.pack(fill="x", padx=10, pady=(10, 4))
+        ph = self._item_photo(it.get("icon_url"), 56)
+        if ph:
+            self._bis_photos.append(ph)
+        self._icon_box(row, ph, it["rarity"], 56).pack(side="left")
+        right = tk.Frame(row, bg=PANEL)
+        right.pack(side="right", anchor="n")
+        if slot == "Back" and not c["stats"] and not it.get("effect"):
+            big, col, small = "–", MUTED, "cosmetic"
+        elif eq:
+            sw = bis.swap(c, eq, ctx, mode).score
+            big, col, small = f"{sw:+.0f} %", (C_GOOD if sw > 0.5 else (C_BAD if sw < -0.5 else MUTED)), "vs yours"
+        else:
+            big, col, small = "F8", MUTED, "read yours"
+        tk.Label(right, text=big, bg=PANEL, fg=col, font=ui.F_NUM_M, anchor="e").pack(anchor="e")
+        tk.Label(right, text=small, bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="e").pack(anchor="e")
+        mid = tk.Frame(row, bg=PANEL)
+        mid.pack(side="left", fill="both", expand=True, padx=(10, 6))
+        tk.Label(mid, text=label + ("" if c["effect_known"] else "  ·  effect ?"), bg=PANEL, fg=MUTED,
+                 font=ui.F_SMALL, anchor="w").pack(fill="x")
+        ui.autowrap(tk.Label(mid, text=it["name"], bg=PANEL, fg=rcol, font=("Bahnschrift SemiBold", 11),
+                             anchor="w", justify="left")).pack(fill="x")
+        chips = [f"+{v:g}{'%' if p_ else ''} {s_.replace('Damage vs ', 'vs ').replace(' Damage', ' Dmg')}"
+                 for s_, v, p_ in c["stats"][:2]]
+        if chips:
+            tk.Label(mid, text="  ·  ".join(chips), bg=PANEL, fg="#a9b4ff", font=ui.F_SMALL, anchor="w").pack(fill="x")
+        farm = bis.farm_text(it)
+        boss = next((f for f in farm if " per clear" in f), None)
+        where = boss or (farm[0] if farm else "")
+        if where:
+            tk.Label(card, text="▸ " + where.split(":")[0].replace("Any enemy of level", "Enemies level")
+                     .replace(" and their chests (item level 850 only on Inferno)", ""),
+                     bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=12, pady=(0, 8))
+
+        def click(_e, lab=label):
+            self._bis_sel = lab
+            self._fill_bis()
+            self.root.after(50, lambda: self.bis_sf.canvas.yview_moveto(1.0))  # show the details below
+        for w in [outer, card] + list(card.winfo_children()):
+            w.bind("<Button-1>", click)
+            for w2 in w.winfo_children():
+                w2.bind("<Button-1>", click)
+                for w3 in w2.winfo_children():
+                    w3.bind("<Button-1>", click)
+        return outer
+
+    def _bis_detail_show(self, label, cand=None):
+        d = self.bis_detail
+        for w in d.winfo_children():
+            w.destroy()
+        row = self._bis_rows.get(label) if label else None
+        if not row or row[0] is None:
+            tk.Label(d, text="Click a slot for details.", bg=PANEL, fg=MUTED, font=ui.F_SMALL).pack(padx=12, pady=12)
             return
-        label, c, cands = self._bis_rows[int(sel[0])]
+        c, cands, slot = row
+        c = cand or c
         it, ev = c["item"], c["ev"]
-        parts = [f"{it['name']} – {it['rarity']} {it['slot']} for {', '.join(it['classes'])}"]
+        ctx = self._eval_context()
+        mode = self.var_bis_mode.get()
+        rcol = ui.RARITY.get(it["rarity"], FG)
+        head = tk.Frame(d, bg=PANEL)
+        head.pack(fill="x", padx=14, pady=(12, 6))
+        ph = self._item_photo(it.get("icon_url"), 88)
+        if ph:
+            self._bis_photos.append(ph)
+        self._icon_box(head, ph, it["rarity"], 88).pack(side="left")
+        nm = tk.Frame(head, bg=PANEL)
+        nm.pack(side="left", fill="x", expand=True, padx=(14, 0))
+        tk.Label(nm, text=it["name"], bg=PANEL, fg=rcol, font=("Bahnschrift SemiBold", 15), anchor="w").pack(fill="x")
+        tk.Label(nm, text=f"{it['rarity']} {it['slot']}  ·  {', '.join(it['classes'])}  ·  drops from level "
+                          f"{it.get('min_drop_level') or '?'}", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x")
         if it.get("effect"):
-            parts.append(f"Effect: {it['effect']}")
+            ui.autowrap(tk.Label(nm, text=it["effect"], bg=PANEL, fg=ui.RARITY["Legendary"], font=ui.F_SMALL,
+                                 anchor="w", justify="left")).pack(fill="x", pady=(4, 0))
             for _, _, _, txt, known in ev.effects:
-                parts.append(f"   rated: {txt}")
+                tk.Label(nm, text=("rated: " if known else "not rated: ") + txt, bg=PANEL,
+                         fg=MUTED if known else C_MEH, font=ui.F_SMALL, anchor="w").pack(fill="x")
+
+        cols = tk.Frame(d, bg=PANEL)
+        cols.pack(fill="x", padx=14, pady=(4, 0))
+        cols.columnconfigure(0, weight=1, uniform="d")
+        cols.columnconfigure(1, weight=1, uniform="d")
+        left = tk.Frame(cols, bg=PANEL)
+        left.grid(row=0, column=0, sticky="nw")
+        right = tk.Frame(cols, bg=PANEL)
+        right.grid(row=0, column=1, sticky="nw", padx=(12, 0))
+
+        def head_lab(parent, text):
+            tk.Label(parent, text=text, bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", pady=(6, 0))
+
         nums = [f"{v:g} {k.replace('Weapon ', '')}" for k, (v, _) in c["numbers"].items()]
         if nums:
-            parts.append(("Base (iLvl 850, top roll): " if it["rarity"] != "Divine" else "Base: ") + ", ".join(nums))
+            head_lab(left, "Base" + (" (item level 850, top roll)" if it["rarity"] != "Divine" else ""))
+            tk.Label(left, text="  ·  ".join(nums), bg=PANEL, fg=FG, font=("Bahnschrift SemiBold", 12), anchor="w").pack(fill="x")
         if c["stats"]:
-            head = "Fixed attributes: " if it["rarity"] == "Divine" else "Best attributes to look for: "
-            parts.append(head + ", ".join(f"+{v:g}{'%' if p else ''} {s_}" for s_, v, p in c["stats"]))
+            head_lab(left, "Fixed attributes" if it["rarity"] == "Divine" else "Best attributes to look for")
+            for s_, v, p_ in c["stats"]:
+                tk.Label(left, text=f"+{v:g}{'%' if p_ else ''} {s_}", bg=PANEL, fg="#a9b4ff", font=ui.F_SMALL,
+                         anchor="w").pack(fill="x")
         if c["sockets"] and c["gem"]:
             g = c["gem"]
-            parts.append(f"Sockets: {c['sockets']}× {g[0]} (+{g[2]:g}{'%' if g[3] else ''} {g[1]} each)")
-        parts.append(f"Score in this mode: {ev.dps_pct:+.1f} % damage · {ev.surv_pct:+.1f} % survival · "
-                     f"{ev.farm_pct:+.1f} % income → {c['score']:+.1f} % weighted")
-        eq = self.cfg.get("equipped", {}).get(it["slot"])
+            head_lab(left, f"Sockets ({c['sockets']})")
+            tk.Label(left, text=f"{c['sockets']}× {g[0]}: +{g[2]:g}{'%' if g[3] else ''} {g[1]} each", bg=PANEL,
+                     fg=ui.GOOD, font=ui.F_SMALL, anchor="w").pack(fill="x")
+
+        eq = self.cfg.get("equipped", {}).get(slot) if label != "Ring 2" else None
         if eq:
-            sw = bis.swap(c, eq, self._eval_context(), self.var_bis_mode.get())
-            parts.append(f"Your {it['slot']}: {eq['name']} (iLvl {eq.get('item_level') or '?'}, read {eq.get('time', '?')})"
-                         f" → swapping: {sw.dps_pct:+.1f} % damage · {sw.surv_pct:+.1f} % survival · "
-                         f"{sw.farm_pct:+.1f} % income → {sw.score:+.1f} % weighted")
-        parts.append("Where to get it:\n   " + "\n   ".join(
-            bis.farm_text(it, self.stage_stats.rows(self.cfg.get("profile") or self.state.char_name),
-                          self._bis_stage_level) or ["unknown"]))
-        others = [x for x in cands if x is not c][:4]
+            sw = bis.swap(c, eq, ctx, mode)
+            head_lab(right, f"Swapping your {eq['name']} (iLvl {eq.get('item_level') or '?'})")
+            m = tk.Frame(right, bg=PANEL)
+            m.pack(fill="x", pady=(2, 0))
+            for txt, val in (("Damage", sw.dps_pct), ("Survival", sw.surv_pct), ("Income", sw.farm_pct)):
+                f = tk.Frame(m, bg=ui.RAISED)
+                f.pack(side="left", padx=(0, 6))
+                tk.Label(f, text=txt, bg=ui.RAISED, fg=MUTED, font=ui.F_SMALL).pack(anchor="w", padx=8, pady=(4, 0))
+                tk.Label(f, text=f"{val:+.0f} %", bg=ui.RAISED, fg=C_GOOD if val > 0.5 else (C_BAD if val < -0.5 else FG),
+                         font=ui.F_NUM_M).pack(anchor="w", padx=8, pady=(0, 4))
+        else:
+            head_lab(right, "Your item")
+            tk.Label(right, text=f"Not known yet – hover your equipped {slot} and press F8.", bg=PANEL, fg=MUTED,
+                     font=ui.F_SMALL, anchor="w").pack(fill="x")
+        head_lab(right, "Where to get it")
+        for line in bis.farm_text(it, self.stage_stats.rows(self.cfg.get("profile") or self.state.char_name),
+                                  self._bis_stage_level) or ["unknown"]:
+            ui.autowrap(tk.Label(right, text="▸ " + line, bg=PANEL, fg=FG, font=ui.F_SMALL, anchor="w",
+                                 justify="left")).pack(fill="x")
+
+        others = [x for x in cands if x is not c][:6]
         if others:
-            parts.append("Alternatives: " + " · ".join(
-                f"{x['item']['name']} {x['score']:+.1f} %" + ("" if x["effect_known"] else " ?") for x in others))
-        self.lbl_bis_detail.configure(text="\n".join(parts))
+            tk.Label(d, text="Alternatives (click to view)", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(
+                fill="x", padx=14, pady=(10, 2))
+            alt = tk.Frame(d, bg=PANEL)
+            alt.pack(fill="x", padx=14, pady=(0, 12))
+            for x in others:
+                f = tk.Frame(alt, bg=PANEL, cursor="hand2")
+                f.pack(side="left", padx=(0, 10))
+                aph = self._item_photo(x["item"].get("icon_url"), 40)
+                if aph:
+                    self._bis_photos.append(aph)
+                box = self._icon_box(f, aph, x["item"]["rarity"], 40)
+                box.pack()
+                tk.Label(f, text=f"{x['score']:+.0f}" + ("" if x["effect_known"] else "?"), bg=PANEL, fg=MUTED,
+                         font=ui.F_SMALL).pack()
+                ui.Tooltip(box, f"{x['item']['name']}\n{x['item'].get('effect', '')}")
+                for w in (f, box) + tuple(box.winfo_children()):
+                    w.bind("<Button-1>", lambda _e, xx=x, lab=label: self._bis_detail_show(lab, xx))
+        else:
+            tk.Frame(d, bg=PANEL, height=12).pack()
 
     def _build_stages(self, p):
         ui.page_header(p, "Stages", "All runs per stage and difficulty of this character, across restarts. Gold "
@@ -2291,7 +2465,15 @@ class App:
         try:
             while True:
                 ev = self.events.get_nowait()
-                if ev[0] == "hotkey":
+                if ev[0] == "icon_ready":
+                    if not getattr(self, "_icon_refill", False):  # several pictures arrive at once
+                        self._icon_refill = True
+
+                        def refill():
+                            self._icon_refill = False
+                            self._fill_bis()
+                        self.root.after(300, refill)
+                elif ev[0] == "hotkey":
                     {"item": self.scan_item, "attributes": self.scan_attributes,
                      "hide": self.toggle_hide}.get(ev[1], lambda: None)()
                 elif ev[0] == "done":

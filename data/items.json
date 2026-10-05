@@ -17,7 +17,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/1e40d47c-c53f-4dbc-ae2a-42f52660fcd6-staff_v2_05__724.png"
   },
   {
    "name": "Battle Draught Belt",
@@ -37,7 +38,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/1aa5877d-adfe-4218-ab45-b96d59d1a2b7-mail10_belt__783.png"
   },
   {
    "name": "Bellow of the Open Wound",
@@ -54,7 +56,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/87aeae90-4fe1-4d12-8e3d-84a846bb5032-neck_b_08__759.png"
   },
   {
    "name": "Blackcrow Recurve",
@@ -71,7 +74,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/25227884-59f5-4929-9352-8b114bbbe22f-bow_22__899.png"
   },
   {
    "name": "Bloodfang Signet of the Wyrm",
@@ -88,7 +92,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/81cd0629-4e20-4a4f-9648-2adf71340cb4-ring_b_08__898.png"
   },
   {
    "name": "Boots of the Mending Stride",
@@ -116,7 +121,8 @@
    ],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/8dce25f2-595f-4caa-b2f2-0f4cc7d4f6e3-cloth7_boots__5728.png"
   },
   {
    "name": "Boots of the Windcaller",
@@ -136,7 +142,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/80627370-e33e-4565-a460-386a182ec91a-cloth8_boots__749.png"
   },
   {
    "name": "Bottomless Potion Belt",
@@ -164,7 +171,8 @@
    ],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/806d7140-99ba-460d-ba6f-5a80a465ee12-alchemy_37_belt__5203.png"
   },
   {
    "name": "Bulwark of Wrath",
@@ -181,7 +189,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/0f1b8c88-c31c-48c3-9d84-b1c587156079-mail9_chest__952.png"
   },
   {
    "name": "Charged Ring",
@@ -209,7 +218,8 @@
    ],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/7d02309a-8e72-4f5c-b60e-37a32b38c77b-ring_41_magic__5786.png"
   },
   {
    "name": "Circlet of Focus",
@@ -229,7 +239,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/0a819cf2-e48e-4c3d-8fbf-4ac861bb7fed-helm_68__915.png"
   },
   {
    "name": "Crown of the Fallen King",
@@ -249,7 +260,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/0a8e198d-d404-4402-9e6e-ead5b06fdb91-helm_61_crown__793.png"
   },
   {
    "name": "Crown of the Wandering Gale",
@@ -266,7 +278,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/f0158445-69b1-435d-b410-2e11f638035d-helm_03__813.png"
   },
   {
    "name": "Deadeye Grips",
@@ -283,7 +296,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/1ab87d33-8e62-4cb5-9b5f-e2c73cc0736f-leather15_gloves__877.png"
   },
   {
    "name": "Deflecting Handwraps",
@@ -300,7 +314,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/a1ff2382-c7b2-4306-a28a-5f480c99e5e6-gloves_22__951.png"
   },
   {
    "name": "Duskfeather Wings",
@@ -320,7 +335,8 @@
    "enemy_drops": [],
    "world_drop": false,
    "divine_drop": false,
-   "mystery_vendor": false
+   "mystery_vendor": false,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/7489be58-1a06-497e-b5c5-f48a4e9626fc-legendaryback4_icon__5224.png"
   },
   {
    "name": "Elemental Burst Pauldron",
@@ -340,7 +356,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/1b9b1bed-638a-472b-aa42-773528134954-shoulder_49_fire__748.png"
   },
   {
    "name": "Emberdusk Mantle",
@@ -360,7 +377,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": false
+   "mystery_vendor": false,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/fe87f16e-7568-4130-94cc-8b3e2213cdd4-legendary_back2__835.png"
   },
   {
    "name": "Endless Mana Belt",
@@ -388,7 +406,8 @@
    ],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/1db38622-2741-4cdb-8da3-0b96643534f9-cloth16_belt__5643.png"
   },
   {
    "name": "Evasive Cuirass",
@@ -406,7 +425,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/de1cbea3-45df-4629-9ddb-56db63491a64-leather8_chest__885.png"
   },
   {
    "name": "Festering Gauntlets",
@@ -425,7 +445,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/90aad96d-a976-4ad0-baf1-f0e427d1bb89-leather16_gloves__1020.png"
   },
   {
    "name": "Fire Lord's Necklace",
@@ -442,7 +463,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/33b2418f-a6e1-4338-b7af-63e0c75430a1-jewelry_49_blackironneck__868.png"
   },
   {
    "name": "Glorious Gladiator Helmet",
@@ -497,7 +519,8 @@
    "enemy_drops": [],
    "world_drop": false,
    "divine_drop": true,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/0c792393-0d07-488b-aeba-1bcb4610de40-helm_24__914.png"
   },
   {
    "name": "Greaves of the Arcane Edge",
@@ -517,7 +540,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/fc67dbcd-2b12-4e66-b603-802a22b9bf3c-cloth16_pants__985.png"
   },
   {
    "name": "Greaves of the Stalwart Tonic",
@@ -545,7 +569,8 @@
    ],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/ba9aca56-64b5-415c-af30-b51849180f47-mail10_pants__5784.png"
   },
   {
    "name": "Hellstorm Mace",
@@ -564,7 +589,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/a990c898-2e89-411b-ac13-dd1c613b47b6-hammer_v2_14__1012.png"
   },
   {
    "name": "Kabuto of the Crimson Tempest",
@@ -581,7 +607,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/c27c9a02-82f2-4fc5-9524-8e0307798ec6-helm_29_samurai__955.png"
   },
   {
    "name": "Manaflow Greaves",
@@ -601,7 +628,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/99568939-ea94-4338-81ed-7c62f4aee156-mail16_pants__958.png"
   },
   {
    "name": "Northern Giant's Great Axe",
@@ -619,7 +647,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/91eabb70-780f-49c4-b97b-b435dcb8651b-axe_v2_46__973.png"
   },
   {
    "name": "Pendant of the Surging Mind",
@@ -647,7 +676,8 @@
    ],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/61e9ac27-e663-4a7b-aac8-e7aa6dff940d-neck_b_06__5731.png"
   },
   {
    "name": "Pendant of Vigor",
@@ -667,7 +697,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/476a4b45-44ba-4d5d-bece-fa2b21e30d3f-jewelry_51_flowerneck__732.png"
   },
   {
    "name": "Phantom Mask",
@@ -684,7 +715,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/63646fa3-7f03-4186-9b86-79f0bc0da859-helm_34_mask__860.png"
   },
   {
    "name": "Ragefire Gauntlets",
@@ -701,7 +733,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/6a5a44d8-b71f-4890-9fcf-6e207b4d5e73-mail12_gloves__894.png"
   },
   {
    "name": "Raincaller Bow",
@@ -718,7 +751,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/26fc6bac-a891-40ec-a74e-2e003a0e9e59-bow_20_purple__1002.png"
   },
   {
    "name": "Reaper's Pauldron",
@@ -746,7 +780,8 @@
    ],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/27d23122-52e8-411c-af50-9570f9df85d6-mail9_shoulder__5631.png"
   },
   {
    "name": "Remnant of the Elder Sage",
@@ -799,7 +834,8 @@
    "enemy_drops": [],
    "world_drop": false,
    "divine_drop": true,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/bb1761ef-8fa3-4789-aa50-89ff7fe9cb4f-ring_15_necromantic__838.png"
   },
   {
    "name": "Rimeshard Shroud",
@@ -819,7 +855,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": false
+   "mystery_vendor": false,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/ce5f151b-4e5f-4478-b99b-e4bde79fcb47-legendary_back1__808.png"
   },
   {
    "name": "Ring of Arcane Precision",
@@ -836,7 +873,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/a0006b34-6849-43c0-884f-a3cc959c1fb2-ring_52__922.png"
   },
   {
    "name": "Ring of Dragonslayer",
@@ -864,7 +902,8 @@
    ],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/e8c6ce3c-9d90-4201-b7bf-c9356aaf61b9-ring_b_09__5926.png"
   },
   {
    "name": "Ring of Revelation",
@@ -884,7 +923,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/44ceb116-2fe2-418c-8b15-6f2f5273b183-ring_b_10__778.png"
   },
   {
    "name": "Ring of the Fourth Flame",
@@ -901,7 +941,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/3d0c5707-ee9f-4964-8996-a29149d6c16f-jewelry_34_fire_ring__981.png"
   },
   {
    "name": "Ring of the Third Eye",
@@ -918,7 +959,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/2831e3d1-ef6e-4d20-8a15-e8aee373db76-ring_09__968.png"
   },
   {
    "name": "Runeward Vestment",
@@ -936,7 +978,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/a9d6f155-fb5d-4c1c-b0c2-d7ef2aa842d4-cloth12_chest__978.png"
   },
   {
    "name": "Serrated Greatsword of Agony",
@@ -954,7 +997,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/89e5c5ba-4355-4f8e-9af9-a686a47941b0-sword_v2_12__878.png"
   },
   {
    "name": "Shell Spike Pauldron",
@@ -974,7 +1018,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/4d073483-2a68-4d94-8266-99c76a51f46f-shoulder_48_turtle__927.png"
   },
   {
    "name": "Snowpelt Mantle",
@@ -994,7 +1039,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": false
+   "mystery_vendor": false,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/a8bd7866-b2a6-482f-8601-db9b11e040dc-legendarycloak3_icon__1021.png"
   },
   {
    "name": "Soulrender",
@@ -1049,7 +1095,8 @@
    "enemy_drops": [],
    "world_drop": false,
    "divine_drop": true,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/e309fad3-7959-4cc5-ae77-15c1bf55079a-sword_v2_30__911.png"
   },
   {
    "name": "Staff of the Frostwyrm",
@@ -1066,7 +1113,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/10baba0a-15a8-4005-ba92-d25f1f37e32c-staff_v2_55__826.png"
   },
   {
    "name": "Stormcaller Gauntlets",
@@ -1083,7 +1131,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/baa82549-a2cd-427e-84ca-2aa0c72c9940-cloth12_gloves__904.png"
   },
   {
    "name": "Stormguard Necklace",
@@ -1100,7 +1149,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/349115a7-5adf-4d2c-955f-330622633e84-neck_b_01__814.png"
   },
   {
    "name": "The Grandmother",
@@ -1156,7 +1206,8 @@
    "enemy_drops": [],
    "world_drop": false,
    "divine_drop": true,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/fe9e5464-1c8e-4a29-bf25-47f3d193537f-hammer_v2_17__862.png"
   },
   {
    "name": "Thornheart Cuirass",
@@ -1176,7 +1227,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/f65fe3a7-5c10-4cd9-ab68-83fff9c5079a-mail15_chest__900.png"
   },
   {
    "name": "Treads of the Falling Leaf",
@@ -1193,7 +1245,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/2cfc6842-4347-48d3-9c8b-d1b68c965636-leather3_boots__947.png"
   },
   {
    "name": "Unstoppable Gauntlets",
@@ -1221,7 +1274,8 @@
    ],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/bf23ffc7-a979-44f6-9413-e284ecbcb1fe-gloves_11__5504.png"
   },
   {
    "name": "Unyielding Cuirass",
@@ -1249,7 +1303,8 @@
    ],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/894aac85-39e5-45ca-9326-b8567f7cedda-mail7chest__5852.png"
   },
   {
    "name": "Vessel of the Endless Stream",
@@ -1266,7 +1321,8 @@
    "enemy_drops": [],
    "world_drop": true,
    "divine_drop": false,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/0d135bbb-efa9-4ab6-afc7-35de607e5870-cloth16_chest__988.png"
   },
   {
    "name": "Violet Skybow",
@@ -1320,7 +1376,8 @@
    "enemy_drops": [],
    "world_drop": false,
    "divine_drop": true,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/94d31691-76fe-4fba-8a78-c3ed7b6e38c1-bow_37__722.png"
   },
   {
    "name": "Visage of the Undying",
@@ -1370,7 +1427,8 @@
    "enemy_drops": [],
    "world_drop": false,
    "divine_drop": true,
-   "mystery_vendor": true
+   "mystery_vendor": true,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/001fd580-6cce-4325-afa5-b10b622b87d0-helm_44__917.png"
   },
   {
    "name": "Wings of the Cinderlord",
@@ -1400,7 +1458,8 @@
    ],
    "world_drop": false,
    "divine_drop": true,
-   "mystery_vendor": false
+   "mystery_vendor": false,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/178a4c54-3888-419e-b863-e582fe4184f5-divine_back2__5667.png"
   },
   {
    "name": "Wings of the Light",
@@ -1422,7 +1481,8 @@
    "enemy_drops": [],
    "world_drop": false,
    "divine_drop": true,
-   "mystery_vendor": false
+   "mystery_vendor": false,
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/3195560b-1614-4b20-9e8d-1d1eaf2cc47e-divine_back1__745.png"
   }
  ]
 }
