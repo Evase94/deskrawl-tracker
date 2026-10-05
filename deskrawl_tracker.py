@@ -2803,7 +2803,16 @@ class App:
                                  element=self.cfg.get("element", "Auto"), enemy_level=enemy, damage_weights=weights,
                                  dot_share=dot, other=other, overrides=self.cfg.get("legendary_values", {}),
                                  weapon=tuple(self.cfg["weapon"]) if self.cfg.get("weapon") else None,
-                                 gem_tier=int(self.cfg.get("gem_tier", 3)))
+                                 gem_tier=int(self.cfg.get("gem_tier", 3)),
+                                 ability_shares=self._ability_shares())
+
+    def _ability_shares(self) -> dict:
+        """Ability -> share of damage, as set on the Talents page (or taken from the skill bar there)."""
+        out = {}
+        for name, share in (self.cfg.get("ability_setup") or {}).values():
+            if name and name not in ("–", "-") and share:
+                out[name] = out.get(name, 0) + float(share)
+        return out
 
     def _death_history(self) -> list:
         """Deaths with known killer: from deaths_log.csv (all sessions) and the running session."""
@@ -2833,7 +2842,7 @@ class App:
         self.leg_tree.delete(*self.leg_tree.get_children())
         ov = self.cfg.get("legendary_values", {})
         for L in item_eval.LEGENDARIES:
-            _, txt, known, _ = item_eval._legendary_deltas(L, L["effect"], 1, item_eval.Context(char={}, element=ctx.elem), {})
+            _, txt, known, _ = item_eval._legendary_deltas(L, L["effect"], 1, ctx, {})
             txt = txt.replace(" – set your own value in the Weights tab", " – set your own value →")
             own = ov.get(L["name"])
             own_txt = f"{own.get('dps', 0):g}/{own.get('surv', 0):g}" if own else ""

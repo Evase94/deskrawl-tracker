@@ -106,6 +106,7 @@ class Context:
     overrides: dict = field(default_factory=dict)        # legendary name -> {"dps": %, "surv": %}
     weapon: tuple | None = None    # (damage, speed) of the equipped weapon, from its last read tooltip
     gem_tier: int = 3              # gems assumed for empty sockets
+    ability_shares: dict = field(default_factory=dict)  # ability -> share of damage (Talents page / skill bar)
 
     @property
     def main(self) -> str:
@@ -244,6 +245,17 @@ class Evaluation:
         return sum(self.farm.values()) / len(self.farm) if self.farm else 0.0
 
 
+def _ability_effect(text, ctx):
+    """Effects that depend on the abilities used (procs, ability damage): (dps %, surv %, text) or None."""
+    if not ctx.ability_shares:
+        return None
+    try:
+        import effects
+        return effects.rate(text, ctx.hero, ctx.ability_shares, ctx)
+    except Exception:
+        return None
+
+
 def _legendary_deltas(L: dict, ocr_effect: str, sign: int, ctx: Context, base: dict):
     """Pseudo stat deltas of a legendary effect -> (deltas, valuation text, known?, fixed (dps%, surv%))."""
     ov = ctx.overrides.get(L["name"])
@@ -255,6 +267,10 @@ def _legendary_deltas(L: dict, ocr_effect: str, sign: int, ctx: Context, base: d
     if t_num and o_num and abs(o_num - t_num) / t_num < 2:  # rolled higher/lower (e.g. ancient)
         scale = o_num / t_num
     if "manual" in L:
+        auto = _ability_effect(ocr_effect or L["effect"], ctx)
+        if auto:
+            dps, surv, txt = auto
+            return {}, txt, True, (sign * dps, sign * surv)
         return {}, f"cannot be calculated ({L['manual']}) – set your own value in the Weights tab", False, (0, 0)
     if "elements" in L and ctx.elem not in L["elements"]:
         return {}, f"does not affect {ctx.elem} damage", True, (0, 0)
@@ -300,6 +316,12 @@ def evaluate(res, ctx: Context, mode: str = "Balanced") -> Evaluation:
         L = find_legendary(name, fx_list)
         if not L:
             for fx in fx_list:
+                auto = _ability_effect(fx, ctx)
+                if auto:
+                    fixed_dps += sign * auto[0]
+                    fixed_surv += sign * auto[1]
+                    ev.effects.append((sign, name, fx, auto[2], True))
+                    continue
                 ev.effects.append((sign, name, fx, "unknown effect – not rated", False))
                 ev.confident = False
             continue
