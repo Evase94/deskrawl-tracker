@@ -57,7 +57,9 @@ def _download(url, dest, progress=None, size=0):
 
 
 def _run_detached(bat_path):
-    flags = 0x00000008 | 0x00000200  # DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP
+    # CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP: one hidden console that tasklist/findstr/robocopy share.
+    # (Without a console - DETACHED_PROCESS - every command opened its own window and "find" waited.)
+    flags = 0x08000000 | 0x00000200
     subprocess.Popen(["cmd", "/c", bat_path], creationflags=flags, close_fds=True,
                      stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -69,7 +71,7 @@ def _copy_bat(work, src, target, restart_cmd):
     with open(bat, "w", encoding="ascii", errors="replace") as f:
         f.write("@echo off\r\n"
                 ":wait\r\n"
-                f'tasklist /FI "PID eq {pid}" | find "{pid}" >nul && (timeout /t 1 /nobreak >nul & goto wait)\r\n'
+                f'tasklist /FI "PID eq {pid}" /NH | findstr /C:" {pid} " >nul && (ping -n 2 127.0.0.1 >nul & goto wait)\r\n'
                 f'robocopy "{src}" "{target}" /E /R:5 /W:1 /NFL /NDL /NJH /NJS /NP >nul\r\n'
                 f"cd /d \"{target}\"\r\n"
                 f"{restart_cmd}\r\n"
@@ -105,7 +107,7 @@ def install(info, progress=None) -> str:
             subprocess.run([pip, "-m", "pip", "install", "-q", "-r", os.path.join(target, "requirements.txt")],
                            creationflags=0x08000000)
         with open(os.path.join(work, "restart.bat"), "w") as f:
-            f.write(f'@echo off\r\ntimeout /t 2 /nobreak >nul\r\ncd /d "{target}"\r\n{restart}\r\n')
+            f.write(f'@echo off\r\nping -n 3 127.0.0.1 >nul\r\ncd /d "{target}"\r\n{restart}\r\n')
         _run_detached(os.path.join(work, "restart.bat"))
         return "restart"
     if not info.get("source_url"):
