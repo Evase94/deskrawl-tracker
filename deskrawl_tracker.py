@@ -348,6 +348,13 @@ class GameState:
     DEATH_XP_RATIO = 0.6
     DEATH_DUR_RATIO = 0.75
 
+    def log_needed(self, r) -> bool:
+        """Does the in-game log panel have to be opened after run r? Only it names the stage and the
+        killer: needed after a death, while no stage is known, or when the run's settings
+        (difficulty, waves) differ from the last stage the log named - then the stage changed."""
+        with self.lock:
+            return bool(r.death) or not self.stage_name or self.stage_key != (r.difficulty, r.waves)
+
     def mark_death_seen(self, t: float, text: str, extra: dict | None = None, max_age: float = 15):
         with self.lock:
             r = self.current or (self.runs[-1] if self.runs else None)
@@ -941,8 +948,9 @@ class GoldWatcher(threading.Thread):
 
 
 class PanelReader(threading.Thread):
-    """After every run: open inventory (gold balance) and log panel (stage, sales, drops, deaths)
-    in the game, read them, and close what was opened.
+    """After a run: read the in-game log panel (stage name, killer). If it is not on screen it is
+    opened with C - but only when needed (see GameState.log_needed): after a death, while no stage
+    is known, or when the stage seems to have changed. Sales and drops come from the pop-ups.
 
     Deskrawl only reacts to real keys while it has focus (tested: faked focus messages are ignored),
     so in the background mode "always" briefly takes focus. While the game is hidden by the tracker
@@ -995,20 +1003,21 @@ class PanelReader(threading.Thread):
         mode = mode if mode in self.MODES else "always"
         frame, lines, inv, log = self._look()
         if frame is None:
-            self.status = "Panels: " + self.capture.status
+            self.status = "Log-Panel: " + self.capture.status
             return
+        with self.state.lock:
+            last = self.state.runs[-1] if self.state.runs else None
         keys = []
-        if mode != "off":
-            if not inv:
-                keys.append(self._keys()["inventory"])
-            if not log:
-                keys.append(self._keys()["log"])
+        if mode != "off" and not log and (last is None or self.state.log_needed(last)):
+            keys.append(self._keys()["log"])
+        elif not log:
+            self.status = f"Log-Panel: nicht nötig, Stage bekannt ({datetime.now().strftime('%H:%M:%S')})"
         how, prev = None, None
         if keys:
             self.ocr.suspend(5.0)
             how, prev = self._press(keys, True, mode)
             if how is None:
-                self.status = "Panels: Deskrawl nicht im Vordergrund – übersprungen"
+                self.status = "Log-Panel: Deskrawl nicht im Vordergrund – übersprungen"
                 keys = []
             else:
                 time.sleep(0.5)
@@ -1023,7 +1032,9 @@ class PanelReader(threading.Thread):
                 self.state.ingest_log(item_ocr.read_log_panel(frame, hdr), now)
             if keys:
                 label = {"fg": "Vordergrund", "focus": "Fokuswechsel"}[how]
-                self.status = f"Panels gelesen {datetime.now().strftime('%H:%M:%S')} ({label})"
+                self.status = f"Log-Panel geöffnet und gelesen {datetime.now().strftime('%H:%M:%S')} ({label})"
+            elif hdr is not None:
+                self.status = f"Log-Panel gelesen {datetime.now().strftime('%H:%M:%S')} (war offen)"
         finally:
             if keys:
                 hwnd = self.capture.find()
@@ -1315,7 +1326,9 @@ class App:
                                                   "nur so kann der Tracker weiter mitlesen.")
         self.btn_ocr = ctl("", self.toggle_ocr, "Schadenszahlen im Spiel mitlesen (für DPS pro Run).")
         ctl("DPS-Bereich wählen", self.pick_region, "Bereich im Spielbild, in dem Schadenszahlen erscheinen.")
-        self.btn_panels = ctl("", self.cycle_panels, "Nach jedem Run Inventar (I) und Log (C) öffnen und lesen. "
+        self.btn_panels = ctl("", self.cycle_panels, "Log-Panel (C) öffnen, wenn der Tracker Stage-Name oder Todesdetails "
+                                                     "braucht – nach einem Tod oder Stage-Wechsel. Ist es offen, wird es "
+                                                     "ohne Tastendruck gelesen. "
                                                      "„mit Fokuswechsel“ holt Deskrawl dafür kurz nach vorne.")
         self.btn_top = ctl("", self.toggle_topmost, "Tracker-Fenster immer im Vordergrund halten.")
         ctl("Log-Datei ändern", self.open_setup, "Pfad zur Game.log von Deskrawl wählen und prüfen, ob die "
@@ -2400,7 +2413,7 @@ class App:
     def _update_panels_btn(self):
         mode = self.cfg.get("auto_panels", "always")
         mode = mode if mode in self.PANEL_MODES else "always"
-        self.btn_panels.configure(text=f"Panels: {self.PANEL_MODES[mode]}", fg=FG)
+        self.btn_panels.configure(text=f"Log-Panel: {self.PANEL_MODES[mode]}", fg=FG)
 
     def toggle_hide(self):
         self.set_game_hidden(not self.cfg.get("game_hidden", False))
@@ -2635,7 +2648,7 @@ class App:
         self.dots["dps"].set("ok" if ocr_on and "fps" in self.ocr.status else ("warn" if ocr_on else None),
                              self.ocr.status)
         ps = self.panels.status or "noch nicht gelesen"
-        self.dots["panels"].set("ok" if "gelesen" in ps else ("warn" if ps != "noch nicht gelesen" else None), ps)
+        self.dots["panels"].set("ok" if "gelesen" in ps or "nicht nötig" in ps else ("warn" if ps != "noch nicht gelesen" else None), ps)
         self.dots["keys"].set("bad" if self.hotkeys.failed else "ok",
                               ("Belegt (von anderem Programm): " + ", ".join(self.hotkeys.failed)) if self.hotkeys.failed
                               else "F8 Item prüfen · F9 Charakter einlesen · F10 Deskrawl aus-/einblenden")
