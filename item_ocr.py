@@ -1025,7 +1025,7 @@ _RE_DEATH = re.compile("|".join(DEATH_PATTERNS), re.I)
 # Shown after every run (with "Auto Rerun 2s"): "THE CINDER CROWN: 6", CLEARS 36, TOTAL XP GAINED,
 # RUN DURATION 01:34, TOTAL TIME SPENT, drops by rarity, and the buttons TOWN / NEXT STAGE / RERUN.
 _REGIONS = None
-_END_MARKERS = ("clears", "runduration", "totalxpgained", "totaltimespent", "autorerun", "nextstage", "rerun")
+_END_MARKERS = ("clears", "duration", "xpgained", "timespent", "autorerun", "nextstage", "rerun")
 
 
 def _regions() -> list:
@@ -1086,12 +1086,23 @@ def find_stage_end(lines: list[Line]) -> dict | None:
             if m:
                 return m
         return None
-    m = value_below("runduration", r"(\d{1,2}):(\d{2})")
+    m = value_below("duration", r"(\d{1,2}):(\d{2})")
     if m:
         out["seconds"] = int(m.group(1)) * 60 + int(m.group(2))
     m = value_below("clears", r"(\d+)")
     if m:
         out["clears"] = int(m.group(1))
+    m = value_below("xpgained", r"\(\s*\+\s*([\d,.]+)\s*\)")
+    if m:
+        out["xp"] = int(re.sub(r"\D", "", m.group(1)))
+    # gold: "37,579 (+715)" - a line of digits only (the ore lines have names and "x132")
+    for l in lines:
+        g = re.fullmatch(r"\s*[\d,.]+\s*\(\s*\+\s*([\d,.]+)\s*\)\s*", l.text)
+        if g:
+            v = int(re.sub(r"\D", "", g.group(1)))
+            if v != out.get("xp"):
+                out["gold"] = v
+                break
     return out
 
 

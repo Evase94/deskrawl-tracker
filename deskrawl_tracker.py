@@ -153,7 +153,8 @@ class Run:
     stage_name: str = ""     # from the in-game log panel ("The Cinder Crown: 6")
     stage_guess: str = ""    # assumed from the previous run while the log panel was not read
     aggregated: bool = False  # already counted in the persistent per-stage statistics
-    game_seconds: int | None = None  # clear time from the in-game log panel
+    game_seconds: int | None = None  # run time from the stage end screen (or the log panel)
+    end_screen: dict = field(default_factory=dict)  # what the stage end screen showed for this run
     death_info: dict = field(default_factory=dict)
 
     @property
@@ -378,9 +379,22 @@ class GameState:
                 return
             if not r.stage_name:
                 r.stage_name = name
-                if info.get("seconds"):
-                    r.game_seconds = info["seconds"]
+            if info.get("seconds"):
+                r.game_seconds = info["seconds"]
             self.stage_key = (r.difficulty, r.waves)
+            first_clears = "clears" in info and "clears" not in r.end_screen
+            r.end_screen.update({k: v for k, v in info.items() if v is not None})
+            if first_clears:
+                # CLEARS counts cleared runs of this stage: unchanged since the last run = not cleared (died)
+                last = getattr(self, "last_clears", {})
+                prev = last.get(name)
+                last[name] = info["clears"]
+                self.last_clears = last
+                if prev is not None and info["clears"] == prev and r.death != "confirmed":
+                    r.death_info.setdefault("screen", "stage not cleared (end screen)")
+                    r.death = "confirmed"
+                    r.death_info["level"] = r.level
+                    append_death_csv(r, self.char_name)
 
     def log_needed(self, r) -> bool:
         """Does the in-game log panel have to be opened after run r? Only it names the stage and the
@@ -2900,7 +2914,8 @@ class App:
             self.stage_stats.add_run(r.char or self.state.char_name, stage, r.difficulty, cycle, r.xp, r.gold,
                                      sold_gold, r.items,
                                      r.death == "confirmed" or r.death == "suspected",
-                                     r.damage, r.duration if r.damage else 0, r.casts or None)
+                                     r.damage, r.duration if r.damage else 0, r.casts or None,
+                                     run_s=r.game_seconds)
             r.aggregated = True
             changed = True
             prev = r
@@ -2920,7 +2935,7 @@ class App:
             star_g = " ★" if best_gold and x["gold_h"] == best_gold else ""
             self.stage_tree.insert("", "end", iid=str(i), tags=("best",) if star_x or star_g else (), values=(
                 x["stage"], {"Nightmare": "NM", "Inferno": "Inf"}.get(x["difficulty"], x["difficulty"]), x["runs"],
-                fmt_dur(x["avg_s"]), fmt(x["xp_h"]) + star_x,
+                fmt_dur(x.get("run_s") or x["avg_s"]), fmt(x["xp_h"]) + star_x,
                 fmt(x["gold_h"]) + star_g, f"{x['items_h']:.1f}", f"{x['death_rate'] * 100:.0f} %",
                 fmt(x["dps"]) if x["dps"] else "-"))
 
@@ -3981,7 +3996,7 @@ class App:
                 self.tree.insert("", "end", values=(
                     datetime.fromtimestamp(r.end).strftime("%H:%M:%S"),
                     r.stage_name or (f"≈ {r.stage_guess}" if r.stage_guess else "-"), r.difficulty,
-                    fmt_dur(r.duration), fmt(r.xp), fmt(r.gold), r.items,
+                    fmt_dur(r.game_seconds or r.duration), fmt(r.xp), fmt(r.gold), r.items,
                     fmt(r.avg_dps) if r.damage else "-", fmt(r.peak_dps) if r.peak_dps else "-"))
 
 
