@@ -78,9 +78,5 @@ Bitte ein [Issue](../../issues) anlegen und anhängen:
 
 Beide liegen im Ordner des Trackers.
 
-## Daten
-Item-, Affix-, Edelstein- und Gegnerdaten in `data/` stammen aus der Community:
-[wikily.gg/deskrawl](https://wikily.gg/deskrawl) und [afkmeta.com](https://afkmeta.com/en/deskrawl).
-Danke an die Betreiber!
-
+---
 Inoffizielles Fan-Tool, nicht verbunden mit First Day Games.

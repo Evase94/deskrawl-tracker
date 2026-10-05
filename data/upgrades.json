@@ -1,439 +1,431 @@
 {
-  "source": [
-    "https://wikily.gg/deskrawl/equipment-upgrades",
-    "https://wikily.gg/deskrawl/equipment-upgrades/costs",
-    "https://wikily.gg/deskrawl/equipment-upgrades/boss-materials",
-    "https://wikily.gg/deskrawl/equipment-upgrades/attribute-bonus",
-    "https://wikily.gg/deskrawl/equipment-upgrades/salvage",
-    "https://wikily.gg/deskrawl/equipment/rarities"
+ "max_level": 10,
+ "success": {
+  "1": 1,
+  "2": 1,
+  "3": 1,
+  "4": 1,
+  "5": 0.75,
+  "6": 0.5,
+  "7": 0.4,
+  "8": 0.3,
+  "9": 0.2,
+  "10": 0.1
+ },
+ "success_note": "key = target level; chance depends on current upgrade level. Failure consequence not documented.",
+ "gold": "3*(cur+1)^2*ilvl",
+ "gold_min": 1,
+ "ancient_gold_mult": 2,
+ "ores": {
+  "Common": {
+   "Iron Ore": 1
+  },
+  "Uncommon": {
+   "Iron Ore": 1
+  },
+  "Rare": {
+   "Iron Ore": 2,
+   "Gold Ore": 1
+  },
+  "Legendary": {
+   "Iron Ore": 3,
+   "Gold Ore": 2,
+   "Earth Essence": 1
+  },
+  "Divine": {
+   "Iron Ore": 5,
+   "Gold Ore": 3,
+   "Earth Essence": 2
+  }
+ },
+ "ores_note": "base amounts per rarity; multiply by (cur+1)^2",
+ "ore_amount": "(cur+1)^2",
+ "boss_material": {
+  "rarities": [
+   "Rare",
+   "Legendary",
+   "Divine"
   ],
-  "max_level": 10,
-  "success": {
-    "1": 1,
-    "2": 1,
-    "3": 1,
-    "4": 1,
-    "5": 0.75,
-    "6": 0.5,
-    "7": 0.4,
-    "8": 0.3,
-    "9": 0.2,
-    "10": 0.1
-  },
-  "success_note": "key = target level; chance depends on current upgrade level. Failure consequence not documented.",
-  "gold": "3*(cur+1)^2*ilvl",
-  "gold_min": 1,
-  "ancient_gold_mult": 2,
-  "ores": {
-    "Common": {
-      "Iron Ore": 1
-    },
-    "Uncommon": {
-      "Iron Ore": 1
-    },
-    "Rare": {
-      "Iron Ore": 2,
-      "Gold Ore": 1
-    },
-    "Legendary": {
-      "Iron Ore": 3,
-      "Gold Ore": 2,
-      "Earth Essence": 1
-    },
-    "Divine": {
-      "Iron Ore": 5,
-      "Gold Ore": 3,
-      "Earth Essence": 2
-    }
-  },
-  "ores_note": "base amounts per rarity; multiply by (cur+1)^2",
-  "ore_amount": "(cur+1)^2",
-  "boss_material": {
-    "rarities": [
-      "Rare",
-      "Legendary",
-      "Divine"
-    ],
-    "amount": 3,
-    "levels": [
-      9,
-      10
-    ],
-    "per_slot": {
-      "Weapon": "Tidewrath Pincer",
-      "Helm": "Cinderlord Horns",
-      "Chest Armor": "Defiled Wyrm Scales",
-      "Pants": "Elder Oak Bark",
-      "Boots": "Redrock Shard",
-      "Belt": "Manticore Venom Sac",
-      "Ring": "Crimson Wyrm Eye",
-      "Necklace": "Frostheart Crystal",
-      "Gloves": "Ogre Heart",
-      "Shoulder": "Demon's Skull"
-    }
-  },
-  "not_upgradable": [
-    "Back"
+  "amount": 3,
+  "levels": [
+   9,
+   10
   ],
-  "untradable_on_upgrade": true,
-  "steps_per_level": {
-    "Common": 1,
-    "Uncommon": 1,
-    "Rare": 2,
-    "Legendary": 2,
-    "Divine": 2
+  "per_slot": {
+   "Weapon": "Tidewrath Pincer",
+   "Helm": "Cinderlord Horns",
+   "Chest Armor": "Defiled Wyrm Scales",
+   "Pants": "Elder Oak Bark",
+   "Boots": "Redrock Shard",
+   "Belt": "Manticore Venom Sac",
+   "Ring": "Crimson Wyrm Eye",
+   "Necklace": "Frostheart Crystal",
+   "Gloves": "Ogre Heart",
+   "Shoulder": "Demon's Skull"
+  }
+ },
+ "not_upgradable": [
+  "Back"
+ ],
+ "untradable_on_upgrade": true,
+ "steps_per_level": {
+  "Common": 1,
+  "Uncommon": 1,
+  "Rare": 2,
+  "Legendary": 2,
+  "Divine": 2
+ },
+ "step_pct": 5,
+ "step_cycle": [
+  "weapon speed",
+  "damage/armor",
+  "attributes"
+ ],
+ "step_rules": "Steps of +5% are dealt in turn (round-robin) over the item's numbers in order: Weapon = weapon speed, weapon damage, then attributes in tooltip order; Helm/Chest Armor/Pants/Boots/Gloves/Shoulder = Armor, then attributes in tooltip order; Belt/Ring/Necklace = attributes only. After the last number, dealing wraps to the first. Total steps after +L = L x steps_per_level; number i (0-based) of n gets floor(total/n) + (i < total mod n ? 1 : 0) steps.",
+ "step_examples": {
+  "Legendary accessory (5 attributes)": {
+   "1": [
+    5,
+    5,
+    0,
+    0,
+    0
+   ],
+   "2": [
+    5,
+    5,
+    5,
+    5,
+    0
+   ],
+   "3": [
+    10,
+    5,
+    5,
+    5,
+    5
+   ],
+   "4": [
+    10,
+    10,
+    10,
+    5,
+    5
+   ],
+   "5": [
+    10,
+    10,
+    10,
+    10,
+    10
+   ],
+   "6": [
+    15,
+    15,
+    10,
+    10,
+    10
+   ],
+   "7": [
+    15,
+    15,
+    15,
+    15,
+    10
+   ],
+   "8": [
+    20,
+    15,
+    15,
+    15,
+    15
+   ],
+   "9": [
+    20,
+    20,
+    20,
+    15,
+    15
+   ],
+   "10": [
+    20,
+    20,
+    20,
+    20,
+    20
+   ]
   },
-  "step_pct": 5,
-  "step_cycle": [
-    "weapon speed",
-    "damage/armor",
-    "attributes"
+  "Legendary armor (Armor + 5 attributes)": {
+   "1": [
+    5,
+    5,
+    0,
+    0,
+    0,
+    0
+   ],
+   "2": [
+    5,
+    5,
+    5,
+    5,
+    0,
+    0
+   ],
+   "3": [
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "4": [
+    10,
+    10,
+    5,
+    5,
+    5,
+    5
+   ],
+   "5": [
+    10,
+    10,
+    10,
+    10,
+    5,
+    5
+   ],
+   "6": [
+    10,
+    10,
+    10,
+    10,
+    10,
+    10
+   ],
+   "7": [
+    15,
+    15,
+    10,
+    10,
+    10,
+    10
+   ],
+   "8": [
+    15,
+    15,
+    15,
+    15,
+    10,
+    10
+   ],
+   "9": [
+    15,
+    15,
+    15,
+    15,
+    15,
+    15
+   ],
+   "10": [
+    20,
+    20,
+    15,
+    15,
+    15,
+    15
+   ]
+  },
+  "Legendary weapon (speed, damage + 5 attributes)": {
+   "1": [
+    5,
+    5,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "2": [
+    5,
+    5,
+    5,
+    5,
+    0,
+    0,
+    0
+   ],
+   "3": [
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    0
+   ],
+   "4": [
+    10,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "5": [
+    10,
+    10,
+    10,
+    5,
+    5,
+    5,
+    5
+   ],
+   "6": [
+    10,
+    10,
+    10,
+    10,
+    10,
+    5,
+    5
+   ],
+   "7": [
+    10,
+    10,
+    10,
+    10,
+    10,
+    10,
+    10
+   ],
+   "8": [
+    15,
+    15,
+    10,
+    10,
+    10,
+    10,
+    10
+   ],
+   "9": [
+    15,
+    15,
+    15,
+    15,
+    10,
+    10,
+    10
+   ],
+   "10": [
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    10
+   ]
+  }
+ },
+ "salvage": {
+  "formula": "amount = floor(base + item level x per_level), then varies 85%-115%",
+  "back_items": {
+   "Iron Ore": 1
+  },
+  "Common": [
+   {
+    "material": "Iron Ore",
+    "chance": 1,
+    "base": 1,
+    "per_level": 0.02
+   },
+   {
+    "material": "Soul Shard",
+    "chance": 0.1,
+    "base": 1,
+    "per_level": 0.003
+   }
   ],
-  "step_rules": "Steps of +5% are dealt in turn (round-robin) over the item's numbers in order: Weapon = weapon speed, weapon damage, then attributes in tooltip order; Helm/Chest Armor/Pants/Boots/Gloves/Shoulder = Armor, then attributes in tooltip order; Belt/Ring/Necklace = attributes only. After the last number, dealing wraps to the first. Total steps after +L = L x steps_per_level; number i (0-based) of n gets floor(total/n) + (i < total mod n ? 1 : 0) steps.",
-  "step_examples": {
-    "Legendary accessory (5 attributes)": {
-      "1": [
-        5,
-        5,
-        0,
-        0,
-        0
-      ],
-      "2": [
-        5,
-        5,
-        5,
-        5,
-        0
-      ],
-      "3": [
-        10,
-        5,
-        5,
-        5,
-        5
-      ],
-      "4": [
-        10,
-        10,
-        10,
-        5,
-        5
-      ],
-      "5": [
-        10,
-        10,
-        10,
-        10,
-        10
-      ],
-      "6": [
-        15,
-        15,
-        10,
-        10,
-        10
-      ],
-      "7": [
-        15,
-        15,
-        15,
-        15,
-        10
-      ],
-      "8": [
-        20,
-        15,
-        15,
-        15,
-        15
-      ],
-      "9": [
-        20,
-        20,
-        20,
-        15,
-        15
-      ],
-      "10": [
-        20,
-        20,
-        20,
-        20,
-        20
-      ]
-    },
-    "Legendary armor (Armor + 5 attributes)": {
-      "1": [
-        5,
-        5,
-        0,
-        0,
-        0,
-        0
-      ],
-      "2": [
-        5,
-        5,
-        5,
-        5,
-        0,
-        0
-      ],
-      "3": [
-        5,
-        5,
-        5,
-        5,
-        5,
-        5
-      ],
-      "4": [
-        10,
-        10,
-        5,
-        5,
-        5,
-        5
-      ],
-      "5": [
-        10,
-        10,
-        10,
-        10,
-        5,
-        5
-      ],
-      "6": [
-        10,
-        10,
-        10,
-        10,
-        10,
-        10
-      ],
-      "7": [
-        15,
-        15,
-        10,
-        10,
-        10,
-        10
-      ],
-      "8": [
-        15,
-        15,
-        15,
-        15,
-        10,
-        10
-      ],
-      "9": [
-        15,
-        15,
-        15,
-        15,
-        15,
-        15
-      ],
-      "10": [
-        20,
-        20,
-        15,
-        15,
-        15,
-        15
-      ]
-    },
-    "Legendary weapon (speed, damage + 5 attributes)": {
-      "1": [
-        5,
-        5,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "2": [
-        5,
-        5,
-        5,
-        5,
-        0,
-        0,
-        0
-      ],
-      "3": [
-        5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        0
-      ],
-      "4": [
-        10,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5
-      ],
-      "5": [
-        10,
-        10,
-        10,
-        5,
-        5,
-        5,
-        5
-      ],
-      "6": [
-        10,
-        10,
-        10,
-        10,
-        10,
-        5,
-        5
-      ],
-      "7": [
-        10,
-        10,
-        10,
-        10,
-        10,
-        10,
-        10
-      ],
-      "8": [
-        15,
-        15,
-        10,
-        10,
-        10,
-        10,
-        10
-      ],
-      "9": [
-        15,
-        15,
-        15,
-        15,
-        10,
-        10,
-        10
-      ],
-      "10": [
-        15,
-        15,
-        15,
-        15,
-        15,
-        15,
-        10
-      ]
-    }
-  },
-  "salvage": {
-    "formula": "amount = floor(base + item level x per_level), then varies 85%-115%",
-    "back_items": {
-      "Iron Ore": 1
-    },
-    "Common": [
-      {
-        "material": "Iron Ore",
-        "chance": 1,
-        "base": 1,
-        "per_level": 0.02
-      },
-      {
-        "material": "Soul Shard",
-        "chance": 0.1,
-        "base": 1,
-        "per_level": 0.003
-      }
-    ],
-    "Uncommon": [
-      {
-        "material": "Iron Ore",
-        "chance": 1,
-        "base": 2,
-        "per_level": 0.05
-      },
-      {
-        "material": "Soul Shard",
-        "chance": 0.2,
-        "base": 1,
-        "per_level": 0.005
-      }
-    ],
-    "Rare": [
-      {
-        "material": "Iron Ore",
-        "chance": 1,
-        "base": 1,
-        "per_level": 0.05
-      },
-      {
-        "material": "Gold Ore",
-        "chance": 1,
-        "base": 2,
-        "per_level": 0.025
-      },
-      {
-        "material": "Soul Shard",
-        "chance": 0.4,
-        "base": 1,
-        "per_level": 0.008
-      }
-    ],
-    "Legendary": [
-      {
-        "material": "Gold Ore",
-        "chance": 1,
-        "base": 10,
-        "per_level": 0.05
-      },
-      {
-        "material": "Earth Essence",
-        "chance": 1,
-        "base": 5,
-        "per_level": 0.025
-      },
-      {
-        "material": "Soul Shard",
-        "chance": 0.7,
-        "base": 2,
-        "per_level": 0.02
-      }
-    ],
-    "Divine": [
-      {
-        "material": "Gold Ore",
-        "chance": 1,
-        "base": 25,
-        "per_level": 0.5
-      },
-      {
-        "material": "Earth Essence",
-        "chance": 1,
-        "base": 10,
-        "per_level": 0.15
-      },
-      {
-        "material": "Soul Shard",
-        "chance": 1,
-        "base": 4,
-        "per_level": 0.04
-      }
-    ]
-  },
-  "missing": [
-    "what happens on upgrade failure (level loss / item destruction) not documented",
-    "salvage refund of upgrade materials / ancient bonus not documented"
+  "Uncommon": [
+   {
+    "material": "Iron Ore",
+    "chance": 1,
+    "base": 2,
+    "per_level": 0.05
+   },
+   {
+    "material": "Soul Shard",
+    "chance": 0.2,
+    "base": 1,
+    "per_level": 0.005
+   }
+  ],
+  "Rare": [
+   {
+    "material": "Iron Ore",
+    "chance": 1,
+    "base": 1,
+    "per_level": 0.05
+   },
+   {
+    "material": "Gold Ore",
+    "chance": 1,
+    "base": 2,
+    "per_level": 0.025
+   },
+   {
+    "material": "Soul Shard",
+    "chance": 0.4,
+    "base": 1,
+    "per_level": 0.008
+   }
+  ],
+  "Legendary": [
+   {
+    "material": "Gold Ore",
+    "chance": 1,
+    "base": 10,
+    "per_level": 0.05
+   },
+   {
+    "material": "Earth Essence",
+    "chance": 1,
+    "base": 5,
+    "per_level": 0.025
+   },
+   {
+    "material": "Soul Shard",
+    "chance": 0.7,
+    "base": 2,
+    "per_level": 0.02
+   }
+  ],
+  "Divine": [
+   {
+    "material": "Gold Ore",
+    "chance": 1,
+    "base": 25,
+    "per_level": 0.5
+   },
+   {
+    "material": "Earth Essence",
+    "chance": 1,
+    "base": 10,
+    "per_level": 0.15
+   },
+   {
+    "material": "Soul Shard",
+    "chance": 1,
+    "base": 4,
+    "per_level": 0.04
+   }
   ]
+ },
+ "missing": [
+  "what happens on upgrade failure (level loss / item destruction) not documented",
+  "salvage refund of upgrade materials / ancient bonus not documented"
+ ]
 }

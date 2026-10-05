@@ -1,6 +1,6 @@
 """Item comparison: what an item swap does to damage, survival and farming income.
 
-Formulas (wikily.gg/deskrawl/stats/damage-formula, gameplay.tips damage guide):
+Formulas (from the game's damage rules):
   hit damage  = (weapon damage + Damage) x ability x (1 + primary attribute/100)
                 x (1 + element% + All Damage%) x crit x (1 + sum of "Damage vs" bonuses)
                 x (1 + Basic/Strong attack bonus)

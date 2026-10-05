@@ -1,6 +1,6 @@
 """Per-stage farming statistics (persistent) and a forecast for the next difficulty.
 
-Difficulty rules (wikily.gg/deskrawl/difficulty):
+Difficulty rules:
   Normal     health x1,   damage x1,    XP x1
   Nightmare  health x3.5, damage x1.35, XP x1.5, all enemies level 70, +0.5 % gold & item find per map level
   Inferno    health x6,   damage x1.8,  XP x2,   all enemies level 70, +1 % gold & item find per map level

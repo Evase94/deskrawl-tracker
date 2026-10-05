@@ -1,4 +1,4 @@
-"""Roll quality, upgrade projection and gem values (data from wikily.gg, see data/*.json).
+"""Roll quality, upgrade projection and gem values (see data/*.json).
 
   attribute = M x item level x per_level x roll       M: Common 1.2, Uncommon 1.4, Rare 1.5, Legendary 1.6
   armor     = M x 0.5 x item level x roll             roll 0.85..1.15, Ancient always 1.15

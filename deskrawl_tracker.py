@@ -1929,7 +1929,7 @@ class App:
 
     def _build_weights(self, p):
         top = ui.page_header(p, "Bewertung", "Grundlagen für den Item-Vergleich und die Edelsteine. Schaden und "
-                                             "Überleben folgen den Spielformeln (wikily.gg); hier legst du fest, was "
+                                             "Überleben folgen den Spielformeln; hier legst du fest, was "
                                              "sich nicht berechnen lässt.")
         self._btn(top, "Standard wiederherstellen", self.reset_weights, side="right")
         row = tk.Frame(p, bg=BG)

@@ -244,7 +244,7 @@ def _item_names() -> list:
 
 
 def fix_item_name(raw: str, type_line: str = "") -> str:
-    """Correct an OCR'd item name with the list of all items (wikily.gg). The decorative title font
+    """Correct an OCR'd item name with the list of all items (data/item_names.json). The decorative title font
     gets misread ("Bottotieless Potion Belt"); rarity and slot from the type line narrow the search."""
     names = _item_names()
     if not raw or not names:
@@ -908,7 +908,7 @@ def score(deltas: dict, weights: dict) -> tuple[float, list]:
 
 # ----------------------------------------------------------------------------- DPS model
 # Final Damage = Base x Ability x MainStat x DmgType x Basic/Strong x Conditional x Crit
-# (gameplay.tips damage guide). Every group multiplies, so a stat's value depends on how much
+# Every group multiplies, so a stat's value depends on how much
 # of its own group the character already has - that is why the character sheet matters.
 
 ELEMENTS = ["Fire", "Cold", "Lightning", "Poison", "Arcane", "Physical"]
@@ -1183,7 +1183,7 @@ GEM_TIERS = ["Raw Sphere", "Chipped Teardrop", "Rough Square", "Polished Rhombus
 
 
 def _load_loot_names() -> dict:
-    """Rune, key and material names from data/loot_names.json (wikily.gg)."""
+    """Rune, key and material names from data/loot_names.json."""
     import json
     import os
     try:

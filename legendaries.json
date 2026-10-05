@@ -1,59 +1,395 @@
 {
-  "_info": "Legendary effects (source: afkmeta.com/en/deskrawl/legendaries). model: stats = stat bonus while active, uptime = share of time it is active (estimate), elements = only counts if your damage element is listed, special = custom rule, manual = cannot be computed (skill-specific etc.); set your own value in the tracker (Bewertung tab).",
-  "items": [
-    {"name": "Amber Skull Staff", "slot": "Weapon", "effect": "+100% Critical Damage against Immobilized or Slowed enemies.", "stats": {"Critical Hit Damage": 100}, "uptime": 0.3},
-    {"name": "Blackcrow Recurve", "slot": "Weapon", "effect": "Poison ability hits have a 15% chance to summon crows dealing 720% weapon damage as Poison damage.", "manual": "Fähigkeits-Proc (Poison)"},
-    {"name": "Hellstorm Mace", "slot": "Weapon", "effect": "Every 10 Basic Attack Abilities used, summons a Lightning Strike that deals 1000% Weapon Damage as Lightning Damage.", "manual": "Proc: ≈ +100 % Waffenschaden pro Basic Attack"},
-    {"name": "Northern Giant's Great Axe", "slot": "Weapon", "effect": "Each Basic Attack also deals 50% of Weapon Damage as Cold Damage, 3% chance to Freeze.", "manual": "Zusatzschaden pro Basic Attack"},
-    {"name": "Raincaller Bow", "slot": "Weapon", "effect": "Basic attack has a 10% chance to also cast Arcane Arrowstorm for free.", "manual": "Fähigkeits-Proc"},
-    {"name": "Serrated Greatsword of Agony", "slot": "Weapon", "effect": "Additional 30% Critical Chance against Vulnerable targets.", "stats": {"Critical Hit Chance": 30}, "uptime": 0.3},
-    {"name": "Soulrender", "slot": "Weapon", "effect": "Every hit has a 25% chance to gain Harvest of Souls; 25 stacks release Soul Impact for 800% Weapon Damage.", "manual": "Proc"},
-    {"name": "Staff of the Frostwyrm", "slot": "Weapon", "effect": "Ice Shards deflect to 1 additional enemy on hit.", "manual": "Fähigkeit Ice Shards"},
-    {"name": "The Grandmother", "slot": "Weapon", "effect": "+5% Critical Hit Chance and +120% Critical Hit Damage.", "stats": {"Critical Hit Chance": 5, "Critical Hit Damage": 120}, "uptime": 1.0},
-    {"name": "Violet Skybow", "slot": "Weapon", "effect": "Attack hits have a 20% chance to rain Arcane daggers, each dealing 80% weapon damage.", "manual": "Proc"},
-    {"name": "Circlet of Focus", "slot": "Helm", "effect": "Basic Attacks grant Focus (max 5); next Strong Attack consumes all, +20% damage per stack.", "stats": {"Strong Attack Damage": 100}, "uptime": 0.8},
-    {"name": "Crown of the Fallen King", "slot": "Helm", "effect": "+30% Attack Speed for 3 seconds after a kill.", "stats": {"Attack Speed Bonus": 30}, "uptime": 0.5},
-    {"name": "Crown of the Wandering Gale", "slot": "Helm", "effect": "Whirlwind Staff conjures 4 tornados, each 25% smaller and shorter.", "manual": "Fähigkeit Whirlwind Staff"},
-    {"name": "Glorious Gladiator Helmet", "slot": "Helm", "effect": "+30% Strength, Dexterity, and Intelligence.", "special": "main_stat_pct", "value": 30},
-    {"name": "Kabuto of the Crimson Tempest", "slot": "Helm", "effect": "Whirlwind has 30% chance to inflict Bleeding on each hit.", "manual": "Fähigkeit Whirlwind"},
-    {"name": "Phantom Mask", "slot": "Helm", "effect": "+100% Arcane Damage and +100% Poison Damage while Phantom Form is active.", "manual": "Fähigkeit Phantom Form"},
-    {"name": "Visage of the Undying", "slot": "Helm", "effect": "Reduces all damage taken by 25%.", "stats": {"Damage Reduction": 25}, "uptime": 1.0},
-    {"name": "Bulwark of Wrath", "slot": "Chest Armor", "effect": "While Rage Shield is active, deal 210% of Weapon Damage as Physical Damage every 3 seconds.", "manual": "Fähigkeit Rage Shield"},
-    {"name": "Evasive Cuirass", "slot": "Chest Armor", "effect": "Gain bonus Physical Damage Reduction equal to 50% of your Dodge Chance.", "special": "phys_dr_from_dodge", "value": 50},
-    {"name": "Runeward Vestment", "slot": "Chest Armor", "effect": "When struck by an enemy critical hit, gain a Spirit Shield based on Max Health (8s cooldown).", "manual": "Schild bei Crit-Treffer"},
-    {"name": "Thornheart Cuirass", "slot": "Chest Armor", "effect": "Damage dealt by Thorns is increased by 500%, but you lose 15% Max Health.", "special": "max_health_pct", "value": -15, "note": "Thorns-Bonus nicht bewertet"},
-    {"name": "Unyielding Cuirass", "slot": "Chest Armor", "effect": "Taking damage below 30% Health makes you Invulnerable for 4 seconds (25s cooldown).", "manual": "Lebensretter (starkes Überleben)"},
-    {"name": "Vessel of the Endless Stream", "slot": "Chest Armor", "effect": "Spirit Stream no longer heals; pulses every second for 160% weapon damage as Lightning.", "manual": "Fähigkeit Spirit Stream"},
-    {"name": "Greaves of the Arcane Edge", "slot": "Pants", "effect": "+150% Critical Hit Damage from Fire, Lightning and Arcane Abilities.", "stats": {"Critical Hit Damage": 150}, "uptime": 1.0, "elements": ["Fire", "Lightning", "Arcane"]},
-    {"name": "Greaves of the Stalwart Tonic", "slot": "Pants", "effect": "Gain 30% Damage Reduction for 5 seconds after consuming Health Potion.", "stats": {"Damage Reduction": 30}, "uptime": 0.1},
-    {"name": "Manaflow Greaves", "slot": "Pants", "effect": "Killing an enemy grants 15 Mana Regeneration for 4 seconds.", "manual": "Mana"},
-    {"name": "Boots of the Mending Stride", "slot": "Boots", "effect": "Restore 3% of Max Health per second while moving.", "manual": "Heilung"},
-    {"name": "Boots of the Windcaller", "slot": "Boots", "effect": "+50% Movement Speed for 4 seconds after a kill.", "manual": "Laufgeschwindigkeit"},
-    {"name": "Treads of the Falling Leaf", "slot": "Boots", "effect": "While Wind Steps is active, you also gain 30% Attack Speed.", "manual": "Fähigkeit Wind Steps"},
-    {"name": "Battle Draught Belt", "slot": "Belt", "effect": "Drinking a Health Potion grants +35% All Damage for 6 seconds.", "stats": {"All Damage": 35}, "uptime": 0.15},
-    {"name": "Bottomless Potion Belt", "slot": "Belt", "effect": "Increase Potion Charges by 4.", "manual": "Mehr Tränke"},
-    {"name": "Endless Mana Belt", "slot": "Belt", "effect": "Drinking a Health Potion also instantly restores 40% of your Maximum Mana.", "manual": "Mana"},
-    {"name": "Bloodfang Signet of the Wyrm", "slot": "Ring", "effect": "Half Moon Slash hurls two additional crescent blades.", "manual": "Fähigkeit Half Moon Slash"},
-    {"name": "Charged Ring", "slot": "Ring", "effect": "Your abilities deal up to 50% increased damage, scaling with how full your Mana is.", "stats": {"All Damage": 50}, "uptime": 0.5},
-    {"name": "Remnant of the Elder Sage", "slot": "Ring", "effect": "All ability levels +10.", "manual": "Fähigkeitsstufen +10"},
-    {"name": "Ring of Arcane Precision", "slot": "Ring", "effect": "Arcane abilities gain +9% Critical Hit Chance.", "stats": {"Critical Hit Chance": 9}, "uptime": 1.0, "elements": ["Arcane"]},
-    {"name": "Ring of Dragonslayer", "slot": "Ring", "effect": "Attack Speed increases by 35% while in combat with only one living enemy remaining.", "stats": {"Attack Speed Bonus": 35}, "uptime": 0.2},
-    {"name": "Ring of Revelation", "slot": "Ring", "effect": "While standing still, gain +10% Basic Attack Damage every second, stacking up to 20 times.", "manual": "Stillstehen: bis +200 % Basic Attack"},
-    {"name": "Ring of the Fourth Flame", "slot": "Ring", "effect": "Every 4th Fire Ball becomes a Pyroblast.", "manual": "Fähigkeit Fire Ball"},
-    {"name": "Ring of the Third Eye", "slot": "Ring", "effect": "Sacred Orbs conjures one additional orb.", "manual": "Fähigkeit Sacred Orbs"},
-    {"name": "Bellow of the Open Wound", "slot": "Necklace", "effect": "Rage Shout triggers remaining Bleeding damage instantly.", "manual": "Fähigkeit Rage Shout"},
-    {"name": "Fire Lord's Necklace", "slot": "Necklace", "effect": "Fire Elemental will summon one additional Fire Elemental.", "manual": "Fähigkeit Fire Elemental"},
-    {"name": "Pendant of the Surging Mind", "slot": "Necklace", "effect": "Every 100 Mana spent, +20% Critical Hit Chance for 4 seconds.", "stats": {"Critical Hit Chance": 20}, "uptime": 0.4},
-    {"name": "Pendant of Vigor", "slot": "Necklace", "effect": "+75% All Damage while you are Healthy (above 80% HP).", "stats": {"All Damage": 75}, "uptime": 0.7},
-    {"name": "Stormguard Necklace", "slot": "Necklace", "effect": "When hit, 30% chance to cast Flame Lightning at the attacker.", "manual": "Proc beim Getroffenwerden"},
-    {"name": "Deadeye Grips", "slot": "Gloves", "effect": "Knife Barrage and Twin Arrows can pierce through one target.", "manual": "Fähigkeiten Knife Barrage/Twin Arrows"},
-    {"name": "Deflecting Handwraps", "slot": "Gloves", "effect": "Each stack of Furious Fist also grants +1% Dodge Chance.", "manual": "Fähigkeit Furious Fist"},
-    {"name": "Festering Gauntlets", "slot": "Gloves", "effect": "Your Damage Over Time deals 80% increased damage.", "manual": "Schaden über Zeit +80 %"},
-    {"name": "Ragefire Gauntlets", "slot": "Gloves", "effect": "Flame Strike has a 30% chance to cost no Mana.", "manual": "Fähigkeit Flame Strike"},
-    {"name": "Stormcaller Gauntlets", "slot": "Gloves", "effect": "+150% Critical Damage with Lightning Storm.", "manual": "Fähigkeit Lightning Storm"},
-    {"name": "Unstoppable Gauntlets", "slot": "Gloves", "effect": "Each Ability hit grants 1% Armor for 5 seconds (max 100 stacks).", "stats": {"Bonus Armor": 100}, "uptime": 0.7},
-    {"name": "Elemental Burst Pauldron", "slot": "Shoulder", "effect": "After a Strong Attack, +20% Fire, Lightning and Arcane Damage for 6 seconds, stacking up to 5 times.", "stats": {"Element Damage": 100}, "uptime": 0.5, "elements": ["Fire", "Lightning", "Arcane"]},
-    {"name": "Reaper's Pauldron", "slot": "Shoulder", "effect": "Direct damage hits have a 10% chance to trigger your on-kill effects.", "manual": "On-Kill-Effekte öfter"},
-    {"name": "Shell Spike Pauldron", "slot": "Shoulder", "effect": "10% of your Armor also contributes to Thorns.", "manual": "Thorns"}
-  ]
+ "_info": "Legendary effects. model: stats = stat bonus while active, uptime = share of time it is active (estimate), elements = only counts if your damage element is listed, special = custom rule, manual = cannot be computed (skill-specific etc.); set your own value in the tracker (Bewertung tab).",
+ "items": [
+  {
+   "name": "Amber Skull Staff",
+   "slot": "Weapon",
+   "effect": "+100% Critical Damage against Immobilized or Slowed enemies.",
+   "stats": {
+    "Critical Hit Damage": 100
+   },
+   "uptime": 0.3
+  },
+  {
+   "name": "Blackcrow Recurve",
+   "slot": "Weapon",
+   "effect": "Poison ability hits have a 15% chance to summon crows dealing 720% weapon damage as Poison damage.",
+   "manual": "Fähigkeits-Proc (Poison)"
+  },
+  {
+   "name": "Hellstorm Mace",
+   "slot": "Weapon",
+   "effect": "Every 10 Basic Attack Abilities used, summons a Lightning Strike that deals 1000% Weapon Damage as Lightning Damage.",
+   "manual": "Proc: ≈ +100 % Waffenschaden pro Basic Attack"
+  },
+  {
+   "name": "Northern Giant's Great Axe",
+   "slot": "Weapon",
+   "effect": "Each Basic Attack also deals 50% of Weapon Damage as Cold Damage, 3% chance to Freeze.",
+   "manual": "Zusatzschaden pro Basic Attack"
+  },
+  {
+   "name": "Raincaller Bow",
+   "slot": "Weapon",
+   "effect": "Basic attack has a 10% chance to also cast Arcane Arrowstorm for free.",
+   "manual": "Fähigkeits-Proc"
+  },
+  {
+   "name": "Serrated Greatsword of Agony",
+   "slot": "Weapon",
+   "effect": "Additional 30% Critical Chance against Vulnerable targets.",
+   "stats": {
+    "Critical Hit Chance": 30
+   },
+   "uptime": 0.3
+  },
+  {
+   "name": "Soulrender",
+   "slot": "Weapon",
+   "effect": "Every hit has a 25% chance to gain Harvest of Souls; 25 stacks release Soul Impact for 800% Weapon Damage.",
+   "manual": "Proc"
+  },
+  {
+   "name": "Staff of the Frostwyrm",
+   "slot": "Weapon",
+   "effect": "Ice Shards deflect to 1 additional enemy on hit.",
+   "manual": "Fähigkeit Ice Shards"
+  },
+  {
+   "name": "The Grandmother",
+   "slot": "Weapon",
+   "effect": "+5% Critical Hit Chance and +120% Critical Hit Damage.",
+   "stats": {
+    "Critical Hit Chance": 5,
+    "Critical Hit Damage": 120
+   },
+   "uptime": 1.0
+  },
+  {
+   "name": "Violet Skybow",
+   "slot": "Weapon",
+   "effect": "Attack hits have a 20% chance to rain Arcane daggers, each dealing 80% weapon damage.",
+   "manual": "Proc"
+  },
+  {
+   "name": "Circlet of Focus",
+   "slot": "Helm",
+   "effect": "Basic Attacks grant Focus (max 5); next Strong Attack consumes all, +20% damage per stack.",
+   "stats": {
+    "Strong Attack Damage": 100
+   },
+   "uptime": 0.8
+  },
+  {
+   "name": "Crown of the Fallen King",
+   "slot": "Helm",
+   "effect": "+30% Attack Speed for 3 seconds after a kill.",
+   "stats": {
+    "Attack Speed Bonus": 30
+   },
+   "uptime": 0.5
+  },
+  {
+   "name": "Crown of the Wandering Gale",
+   "slot": "Helm",
+   "effect": "Whirlwind Staff conjures 4 tornados, each 25% smaller and shorter.",
+   "manual": "Fähigkeit Whirlwind Staff"
+  },
+  {
+   "name": "Glorious Gladiator Helmet",
+   "slot": "Helm",
+   "effect": "+30% Strength, Dexterity, and Intelligence.",
+   "special": "main_stat_pct",
+   "value": 30
+  },
+  {
+   "name": "Kabuto of the Crimson Tempest",
+   "slot": "Helm",
+   "effect": "Whirlwind has 30% chance to inflict Bleeding on each hit.",
+   "manual": "Fähigkeit Whirlwind"
+  },
+  {
+   "name": "Phantom Mask",
+   "slot": "Helm",
+   "effect": "+100% Arcane Damage and +100% Poison Damage while Phantom Form is active.",
+   "manual": "Fähigkeit Phantom Form"
+  },
+  {
+   "name": "Visage of the Undying",
+   "slot": "Helm",
+   "effect": "Reduces all damage taken by 25%.",
+   "stats": {
+    "Damage Reduction": 25
+   },
+   "uptime": 1.0
+  },
+  {
+   "name": "Bulwark of Wrath",
+   "slot": "Chest Armor",
+   "effect": "While Rage Shield is active, deal 210% of Weapon Damage as Physical Damage every 3 seconds.",
+   "manual": "Fähigkeit Rage Shield"
+  },
+  {
+   "name": "Evasive Cuirass",
+   "slot": "Chest Armor",
+   "effect": "Gain bonus Physical Damage Reduction equal to 50% of your Dodge Chance.",
+   "special": "phys_dr_from_dodge",
+   "value": 50
+  },
+  {
+   "name": "Runeward Vestment",
+   "slot": "Chest Armor",
+   "effect": "When struck by an enemy critical hit, gain a Spirit Shield based on Max Health (8s cooldown).",
+   "manual": "Schild bei Crit-Treffer"
+  },
+  {
+   "name": "Thornheart Cuirass",
+   "slot": "Chest Armor",
+   "effect": "Damage dealt by Thorns is increased by 500%, but you lose 15% Max Health.",
+   "special": "max_health_pct",
+   "value": -15,
+   "note": "Thorns-Bonus nicht bewertet"
+  },
+  {
+   "name": "Unyielding Cuirass",
+   "slot": "Chest Armor",
+   "effect": "Taking damage below 30% Health makes you Invulnerable for 4 seconds (25s cooldown).",
+   "manual": "Lebensretter (starkes Überleben)"
+  },
+  {
+   "name": "Vessel of the Endless Stream",
+   "slot": "Chest Armor",
+   "effect": "Spirit Stream no longer heals; pulses every second for 160% weapon damage as Lightning.",
+   "manual": "Fähigkeit Spirit Stream"
+  },
+  {
+   "name": "Greaves of the Arcane Edge",
+   "slot": "Pants",
+   "effect": "+150% Critical Hit Damage from Fire, Lightning and Arcane Abilities.",
+   "stats": {
+    "Critical Hit Damage": 150
+   },
+   "uptime": 1.0,
+   "elements": [
+    "Fire",
+    "Lightning",
+    "Arcane"
+   ]
+  },
+  {
+   "name": "Greaves of the Stalwart Tonic",
+   "slot": "Pants",
+   "effect": "Gain 30% Damage Reduction for 5 seconds after consuming Health Potion.",
+   "stats": {
+    "Damage Reduction": 30
+   },
+   "uptime": 0.1
+  },
+  {
+   "name": "Manaflow Greaves",
+   "slot": "Pants",
+   "effect": "Killing an enemy grants 15 Mana Regeneration for 4 seconds.",
+   "manual": "Mana"
+  },
+  {
+   "name": "Boots of the Mending Stride",
+   "slot": "Boots",
+   "effect": "Restore 3% of Max Health per second while moving.",
+   "manual": "Heilung"
+  },
+  {
+   "name": "Boots of the Windcaller",
+   "slot": "Boots",
+   "effect": "+50% Movement Speed for 4 seconds after a kill.",
+   "manual": "Laufgeschwindigkeit"
+  },
+  {
+   "name": "Treads of the Falling Leaf",
+   "slot": "Boots",
+   "effect": "While Wind Steps is active, you also gain 30% Attack Speed.",
+   "manual": "Fähigkeit Wind Steps"
+  },
+  {
+   "name": "Battle Draught Belt",
+   "slot": "Belt",
+   "effect": "Drinking a Health Potion grants +35% All Damage for 6 seconds.",
+   "stats": {
+    "All Damage": 35
+   },
+   "uptime": 0.15
+  },
+  {
+   "name": "Bottomless Potion Belt",
+   "slot": "Belt",
+   "effect": "Increase Potion Charges by 4.",
+   "manual": "Mehr Tränke"
+  },
+  {
+   "name": "Endless Mana Belt",
+   "slot": "Belt",
+   "effect": "Drinking a Health Potion also instantly restores 40% of your Maximum Mana.",
+   "manual": "Mana"
+  },
+  {
+   "name": "Bloodfang Signet of the Wyrm",
+   "slot": "Ring",
+   "effect": "Half Moon Slash hurls two additional crescent blades.",
+   "manual": "Fähigkeit Half Moon Slash"
+  },
+  {
+   "name": "Charged Ring",
+   "slot": "Ring",
+   "effect": "Your abilities deal up to 50% increased damage, scaling with how full your Mana is.",
+   "stats": {
+    "All Damage": 50
+   },
+   "uptime": 0.5
+  },
+  {
+   "name": "Remnant of the Elder Sage",
+   "slot": "Ring",
+   "effect": "All ability levels +10.",
+   "manual": "Fähigkeitsstufen +10"
+  },
+  {
+   "name": "Ring of Arcane Precision",
+   "slot": "Ring",
+   "effect": "Arcane abilities gain +9% Critical Hit Chance.",
+   "stats": {
+    "Critical Hit Chance": 9
+   },
+   "uptime": 1.0,
+   "elements": [
+    "Arcane"
+   ]
+  },
+  {
+   "name": "Ring of Dragonslayer",
+   "slot": "Ring",
+   "effect": "Attack Speed increases by 35% while in combat with only one living enemy remaining.",
+   "stats": {
+    "Attack Speed Bonus": 35
+   },
+   "uptime": 0.2
+  },
+  {
+   "name": "Ring of Revelation",
+   "slot": "Ring",
+   "effect": "While standing still, gain +10% Basic Attack Damage every second, stacking up to 20 times.",
+   "manual": "Stillstehen: bis +200 % Basic Attack"
+  },
+  {
+   "name": "Ring of the Fourth Flame",
+   "slot": "Ring",
+   "effect": "Every 4th Fire Ball becomes a Pyroblast.",
+   "manual": "Fähigkeit Fire Ball"
+  },
+  {
+   "name": "Ring of the Third Eye",
+   "slot": "Ring",
+   "effect": "Sacred Orbs conjures one additional orb.",
+   "manual": "Fähigkeit Sacred Orbs"
+  },
+  {
+   "name": "Bellow of the Open Wound",
+   "slot": "Necklace",
+   "effect": "Rage Shout triggers remaining Bleeding damage instantly.",
+   "manual": "Fähigkeit Rage Shout"
+  },
+  {
+   "name": "Fire Lord's Necklace",
+   "slot": "Necklace",
+   "effect": "Fire Elemental will summon one additional Fire Elemental.",
+   "manual": "Fähigkeit Fire Elemental"
+  },
+  {
+   "name": "Pendant of the Surging Mind",
+   "slot": "Necklace",
+   "effect": "Every 100 Mana spent, +20% Critical Hit Chance for 4 seconds.",
+   "stats": {
+    "Critical Hit Chance": 20
+   },
+   "uptime": 0.4
+  },
+  {
+   "name": "Pendant of Vigor",
+   "slot": "Necklace",
+   "effect": "+75% All Damage while you are Healthy (above 80% HP).",
+   "stats": {
+    "All Damage": 75
+   },
+   "uptime": 0.7
+  },
+  {
+   "name": "Stormguard Necklace",
+   "slot": "Necklace",
+   "effect": "When hit, 30% chance to cast Flame Lightning at the attacker.",
+   "manual": "Proc beim Getroffenwerden"
+  },
+  {
+   "name": "Deadeye Grips",
+   "slot": "Gloves",
+   "effect": "Knife Barrage and Twin Arrows can pierce through one target.",
+   "manual": "Fähigkeiten Knife Barrage/Twin Arrows"
+  },
+  {
+   "name": "Deflecting Handwraps",
+   "slot": "Gloves",
+   "effect": "Each stack of Furious Fist also grants +1% Dodge Chance.",
+   "manual": "Fähigkeit Furious Fist"
+  },
+  {
+   "name": "Festering Gauntlets",
+   "slot": "Gloves",
+   "effect": "Your Damage Over Time deals 80% increased damage.",
+   "manual": "Schaden über Zeit +80 %"
+  },
+  {
+   "name": "Ragefire Gauntlets",
+   "slot": "Gloves",
+   "effect": "Flame Strike has a 30% chance to cost no Mana.",
+   "manual": "Fähigkeit Flame Strike"
+  },
+  {
+   "name": "Stormcaller Gauntlets",
+   "slot": "Gloves",
+   "effect": "+150% Critical Damage with Lightning Storm.",
+   "manual": "Fähigkeit Lightning Storm"
+  },
+  {
+   "name": "Unstoppable Gauntlets",
+   "slot": "Gloves",
+   "effect": "Each Ability hit grants 1% Armor for 5 seconds (max 100 stacks).",
+   "stats": {
+    "Bonus Armor": 100
+   },
+   "uptime": 0.7
+  },
+  {
+   "name": "Elemental Burst Pauldron",
+   "slot": "Shoulder",
+   "effect": "After a Strong Attack, +20% Fire, Lightning and Arcane Damage for 6 seconds, stacking up to 5 times.",
+   "stats": {
+    "Element Damage": 100
+   },
+   "uptime": 0.5,
+   "elements": [
+    "Fire",
+    "Lightning",
+    "Arcane"
+   ]
+  },
+  {
+   "name": "Reaper's Pauldron",
+   "slot": "Shoulder",
+   "effect": "Direct damage hits have a 10% chance to trigger your on-kill effects.",
+   "manual": "On-Kill-Effekte öfter"
+  },
+  {
+   "name": "Shell Spike Pauldron",
+   "slot": "Shoulder",
+   "effect": "10% of your Armor also contributes to Thorns.",
+   "manual": "Thorns"
+  }
+ ]
 }

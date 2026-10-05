@@ -1,912 +1,901 @@
 {
-  "source": [
-    "https://afkmeta.com/en/deskrawl/runes",
-    "https://wikily.gg/deskrawl/runes",
-    "https://wikily.gg/deskrawl/runes/<slug> (120 subpages)",
-    "https://wikily.gg/deskrawl/materials",
-    "https://wikily.gg/deskrawl/materials/<slug> (29 subpages)",
-    "https://wikily.gg/deskrawl/loot/treasure-keys",
-    "https://wikily.gg/deskrawl/treasure-maps",
-    "https://wikily.gg/deskrawl/loot/runes",
-    "https://wikily.gg/deskrawl/sitemap.xml"
-  ],
-  "runes": [
-    {
-      "name": "Rune of Atheron's Shield (I)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Strong Shield of the Atheron",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Rune of Atheron's Shield (II)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Strong Shield of the Atheron",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Rune of Atheron's Shield (III)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Strong Shield of the Atheron",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Rune of Atheron's Shield (IV)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Strong Shield of the Atheron",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Rune of Atheron's Shield (V)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Strong Shield of the Atheron",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Rune of Atheron's Shield (VI)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Strong Shield of the Atheron",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Eye of the Storm Rune (I)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Eye of the Storm",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Eye of the Storm Rune (II)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Eye of the Storm",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Eye of the Storm Rune (III)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Eye of the Storm",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Eye of the Storm Rune (IV)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Eye of the Storm",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Eye of the Storm Rune (V)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Eye of the Storm",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Eye of the Storm Rune (VI)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Eye of the Storm",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Weight of the Mountain Rune (I)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Weight of the Mountain",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Weight of the Mountain Rune (II)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Weight of the Mountain",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Weight of the Mountain Rune (III)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Weight of the Mountain",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Weight of the Mountain Rune (IV)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Weight of the Mountain",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Weight of the Mountain Rune (V)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Weight of the Mountain",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Weight of the Mountain Rune (VI)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Weight of the Mountain",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Harvest Moon Rune (I)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Harvest Moon",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Harvest Moon Rune (II)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Harvest Moon",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Harvest Moon Rune (III)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Harvest Moon",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Harvest Moon Rune (IV)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Harvest Moon",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Harvest Moon Rune (V)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Harvest Moon",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Harvest Moon Rune (VI)",
-      "type": "set",
-      "class": "warrior",
-      "set": "Harvest Moon",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Valiant Strike Rune",
-      "type": "ability",
-      "class": "warrior",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Cleave Rune",
-      "type": "ability",
-      "class": "warrior",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Blood Strike Rune",
-      "type": "ability",
-      "class": "warrior",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Flame Strike Rune",
-      "type": "ability",
-      "class": "warrior",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Half Moon Slash Rune",
-      "type": "ability",
-      "class": "warrior",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Whirlwind Rune",
-      "type": "ability",
-      "class": "warrior",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Rage Shield Rune",
-      "type": "ability",
-      "class": "warrior",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Rage Shout Rune",
-      "type": "ability",
-      "class": "warrior",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Trapper's Legacy I",
-      "type": "set",
-      "class": "hunter",
-      "set": "Trapper's Legacy",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Trapper's Legacy II",
-      "type": "set",
-      "class": "hunter",
-      "set": "Trapper's Legacy",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Trapper's Legacy III",
-      "type": "set",
-      "class": "hunter",
-      "set": "Trapper's Legacy",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Trapper's Legacy IV",
-      "type": "set",
-      "class": "hunter",
-      "set": "Trapper's Legacy",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Trapper's Legacy V",
-      "type": "set",
-      "class": "hunter",
-      "set": "Trapper's Legacy",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Trapper's Legacy VI",
-      "type": "set",
-      "class": "hunter",
-      "set": "Trapper's Legacy",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Deadeye's Resolve I",
-      "type": "set",
-      "class": "hunter",
-      "set": "Deadeye's Resolve",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Deadeye's Resolve II",
-      "type": "set",
-      "class": "hunter",
-      "set": "Deadeye's Resolve",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Deadeye's Resolve III",
-      "type": "set",
-      "class": "hunter",
-      "set": "Deadeye's Resolve",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Deadeye's Resolve IV",
-      "type": "set",
-      "class": "hunter",
-      "set": "Deadeye's Resolve",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Deadeye's Resolve V",
-      "type": "set",
-      "class": "hunter",
-      "set": "Deadeye's Resolve",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Deadeye's Resolve VI",
-      "type": "set",
-      "class": "hunter",
-      "set": "Deadeye's Resolve",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Venomfang I",
-      "type": "set",
-      "class": "hunter",
-      "set": "Venomfang",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Venomfang II",
-      "type": "set",
-      "class": "hunter",
-      "set": "Venomfang",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Venomfang III",
-      "type": "set",
-      "class": "hunter",
-      "set": "Venomfang",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Venomfang IV",
-      "type": "set",
-      "class": "hunter",
-      "set": "Venomfang",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Venomfang V",
-      "type": "set",
-      "class": "hunter",
-      "set": "Venomfang",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Venomfang VI",
-      "type": "set",
-      "class": "hunter",
-      "set": "Venomfang",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Poison Shot Rune",
-      "type": "ability",
-      "class": "hunter",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Arcane Bomb Rune",
-      "type": "ability",
-      "class": "hunter",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Knife Barrage Rune",
-      "type": "ability",
-      "class": "hunter",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Steady Shot Rune",
-      "type": "ability",
-      "class": "hunter",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Multishot Rune",
-      "type": "ability",
-      "class": "hunter",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Rapid Fire Rune",
-      "type": "ability",
-      "class": "hunter",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Poison Trap Rune",
-      "type": "ability",
-      "class": "hunter",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Shockwave Rune",
-      "type": "ability",
-      "class": "hunter",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Infernal Covenant Rune (I)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Infernal Covenant",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Infernal Covenant Rune (II)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Infernal Covenant",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Infernal Covenant Rune (III)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Infernal Covenant",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Infernal Covenant Rune (IV)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Infernal Covenant",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Infernal Covenant Rune (V)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Infernal Covenant",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Infernal Covenant Rune (VI)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Infernal Covenant",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Frozen Barrage Rune (I)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Frozen Barrage",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Frozen Barrage Rune (II)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Frozen Barrage",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Frozen Barrage Rune (III)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Frozen Barrage",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Frozen Barrage Rune (IV)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Frozen Barrage",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Frozen Barrage Rune (V)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Frozen Barrage",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Frozen Barrage Rune (VI)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Frozen Barrage",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Stormcaller Rune (I)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Stormcaller",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Stormcaller Rune (II)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Stormcaller",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Stormcaller Rune (III)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Stormcaller",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Stormcaller Rune (IV)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Stormcaller",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Stormcaller Rune (V)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Stormcaller",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Stormcaller Rune (VI)",
-      "type": "set",
-      "class": "sorcerer",
-      "set": "Stormcaller",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Fire Ball Rune",
-      "type": "ability",
-      "class": "sorcerer",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Ice Shards Rune",
-      "type": "ability",
-      "class": "sorcerer",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Electrocute Rune",
-      "type": "ability",
-      "class": "sorcerer",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Ice Nova Rune",
-      "type": "ability",
-      "class": "sorcerer",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Fire Elemental Rune",
-      "type": "ability",
-      "class": "sorcerer",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Flame Breath Rune",
-      "type": "ability",
-      "class": "sorcerer",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Ice Meteor Rune",
-      "type": "ability",
-      "class": "sorcerer",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Lightning Storm Rune",
-      "type": "ability",
-      "class": "sorcerer",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Hundred Hands Rune (I)",
-      "type": "set",
-      "class": "monk",
-      "set": "Hundred Hands",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Hundred Hands Rune (II)",
-      "type": "set",
-      "class": "monk",
-      "set": "Hundred Hands",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Hundred Hands Rune (III)",
-      "type": "set",
-      "class": "monk",
-      "set": "Hundred Hands",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Hundred Hands Rune (IV)",
-      "type": "set",
-      "class": "monk",
-      "set": "Hundred Hands",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Hundred Hands Rune (V)",
-      "type": "set",
-      "class": "monk",
-      "set": "Hundred Hands",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Hundred Hands Rune (VI)",
-      "type": "set",
-      "class": "monk",
-      "set": "Hundred Hands",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Wheel of Nine Heavens Rune (I)",
-      "type": "set",
-      "class": "monk",
-      "set": "Wheel of Nine Heavens",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Wheel of Nine Heavens Rune (II)",
-      "type": "set",
-      "class": "monk",
-      "set": "Wheel of Nine Heavens",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Wheel of Nine Heavens Rune (III)",
-      "type": "set",
-      "class": "monk",
-      "set": "Wheel of Nine Heavens",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Wheel of Nine Heavens Rune (IV)",
-      "type": "set",
-      "class": "monk",
-      "set": "Wheel of Nine Heavens",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Wheel of Nine Heavens Rune (V)",
-      "type": "set",
-      "class": "monk",
-      "set": "Wheel of Nine Heavens",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Wheel of Nine Heavens Rune (VI)",
-      "type": "set",
-      "class": "monk",
-      "set": "Wheel of Nine Heavens",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Serpent's Tongue Rune (I)",
-      "type": "set",
-      "class": "monk",
-      "set": "Serpent's Tongue",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Serpent's Tongue Rune (II)",
-      "type": "set",
-      "class": "monk",
-      "set": "Serpent's Tongue",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Serpent's Tongue Rune (III)",
-      "type": "set",
-      "class": "monk",
-      "set": "Serpent's Tongue",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Serpent's Tongue Rune (IV)",
-      "type": "set",
-      "class": "monk",
-      "set": "Serpent's Tongue",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Serpent's Tongue Rune (V)",
-      "type": "set",
-      "class": "monk",
-      "set": "Serpent's Tongue",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Serpent's Tongue Rune (VI)",
-      "type": "set",
-      "class": "monk",
-      "set": "Serpent's Tongue",
-      "rarity": "Set Rune"
-    },
-    {
-      "name": "Threefold Strike Rune",
-      "type": "ability",
-      "class": "monk",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Furious Fist Rune",
-      "type": "ability",
-      "class": "monk",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Seismic Strike Rune",
-      "type": "ability",
-      "class": "monk",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Sacred Judgment Rune",
-      "type": "ability",
-      "class": "monk",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Piercing Lunge Rune",
-      "type": "ability",
-      "class": "monk",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Whirlwind Staff Rune",
-      "type": "ability",
-      "class": "monk",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Sacred Orbs Rune",
-      "type": "ability",
-      "class": "monk",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Spirit Stream Rune",
-      "type": "ability",
-      "class": "monk",
-      "set": null,
-      "rarity": "Rare"
-    },
-    {
-      "name": "Bloodletting",
-      "type": "attribute",
-      "class": null,
-      "set": null,
-      "rarity": "Uncommon"
-    },
-    {
-      "name": "Longshot",
-      "type": "attribute",
-      "class": null,
-      "set": null,
-      "rarity": "Uncommon"
-    },
-    {
-      "name": "Giantslayer",
-      "type": "attribute",
-      "class": null,
-      "set": null,
-      "rarity": "Uncommon"
-    },
-    {
-      "name": "Ambush",
-      "type": "attribute",
-      "class": null,
-      "set": null,
-      "rarity": "Uncommon"
-    },
-    {
-      "name": "Execution",
-      "type": "attribute",
-      "class": null,
-      "set": null,
-      "rarity": "Uncommon"
-    },
-    {
-      "name": "Blight",
-      "type": "attribute",
-      "class": null,
-      "set": null,
-      "rarity": "Uncommon"
-    },
-    {
-      "name": "Snare",
-      "type": "attribute",
-      "class": null,
-      "set": null,
-      "rarity": "Uncommon"
-    },
-    {
-      "name": "Daze",
-      "type": "attribute",
-      "class": null,
-      "set": null,
-      "rarity": "Uncommon"
-    },
-    {
-      "name": "Frailty",
-      "type": "attribute",
-      "class": null,
-      "set": null,
-      "rarity": "Uncommon"
-    }
-  ],
-  "rune_name_patterns": [
-    "Set runes: '<Set name> <Roman numeral I-VI>' (e.g. \"Trapper's Legacy I\", \"Venomfang VI\") for Trapper's Legacy, Deadeye's Resolve, Venomfang",
-    "Set runes: '<Set name> Rune (<Roman numeral>)' (e.g. 'Eye of the Storm Rune (II)', \"Serpent's Tongue Rune (III)\")",
-    "Exception: set 'Strong Shield of the Atheron' runes are named \"Rune of Atheron's Shield (I)\"..\"(VI)\"",
-    "Ability runes: '<Ability name> Rune' (e.g. 'Cleave Rune', 'Fire Ball Rune'), Rare, class-specific",
-    "Attribute runes: single word, no 'Rune' suffix (e.g. 'Bloodletting', 'Giantslayer'), Uncommon, all classes",
-    "Roman numeral is the slot/piece index within the set, not the rune level; rune level goes 1-6 separately",
-    "Apostrophes: wiki uses straight ' ; afkmeta uses curly ’ in Trapper’s Legacy / Deadeye’s Resolve - normalize both"
-  ],
-  "treasure_keys": [
-    {
-      "name": "Silver Treasure Key",
-      "opens": "Treasure Maps (Dreamy Kings Woods, Dreamy Barrens, Dreamy Keep) on Normal"
-    },
-    {
-      "name": "Golden Treasure Key",
-      "opens": "Treasure Maps (Dreamy Kings Woods, Dreamy Barrens, Dreamy Keep) on Nightmare"
-    },
-    {
-      "name": "Royal Treasure Key",
-      "opens": "Treasure Maps (Dreamy Kings Woods, Dreamy Barrens, Dreamy Keep) on Inferno"
-    }
-  ],
-  "boss_materials": [
-    "Cinderlord Horns",
-    "Crimson Wyrm Eye",
-    "Defiled Wyrm Scales",
-    "Elder Oak Bark",
-    "Frostheart Crystal",
-    "Manticore Venom Sac",
-    "Ogre Heart",
-    "Redrock Shard",
-    "Tidewrath Pincer"
-  ],
-  "skulls": [
-    "Demon's Skull",
-    "Skull of Nightmare",
-    "Skull of Inferno"
-  ],
-  "soul_shards": [
-    "Soul Shard"
-  ],
-  "ores": [
-    "Iron Ore",
-    "Gold Ore",
-    "Earth Essence"
-  ],
-  "plants": [
-    "Mushroom",
-    "Starleaf",
-    "Oak Leaf",
-    "Desert Rose",
-    "Tidesilk Kelp",
-    "Crimson Coral",
-    "Emberbloom",
-    "Gallthorn",
-    "Frostbloom",
-    "Snowleaf"
-  ],
-  "other_materials": [],
-  "missing": [
-    "Treasure keys open maps (dream realms), not chests; wiki lists Silver/Golden/Mythic Treasure Chest as consumables with no stated key link",
-    "Set rune rarity: wiki shows only 'Rune Set' (no Common..Divine tier)"
-  ]
+ "runes": [
+  {
+   "name": "Rune of Atheron's Shield (I)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Strong Shield of the Atheron",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Rune of Atheron's Shield (II)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Strong Shield of the Atheron",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Rune of Atheron's Shield (III)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Strong Shield of the Atheron",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Rune of Atheron's Shield (IV)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Strong Shield of the Atheron",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Rune of Atheron's Shield (V)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Strong Shield of the Atheron",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Rune of Atheron's Shield (VI)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Strong Shield of the Atheron",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Eye of the Storm Rune (I)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Eye of the Storm",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Eye of the Storm Rune (II)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Eye of the Storm",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Eye of the Storm Rune (III)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Eye of the Storm",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Eye of the Storm Rune (IV)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Eye of the Storm",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Eye of the Storm Rune (V)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Eye of the Storm",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Eye of the Storm Rune (VI)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Eye of the Storm",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Weight of the Mountain Rune (I)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Weight of the Mountain",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Weight of the Mountain Rune (II)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Weight of the Mountain",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Weight of the Mountain Rune (III)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Weight of the Mountain",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Weight of the Mountain Rune (IV)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Weight of the Mountain",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Weight of the Mountain Rune (V)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Weight of the Mountain",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Weight of the Mountain Rune (VI)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Weight of the Mountain",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Harvest Moon Rune (I)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Harvest Moon",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Harvest Moon Rune (II)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Harvest Moon",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Harvest Moon Rune (III)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Harvest Moon",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Harvest Moon Rune (IV)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Harvest Moon",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Harvest Moon Rune (V)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Harvest Moon",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Harvest Moon Rune (VI)",
+   "type": "set",
+   "class": "warrior",
+   "set": "Harvest Moon",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Valiant Strike Rune",
+   "type": "ability",
+   "class": "warrior",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Cleave Rune",
+   "type": "ability",
+   "class": "warrior",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Blood Strike Rune",
+   "type": "ability",
+   "class": "warrior",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Flame Strike Rune",
+   "type": "ability",
+   "class": "warrior",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Half Moon Slash Rune",
+   "type": "ability",
+   "class": "warrior",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Whirlwind Rune",
+   "type": "ability",
+   "class": "warrior",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Rage Shield Rune",
+   "type": "ability",
+   "class": "warrior",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Rage Shout Rune",
+   "type": "ability",
+   "class": "warrior",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Trapper's Legacy I",
+   "type": "set",
+   "class": "hunter",
+   "set": "Trapper's Legacy",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Trapper's Legacy II",
+   "type": "set",
+   "class": "hunter",
+   "set": "Trapper's Legacy",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Trapper's Legacy III",
+   "type": "set",
+   "class": "hunter",
+   "set": "Trapper's Legacy",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Trapper's Legacy IV",
+   "type": "set",
+   "class": "hunter",
+   "set": "Trapper's Legacy",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Trapper's Legacy V",
+   "type": "set",
+   "class": "hunter",
+   "set": "Trapper's Legacy",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Trapper's Legacy VI",
+   "type": "set",
+   "class": "hunter",
+   "set": "Trapper's Legacy",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Deadeye's Resolve I",
+   "type": "set",
+   "class": "hunter",
+   "set": "Deadeye's Resolve",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Deadeye's Resolve II",
+   "type": "set",
+   "class": "hunter",
+   "set": "Deadeye's Resolve",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Deadeye's Resolve III",
+   "type": "set",
+   "class": "hunter",
+   "set": "Deadeye's Resolve",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Deadeye's Resolve IV",
+   "type": "set",
+   "class": "hunter",
+   "set": "Deadeye's Resolve",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Deadeye's Resolve V",
+   "type": "set",
+   "class": "hunter",
+   "set": "Deadeye's Resolve",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Deadeye's Resolve VI",
+   "type": "set",
+   "class": "hunter",
+   "set": "Deadeye's Resolve",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Venomfang I",
+   "type": "set",
+   "class": "hunter",
+   "set": "Venomfang",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Venomfang II",
+   "type": "set",
+   "class": "hunter",
+   "set": "Venomfang",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Venomfang III",
+   "type": "set",
+   "class": "hunter",
+   "set": "Venomfang",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Venomfang IV",
+   "type": "set",
+   "class": "hunter",
+   "set": "Venomfang",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Venomfang V",
+   "type": "set",
+   "class": "hunter",
+   "set": "Venomfang",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Venomfang VI",
+   "type": "set",
+   "class": "hunter",
+   "set": "Venomfang",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Poison Shot Rune",
+   "type": "ability",
+   "class": "hunter",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Arcane Bomb Rune",
+   "type": "ability",
+   "class": "hunter",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Knife Barrage Rune",
+   "type": "ability",
+   "class": "hunter",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Steady Shot Rune",
+   "type": "ability",
+   "class": "hunter",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Multishot Rune",
+   "type": "ability",
+   "class": "hunter",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Rapid Fire Rune",
+   "type": "ability",
+   "class": "hunter",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Poison Trap Rune",
+   "type": "ability",
+   "class": "hunter",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Shockwave Rune",
+   "type": "ability",
+   "class": "hunter",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Infernal Covenant Rune (I)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Infernal Covenant",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Infernal Covenant Rune (II)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Infernal Covenant",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Infernal Covenant Rune (III)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Infernal Covenant",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Infernal Covenant Rune (IV)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Infernal Covenant",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Infernal Covenant Rune (V)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Infernal Covenant",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Infernal Covenant Rune (VI)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Infernal Covenant",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Frozen Barrage Rune (I)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Frozen Barrage",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Frozen Barrage Rune (II)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Frozen Barrage",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Frozen Barrage Rune (III)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Frozen Barrage",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Frozen Barrage Rune (IV)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Frozen Barrage",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Frozen Barrage Rune (V)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Frozen Barrage",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Frozen Barrage Rune (VI)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Frozen Barrage",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Stormcaller Rune (I)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Stormcaller",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Stormcaller Rune (II)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Stormcaller",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Stormcaller Rune (III)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Stormcaller",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Stormcaller Rune (IV)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Stormcaller",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Stormcaller Rune (V)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Stormcaller",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Stormcaller Rune (VI)",
+   "type": "set",
+   "class": "sorcerer",
+   "set": "Stormcaller",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Fire Ball Rune",
+   "type": "ability",
+   "class": "sorcerer",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Ice Shards Rune",
+   "type": "ability",
+   "class": "sorcerer",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Electrocute Rune",
+   "type": "ability",
+   "class": "sorcerer",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Ice Nova Rune",
+   "type": "ability",
+   "class": "sorcerer",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Fire Elemental Rune",
+   "type": "ability",
+   "class": "sorcerer",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Flame Breath Rune",
+   "type": "ability",
+   "class": "sorcerer",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Ice Meteor Rune",
+   "type": "ability",
+   "class": "sorcerer",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Lightning Storm Rune",
+   "type": "ability",
+   "class": "sorcerer",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Hundred Hands Rune (I)",
+   "type": "set",
+   "class": "monk",
+   "set": "Hundred Hands",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Hundred Hands Rune (II)",
+   "type": "set",
+   "class": "monk",
+   "set": "Hundred Hands",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Hundred Hands Rune (III)",
+   "type": "set",
+   "class": "monk",
+   "set": "Hundred Hands",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Hundred Hands Rune (IV)",
+   "type": "set",
+   "class": "monk",
+   "set": "Hundred Hands",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Hundred Hands Rune (V)",
+   "type": "set",
+   "class": "monk",
+   "set": "Hundred Hands",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Hundred Hands Rune (VI)",
+   "type": "set",
+   "class": "monk",
+   "set": "Hundred Hands",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Wheel of Nine Heavens Rune (I)",
+   "type": "set",
+   "class": "monk",
+   "set": "Wheel of Nine Heavens",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Wheel of Nine Heavens Rune (II)",
+   "type": "set",
+   "class": "monk",
+   "set": "Wheel of Nine Heavens",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Wheel of Nine Heavens Rune (III)",
+   "type": "set",
+   "class": "monk",
+   "set": "Wheel of Nine Heavens",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Wheel of Nine Heavens Rune (IV)",
+   "type": "set",
+   "class": "monk",
+   "set": "Wheel of Nine Heavens",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Wheel of Nine Heavens Rune (V)",
+   "type": "set",
+   "class": "monk",
+   "set": "Wheel of Nine Heavens",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Wheel of Nine Heavens Rune (VI)",
+   "type": "set",
+   "class": "monk",
+   "set": "Wheel of Nine Heavens",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Serpent's Tongue Rune (I)",
+   "type": "set",
+   "class": "monk",
+   "set": "Serpent's Tongue",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Serpent's Tongue Rune (II)",
+   "type": "set",
+   "class": "monk",
+   "set": "Serpent's Tongue",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Serpent's Tongue Rune (III)",
+   "type": "set",
+   "class": "monk",
+   "set": "Serpent's Tongue",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Serpent's Tongue Rune (IV)",
+   "type": "set",
+   "class": "monk",
+   "set": "Serpent's Tongue",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Serpent's Tongue Rune (V)",
+   "type": "set",
+   "class": "monk",
+   "set": "Serpent's Tongue",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Serpent's Tongue Rune (VI)",
+   "type": "set",
+   "class": "monk",
+   "set": "Serpent's Tongue",
+   "rarity": "Set Rune"
+  },
+  {
+   "name": "Threefold Strike Rune",
+   "type": "ability",
+   "class": "monk",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Furious Fist Rune",
+   "type": "ability",
+   "class": "monk",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Seismic Strike Rune",
+   "type": "ability",
+   "class": "monk",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Sacred Judgment Rune",
+   "type": "ability",
+   "class": "monk",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Piercing Lunge Rune",
+   "type": "ability",
+   "class": "monk",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Whirlwind Staff Rune",
+   "type": "ability",
+   "class": "monk",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Sacred Orbs Rune",
+   "type": "ability",
+   "class": "monk",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Spirit Stream Rune",
+   "type": "ability",
+   "class": "monk",
+   "set": null,
+   "rarity": "Rare"
+  },
+  {
+   "name": "Bloodletting",
+   "type": "attribute",
+   "class": null,
+   "set": null,
+   "rarity": "Uncommon"
+  },
+  {
+   "name": "Longshot",
+   "type": "attribute",
+   "class": null,
+   "set": null,
+   "rarity": "Uncommon"
+  },
+  {
+   "name": "Giantslayer",
+   "type": "attribute",
+   "class": null,
+   "set": null,
+   "rarity": "Uncommon"
+  },
+  {
+   "name": "Ambush",
+   "type": "attribute",
+   "class": null,
+   "set": null,
+   "rarity": "Uncommon"
+  },
+  {
+   "name": "Execution",
+   "type": "attribute",
+   "class": null,
+   "set": null,
+   "rarity": "Uncommon"
+  },
+  {
+   "name": "Blight",
+   "type": "attribute",
+   "class": null,
+   "set": null,
+   "rarity": "Uncommon"
+  },
+  {
+   "name": "Snare",
+   "type": "attribute",
+   "class": null,
+   "set": null,
+   "rarity": "Uncommon"
+  },
+  {
+   "name": "Daze",
+   "type": "attribute",
+   "class": null,
+   "set": null,
+   "rarity": "Uncommon"
+  },
+  {
+   "name": "Frailty",
+   "type": "attribute",
+   "class": null,
+   "set": null,
+   "rarity": "Uncommon"
+  }
+ ],
+ "rune_name_patterns": [
+  "Set runes: '<Set name> <Roman numeral I-VI>' (e.g. \"Trapper's Legacy I\", \"Venomfang VI\") for Trapper's Legacy, Deadeye's Resolve, Venomfang",
+  "Set runes: '<Set name> Rune (<Roman numeral>)' (e.g. 'Eye of the Storm Rune (II)', \"Serpent's Tongue Rune (III)\")",
+  "Exception: set 'Strong Shield of the Atheron' runes are named \"Rune of Atheron's Shield (I)\"..\"(VI)\"",
+  "Ability runes: '<Ability name> Rune' (e.g. 'Cleave Rune', 'Fire Ball Rune'), Rare, class-specific",
+  "Attribute runes: single word, no 'Rune' suffix (e.g. 'Bloodletting', 'Giantslayer'), Uncommon, all classes",
+  "Roman numeral is the slot/piece index within the set, not the rune level; rune level goes 1-6 separately",
+  "Apostrophes: some names use a curly apostrophe"
+ ],
+ "treasure_keys": [
+  {
+   "name": "Silver Treasure Key",
+   "opens": "Treasure Maps (Dreamy Kings Woods, Dreamy Barrens, Dreamy Keep) on Normal"
+  },
+  {
+   "name": "Golden Treasure Key",
+   "opens": "Treasure Maps (Dreamy Kings Woods, Dreamy Barrens, Dreamy Keep) on Nightmare"
+  },
+  {
+   "name": "Royal Treasure Key",
+   "opens": "Treasure Maps (Dreamy Kings Woods, Dreamy Barrens, Dreamy Keep) on Inferno"
+  }
+ ],
+ "boss_materials": [
+  "Cinderlord Horns",
+  "Crimson Wyrm Eye",
+  "Defiled Wyrm Scales",
+  "Elder Oak Bark",
+  "Frostheart Crystal",
+  "Manticore Venom Sac",
+  "Ogre Heart",
+  "Redrock Shard",
+  "Tidewrath Pincer"
+ ],
+ "skulls": [
+  "Demon's Skull",
+  "Skull of Nightmare",
+  "Skull of Inferno"
+ ],
+ "soul_shards": [
+  "Soul Shard"
+ ],
+ "ores": [
+  "Iron Ore",
+  "Gold Ore",
+  "Earth Essence"
+ ],
+ "plants": [
+  "Mushroom",
+  "Starleaf",
+  "Oak Leaf",
+  "Desert Rose",
+  "Tidesilk Kelp",
+  "Crimson Coral",
+  "Emberbloom",
+  "Gallthorn",
+  "Frostbloom",
+  "Snowleaf"
+ ],
+ "other_materials": [],
+ "missing": [
+  "Treasure keys open maps (dream realms), not chests; wiki lists Silver/Golden/Mythic Treasure Chest as consumables with no stated key link",
+  "Set rune rarity: wiki shows only 'Rune Set' (no Common..Divine tier)"
+ ]
 }
