@@ -1224,7 +1224,7 @@ class App:
 
         root.title("Deskrawl Tracker")
         root.configure(bg=BG)
-        root.attributes("-topmost", self.cfg.get("topmost", True))
+        root.attributes("-topmost", self.cfg.get("topmost", False))
         if self.cfg.get("alpha", 1.0) < 1.0:
             root.attributes("-alpha", self.cfg["alpha"])
         geo = self.cfg.get("geometry", "")
@@ -2429,12 +2429,12 @@ class App:
             u.ShowWindow(hwnd, 4)  # just shown via F10: make sure it is not left minimized
 
     def toggle_topmost(self):
-        self.cfg["topmost"] = not self.cfg.get("topmost", True)
+        self.cfg["topmost"] = not self.cfg.get("topmost", False)
         self.root.attributes("-topmost", self.cfg["topmost"])
         self._update_top_btn()
 
     def _update_top_btn(self):
-        self.btn_top.configure(text="Immer im Vordergrund: " + ("an" if self.cfg.get("topmost", True) else "aus"))
+        self.btn_top.configure(text="Immer im Vordergrund: " + ("an" if self.cfg.get("topmost", False) else "aus"))
 
     def close(self):
         if self.cfg.get("game_hidden"):  # never leave the game invisible without the tracker
@@ -2451,13 +2451,18 @@ class App:
     def _keep_visible(self):
         # "Show desktop" (Win+D) minimizes even topmost windows; restore without stealing focus
         # and re-assert HWND_TOPMOST so other topmost windows cannot cover us.
-        if not self.cfg.get("topmost", True):
+        if not self.cfg.get("topmost", False):
             return
         try:
             u = ctypes.windll.user32
             hwnd = self.hwnd
             if u.IsIconic(hwnd):
                 u.ShowWindow(hwnd, 4)  # SW_SHOWNOACTIVATE
+            # an open drop-down list (Combobox) is its own window; pushing ours on top would close it
+            if self.root.grab_current() is not None:
+                return
+            if u.GetWindowLongW(hwnd, -20) & 0x8:  # WS_EX_TOPMOST still set: nothing to do
+                return
             # HWND_TOPMOST, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOOWNERZORDER
             u.SetWindowPos(ctypes.c_void_p(hwnd), ctypes.c_void_p(-1), 0, 0, 0, 0, 0x0001 | 0x0002 | 0x0010 | 0x0200)
         except Exception:
