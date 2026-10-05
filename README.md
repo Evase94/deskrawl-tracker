@@ -1,82 +1,84 @@
 # Deskrawl Tracker
 
-Begleit-Tool für **Deskrawl**: zeigt EXP/h, Gold/h, Runs, Tode, Drops und Stage-Vergleiche live an und
-bewertet Items per Tastendruck – „anlegen oder nicht?“ mit Blick auf Schaden, Überleben und Ertrag.
+Companion tool for **Deskrawl**: shows EXP/h, gold/h, runs, deaths, drops and stage comparisons live, and
+rates items at the press of a key – "equip or not?" in terms of damage, survival and income.
 
-Der Tracker liest nur zwei Dinge:
-- die **Log-Datei** des Spiels (`Game.log`) und
-- das **Spielbild** (Texterkennung, wie ein Screenshot).
+The tracker reads only two things:
+- the game's **log file** (`Game.log`) and
+- the **game picture** (text recognition, like a screenshot).
 
-Er liest **keinen Spielspeicher**, verändert keine Spieldateien und schickt nichts ins Internet.
+It does **not** read game memory, does not change any game files and sends nothing to the internet.
 
-## Was er kann
+## Features
 
-| Tab | Inhalt |
+| Page | Content |
 |---|---|
-| Übersicht | EXP/h, Gold/h (inkl. verkaufter Items), Runs/h, DPS pro Run, Zeit bis Level-Up |
-| Stages | Vergleich deiner Stages: Zeit, EXP/h, Gold/h, Schadensart der Gegner |
-| Items | Item-Vergleich mit F8: Werte wie im Spiel, Unterschiede, Effekte, Urteil |
-| Drops | Drops nach Seltenheit, Edelsteine nach Stufe, Runen, Schlüssel |
-| Tode | Wer dich womit getötet hat |
-| Charakter | Deine Werte (F9) |
-| Edelsteine | Welcher Edelstein bringt dir am meisten |
-| Bewertung | Eigene Werte für Effekte, die sich nicht berechnen lassen |
+| Overview | EXP/h, gold/h (incl. sold items), runs/h, DPS per run, time to the next level |
+| Stages | Your stages compared: time, EXP/h, gold/h, enemy damage types |
+| Items | Item comparison with F8: values like in the game, differences, effects, verdict |
+| Drops | Drops by rarity, gems by tier, runes, keys |
+| Deaths | Who killed you and with what |
+| Character | Your character sheet, kept separately for each of your characters |
+| Gems | Which gem helps you most |
+| Weights | Your own values for effects that cannot be calculated |
 
 ## Installation
 
-### Variante A: fertige .exe (empfohlen)
-1. Unter [Releases](../../releases) die neueste `DeskrawlTracker.zip` herunterladen.
-2. Entpacken, z. B. nach `Dokumente\DeskrawlTracker`.
-3. `DeskrawlTracker.exe` starten.
+### Option A: ready-made .exe (recommended)
+1. Download the latest `DeskrawlTracker.zip` from [Releases](../../releases).
+2. Unzip it, e.g. to `Documents\DeskrawlTracker`.
+3. Start `DeskrawlTracker.exe`.
 
-Windows SmartScreen kann beim ersten Start warnen („Unbekannter Herausgeber“), weil die Datei nicht
-signiert ist: **Weitere Informationen → Trotzdem ausführen**.
+Windows SmartScreen may warn on the first start ("Unknown publisher") because the file is not signed:
+**More info → Run anyway**.
 
-### Variante B: aus dem Quellcode
-1. [Python 3.12](https://www.python.org/downloads/) installieren („Add python.exe to PATH“ anhaken).
-2. Repo herunterladen (grüner Button **Code → Download ZIP**) und entpacken.
-3. `installieren.bat` doppelklicken.
-4. Starten mit `Deskrawl Tracker starten.bat`.
+### Option B: from source
+1. Install [Python 3.12](https://www.python.org/downloads/) (tick "Add python.exe to PATH").
+2. Download the repo (green **Code → Download ZIP** button) and unzip it.
+3. Double-click `install.bat`.
+4. Start with `Start Deskrawl Tracker.bat`.
 
-### Beim ersten Start
-Ein Einrichtungsfenster prüft:
-1. **Log-Datei** – wird normalerweise automatisch gefunden
-   (`%USERPROFILE%\AppData\LocalLow\First Day Games\Deskrawl\Game.log`), sonst über „Durchsuchen…“ wählen.
-2. **Windows-Texterkennung Englisch** – fehlt auf manchen deutschen Windows-Installationen.
-   Das Fenster zeigt dann den Befehl zum Nachinstallieren (PowerShell als Administrator):
+### First start
+A setup window checks:
+1. **Log file** – usually found automatically
+   (`%USERPROFILE%\AppData\LocalLow\First Day Games\Deskrawl\Game.log`), otherwise pick it with "Browse…".
+2. **Windows text recognition (English)** – missing on some non-English Windows installations.
+   The window then shows the command to install it (PowerShell as administrator):
    ```powershell
    Add-WindowsCapability -Online -Name "Language.OCR~~~en-US~0.0.1.0"
    ```
 
-Später erreichst du das Fenster über **Steuerung → Log-Datei ändern**.
+You can open this window again later via **Controls → Change log file**.
 
-## Bedienung
+## Usage
 
-| Taste | Funktion |
+| Key | Action |
 |---|---|
-| **F8** | Maus über ein Item halten (Tooltip offen) → Item wird gelesen und bewertet |
-| **F9** | Charakterfenster offen → deine Werte werden gelesen |
-| **F10** | Deskrawl unsichtbar weiterlaufen lassen bzw. wieder zeigen |
+| **F8** | Hover an item (tooltip open) → the item is read and rated |
+| **F9** | Character window open on the Attributes tab → your values are read |
+| **F10** | Hide Deskrawl (it keeps running) or show it again |
 
-Wichtig: Deskrawl **nicht minimieren** – ein minimiertes Fenster kann nicht gelesen werden.
-Dafür gibt es F10: Das Spiel läuft unsichtbar weiter, Klicks gehen durch.
+Important: do **not minimize** Deskrawl – a minimized window cannot be read.
+Use F10 instead: the game keeps running invisibly and clicks go through it.
 
-Erste Schritte nach der Einrichtung:
-1. Charakterfenster öffnen, **F9** drücken.
-2. Maus über deine angelegte Waffe, **F8** drücken (der Tracker merkt sich den Waffenschaden).
+First steps after the setup, once for each of your characters:
+1. Open the character window, press **F9** at the top of the attribute list, scroll down, press **F9** again.
+2. Hover your equipped weapon and press **F8** (the tracker remembers its damage).
 
-## Grenzen
-- Angriffsgeschwindigkeit zählt voll in den Schaden, Fähigkeiten mit Abklingzeit profitieren in Wahrheit weniger.
-- Manche legendären Effekte lassen sich nicht berechnen – im Tab **Bewertung** eigenen Wert eintragen.
-- Leere Sockel werden mit dem besten Edelstein der gewählten Stufe (Tab Edelsteine) eingerechnet.
-- Die Texterkennung kann sich verlesen. Unplausible Werte werden gelb mit „?“ markiert.
+When you log in with another character, the tracker switches to that character's values automatically.
 
-## Fehler melden
-Bitte ein [Issue](../../issues) anlegen und anhängen:
-- bei falsch gelesenen Items: die passenden Dateien aus dem Ordner `captures/` (Bild + `.json`),
-- bei Abstürzen: `tracker_errors.log`.
+## Limits
+- Attack speed counts fully towards damage; abilities with a cooldown gain less in reality.
+- Some legendary effects cannot be calculated – enter your own value on the **Weights** page.
+- Empty sockets are rated with the best gem of the tier chosen on the **Gems** page.
+- Text recognition can misread. Implausible values are marked yellow with "?".
 
-Beide liegen im Ordner des Trackers.
+## Reporting problems
+Please open an [issue](../../issues) and attach:
+- for misread items: the matching files from the `captures/` folder (image + `.json`),
+- for crashes: `tracker_errors.log`.
+
+Both are in the tracker's folder.
 
 ---
-Inoffizielles Fan-Tool, nicht verbunden mit First Day Games.
+Unofficial fan tool, not affiliated with First Day Games.

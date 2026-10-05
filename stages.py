@@ -36,6 +36,15 @@ class StageStats:
                 self.data = json.load(f)
         except Exception:
             pass
+        # stage names of the earlier German version ("Unbekannt (6 Waves)")
+        for k in [k for k in self.data if "Unbekannt (" in k]:
+            new = k.replace("Unbekannt (", "Unknown (").replace(" Waves)", " waves)")
+            old = self.data.pop(k)
+            if new in self.data:
+                for f, v in old.items():
+                    self.data[new][f] = self.data[new].get(f, 0) + v
+            else:
+                self.data[new] = old
 
     def save(self):
         try:

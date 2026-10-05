@@ -77,12 +77,20 @@ def fmt_dur(s: float) -> str:
     return f"{h}:{m:02d}:{sec:02d}" if h else f"{m}:{sec:02d}"
 
 
+# item modes of the earlier German version -> current names
+OLD_MODES = {"Schaden": "Damage", "Überleben": "Survival", "Ausgewogen": "Balanced", "Farmen": "Farming"}
+
+
 def load_config() -> dict:
     try:
         with open(CONFIG_PATH, encoding="utf-8") as f:
-            return json.load(f)
+            cfg = json.load(f)
     except Exception:
         return {}
+    for d in [cfg] + list((cfg.get("profiles") or {}).values()):
+        if d.get("item_mode") in OLD_MODES:
+            d["item_mode"] = OLD_MODES[d["item_mode"]]
+    return cfg
 
 
 def save_config(cfg: dict) -> None:
@@ -135,7 +143,7 @@ class Run:
     hits: int = 0
     crits: int = 0
     peak_dps: float = 0.0
-    death: str = ""          # "", "vermutet" or "bestätigt"
+    death: str = ""          # "", "suspected" or "confirmed"
     stage_name: str = ""     # from the in-game log panel ("The Cinder Crown: 6")
     stage_guess: str = ""    # assumed from the previous run while the log panel was not read
     aggregated: bool = False  # already counted in the persistent per-stage statistics
@@ -364,7 +372,7 @@ class GameState:
                 r.death_info.update(extra)
             r.death_info.setdefault("screen", text)
             r.death_info.setdefault("seen_at", t)
-            if r.end and r.death != "bestätigt":  # death screen showed up after the commit
+            if r.end and r.death != "confirmed":  # death screen showed up after the commit
                 self._check_death(r)
                 append_death_csv(r, self.char_name)
 
@@ -387,9 +395,9 @@ class GameState:
         suspicious = (info.get("xp_ratio") is not None and info["xp_ratio"] < self.DEATH_XP_RATIO
                       and (info.get("dur_ratio") is None or info["dur_ratio"] < self.DEATH_DUR_RATIO))
         if "screen" in info:
-            r.death = "bestätigt"
+            r.death = "confirmed"
         elif suspicious:
-            r.death = "vermutet"
+            r.death = "suspected"
         if r.death:
             info["dps_before"] = r.avg_dps
             info["peak_dps"] = r.peak_dps or None
@@ -399,7 +407,7 @@ class GameState:
         with self.lock:
             deaths = [r for r in self.runs if r.death]
             span = self.stats()["span"]  # same time base as EXP/h etc.
-            return {"n": len(deaths), "confirmed": sum(r.death == "bestätigt" for r in deaths),
+            return {"n": len(deaths), "confirmed": sum(r.death == "confirmed" for r in deaths),
                     "per_h": len(deaths) / span * 3600, "rate": len(deaths) / len(self.runs) if self.runs else 0,
                     "list": deaths}
 
@@ -433,7 +441,7 @@ class GameState:
             self.log_seen = norm
             # newest clear belongs to the newest committed run without a stage, and so on backwards
             # (runs that ended in death have no clear entry)
-            open_runs = [o for o in reversed(self.runs) if o.end and not o.stage_name and o.death != "bestätigt"
+            open_runs = [o for o in reversed(self.runs) if o.end and not o.stage_name and o.death != "confirmed"
                          and t - o.end < 1800]
             for e, r in zip([e for e in reversed(fresh) if e["type"] == "clear"], open_runs):
                 r.stage_name, r.game_seconds = f"{e['stage']}: {e['n']}", e["seconds"]
@@ -615,11 +623,11 @@ def drop_category(e: dict) -> str:
     """Bucket for the drop statistics: equipment by rarity, gems by tier, other loot by kind."""
     info = item_ocr.classify_drop(e.get("item", ""))
     if info["kind"] == "gem":
-        return f"Edelstein Stufe {info['tier'] or '?'}"
+        return f"Gem Tier {info['tier'] or '?'}"
     if info["kind"] == "rune":
-        return {"set": "Set-Rune", "ability": "Fähigkeits-Rune", "attribute": "Attribut-Rune"}.get(info.get("rune_type"), "Rune")
-    return {"key": "Schatzschlüssel", "shard": "Soul Shard", "boss_material": "Boss-Material", "skull": "Schädel",
-            "ore": "Erz", "plant": "Pflanze"}.get(info["kind"], e.get("rarity", "?"))
+        return {"set": "Set Rune", "ability": "Ability Rune", "attribute": "Attribute Rune"}.get(info.get("rune_type"), "Rune")
+    return {"key": "Treasure Key", "shard": "Soul Shard", "boss_material": "Boss Material", "skull": "Skull",
+            "ore": "Ore", "plant": "Plant"}.get(info["kind"], e.get("rarity", "?"))
 
 
 def append_run_csv(r: Run):
@@ -856,7 +864,7 @@ class OCRWorker(threading.Thread):
         self.capture = capture
         self.get_region = get_region  # fractions (x, y, w, h) of the game client area
         self.enabled = threading.Event()
-        self.status = "DPS-OCR aus"
+        self.status = "DPS OCR off"
         self.fps = 0.0
         self.ocr = None
         self.suspend_until = 0.0
@@ -869,12 +877,12 @@ class OCRWorker(threading.Thread):
         try:
             self.ocr = DamageOCR(on_hit=self.state.add_hit)
         except Exception as e:
-            self.status = f"OCR nicht verfügbar: {e}"
+            self.status = f"OCR not available: {e}"
             return
         last = time.time()
         while True:
             if not self.enabled.is_set():
-                self.status = "DPS-OCR aus"
+                self.status = "DPS OCR off"
                 if self.ocr.tracks:
                     self.ocr.flush(time.time(), force=True)
                 self.enabled.wait(1.0)
@@ -909,9 +917,9 @@ class OCRWorker(threading.Thread):
                 dt = time.time() - last
                 last = time.time()
                 self.fps = 0.8 * self.fps + 0.2 * (1 / dt if dt > 0 else 0)
-                self.status = f"DPS-OCR an · {self.fps:.1f} fps"
+                self.status = f"DPS OCR on · {self.fps:.1f} fps"
             except Exception as e:
-                self.status = f"OCR Fehler: {e}"
+                self.status = f"OCR error: {e}"
                 time.sleep(1.0)
             time.sleep(max(0.0, 0.15 - (time.time() - t)))
 
@@ -957,7 +965,7 @@ class PanelReader(threading.Thread):
     the panels are left open; they only close when a death restarts the stage, so focus is taken
     only after a death.
     """
-    MODES = {"always": "mit Fokuswechsel", "fg": "nur Vordergrund", "off": "Aus"}
+    MODES = {"always": "with focus switch", "fg": "foreground only", "off": "off"}
 
     def __init__(self, state: GameState, capture: GameCapture, ocr: OCRWorker, cfg: dict):
         super().__init__(daemon=True)
@@ -975,7 +983,7 @@ class PanelReader(threading.Thread):
                 with self.lock:
                     self.read_once()
             except Exception as e:
-                self.status = f"Panel-Fehler: {e}"
+                self.status = f"Panel error: {e}"
 
     def _look(self):
         frame = self.capture.grab()
@@ -1003,7 +1011,7 @@ class PanelReader(threading.Thread):
         mode = mode if mode in self.MODES else "always"
         frame, lines, inv, log = self._look()
         if frame is None:
-            self.status = "Log-Panel: " + self.capture.status
+            self.status = "Log panel: " + self.capture.status
             return
         with self.state.lock:
             last = self.state.runs[-1] if self.state.runs else None
@@ -1011,13 +1019,13 @@ class PanelReader(threading.Thread):
         if mode != "off" and not log and (last is None or self.state.log_needed(last)):
             keys.append(self._keys()["log"])
         elif not log:
-            self.status = f"Log-Panel: nicht nötig, Stage bekannt ({datetime.now().strftime('%H:%M:%S')})"
+            self.status = f"Log panel: not needed, stage known ({datetime.now().strftime('%H:%M:%S')})"
         how, prev = None, None
         if keys:
             self.ocr.suspend(5.0)
             how, prev = self._press(keys, True, mode)
             if how is None:
-                self.status = "Log-Panel: Deskrawl nicht im Vordergrund – übersprungen"
+                self.status = "Log panel: Deskrawl not in the foreground – skipped"
                 keys = []
             else:
                 time.sleep(0.5)
@@ -1031,10 +1039,10 @@ class PanelReader(threading.Thread):
             if hdr is not None and frame is not None:
                 self.state.ingest_log(item_ocr.read_log_panel(frame, hdr), now)
             if keys:
-                label = {"fg": "Vordergrund", "focus": "Fokuswechsel"}[how]
-                self.status = f"Log-Panel geöffnet und gelesen {datetime.now().strftime('%H:%M:%S')} ({label})"
+                label = {"fg": "foreground", "focus": "focus switch"}[how]
+                self.status = f"Log panel opened and read {datetime.now().strftime('%H:%M:%S')} ({label})"
             elif hdr is not None:
-                self.status = f"Log-Panel gelesen {datetime.now().strftime('%H:%M:%S')} (war offen)"
+                self.status = f"Log panel read {datetime.now().strftime('%H:%M:%S')} (was open)"
         finally:
             if keys:
                 hwnd = self.capture.find()
@@ -1160,14 +1168,14 @@ class GameRegionPicker(tk.Toplevel):
     def __init__(self, master, frame, current, on_done):
         super().__init__(master)
         from PIL import Image, ImageTk
-        self.title("DPS-Bereich wählen")
+        self.title("Choose DPS area")
         self.configure(bg=BG)
         self.attributes("-topmost", True)
         H, W = frame.shape[:2]
         self.k = min(1100 / W, 650 / H, 1.0)
         img = Image.fromarray(frame[:, :, ::-1]).resize((int(W * self.k), int(H * self.k)))
         self.photo = ImageTk.PhotoImage(img)
-        tk.Label(self, text="Rechteck über den Bereich ziehen, in dem Schadenszahlen erscheinen  ·  ESC = abbrechen",
+        tk.Label(self, text="Drag a rectangle over the area where damage numbers appear  ·  ESC = cancel",
                  bg=BG, fg=FG, font=("Segoe UI", 10)).pack(padx=8, pady=6)
         self.c = tk.Canvas(self, width=img.width, height=img.height, highlightthickness=0, cursor="crosshair")
         self.c.pack(padx=8, pady=(0, 8))
@@ -1278,7 +1286,7 @@ class App:
         dots = tk.Frame(head, bg=BG)
         dots.pack(side="right")
         self.dots = {}
-        for key, label in (("log", "Log"), ("game", "Spiel"), ("dps", "DPS"), ("panels", "Panels"), ("keys", "Hotkeys")):
+        for key, label in (("log", "Log"), ("game", "Game"), ("dps", "DPS"), ("panels", "Panels"), ("keys", "Hotkeys")):
             d = ui.StatusDot(dots, label)
             d.pack(side="left", padx=(10, 0))
             self.dots[key] = d
@@ -1294,14 +1302,14 @@ class App:
         self.tab_drops = tk.Frame(self.nb, bg=BG)
         self.tab_stages = tk.Frame(self.nb, bg=BG)
         self.tab_gems = tk.Frame(self.nb, bg=BG)
-        self.nb.add(self.tab_farm, text="Übersicht")
+        self.nb.add(self.tab_farm, text="Overview")
         self.nb.add(self.tab_stages, text="Stages")
         self.nb.add(self.tab_items, text="Items")
         self.nb.add(self.tab_drops, text="Drops")
-        self.nb.add(self.tab_death, text="Tode")
-        self.nb.add(self.tab_char, text="Charakter")
-        self.nb.add(self.tab_gems, text="Edelsteine")
-        self.nb.add(self.tab_w, text="Bewertung")
+        self.nb.add(self.tab_death, text="Deaths")
+        self.nb.add(self.tab_char, text="Character")
+        self.nb.add(self.tab_gems, text="Gems")
+        self.nb.add(self.tab_w, text="Weights")
         self._build_farm(self.tab_farm)
         self._build_items(self.tab_items)
         self._build_char(self.tab_char)
@@ -1312,7 +1320,7 @@ class App:
         self._build_gems(self.tab_gems)
 
         side = self.nb.bottom
-        tk.Label(side, text="Steuerung", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=14, pady=(0, 4))
+        tk.Label(side, text="Controls", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=14, pady=(0, 4))
 
         def ctl(text, cmd, tip):
             b = ui.button(side, text, cmd, small=True)
@@ -1322,25 +1330,25 @@ class App:
             ui.Tooltip(b, tip)
             return b
 
-        self.btn_hide = ctl("", self.toggle_hide, "Deskrawl unsichtbar weiterlaufen lassen statt minimieren – "
-                                                  "nur so kann der Tracker weiter mitlesen.")
-        self.btn_ocr = ctl("", self.toggle_ocr, "Schadenszahlen im Spiel mitlesen (für DPS pro Run).")
-        ctl("DPS-Bereich wählen", self.pick_region, "Bereich im Spielbild, in dem Schadenszahlen erscheinen.")
-        self.btn_panels = ctl("", self.cycle_panels, "Log-Panel (C) öffnen, wenn der Tracker Stage-Name oder Todesdetails "
-                                                     "braucht – nach einem Tod oder Stage-Wechsel. Ist es offen, wird es "
-                                                     "ohne Tastendruck gelesen. "
-                                                     "„mit Fokuswechsel“ holt Deskrawl dafür kurz nach vorne.")
-        self.btn_top = ctl("", self.toggle_topmost, "Tracker-Fenster immer im Vordergrund halten.")
-        ctl("Log-Datei ändern", self.open_setup, "Pfad zur Game.log von Deskrawl wählen und prüfen, ob die "
-                                                 "Windows-Texterkennung Englisch installiert ist.")
-        ctl("Session zurücksetzen", self.reset, "Raten und Run-Liste der laufenden Session leeren. "
-                                                "Stage-Statistik und Verläufe bleiben erhalten.")
+        self.btn_hide = ctl("", self.toggle_hide, "Keep Deskrawl running invisibly instead of minimizing it – "
+                                                  "only then can the tracker keep reading.")
+        self.btn_ocr = ctl("", self.toggle_ocr, "Read damage numbers in the game (for DPS per run).")
+        ctl("Choose DPS area", self.pick_region, "Area of the game picture where damage numbers appear.")
+        self.btn_panels = ctl("", self.cycle_panels, "Open the log panel (C) when the tracker needs the stage name or death details "
+                                                     "– after a death or a stage change. When it is open it is read "
+                                                     "without a key press. "
+                                                     "“with focus switch” briefly brings Deskrawl to the front for that.")
+        self.btn_top = ctl("", self.toggle_topmost, "Keep the tracker window on top of other windows.")
+        ctl("Change log file", self.open_setup, "Choose the path to Deskrawl's Game.log and check that "
+                                                 "Windows' English text recognition is installed.")
+        ctl("Reset session", self.reset, "Clear the rates and run list of the current session. "
+                                                "Stage statistics and histories are kept.")
         if setup_dialog.needs_setup(self.cfg):
             self.root.after(400, lambda: self.open_setup(first_run=True))
         self._update_panels_btn()
         self._update_hide_btn()
         self._update_top_btn()
-        self.btn_ocr.configure(text="DPS-Messung: aus")
+        self.btn_ocr.configure(text="DPS meter: off")
 
     def open_setup(self, first_run=False):
         setup_dialog.SetupDialog(self.root, self.cfg, self._log_chosen, first_run=first_run)
@@ -1393,7 +1401,7 @@ class App:
         top.pack(fill="x", padx=16, pady=(12, 0))
         self.lbl_lvl_eta = tk.Label(top, text="-", bg=PANEL, fg=ui.ACCENT, font=ui.F_NUM_XL)
         self.lbl_lvl_eta.pack(side="left")
-        self.lbl_lvl_title = tk.Label(top, text="bis zum nächsten Level", bg=PANEL, fg=FG, font=ui.F_BODY)
+        self.lbl_lvl_title = tk.Label(top, text="to the next level", bg=PANEL, fg=FG, font=ui.F_BODY)
         self.lbl_lvl_title.pack(side="left", padx=(12, 0), pady=(12, 0))
         self.lbl_lvl_runs = tk.Label(top, text="", bg=PANEL, fg=MUTED, font=ui.F_SMALL, justify="right")
         self.lbl_lvl_runs.pack(side="right", pady=(12, 0))
@@ -1407,8 +1415,8 @@ class App:
         tiles = tk.Frame(p, bg=BG)
         tiles.pack(fill="x", padx=10)
         self.tiles = {}
-        spec = [("xp_h", "EXP pro Stunde"), ("gold_h", "Gold pro Stunde"), ("runs_h", "Runs pro Stunde"),
-                ("items_h", "Items pro Stunde"), ("run_dps", "Ø DPS pro Run"), ("deaths", "Tode pro Stunde")]
+        spec = [("xp_h", "EXP per hour"), ("gold_h", "Gold per hour"), ("runs_h", "Runs per hour"),
+                ("items_h", "Items per hour"), ("run_dps", "Avg DPS per run"), ("deaths", "Deaths per hour")]
         for i, (key, title) in enumerate(spec):
             f = ui.card(tiles)
             f.grid(row=i // 3, column=i % 3, sticky="nsew", padx=4, pady=4)
@@ -1421,26 +1429,26 @@ class App:
             self.tiles[key] = (v, sub)
         self.lbl_totals = ui.autowrap(tk.Label(p, bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w", justify="left"))
         self.lbl_totals.pack(fill="x", padx=16, pady=(8, 0))
-        self._section(p, "Letzte Runs", "„≈“ vor der Stage: angenommen vom vorherigen Run, weil das Log-Fenster "
-                                         "für diesen Run nicht gelesen werden konnte.")
-        cols = [("t", "Ende", 68, "e"), ("stage", "Stage", 170, "w"), ("diff", "Diff", 74, "w"),
-                ("dur", "Zeit", 48, "e"), ("xp", "EXP", 64, "e"), ("gold", "Gold", 56, "e"), ("it", "Items", 44, "e"),
-                ("dps", "Ø DPS", 62, "e")]
+        self._section(p, "Recent runs", "“≈” before the stage: taken from the previous run because the log panel "
+                                         "could not be read for this run.")
+        cols = [("t", "End", 68, "e"), ("stage", "Stage", 170, "w"), ("diff", "Diff", 74, "w"),
+                ("dur", "Time", 48, "e"), ("xp", "EXP", 64, "e"), ("gold", "Gold", 56, "e"), ("it", "Items", 44, "e"),
+                ("dps", "Avg DPS", 62, "e")]
         f, self.tree = self._tree(p, cols, 8)
         f.pack(fill="both", expand=True, padx=14, pady=(0, 12))
 
     def _build_items(self, page):
-        hint = (f"Im Spiel mit der Maus über ein Item fahren, bis der Vergleichs-Tooltip offen ist, dann "
-                f"{self.hk.get('item', 'F8')} drücken. Für genaue Werte vorher den Charakter mit "
-                f"{self.hk.get('attributes', 'F9')} einlesen.\n\nModus: worauf es dir gerade ankommt – Schaden, "
-                f"Überleben, beides oder Farmen (Gold/Items/EXP).\nRoll-% hinter einem Stat: wie gut er gewürfelt "
-                f"ist (0 % schlechtester, 100 % bester möglicher Wert).")
-        hdr = ui.page_header(page, "Item-Vergleich", hint)
-        self.var_mode = tk.StringVar(value=self.cfg.get("item_mode", "Ausgewogen"))
+        hint = (f"In the game, hover an item until the comparison tooltip is open, then press "
+                f"{self.hk.get('item', 'F8')}. For exact results read your character first with "
+                f"{self.hk.get('attributes', 'F9')}.\n\nMode: what matters to you right now – damage, "
+                f"survival, both, or farming (gold/items/EXP).\nRoll % after a stat: how well it rolled "
+                f"(0 % worst, 100 % best possible value).")
+        hdr = ui.page_header(page, "Item comparison", hint)
+        self.var_mode = tk.StringVar(value=self.cfg.get("item_mode", "Balanced"))
         cb = ttk.Combobox(hdr, textvariable=self.var_mode, values=list(item_eval.MODES), width=11, state="readonly")
         cb.pack(side="right")
         cb.bind("<<ComboboxSelected>>", self._mode_changed)
-        tk.Label(hdr, text="Modus", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="right", padx=(14, 6))
+        tk.Label(hdr, text="Mode", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="right", padx=(14, 6))
         self.var_upg = tk.StringVar(value=self.cfg.get("item_upgrade", "+0"))
         cbu = ttk.Combobox(hdr, textvariable=self.var_upg, values=["+0", "+3", "+4", "+5", "+7", "+10"], width=4,
                            state="readonly")
@@ -1448,7 +1456,7 @@ class App:
         cbu.bind("<<ComboboxSelected>>", lambda _: (self._set_cfg("item_upgrade", self.var_upg.get()), self._mode_changed()))
         lab = tk.Label(hdr, text="Upgrade", bg=BG, fg=MUTED, font=ui.F_SMALL)
         lab.pack(side="right", padx=(0, 6))
-        ui.Tooltip(lab, "Beide Items auf diese Upgrade-Stufe hochrechnen (das ersetzte Item wird als +0 angenommen).")
+        ui.Tooltip(lab, "Project both items to this upgrade level (the replaced item is assumed to be +0).")
 
         sf = ui.ScrollFrame(page)
         sf.pack(fill="both", expand=True)
@@ -1463,27 +1471,27 @@ class App:
         self.card_new.grid(row=0, column=0, sticky="nsew", padx=4)
         self.card_old = ui.card(self.cards)
         self.card_old.grid(row=0, column=1, sticky="nsew", padx=4)
-        tk.Label(self.card_new, text=f"{self.hk.get('item', 'F8')} im Spiel über einem Item drücken",
+        tk.Label(self.card_new, text=f"Press {self.hk.get('item', 'F8')} in the game while hovering an item",
                  bg=PANEL, fg=MUTED, font=ui.F_SMALL).pack(padx=12, pady=20)
 
         # 2. stat differences
-        self._section(p, "Unterschiede")
-        cols = [("stat", "Stat", 170, "w"), ("d", "Änderung", 80, "e"), ("roll", "Roll", 55, "e"),
-                ("eff", "Wirkung", 290, "w")]
+        self._section(p, "Differences")
+        cols = [("stat", "Stat", 170, "w"), ("d", "Change", 80, "e"), ("roll", "Roll", 55, "e"),
+                ("eff", "Effect", 290, "w")]
         f, self.item_tree = self._tree(p, cols, 5)
         f.pack(fill="x", padx=14, pady=(0, 4))
 
         # 3. effects
-        self.fx_head = self._section(p, "Effekte")
+        self.fx_head = self._section(p, "Effects")
         self.lbl_fx = ui.autowrap(tk.Label(p, bg=BG, fg=C_MEH, font=ui.F_SMALL, anchor="w", justify="left"))
         self.lbl_fx.pack(fill="x", padx=16)
 
         # 4. damage / survival / income
-        self._section(p, "Einstufung")
+        self._section(p, "Rating")
         met = tk.Frame(p, bg=BG)
         met.pack(fill="x", padx=10)
         self.lbl_m = {}
-        for i, (key, title) in enumerate((("dps", "Schaden"), ("surv", "Überleben"), ("farm", "Ertrag"))):
+        for i, (key, title) in enumerate((("dps", "Damage"), ("surv", "Survival"), ("farm", "Income"))):
             f = ui.card(met)
             f.grid(row=0, column=i, sticky="nsew", padx=4)
             met.columnconfigure(i, weight=1, uniform="m")
@@ -1495,7 +1503,7 @@ class App:
             self.lbl_m[key] = (v, sub)
 
         # 5. verdict
-        self._section(p, "Urteil")
+        self._section(p, "Verdict")
         vc = ui.card(p, fill="x", padx=14, pady=(0, 4))
         vrow = tk.Frame(vc, bg=PANEL)
         vrow.pack(fill="x", padx=14, pady=(10, 0))
@@ -1511,10 +1519,10 @@ class App:
         self.lbl_quality.pack(fill="x", padx=14, pady=(2, 10))
 
         # 6. history
-        self._section(p, "Zuletzt geprüft", "Anklicken zeigt das Item wieder oben an. Spaltenüberschrift anklicken "
-                                            "sortiert.")
-        cols = [("name", "Item", 210, "w"), ("dps", "Schaden", 92, "e"), ("surv", "Überleben", 100, "e"),
-                ("v", "Urteil", 120, "w")]
+        self._section(p, "Recently checked", "Click a row to show the item again above. Click a column header "
+                                            "to sort.")
+        cols = [("name", "Item", 210, "w"), ("dps", "Damage", 92, "e"), ("surv", "Survival", 100, "e"),
+                ("v", "Verdict", 120, "w")]
         f, self.hist_tree = self._tree(p, cols, 6, icons=True)
         self.hist_tree.tag_configure("good", foreground=C_GOOD)
         self.hist_tree.tag_configure("bad", foreground=C_BAD)
@@ -1548,7 +1556,7 @@ class App:
                        font=("Bahnschrift SemiBold", 12), anchor="w", justify="left")
         ui.autowrap(lab).pack(fill="x")
         if not it.name_sure:
-            ui.Tooltip(lab, f"Name nicht sicher erkannt (gelesen: \"{it.raw_name}\"). Die Werte betrifft das nicht.")
+            ui.Tooltip(lab, f"Name not recognized for sure (read: \"{it.raw_name}\"). The values are not affected.")
         tk.Label(nm, text=it.type_line, bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x")
         body = tk.Frame(card, bg=PANEL)
         body.pack(fill="x", padx=12)
@@ -1557,13 +1565,13 @@ class App:
             r = tk.Frame(body, bg=PANEL)
             r.pack(fill="x")
             unit = "%" if st.pct else ""
-            txt = f"+{st.value:g}{unit} {st.name}"  # the change itself is in the "Unterschiede" table
+            txt = f"+{st.value:g}{unit} {st.name}"  # the change itself is in the "Differences" table
             lab = tk.Label(r, text=txt + ("  ?" if not st.ok else ""), bg=PANEL, fg=col if st.ok else ui.WARN,
                            font=ui.F_SMALL, anchor="w")
             lab.pack(side="left")
             if not st.ok:
-                ui.Tooltip(lab, f"Wert passt nicht zu Item-Level und Seltenheit – vermutlich falsch gelesen "
-                                f"(OCR: \"{st.raw}\"). Wird trotzdem verwendet.")
+                ui.Tooltip(lab, f"Value does not fit item level and rarity – probably misread "
+                                f"(OCR: \"{st.raw}\"). It is used anyway.")
             q = rolls.get(st.name) if show_roll else None
             if q:
                 qc = ui.GOOD if q[1] >= 75 else (MUTED if q[1] >= 35 else ui.BAD)
@@ -1573,7 +1581,7 @@ class App:
         row = None
         for st in it.base:
             big = st.name in ("Armor", "Weapon Damage")
-            label = {"Armor": "Armor", "Weapon Damage": "Waffenschaden", "Weapon Speed": "Speed",
+            label = {"Armor": "Armor", "Weapon Damage": "Damage", "Weapon Speed": "Speed",
                      "Weapon DPS": "DPS"}.get(st.name, st.name)
             if st.name != "Weapon DPS" or row is None:
                 row = tk.Frame(body, bg=PANEL)
@@ -1587,25 +1595,25 @@ class App:
             if st.diff is not None and side == "left":
                 tk.Label(row, text=f"({st.diff:+g})", bg=PANEL, fg=ui.GOOD if st.diff > 0 else ui.BAD,
                          font=ui.F_SMALL).pack(side="left", padx=(6, 0))
-        for label, rows, col, roll in (("Primär", it.primary, "#a9b4ff", True), ("Sekundär", it.secondary, "#a9b4ff", True),
-                                       ("Sockel", it.sockets, ui.GOOD, False)):
-            if not rows and not (label == "Sockel" and it.empty_sockets):
+        for label, rows, col, roll in (("Primary", it.primary, "#a9b4ff", True), ("Secondary", it.secondary, "#a9b4ff", True),
+                                       ("Sockets", it.sockets, ui.GOOD, False)):
+            if not rows and not (label == "Sockets" and it.empty_sockets):
                 continue
             tk.Label(body, text=label, bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", pady=(4, 0))
             for st in rows:
                 line(st, col, roll)
-            if label == "Sockel" and it.empty_sockets:
+            if label == "Sockets" and it.empty_sockets:
                 fill = (gems or {}).get("fill")
                 for _ in range(it.empty_sockets):
                     if fill:
-                        t = f"leer → +{fill[2]:g}{'%' if fill[3] else ''} {fill[1]}"
+                        t = f"empty → +{fill[2]:g}{'%' if fill[3] else ''} {fill[1]}"
                     else:
-                        t = "leerer Sockel"
+                        t = "empty socket"
                     lab = tk.Label(body, text=t, bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w")
                     lab.pack(fill="x")
                     if fill:
-                        ui.Tooltip(lab, f"Vorschlag: {fill[0]} – bester Edelstein der gewählten Stufe (Tab "
-                                        f"Edelsteine) für diesen Modus. Ist in der Bewertung schon eingerechnet.")
+                        ui.Tooltip(lab, f"Suggested: {fill[0]} – best gem of the chosen tier (Gems tab) "
+                                        f"for this mode. Already included in the rating.")
         for fx in it.effects:
             ui.autowrap(tk.Label(body, text=fx, bg=PANEL, fg=ui.RARITY["Legendary"], font=ui.F_SMALL, anchor="w",
                                  justify="left")).pack(fill="x", pady=(4, 0))
@@ -1614,12 +1622,12 @@ class App:
         foot = tk.Frame(card, bg=PANEL)
         foot.pack(fill="x", padx=12, pady=(6, 10))
         if req:
-            tk.Label(foot, text=f"benötigt Level {req}", bg=PANEL, fg=ui.BAD if lvl and req > lvl else MUTED,
+            tk.Label(foot, text=f"requires level {req}", bg=PANEL, fg=ui.BAD if lvl and req > lvl else MUTED,
                      font=ui.F_SMALL).pack(side="right")
         if it.item_level:
-            tk.Label(foot, text=f"Item-Level {it.item_level}", bg=PANEL, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+            tk.Label(foot, text=f"Item level {it.item_level}", bg=PANEL, fg=MUTED, font=ui.F_SMALL).pack(side="left")
         else:
-            tk.Label(foot, text="Item-Level nicht gelesen", bg=PANEL, fg=ui.WARN, font=ui.F_SMALL).pack(side="left")
+            tk.Label(foot, text="Item level not read", bg=PANEL, fg=ui.WARN, font=ui.F_SMALL).pack(side="left")
 
     def _mode_changed(self, _=None):
         self._set_cfg("item_mode", self.var_mode.get())
@@ -1639,46 +1647,47 @@ class App:
 
     def _build_char(self, p):
         key = self.hk.get("attributes", "F9")
-        hdr = ui.page_header(p, "Charakter", f"Im Spiel das Charakterfenster mit dem Tab „Attributes“ öffnen und {key} "
-                                             f"drücken. Dann nach unten scrollen und nochmal {key} drücken – die Werte "
-                                             f"werden zusammengeführt. Nach jedem Ausrüstungswechsel neu einlesen.")
-        self._btn(hdr, "Leeren", self.clear_char, side="right")
-        b = ui.button(hdr, f"Einlesen ({key})", self.scan_attributes, accent=True)
+        hdr = ui.page_header(p, "Character", f"In the game open the character window on the “Attributes” tab and press "
+                                             f"{key}. Then scroll down and press {key} again – both parts are merged. "
+                                             f"Read again after every gear change. Values belong to the character "
+                                             f"that is logged in.")
+        self._btn(hdr, "Clear", self.clear_char, side="right")
+        b = ui.button(hdr, f"Read ({key})", self.scan_attributes, accent=True)
         b.pack(side="right", padx=3)
         self.lbl_char = tk.Label(p, bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w")
         self.lbl_char.pack(fill="x", padx=16)
-        cols = [("stat", "Stat", 240, "w"), ("v", "Wert", 110, "e")]
+        cols = [("stat", "Stat", 240, "w"), ("v", "Value", 110, "e")]
         f, self.char_tree = self._tree(p, cols, 16)
         f.pack(fill="both", expand=True, padx=14, pady=(6, 12))
 
     RARITY_TAG = {"Common": "meh", "Uncommon": "blue", "Rare": "rare", "Legendary": "leg",
-                  **{f"Edelstein Stufe {i}": "gem" for i in range(1, 7)},
-                  "Set-Rune": "leg", "Fähigkeits-Rune": "rare", "Attribut-Rune": "blue", "Schatzschlüssel": "rare"}
+                  **{f"Gem Tier {i}": "gem" for i in range(1, 7)},
+                  "Set Rune": "leg", "Ability Rune": "rare", "Attribute Rune": "blue", "Treasure Key": "rare"}
 
     def _build_gems(self, p):
         g = item_quality.GEMS
         sockets = ", ".join(f"{k} {v}" for k, v in g.get("sockets", {}).items() if v)
         sc = g.get("socket_cost", {})
         sc_txt = (" + ".join(f"{v} {k}" for k, v in sc.items() if k not in ("gold", "per") and isinstance(v, (int, float)))
-                  + (f" + {sc['gold'].replace('item level', 'Item-Level').replace(' x ', ' × ')} Gold" if isinstance(sc.get("gold"), str) else "")
+                  + (f" + {sc['gold'].replace('item level', 'item level').replace(' x ', ' × ')} Gold" if isinstance(sc.get("gold"), str) else "")
                   ) if isinstance(sc, dict) else str(sc)
-        top = ui.page_header(p, "Edelsteine", (
-            f"Was ein Edelstein der gewählten Stufe in jedem Slot-Typ für deinen Charakter bringt (im Modus aus "
-            f"dem Item-Vergleich). Steine ohne Wirkung sind ausgeblendet. ★ = bester Stein für den Slot-Typ.\n\n"
-            f"Sockel pro Slot: {sockets}. Sockel ab Item-Level 300, Ancient ab 300 mit allen Sockeln.\n"
-            f"Sockel hinzufügen: {sc_txt} pro Sockel.\nKombinieren: {g.get('combine', '?')}"))
-        self._btn(top, "Neu berechnen", self._fill_gems, side="right")
+        top = ui.page_header(p, "Gems", (
+            f"What a gem of the chosen tier brings your character in each slot type (in the mode chosen on the "
+            f"Items page). Gems without effect are hidden. ★ = best gem for the slot type.\n\n"
+            f"Sockets per slot: {sockets}. Sockets from item level 300, Ancient from 300 with all sockets.\n"
+            f"Adding a socket: {sc_txt} per socket.\nCombining: {g.get('combine', '?')}"))
+        self._btn(top, "Recalculate", self._fill_gems, side="right")
         self.var_gem_tier = tk.StringVar(value=str(self.cfg.get("gem_tier", 3)))
         cb = ttk.Combobox(top, textvariable=self.var_gem_tier, values=[str(i) for i in range(1, 7)], width=3,
                           state="readonly")
         cb.pack(side="right", padx=(0, 10))
         cb.bind("<<ComboboxSelected>>", lambda _: (self._set_cfg("gem_tier", int(self.var_gem_tier.get())),
                                                     self._fill_gems()))
-        tk.Label(top, text="Stufe", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="right", padx=(0, 6))
+        tk.Label(top, text="Tier", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="right", padx=(0, 6))
         self.lbl_gems = ui.autowrap(tk.Label(p, bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w", justify="left"))
         self.lbl_gems.pack(fill="x", padx=16, pady=(0, 6))
-        cols = [("slot", "Sockel in", 120, "w"), ("gem", "Edelstein", 90, "w"), ("bonus", "Bonus", 190, "w"),
-                ("eff", "Wirkung", 200, "w")]
+        cols = [("slot", "Socket in", 120, "w"), ("gem", "Gem", 90, "w"), ("bonus", "Bonus", 190, "w"),
+                ("eff", "Effect", 200, "w")]
         f, self.gem_tree = self._tree(p, cols, 12)
         f.pack(fill="both", expand=True, padx=14, pady=(0, 12))
         self._fill_gems()
@@ -1688,25 +1697,25 @@ class App:
         sockets = ", ".join(f"{k} {v}" for k, v in g.get("sockets", {}).items() if v)
         sc = g.get("socket_cost", {})
         sc_txt = (" + ".join(f"{v} {k}" for k, v in sc.items() if k not in ("gold", "per") and isinstance(v, (int, float)))
-                  + (f" + {sc['gold'].replace('item level', 'Item-Level').replace(' x ', ' × ')} Gold" if isinstance(sc.get("gold"), str) else "")
+                  + (f" + {sc['gold'].replace('item level', 'item level').replace(' x ', ' × ')} Gold" if isinstance(sc.get("gold"), str) else "")
                   ) if isinstance(sc, dict) else str(sc)
         tk.Label(p, bg=BG, fg=MUTED, font=("Segoe UI", 8), anchor="w", justify="left", wraplength=640, text=(
-            f"Wert = Wirkung eines Edelsteins der gewählten Stufe auf deinen Charakter im gewählten Item-Modus "
-            f"(Tab Items). ★ = bester Stein für diesen Slot-Typ.\nSockel pro Slot: {sockets}. Sockel ab Item-Level 300; "
-            f"Ancient ab 300 mit allen Sockeln. Sockel hinzufügen: {sc_txt} pro Sockel. "
-            f"Kombinieren: {g.get('combine', '?')}")).pack(fill="x", padx=6, pady=(0, 6))
+            f"Value = effect of a gem of the chosen tier on your character in the chosen item mode "
+            f"(Items page). ★ = best gem for this slot type.\nSockets per slot: {sockets}. Sockets from item level 300; "
+            f"Ancient from 300 with all sockets. Adding a socket: {sc_txt} per socket. "
+            f"Combining: {g.get('combine', '?')}")).pack(fill="x", padx=6, pady=(0, 6))
         self._fill_gems()
 
     def _fill_gems(self):
         tier = int(self.var_gem_tier.get())
-        mode = self.cfg.get("item_mode", "Ausgewogen")
+        mode = self.cfg.get("item_mode", "Balanced")
         ctx = self._eval_context()
         self.gem_tree.delete(*self.gem_tree.get_children())
         if not ctx.char:
-            self.lbl_gems.configure(text="Charakter mit F9 einlesen, dann werden die Edelsteine bewertet.")
+            self.lbl_gems.configure(text="Read your character with F9, then the gems are rated.")
         else:
-            self.lbl_gems.configure(text=f"Bewertet für {ctx.main}, {ctx.elem}-Schaden, Modus {mode}")
-        label = {"weapon": "Waffe", "armor": "Helm/Brust/Hose", "accessory": "Ring/Kette"}
+            self.lbl_gems.configure(text=f"Rated for {ctx.main}, {ctx.elem} damage, mode {mode}")
+        label = {"weapon": "Weapon", "armor": "Helm/Chest/Pants", "accessory": "Ring/Necklace"}
         rows = []
         for gem, group, stat, val, pct, name in item_quality.gem_options(tier):
             bonus = f"{stat} +{val:g}{'%' if pct else ''}"
@@ -1714,16 +1723,16 @@ class App:
             if ctx.char:
                 ev = item_eval.evaluate_deltas({stat: (float(val), pct)}, ctx, mode)
                 score = ev.score
-                parts = [f"{ev.dps_pct:+.1f} % Schaden" if abs(ev.dps_pct) >= 0.05 else "",
-                         f"{ev.surv_pct:+.1f} % Überleben" if abs(ev.surv_pct) >= 0.05 else "",
-                         f"{ev.farm_pct:+.1f} % Ertrag" if abs(ev.farm_pct) >= 0.05 else ""]
-                eff = " · ".join(x for x in parts if x) or "kein Effekt"
+                parts = [f"{ev.dps_pct:+.1f} % damage" if abs(ev.dps_pct) >= 0.05 else "",
+                         f"{ev.surv_pct:+.1f} % survival" if abs(ev.surv_pct) >= 0.05 else "",
+                         f"{ev.farm_pct:+.1f} % income" if abs(ev.farm_pct) >= 0.05 else ""]
+                eff = " · ".join(x for x in parts if x) or "no effect"
             rows.append((group, score, gem, bonus, eff))
         order = {"weapon": 0, "armor": 1, "accessory": 2}
         rows.sort(key=lambda r: (order[r[0]], -r[1]))
         seen = set()
         for group, score, gem, bonus, eff in rows:
-            if ctx.char and eff == "kein Effekt":
+            if ctx.char and eff == "no effect":
                 continue  # no use for this character
             first = group not in seen and score > 0
             seen.add(group)
@@ -1731,20 +1740,20 @@ class App:
                                  values=(label[group], ("★ " if first else "") + gem, bonus, eff))
 
     def _build_stages(self, p):
-        ui.page_header(p, "Stages", "Alle Runs pro Stage und Schwierigkeit, über Neustarts hinweg. Gold inklusive "
-                                    "Verkäufe. ★ = beste Stage für EXP bzw. Gold (ab 3 Runs).\n\nZeile anklicken: "
-                                    "Gegner und ihre Schadensarten, Item-Level der Drops und eine Prognose für die "
-                                    "nächste Schwierigkeit.")
-        cols = [("stage", "Stage", 200, "w"), ("diff", "Diff", 58, "w"), ("runs", "Runs", 56, "e"),
-                ("t", "Ø Zeit", 64, "e"), ("xp", "EXP/h", 75, "e"), ("gold", "Gold/h", 70, "e"),
-                ("it", "Items/h", 66, "e"), ("dead", "Tode", 56, "e"), ("dps", "Ø DPS", 70, "e")]
+        ui.page_header(p, "Stages", "All runs per stage and difficulty of this character, across restarts. Gold "
+                                    "includes sales. ★ = best stage for EXP or gold (from 3 runs).\n\nClick a row: "
+                                    "enemies and their damage types, item level of drops and a forecast for the "
+                                    "next difficulty.")
+        cols = [("stage", "Stage", 180, "w"), ("diff", "Diff", 64, "w"), ("runs", "Runs", 50, "e"),
+                ("t", "Time", 56, "e"), ("xp", "EXP/h", 75, "e"), ("gold", "Gold/h", 72, "e"),
+                ("it", "Items/h", 70, "e"), ("dead", "Deaths", 66, "e"), ("dps", "DPS", 66, "e")]
         f, self.stage_tree = self._tree(p, cols, 9)
         f.pack(fill="both", expand=True, padx=14, pady=(0, 6))
         self.stage_tree.tag_configure("best", foreground=C_GOOD)
         self.stage_tree.bind("<<TreeviewSelect>>", self._stage_select)
         det = ui.card(p, fill="x", padx=14, pady=(0, 12))
         self.lbl_stage_detail = ui.autowrap(tk.Label(det, bg=PANEL, fg=FG, font=ui.F_SMALL, anchor="w", justify="left",
-                                                     text="Stage in der Liste anklicken für Details."), 24)
+                                                     text="Click a stage in the list for details."), 24)
         self.lbl_stage_detail.pack(fill="x", padx=12, pady=10)
         self._stage_rows = []
         self._stage_sig = None
@@ -1764,13 +1773,13 @@ class App:
                 continue
             if not r.stage_name and now - r.end < 150:
                 break  # wait for the log panel to name the stage
-            stage = r.stage_name or r.stage_guess or f"Unbekannt ({r.waves} Waves)"
+            stage = r.stage_name or r.stage_guess or f"Unknown ({r.waves} waves)"
             cycle = r.end - prev.end if prev and prev.end and 0 < r.end - prev.end < r.duration * 1.5 + 60 else r.duration
             t0 = prev.end if prev and prev.end else r.start
             sold_gold = sum(g for t, _, g, _ in sold if t0 < t <= r.end + 10)
             self.stage_stats.add_run(r.char or self.state.char_name, stage, r.difficulty, cycle, r.xp, r.gold,
                                      sold_gold, r.items,
-                                     r.death == "bestätigt" or r.death == "vermutet",
+                                     r.death == "confirmed" or r.death == "suspected",
                                      r.damage, r.duration if r.damage else 0)
             r.aggregated = True
             changed = True
@@ -1801,39 +1810,39 @@ class App:
             return
         x = self._stage_rows[int(sel[0])]
         info = stages.stage_info(x["stage"], self.enemy_data)
-        parts = [f"{x['stage']} · {x['difficulty']} · {x['runs']} Runs · Ø {fmt(x['xp_run'])} EXP/Run"]
+        parts = [f"{x['stage']} · {x['difficulty']} · {x['runs']} runs · avg {fmt(x['xp_run'])} EXP/run"]
         if info:
             prof = stages.damage_profile(info)
             lv = f"Level {info.get('level_min')}–{info.get('level_max')}" if info.get("level_min") else ""
-            dmg = ", ".join(f"{k} {v * 100:.0f} %" for k, v in sorted(prof.items(), key=lambda kv: -kv[1])) or "unbekannt"
-            dot = ", ".join(info.get("dot") or []) or "keine bekannt"
-            parts.append(f"Gegner: {lv} · Schadensarten: {dmg} · Schaden über Zeit: {dot}"
+            dmg = ", ".join(f"{k} {v * 100:.0f} %" for k, v in sorted(prof.items(), key=lambda kv: -kv[1])) or "unknown"
+            dot = ", ".join(info.get("dot") or []) or "none known"
+            parts.append(f"Enemies: {lv} · damage types: {dmg} · damage over time: {dot}"
                          + (f" · Boss: {info['boss']}" if info.get("boss") else ""))
             if info.get("enemies"):
-                parts.append("Gegnertypen: " + ", ".join(info["enemies"][:12]))
+                parts.append("Enemy types: " + ", ".join(info["enemies"][:12]))
             lo, hi = item_quality.drop_item_level(info.get("level_min") or 70, x["difficulty"])
-            loot = [f"Drops: Item-Level {lo}–{hi} (tragbar ab Lvl {min(70, lo // 10)})"]
+            loot = [f"Drops: item level {lo}–{hi} (wearable from level {min(70, lo // 10)})"]
             if info.get("boss"):
                 blvl = 70 if x["difficulty"] != "Normal" else (info.get("level_max") or 70)
                 shards = item_quality.soul_shards(blvl, x["difficulty"])
                 per_h = shards * 3600 / x["avg_s"] if x.get("avg_s") else 0
-                loot.append(f"Boss {info['boss']}: {shards} Soul Shards pro Boss-Kill (≈ {per_h:.0f}/h)")
+                loot.append(f"Boss {info['boss']}: {shards} Soul Shards per boss kill (≈ {per_h:.0f}/h)")
             parts.append(" · ".join(loot))
         else:
-            parts.append("Gegnerdaten: für diese Stage nicht in data/enemies.json gefunden.")
+            parts.append("Enemy data: this stage is not in data/enemies.json.")
         level = info.get("level_max") if info else None
         fc = stages.forecast(x, level)
         if fc:
             parts.append(
-                f"Prognose {fc['difficulty']} (gleiche Ausrüstung): Gegner {fc['hp_factor']:.1f}× HP, "
-                f"{fc['dmg_factor']:.2f}× Schaden → Run ≈ {fmt_dur(fc['run_s'])}, EXP/h ≈ {fmt(fc['xp_h'])} "
-                f"(jetzt {fmt(x['xp_h'])}), Gold/h ≈ {fmt(fc['gold_h'])} (jetzt {fmt(x['gold_h'])}).")
+                f"Forecast {fc['difficulty']} (same gear): enemies {fc['hp_factor']:.1f}× HP, "
+                f"{fc['dmg_factor']:.2f}× damage → run ≈ {fmt_dur(fc['run_s'])}, EXP/h ≈ {fmt(fc['xp_h'])} "
+                f"(now {fmt(x['xp_h'])}), Gold/h ≈ {fmt(fc['gold_h'])} (now {fmt(x['gold_h'])}).")
             need = fc["dmg_factor"]
             parts.append(
-                f"Um dort gleich sicher zu sein, bräuchtest du ≈ {need:.2f}× deine heutige effektive HP "
+                f"To be as safe there you would need ≈ {need:.2f}× your current effective HP "
                 f"(Toughness {fmt(self._toughness() or 0)} → ≈ {fmt((self._toughness() or 0) * need)})"
-                + (f" · heute {x['death_rate'] * 100:.0f} % Tode" if x["runs"] else "") + "."
-                + ("" if fc["stage_level_known"] else " Stage-Level unbekannt: Level-Anstieg auf 70 nicht eingerechnet."))
+                + (f" · now {x['death_rate'] * 100:.0f} % deaths" if x["runs"] else "") + "."
+                + ("" if fc["stage_level_known"] else " Stage level unknown: the rise to level 70 is not included."))
         self.lbl_stage_detail.configure(text="\n".join(parts))
 
     def _toughness(self):
@@ -1844,19 +1853,19 @@ class App:
         return item_eval.defense(c, c, ctx)["toughness"]
 
     def _build_drops(self, p):
-        hdr = ui.page_header(p, "Drops", "Quelle: Einblendungen unten links im Spiel („Sold …“, „Obtained …“), "
-                                         "ersatzweise das Log-Fenster. Rarity aus der Farbe des Namens: weiß Common, "
-                                         "blau Uncommon, gelb Rare, orange Legendary. Edelsteine nach Stufe "
-                                         "(Raw Sphere 1 bis Radiant Octagon 6).")
+        hdr = ui.page_header(p, "Drops", "Source: the pop-ups at the bottom left of the game (“Sold …”, “Obtained …”), "
+                                         "otherwise the log panel. Rarity from the colour of the name: white Common, "
+                                         "blue Uncommon, yellow Rare, orange Legendary. Gems by tier "
+                                         "(Raw Sphere 1 to Radiant Octagon 6).")
         self.lbl_drops = tk.Label(hdr, bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="e")
         self.lbl_drops.pack(side="right")
-        cols = [("r", "Rarity", 120, "w"), ("n", "Anzahl", 70, "e"), ("h", "pro h", 70, "e"),
-                ("pct", "Anteil", 70, "e"), ("sold", "verkauft", 70, "e"), ("gold", "Verkaufsgold", 100, "e")]
+        cols = [("r", "Rarity", 120, "w"), ("n", "Count", 70, "e"), ("h", "per h", 70, "e"),
+                ("pct", "Share", 70, "e"), ("sold", "sold", 70, "e"), ("gold", "Sales gold", 100, "e")]
         f, self.drop_tree = self._tree(p, cols, 6)
         f.pack(fill="x", padx=14, pady=(0, 4))
-        self._section(p, "Letzte Funde")
-        cols = [("t", "Zeit", 62, "e"), ("item", "Item", 230, "w"), ("r", "Rarity", 90, "w"),
-                ("a", "Aktion", 90, "w"), ("g", "Gold", 60, "e")]
+        self._section(p, "Recent drops")
+        cols = [("t", "Time", 62, "e"), ("item", "Item", 230, "w"), ("r", "Rarity", 90, "w"),
+                ("a", "Action", 90, "w"), ("g", "Gold", 60, "e")]
         f, self.drop_list = self._tree(p, cols, 9)
         f.pack(fill="both", expand=True, padx=14, pady=(0, 12))
         for tree in (self.drop_tree, self.drop_list):
@@ -1874,7 +1883,7 @@ class App:
         self._drops_sig = sig
         br = d["by_rarity"]
         total = sum(v["n"] for v in br.values())
-        self.lbl_drops.configure(text=f"{total} Funde in dieser Session" if total else "Noch keine Funde")
+        self.lbl_drops.configure(text=f"{total} drops this session" if total else "No drops yet")
         self.drop_tree.delete(*self.drop_tree.get_children())
         for rar in sorted(br, key=lambda r: item_ocr.RARITY_ORDER.index(r) if r in item_ocr.RARITY_ORDER else 99):
             v = br[rar]
@@ -1886,38 +1895,38 @@ class App:
                 datetime.fromtimestamp(t).strftime("%H:%M"), item, rar, action, fmt(gold) if gold else "-"))
 
     def _build_deaths(self, p):
-        top = ui.page_header(p, "Tode", "Das Spiel schreibt Tode nur ins Log-Fenster. „bestätigt“: Todeszeile "
-                                        "(„Killed by …“) oder Tod-Text gelesen. „vermutet“: Run brachte unter 60 % "
-                                        "der üblichen EXP dieser Stage und endete früher (ab 3 Vergleichs-Runs). "
-                                        "Wave ≈ aus dem EXP-Anteil geschätzt. Gespeichert in deaths_log.csv.")
+        top = ui.page_header(p, "Deaths", "The game writes deaths only to the log panel. “confirmed”: death line "
+                                        "(“Killed by …”) or death text read. “suspected”: the run brought less than 60 % "
+                                        "of the usual EXP of this stage and ended early (from 3 comparison runs). "
+                                        "Wave ≈ estimated from the EXP share. Saved in deaths_log.csv.")
         self.lbl_deaths = tk.Label(top, text="", bg=BG, fg=FG, font=("Bahnschrift SemiBold", 13), anchor="e")
         self.lbl_deaths.pack(side="right")
         self.lbl_deaths_sub = tk.Label(p, bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w", justify="left")
         self.lbl_deaths_sub.pack(fill="x", padx=16)
-        cols = [("t", "Zeit", 62, "e"), ("st", "Status", 74, "w"), ("stage", "Stage", 130, "w"),
-                ("killer", "Getötet von", 150, "w"),
-                ("wave", "Wave ≈", 60, "e"), ("dur", "Dauer", 56, "e"), ("xp", "EXP-Anteil", 76, "e"),
-                ("dps", "Ø DPS", 66, "e")]
+        cols = [("t", "Time", 62, "e"), ("st", "Status", 74, "w"), ("stage", "Stage", 130, "w"),
+                ("killer", "Killed by", 150, "w"),
+                ("wave", "Wave ≈", 60, "e"), ("dur", "Duration", 56, "e"), ("xp", "EXP share", 76, "e"),
+                ("dps", "Avg DPS", 66, "e")]
         f, self.death_tree = self._tree(p, cols, 10)
         f.pack(fill="both", expand=True, padx=14, pady=(6, 6))
         self.death_tree.bind("<<TreeviewSelect>>", self._death_select)
         det = ui.card(p, fill="x", padx=14, pady=(0, 12))
         self.lbl_death_detail = ui.autowrap(tk.Label(det, bg=PANEL, fg=FG, font=ui.F_SMALL, anchor="w", justify="left",
-                                                     text="Tod in der Liste anklicken für Details."), 24)
+                                                     text="Click a death in the list for details."), 24)
         self.lbl_death_detail.pack(fill="x", padx=12, pady=10)
         self._death_rows = None
 
     def _refresh_deaths(self):
         d = self.state.death_stats()
         if d["n"] == 0:
-            self.lbl_deaths.configure(text="Keine Tode in dieser Session", fg=C_GOOD)
+            self.lbl_deaths.configure(text="No deaths this session", fg=C_GOOD)
         else:
-            self.lbl_deaths.configure(text=f"{d['n']} {'Tod' if d['n'] == 1 else 'Tode'}, {d['per_h']:.1f} pro Stunde",
+            self.lbl_deaths.configure(text=f"{d['n']} {'death' if d['n'] == 1 else 'deaths'}, {d['per_h']:.1f} per hour",
                                       fg=C_BAD)
         self.lbl_deaths_sub.configure(
-            text=f"{d['confirmed']} bestätigt · {d['n'] - d['confirmed']} vermutet · "
-                 f"{d['rate'] * 100:.1f} % der Runs")
-        self.nb.tab(self.tab_death, text=f"Tode ({d['n']})" if d["n"] else "Tode")
+            text=f"{d['confirmed']} confirmed · {d['n'] - d['confirmed']} suspected · "
+                 f"{d['rate'] * 100:.1f} % of runs")
+        self.nb.tab(self.tab_death, text=f"Deaths ({d['n']})" if d["n"] else "Deaths")
         sig = (d["n"], sum(bool(r.death_info.get("killer")) for r in d["list"]))
         if sig == self._death_rows:
             return
@@ -1927,7 +1936,7 @@ class App:
         for idx, r in reversed(list(enumerate(d["list"]))):
             i = r.death_info
             xr = i.get("xp_ratio")
-            self.death_tree.insert("", "end", iid=str(idx), tags=("bad" if r.death == "bestätigt" else "meh",), values=(
+            self.death_tree.insert("", "end", iid=str(idx), tags=("bad" if r.death == "confirmed" else "meh",), values=(
                 datetime.fromtimestamp(r.end).strftime("%H:%M:%S"), r.death,
                 r.stage_name or r.stage_guess or f"{r.difficulty} · {r.waves} W", i.get("killer", "-"),
                 f"{i['est_wave']}/{r.waves}" if i.get("est_wave") else "-", fmt_dur(r.duration),
@@ -1940,28 +1949,28 @@ class App:
         r = self._death_list[int(sel[0])]
         i = r.death_info
         parts = [f"{datetime.fromtimestamp(r.end).strftime('%H:%M:%S')} · {r.death} · Lvl {i.get('level', r.level)}",
-                 f"Stage: {r.difficulty}, {r.waves} Waves · gestorben ≈ Wave {i.get('est_wave', '?')}",
-                 f"Run-Dauer {fmt_dur(r.duration)} ({(i.get('dur_ratio') or 0) * 100:.0f} % der üblichen) · "
-                 f"EXP {fmt(r.xp)} ({(i.get('xp_ratio') or 0) * 100:.0f} % der üblichen, Basis {i.get('ref_runs', 0)} Runs)",
+                 f"Stage: {r.difficulty}, {r.waves} waves · died ≈ wave {i.get('est_wave', '?')}",
+                 f"Run time {fmt_dur(r.duration)} ({(i.get('dur_ratio') or 0) * 100:.0f} % of usual) · "
+                 f"EXP {fmt(r.xp)} ({(i.get('xp_ratio') or 0) * 100:.0f} % of usual, based on {i.get('ref_runs', 0)} runs)",
                  f"Gold {fmt(r.gold)} · Items {r.items} · MF {r.mf:g} GF {r.gf:g}"]
         if r.damage:
-            parts.append(f"Ø DPS im Run {fmt(r.avg_dps)} · Peak {fmt(r.peak_dps)}")
+            parts.append(f"Avg DPS in the run {fmt(r.avg_dps)} · peak {fmt(r.peak_dps)}")
         if i.get("killer"):
-            parts.append(f"Getötet von {i['killer']} (Lv. {i.get('killer_level', '?')})"
+            parts.append(f"Killed by {i['killer']} (Lv. {i.get('killer_level', '?')})"
                          + (f" · {i['source']}" if i.get("source") else "")
                          + f" · {i.get('damage', '?')} {i.get('element', '')} Damage")
         elif i.get("screen"):
-            parts.append(f"Bildschirm: „{i['screen']}“")
+            parts.append(f"Screen: “{i['screen']}”")
         self.lbl_death_detail.configure(text="\n".join(parts))
 
     def _build_weights(self, p):
-        top = ui.page_header(p, "Bewertung", "Grundlagen für den Item-Vergleich und die Edelsteine. Schaden und "
-                                             "Überleben folgen den Spielformeln; hier legst du fest, was "
-                                             "sich nicht berechnen lässt.")
-        self._btn(top, "Standard wiederherstellen", self.reset_weights, side="right")
+        top = ui.page_header(p, "Weights", "Basis for the item comparison and the gems. Damage and survival "
+                                             "follow the game's formulas; here you set what cannot be "
+                                             "calculated. Saved per character.")
+        self._btn(top, "Restore defaults", self.reset_weights, side="right")
         row = tk.Frame(p, bg=BG)
         row.pack(fill="x", padx=16, pady=(0, 4))
-        tk.Label(row, text="Schadens-Element", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left", padx=(0, 6))
+        tk.Label(row, text="Damage element", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left", padx=(0, 6))
         self.var_elem = tk.StringVar(value=self.cfg.get("element", "Auto"))
         cb = ttk.Combobox(row, textvariable=self.var_elem, values=["Auto"] + item_eval.ELEMENTS, width=10,
                           state="readonly")
@@ -1969,21 +1978,21 @@ class App:
         cb.bind("<<ComboboxSelected>>", lambda _: (self._set_cfg("element", self.var_elem.get()), self._fill_eval_tab()))
         self.lbl_ctx = ui.autowrap(tk.Label(p, bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w", justify="left"))
         self.lbl_ctx.pack(fill="x", padx=16, pady=(0, 2))
-        self._section(p, "Legendäre Effekte", "Doppelklick auf „Eigener Wert“: z. B. „15“ = +15 % Schaden, "
-                                              "„0/10“ = +10 % Überleben. Leer = automatische Bewertung.")
-        cols = [("name", "Legendary", 180, "w"), ("slot", "Slot", 70, "w"), ("auto", "Bewertung", 250, "w"),
-                ("own", "Eigener Wert", 90, "e")]
+        self._section(p, "Legendary effects", "Double-click “Own value”: e.g. “15” = +15 % damage, "
+                                              "“0/10” = +10 % survival. Empty = automatic rating.")
+        cols = [("name", "Legendary", 180, "w"), ("slot", "Slot", 70, "w"), ("auto", "Rating", 250, "w"),
+                ("own", "Own value", 90, "e")]
         f, self.leg_tree = self._tree(p, cols, 8)
         f.pack(fill="both", expand=True, padx=14, pady=(0, 4))
         self.leg_tree.bind("<Double-1>", self._edit_legendary)
-        self._section(p, "Sonstige Stats", "Stats außerhalb der Formeln. Doppelklick auf den Wert zum Ändern: "
-                                           "wie viel Prozent Schaden, Überleben oder Ertrag ein Punkt (bzw. 1 %) bringt.")
-        cols = [("stat", "Stat", 200, "w"), ("tgt", "wirkt auf", 100, "w"), ("per", "% pro Einheit", 100, "e")]
+        self._section(p, "Other stats", "Stats outside the formulas. Double-click the value to change it: "
+                                           "how many percent damage, survival or income one point (or 1 %) brings.")
+        cols = [("stat", "Stat", 200, "w"), ("tgt", "affects", 100, "w"), ("per", "% per unit", 100, "e")]
         f, self.w_tree = self._tree(p, cols, 5)
         f.pack(fill="both", expand=False, padx=14, pady=(0, 12))
         self.w_tree.bind("<Double-1>", self._edit_other)
 
-    TARGET_LABEL = {"dps": "Schaden", "surv": "Überleben", "farm": "Ertrag"}
+    TARGET_LABEL = {"dps": "Damage", "surv": "Survival", "farm": "Income"}
 
     def _eval_context(self) -> "item_eval.Context":
         char = {k: v[0] for k, v in self.char_stats.items()}
@@ -2029,18 +2038,18 @@ class App:
         ctx = self._eval_context()
         deaths = self._death_history()
         dw = ", ".join(f"{e} {w * 100:.0f} %" for e, w in sorted(ctx.damage_weights.items(), key=lambda kv: -kv[1])
-                       if w >= 0.1) if ctx.damage_weights else "alle gleich (noch < 3 Tode, keine Gegnerdaten)"
+                       if w >= 0.1) if ctx.damage_weights else "all equal (fewer than 3 deaths, no enemy data)"
         self.lbl_ctx.configure(text=(
-            f"Hauptattribut: {ctx.main} ({ctx.hero or 'Klasse unbekannt'}) · Element: {ctx.elem} · "
-            f"Gegner-Level: {ctx.enemy_level or str(ctx.level or '?') + ' (Heldenlevel)'} · "
-            f"Schadensarten ({'aus ' + str(len(deaths)) + ' Toden' if len(deaths) >= 3 else 'Gegner der Stage ' + (self.state.stage_name or '?')}): "
-            f"{dw} · DoT-Anteil {ctx.dot_share * 100:.0f} %\n"
+            f"Main attribute: {ctx.main} ({ctx.hero or 'class unknown'}) · Element: {ctx.elem} · "
+            f"Enemy level: {ctx.enemy_level or str(ctx.level or '?') + ' (hero level)'} · "
+            f"Damage types ({'from ' + str(len(deaths)) + ' deaths' if len(deaths) >= 3 else 'enemies of stage ' + (self.state.stage_name or '?')}): "
+            f"{dw} · DoT share {ctx.dot_share * 100:.0f} %\n"
             ""))
         self.leg_tree.delete(*self.leg_tree.get_children())
         ov = self.cfg.get("legendary_values", {})
         for L in item_eval.LEGENDARIES:
             _, txt, known, _ = item_eval._legendary_deltas(L, L["effect"], 1, item_eval.Context(char={}, element=ctx.elem), {})
-            txt = txt.replace(" – im Tab Bewertung selbst bewerten", " – selbst bewerten →")
+            txt = txt.replace(" – set your own value in the Weights tab", " – set your own value →")
             own = ov.get(L["name"])
             own_txt = f"{own.get('dps', 0):g}/{own.get('surv', 0):g}" if own else ""
             self.leg_tree.insert("", "end", iid=L["name"], values=(L["name"], L["slot"], txt, own_txt),
@@ -2114,7 +2123,7 @@ class App:
             v, pct = self.char_stats[k]
             self.char_tree.insert("", "end", values=(k, f"{v:g}{'%' if pct else ''}"))
         n = len(self.char_stats)
-        self.lbl_char.configure(text=f"{n} Werte · Stand {self.char_stats_time}" if n else "Noch nicht eingelesen")
+        self.lbl_char.configure(text=f"{n} values · as of {self.char_stats_time}" if n else "Not read yet")
 
     def clear_char(self):
         self.char_stats, self.char_stats_time = {}, ""
@@ -2179,15 +2188,15 @@ class App:
                         self._merge_attributes(ev[2])
                 elif ev[0] == "error":
                     self.busy = False
-                    self.lbl_verdict.configure(text=f"Fehler: {ev[2]}", fg=C_BAD) if ev[1] == "item" else \
-                        self.lbl_char.configure(text=f"Fehler: {ev[2]}")
+                    self.lbl_verdict.configure(text=f"Error: {ev[2]}", fg=C_BAD) if ev[1] == "item" else \
+                        self.lbl_char.configure(text=f"Error: {ev[2]}")
         except queue.Empty:
             pass
         self.root.after(100, self.poll_events)
 
     def _merge_attributes(self, stats: dict):
         if not stats:
-            self.lbl_char.configure(text="Keine Attribute erkannt – ist das Charakterfenster offen?")
+            self.lbl_char.configure(text="No attributes found – is the character window open?")
             self.nb.select(self.tab_char)
             return
         self.char_stats.update(stats)
@@ -2196,7 +2205,7 @@ class App:
         self._fill_char()
         self._fill_gems()
         self._fill_eval_tab()
-        self.lbl_char.configure(text=f"+{len(stats)} gelesen · {len(self.char_stats)} Werte · Stand {self.char_stats_time}")
+        self.lbl_char.configure(text=f"+{len(stats)} read · {len(self.char_stats)} values · as of {self.char_stats_time}")
         self.nb.select(self.tab_char)
 
     def _remember_weapon(self, res):
@@ -2218,8 +2227,8 @@ class App:
         self.nb.select(self.tab_items)
         self.item_tree.delete(*self.item_tree.get_children())
         if res.mode == "none":
-            self._fill_card(self.card_new, "Kein Item-Tooltip erkannt", None, {},
-                            "Maus über dem Item halten, bis der Tooltip offen ist, dann Hotkey drücken.")
+            self._fill_card(self.card_new, "No item tooltip found", None, {},
+                            "Hover the item until its tooltip is open, then press the hotkey.")
             for w in self.card_old.winfo_children():
                 w.destroy()
             self.lbl_verdict.configure(text="-", fg=FG)
@@ -2248,39 +2257,39 @@ class App:
         ev = item_eval.evaluate(res_eval, self._eval_context(), mode)
         if getattr(res, "warnings", None):
             ev.confident = False
-        color = {"ANLEGEN": C_GOOD, "SPÄTER ANLEGEN": C_GOOD, "NICHT ANLEGEN": C_BAD}.get(ev.verdict, C_MEH)
+        color = {"EQUIP": C_GOOD, "EQUIP LATER": C_GOOD, "DO NOT EQUIP": C_BAD}.get(ev.verdict, C_MEH)
         if res.mode == "single":
-            verdict, color = "KEIN VERGLEICH", C_MEH
+            verdict, color = "NO COMPARISON", C_MEH
         elif not self.char_stats:
-            verdict, color = "CHARAKTER EINLESEN (F9)", C_MEH
+            verdict, color = "READ CHARACTER (F9)", C_MEH
         else:
             verdict = ev.verdict
-        sure = "sicher" if ev.confident else "unsicher"
-        nice = {"ANLEGEN": "Anlegen", "SPÄTER ANLEGEN": "Später anlegen", "NICHT ANLEGEN": "Nicht anlegen",
-                "SEITWÄRTS": "Gleichwertig", "KEIN VERGLEICH": "Kein Vergleich",
-                "CHARAKTER EINLESEN (F9)": "Charakter einlesen (F9)"}.get(verdict, verdict)
+        sure = "certain" if ev.confident else "uncertain"
+        nice = {"EQUIP": "Equip", "EQUIP LATER": "Equip later", "DO NOT EQUIP": "Do not equip",
+                "SIDEGRADE": "Equal", "NO COMPARISON": "No comparison",
+                "READ CHARACTER (F9)": "Read character (F9)"}.get(verdict, verdict)
         self.lbl_verdict.configure(text=nice, fg=color)
         self.lbl_sure.configure(text=sure, fg=MUTED if ev.confident else C_MEH)
-        if verdict in ("ANLEGEN", "SPÄTER ANLEGEN", "NICHT ANLEGEN", "SEITWÄRTS"):
-            what = {"Schaden": "vor allem Schaden", "Überleben": "vor allem Überleben",
-                    "Ausgewogen": "Schaden und Überleben gleich", "Farmen": "vor allem Gold, Items und EXP"}[mode]
-            reason = f"Im Modus {mode} ({what} zählt) ändert sich dein Charakter insgesamt um {ev.score:+.1f} %."
-            if verdict == "SEITWÄRTS":
-                reason += " Das ist unter ±1 % – kein spürbarer Unterschied, behalte was dir lieber ist."
-            elif verdict == "SPÄTER ANLEGEN":
-                reason += f" Du kannst es erst ab Level {res.req_level} tragen."
-        elif verdict == "KEIN VERGLEICH":
-            reason = "Kein Vergleichs-Tooltip: entweder ist der Slot leer oder das Spiel zeigt nur dieses Item."
+        if verdict in ("EQUIP", "EQUIP LATER", "DO NOT EQUIP", "SIDEGRADE"):
+            what = {"Damage": "mostly damage", "Survival": "mostly survival",
+                    "Balanced": "damage and survival equally", "Farming": "mostly gold, items and EXP"}[mode]
+            reason = f"In {mode} mode ({what} counts) your character changes by {ev.score:+.1f} % overall."
+            if verdict == "SIDEGRADE":
+                reason += " That is below ±1 % – no noticeable difference, keep whichever you prefer."
+            elif verdict == "EQUIP LATER":
+                reason += f" You can wear it from level {res.req_level}."
+        elif verdict == "NO COMPARISON":
+            reason = "No comparison tooltip: either the slot is empty or the game shows only this item."
         else:
-            reason = "Ohne eingelesenen Charakter lässt sich die Wirkung nicht berechnen."
+            reason = "Without a character sheet the effect cannot be calculated."
         self.lbl_reason.configure(text=reason)
 
         q_new = item_quality.roll_report(new_stats, rarity, res.item_level) if rarity else {"stats": {}, "avg": None}
         q_old = item_quality.roll_report(old_stats, o_rar, res.old_item_level) if o_rar and res.old_item_level else None
-        self._fill_card(self.card_new, "Neu", res.new_item, q_new["stats"], gems=ev.gems.get("new"))
+        self._fill_card(self.card_new, "New", res.new_item, q_new["stats"], gems=ev.gems.get("new"))
         if res.mode == "compare":
             self.card_old.grid()
-            self._fill_card(self.card_old, "Angelegt", res.old_item, q_old["stats"] if q_old else {},
+            self._fill_card(self.card_old, "Equipped", res.old_item, q_old["stats"] if q_old else {},
                             gems=ev.gems.get("old"))
         else:
             self.card_old.grid_remove()
@@ -2292,37 +2301,37 @@ class App:
             sl.configure(text=sub)
 
         has_char = bool(self.char_stats)
-        metric("dps", ev.dps_pct if has_char else None, f"{ev.main}, {ev.element}" if has_char else "F9 nötig")
+        metric("dps", ev.dps_pct if has_char else None, f"{ev.main}, {ev.element}" if has_char else "F9 needed")
         metric("surv", ev.surv_pct if has_char else None,
-               f"Toughness {fmt(ev.tough_old)} → {fmt(ev.tough_new)}" if has_char else "F9 nötig")
+               f"Toughness {fmt(ev.tough_old)} → {fmt(ev.tough_new)}" if has_char else "F9 needed")
         metric("farm", ev.farm_pct if has_char else None,
-               (", ".join(f"{k} {v:+.1f} %" for k, v in ev.farm.items() if abs(v) >= 0.05) or "keine Änderung")
-               if has_char else "F9 nötig")
+               (", ".join(f"{k} {v:+.1f} %" for k, v in ev.farm.items() if abs(v) >= 0.05) or "no change")
+               if has_char else "F9 needed")
 
-        warn = list(dict.fromkeys(ev.reasons)) + ["Lesefehler? " + w for w in getattr(res, "warnings", [])]
+        warn = list(dict.fromkeys(ev.reasons)) + ["Misread? " + w for w in getattr(res, "warnings", [])]
         self.lbl_item.configure(text="\n".join("⚠ " + w for w in warn))
         q_new = item_quality.roll_report(new_stats, rarity, res.item_level) if rarity else {"stats": {}, "avg": None}
         q_old = item_quality.roll_report(old_stats, o_rar, res.old_item_level) if o_rar and res.old_item_level else None
         qparts = []
         if q_new["avg"] is not None:
-            qparts.append(f"Roll-Qualität neu: Ø {q_new['avg']:.0f} %" + (" (Ancient)" if ancient else "")
-                          + (f" · ersetztes Item: Ø {q_old['avg']:.0f} % (iLvl {res.old_item_level})" if q_old and q_old["avg"] is not None else ""))
+            qparts.append(f"Roll quality new: avg {q_new['avg']:.0f} %" + (" (Ancient)" if ancient else "")
+                          + (f" · replaced item: avg {q_old['avg']:.0f} % (iLvl {res.old_item_level})" if q_old and q_old["avg"] is not None else ""))
             if q_new["upgraded_or_gem"]:
-                qparts.append("über Maximum (schon upgegradet oder Edelstein?): " + ", ".join(q_new["upgraded_or_gem"]))
+                qparts.append("above maximum (already upgraded or a gem?): " + ", ".join(q_new["upgraded_or_gem"]))
         if rarity and res.item_level:
             tgt = max(level, 5)
             c = item_quality.upgrade_cost(tgt, res.item_level, rarity, slot, ancient)
             ores = ", ".join(f"{fmt(v)} {k}" for k, v in c["ores"].items())
-            qparts.append(f"Upgrade auf +{tgt}: ≈ {fmt(c['gold'])} Gold, {ores}, Ø {c['attempts']:.1f} Versuche"
+            qparts.append(f"Upgrade to +{tgt}: ≈ {fmt(c['gold'])} gold, {ores}, avg {c['attempts']:.1f} attempts"
                           + (f", {c['boss'][1]}× {c['boss'][0]}" if c["boss"] else "")
-                          + (f" · Sockel: {item_quality.sockets(slot)}" if slot and item_quality.sockets(slot) else ""))
+                          + (f" · sockets: {item_quality.sockets(slot)}" if slot and item_quality.sockets(slot) else ""))
         self.lbl_quality.configure(text="\n".join(qparts))
         fx = []
         for sign, item, effect, txt, known in ev.effects:
-            head = "Neu" if sign > 0 else "Fällt weg"
-            fx.append(f"{head}: {item} – {effect}\n      Bewertung: {txt}")
+            head = "New" if sign > 0 else "Lost"
+            fx.append(f"{head}: {item} – {effect}\n      Rating: {txt}")
         if not fx:
-            fx = ["Keine Effekte, die sich ändern." if res.mode == "compare" else "Keine Effekte."]
+            fx = ["No effects that change." if res.mode == "compare" else "No effects."]
         self.lbl_fx.configure(text="\n".join(fx), fg=C_MEH if any(not k for *_, k in ev.effects) else MUTED)
         self.item_tree.configure(height=max(3, min(len(ev.rows), 16)))  # as tall as the item has stats
         for name, d, pct, txt, weighted in ev.rows:
@@ -2347,7 +2356,7 @@ class App:
     @staticmethod
     def _mode_formula(mode):
         w = item_eval.MODES[mode]
-        return " + ".join(f"{v:g}×{n}" for n, v in (("Schaden", w["dps"]), ("Überleben", w["surv"]), ("Ertrag", w["farm"])))
+        return " + ".join(f"{v:g}×{n}" for n, v in (("Damage", w["dps"]), ("Survival", w["surv"]), ("Income", w["farm"])))
 
     def _hist_select(self, _):
         sel = self.hist_tree.selection()
@@ -2380,7 +2389,7 @@ class App:
         else:
             self.ocr.enabled.set()
         on = self.ocr.enabled.is_set()
-        self.btn_ocr.configure(text="DPS-Messung: an" if on else "DPS-Messung: aus", fg=C_RUN if on else FG)
+        self.btn_ocr.configure(text="DPS meter: on" if on else "DPS meter: off", fg=C_RUN if on else FG)
         self.cfg["ocr_on"] = on
 
     def pick_region(self):
@@ -2413,7 +2422,7 @@ class App:
     def _update_panels_btn(self):
         mode = self.cfg.get("auto_panels", "always")
         mode = mode if mode in self.PANEL_MODES else "always"
-        self.btn_panels.configure(text=f"Log-Panel: {self.PANEL_MODES[mode]}", fg=FG)
+        self.btn_panels.configure(text=f"Log panel: {self.PANEL_MODES[mode]}", fg=FG)
 
     def toggle_hide(self):
         self.set_game_hidden(not self.cfg.get("game_hidden", False))
@@ -2422,7 +2431,7 @@ class App:
     def set_game_hidden(self, hidden: bool):
         hwnd = self.capture.find()
         if not hwnd:
-            self.lbl_status.configure(text="Deskrawl nicht gefunden")
+            self.lbl_status.configure(text="Deskrawl not found")
             return
         self.cfg["game_hidden"] = hidden
         if hidden:
@@ -2437,7 +2446,7 @@ class App:
     def _update_hide_btn(self):
         hidden = self.cfg.get("game_hidden", False)
         key = self.hk.get("hide", "F10")
-        self.btn_hide.configure(text=f"Deskrawl {'einblenden' if hidden else 'ausblenden'} ({key})",
+        self.btn_hide.configure(text=f"{'Show' if hidden else 'Hide'} Deskrawl ({key})",
                                 fg=ui.ACCENT if hidden else FG)
 
     def _sync_game_window(self):
@@ -2461,7 +2470,7 @@ class App:
         self._update_top_btn()
 
     def _update_top_btn(self):
-        self.btn_top.configure(text="Immer im Vordergrund: " + ("an" if self.cfg.get("topmost", False) else "aus"))
+        self.btn_top.configure(text="Always on top: " + ("on" if self.cfg.get("topmost", False) else "off"))
 
     def close(self):
         if self.cfg.get("game_hidden"):  # never leave the game invisible without the tracker
@@ -2498,18 +2507,18 @@ class App:
     def _gold_audit_text(self):
         so = self.state.sold_stats()
         if so["n"]:
-            src = "Verkaufs-Einblendung" if time.time() - self.state.last_toast < 600 else "Spiel-Log"
-            return f"Verkäufe ({src}): {so['n']} Items für {fmt(so['gold'])} Gold"
+            src = "sale pop-ups" if time.time() - self.state.last_toast < 600 else "game log"
+            return f"Sales ({src}): {so['n']} items for {fmt(so['gold'])} gold"
         ga = self.state.gold_audit
         if ga.balance is None:
-            return "Verkaufsgold: Inventar im Spiel kurz öffnen – der Tracker liest den Kontostand mit."
+            return "Sales gold: open the inventory in the game once – the tracker reads the balance."
         ago = fmt_dur(time.time() - ga.balance_t)
         if ga.rate_h is None:
-            return (f"Kontostand {fmt(ga.balance)} (vor {ago}) · Verkaufsgold: Inventar nach ein paar Runs "
-                    f"nochmal öffnen")
-        skipped = f" · {ga.skipped}× übersprungen (Gold ausgegeben)" if ga.skipped else ""
-        return (f"Kontostand {fmt(ga.balance)} (vor {ago}) · Verkaufsgold {fmt(ga.extra)} in "
-                f"{fmt_dur(ga.measured_s)} gemessen{skipped}")
+            return (f"Balance {fmt(ga.balance)} ({ago} ago) · sales gold: open the inventory again "
+                    f"after a few runs")
+        skipped = f" · {ga.skipped}× skipped (gold spent)" if ga.skipped else ""
+        return (f"Balance {fmt(ga.balance)} ({ago} ago) · sales gold {fmt(ga.extra)} measured in "
+                f"{fmt_dur(ga.measured_s)}{skipped}")
 
     def _refresh_level(self, s, sr):
         st = self.state
@@ -2521,9 +2530,9 @@ class App:
         if not e:
             self.lbl_lvl_eta.configure(text="-")
             self.lbl_lvl_runs.configure(text="")
-            self.lbl_lvl_sub.configure(text="Wartet auf die Login-Zeile im Log – Spiel einmal neu starten.")
+            self.lbl_lvl_sub.configure(text="Waiting for the login line in the log – restart the game once.")
             return
-        self.lbl_lvl_title.configure(text=f"bis Level {e['level'] + 1}")
+        self.lbl_lvl_title.configure(text=f"to level {e['level'] + 1}")
         approx = "" if e["exact"] else "≈ "
         frac = min(e["xp"] / e["need"], 1.0) if e["need"] else 0
         w = max(self.lvl_bar.winfo_width(), 1)
@@ -2542,12 +2551,12 @@ class App:
         self.lbl_lvl_eta.configure(text=fmt_dur(eta) if eta is not None else "-")
         if e["runs_left"] is not None:
             self.lbl_lvl_runs.configure(
-                text=f"{approx}{e['runs_left']:.0f} Runs auf {e['stage']}\nØ {fmt(e['xp_run'])} EXP pro Run")
+                text=f"{approx}{e['runs_left']:.0f} runs on {e['stage']}\navg {fmt(e['xp_run'])} EXP per run")
         else:
-            self.lbl_lvl_runs.configure(text="noch kein Run auf dieser Stage gemessen")
+            self.lbl_lvl_runs.configure(text="no run measured on this stage yet")
         self.lbl_lvl_sub.configure(
-            text=f"{approx}{fmt(e['xp'])} von {fmt(e['need'])} EXP ({frac * 100:.1f} %), noch {approx}{fmt(e['left'])}"
-                 f"   ·   nach EXP pro Stunde: {fmt_dur(eta_rate) if eta_rate else '-'}")
+            text=f"{approx}{fmt(e['xp'])} of {fmt(e['need'])} EXP ({frac * 100:.1f} %), {approx}{fmt(e['left'])} to go"
+                 f"   ·   by EXP per hour: {fmt_dur(eta_rate) if eta_rate else '-'}")
 
     def tick(self):
         try:
@@ -2607,7 +2616,7 @@ class App:
         save_config(self.cfg)
         self.char_stats = {k: tuple(v) for k, v in self.cfg.get("char_stats", {}).items()}
         self.char_stats_time = self.cfg.get("char_stats_time", "")
-        self.var_mode.set(self.cfg.get("item_mode", "Ausgewogen"))
+        self.var_mode.set(self.cfg.get("item_mode", "Balanced"))
         self.var_elem.set(self.cfg.get("element", "Auto"))
         self._last_item = None
         self.item_history.clear()
@@ -2622,8 +2631,8 @@ class App:
         self._fill_gems()
         self._fill_eval_tab()
         cls = self.state.characters.get(new, ("?", 0))[0]
-        self.lbl_char.configure(text=(f"Charakter gewechselt: {new} ({cls}). " +
-                                      ("Werte geladen." if self.char_stats else "Noch keine Werte – F9 drücken.")))
+        self.lbl_char.configure(text=(f"Character changed: {new} ({cls}). " +
+                                      ("Values loaded." if self.char_stats else "No values yet – press F9.")))
 
     def _refresh(self):
         st = self.state
@@ -2640,52 +2649,52 @@ class App:
         self.dots["log"].set(ok(self.tailer.status == "log ok"), self.tailer.status)
         cap = self.capture.status
         hidden = self.cfg.get("game_hidden")
-        self.dots["game"].set("ok" if cap == "Spiel ok" else ("bad" if "nicht gefunden" in cap else "warn"),
-                              cap + (" (ausgeblendet)" if hidden else "") +
-                              ("\nMinimiert kann der Tracker nichts lesen – mit F10 ausblenden statt minimieren."
-                               if "minimiert" in cap else ""))
+        self.dots["game"].set("ok" if cap == "game ok" else ("bad" if "not found" in cap else "warn"),
+                              cap + (" (hidden)" if hidden else "") +
+                              ("\nThe tracker cannot read a minimized game – hide it with F10 instead of minimizing."
+                               if "minimized" in cap else ""))
         ocr_on = self.ocr.enabled.is_set()
         self.dots["dps"].set("ok" if ocr_on and "fps" in self.ocr.status else ("warn" if ocr_on else None),
                              self.ocr.status)
-        ps = self.panels.status or "noch nicht gelesen"
-        self.dots["panels"].set("ok" if "gelesen" in ps or "nicht nötig" in ps else ("warn" if ps != "noch nicht gelesen" else None), ps)
+        ps = self.panels.status or "not read yet"
+        self.dots["panels"].set("ok" if " read" in ps or "not needed" in ps else ("warn" if ps != "not read yet" else None), ps)
         self.dots["keys"].set("bad" if self.hotkeys.failed else "ok",
-                              ("Belegt (von anderem Programm): " + ", ".join(self.hotkeys.failed)) if self.hotkeys.failed
-                              else "F8 Item prüfen · F9 Charakter einlesen · F10 Deskrawl aus-/einblenden")
+                              ("In use by another program: " + ", ".join(self.hotkeys.failed)) if self.hotkeys.failed
+                              else "F8 check item · F9 read character · F10 hide/show Deskrawl")
         if self.busy:
-            self.lbl_status.configure(text="lese Item…" if self.job_label == "item" else "lese Attribute…")
+            self.lbl_status.configure(text="reading item…" if self.job_label == "item" else "reading attributes…")
         if cur:
             self.lbl_run.configure(
-                text=f"▶  Run läuft {fmt_dur(cur.duration)} – {cur.difficulty}, {cur.waves} Waves, "
-                     f"Schaden {fmt(cur.damage)}      Bonus: MF {cur.mf:g}, GF {cur.gf:g}, XP {cur.xpm:g}")
+                text=f"▶  Run in progress {fmt_dur(cur.duration)} – {cur.difficulty}, {cur.waves} waves, "
+                     f"damage {fmt(cur.damage)}      Bonus: MF {cur.mf:g}, GF {cur.gf:g}, XP {cur.xpm:g}")
         else:
-            self.lbl_run.configure(text="Wartet auf den nächsten Run")
+            self.lbl_run.configure(text="Waiting for the next run")
 
         def tile(key, main, sub):
             self.tiles[key][0].configure(text=main)
             self.tiles[key][1].configure(text=sub)
 
-        tile("xp_h", fmt(s["xp_h"]), f"letzte 15 min {fmt(sr['xp_h'])}\nØ {fmt(s['avg_xp_run'])} pro Run")
+        tile("xp_h", fmt(s["xp_h"]), f"last 15 min {fmt(sr['xp_h'])}\navg {fmt(s['avg_xp_run'])} per run")
         ga = st.gold_audit
         so = st.sold_stats()
         if so["n"]:
             sold_h = so["gold"] / s["span"] * 3600
-            tile("gold_h", fmt(s["gold_h"] + sold_h), f"Runs {fmt(s['gold_h'])}\nVerkäufe {fmt(sold_h)}")
+            tile("gold_h", fmt(s["gold_h"] + sold_h), f"runs {fmt(s['gold_h'])}\nsales {fmt(sold_h)}")
         elif ga.rate_h is not None:
-            tile("gold_h", fmt(s["gold_h"] + ga.rate_h), f"Runs {fmt(s['gold_h'])} + Verkäufe ≈ {fmt(ga.rate_h)}")
+            tile("gold_h", fmt(s["gold_h"] + ga.rate_h), f"runs {fmt(s['gold_h'])} + sales ≈ {fmt(ga.rate_h)}")
         else:
-            tile("gold_h", fmt(s["gold_h"]), f"nur Run-Gold\nØ {fmt(s['avg_gold_run'])} pro Run")
-        tile("runs_h", f"{s['runs_h']:.1f}", f"letzte 15 min {sr['runs_h']:.1f}\nØ {fmt_dur(s['avg_run'])} pro Run")
-        tile("items_h", f"{s['items_h']:.1f}", f"letzte 15 min {sr['items_h']:.1f}\n{s['items']} insgesamt")
+            tile("gold_h", fmt(s["gold_h"]), f"run gold only\navg {fmt(s['avg_gold_run'])} per run")
+        tile("runs_h", f"{s['runs_h']:.1f}", f"last 15 min {sr['runs_h']:.1f}\navg {fmt_dur(s['avg_run'])} per run")
+        tile("items_h", f"{s['items_h']:.1f}", f"last 15 min {sr['items_h']:.1f}\n{s['items']} in total")
         if not self.ocr.enabled.is_set():
-            tile("run_dps", "-", "DPS-Messung ist aus")
+            tile("run_dps", "-", "DPS meter is off")
         elif s["avg_dps"]:
             peak = max((r.peak_dps for r in runs if r.start), default=0)
-            tile("run_dps", fmt(s["avg_dps"]), f"letzte 15 min {fmt(sr['avg_dps'])}\nPeak {fmt(peak)}")
+            tile("run_dps", fmt(s["avg_dps"]), f"last 15 min {fmt(sr['avg_dps'])}\npeak {fmt(peak)}")
         else:
-            tile("run_dps", "-", f"läuft · bisher {fmt(cur.damage)} Schaden" if cur and cur.damage else "noch kein Run gemessen")
+            tile("run_dps", "-", f"running · {fmt(cur.damage)} damage so far" if cur and cur.damage else "no run measured yet")
         dst = st.death_stats()
-        tile("deaths", f"{dst['per_h']:.1f}", f"{dst['n']} {'Tod' if dst['n'] == 1 else 'Tode'}\n{dst['rate'] * 100:.0f} % der Runs")
+        tile("deaths", f"{dst['per_h']:.1f}", f"{dst['n']} {'death' if dst['n'] == 1 else 'deaths'}\n{dst['rate'] * 100:.0f} % of runs")
 
         self._refresh_level(s, sr)
         self._refresh_deaths()
@@ -2694,9 +2703,9 @@ class App:
 
         b = st.backlog
         self.lbl_totals.configure(
-            text=f"Session {fmt_dur(s['span'])}: {s['runs']} Runs, {fmt(s['xp'])} EXP, {fmt(s['gold'])} Gold, "
-                 f"{s['items']} Items.   {self._gold_audit_text()}\n"
-                 f"Vor dem Tool-Start im Log (ohne Zeitangabe): {b['runs']} Runs, {fmt(b['xp'])} EXP, {fmt(b['gold'])} Gold")
+            text=f"Session {fmt_dur(s['span'])}: {s['runs']} runs, {fmt(s['xp'])} EXP, {fmt(s['gold'])} gold, "
+                 f"{s['items']} items.   {self._gold_audit_text()}\n"
+                 f"In the log before the tracker started (no timestamps): {b['runs']} runs, {fmt(b['xp'])} EXP, {fmt(b['gold'])} gold")
 
         sig = (len(runs), sum(bool(r.stage_name) for r in runs), sum(bool(r.stage_guess) for r in runs))
         if getattr(self, "_runs_sig", None) != sig:

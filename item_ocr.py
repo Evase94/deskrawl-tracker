@@ -687,7 +687,7 @@ def read_item(img, box) -> ItemData:
                 if m and 1 <= int(m.group(1)) <= 70:
                     it.req_level = int(m.group(1))
     if it.item_level is None:
-        it.warnings.append("Item-Level nicht gelesen")
+        it.warnings.append("item level not read")
 
     # name: the text rows right above the picture
     icon_top = t.y - t.h * 0.4
@@ -761,7 +761,7 @@ def read_item(img, box) -> ItemData:
                 st = alt
             else:
                 st.ok = False
-                it.warnings.append(f"{st.name} {st.value:g}{'%' if st.pct else ''} unsicher gelesen")
+                it.warnings.append(f"{st.name} {st.value:g}{'%' if st.pct else ''} probably misread")
         {"base": it.base, "primary": it.primary, "secondary": it.secondary, "socket": it.sockets}[kind].append(st)
 
     # OCR returns "0,83 Speed" and "191.7 DPS" in either order (same row): always use the game's order
@@ -829,7 +829,7 @@ def parse_tooltip(img, lines: list[Line] | None = None) -> ItemResult:
         res.effects_old_all = list(old.effects)
         oarmor = [s for s in old.base if s.name == "Armor"]
         res.old_stats = [(s.name, s.value) for s in oarmor + old.affixes]
-    res.warnings = [f"Neu: {w}" for w in new.warnings] + ([f"Angelegt: {w}" for w in old.warnings] if old else [])
+    res.warnings = [f"New: {w}" for w in new.warnings] + ([f"Equipped: {w}" for w in old.warnings] if old else [])
 
     # stat changes: from the two read items; the game's own "(+x)" numbers cross-check them
     if old is not None:
@@ -846,7 +846,7 @@ def parse_tooltip(img, lines: list[Line] | None = None) -> ItemResult:
             d = deltas.get(k, (0, p))[0]
             if abs(g - d) > max(0.15, abs(g) * 0.02):
                 # one of the two readings is wrong; the game's number is the one to trust
-                res.warnings.append(f"{k}: Spiel sagt {g:+g}, gelesen {d:+g}")
+                res.warnings.append(f"{k}: game says {g:+g}, read {d:+g}")
                 deltas[k] = (g, p)
         res.deltas = {k: v for k, v in deltas.items() if abs(v[0]) > 1e-9 and k != "Weapon DPS"}
     elif with_diff:
@@ -975,7 +975,7 @@ def evaluate(deltas: dict, char: dict, weights: dict, element_choice: str = "Aut
     unused = (set(MAIN_STATS) - {main}) | {f"{e} Damage" for e in ELEMENTS if e != element}
     for name, (d, pct) in deltas.items():
         if name in unused:  # other main stat / other element: no effect on this build
-            rows.append((name, d, pct, "kein Effekt", 0.0))
+            rows.append((name, d, pct, "no effect", 0.0))
         elif name in DPS_STATS:
             one = dict(base)
             one[name] = one.get(name, 0.0) + d
@@ -1130,12 +1130,12 @@ RARITY_COLORS = [  # (name, hue range, min saturation, min value)
     ("Uncommon", (95, 130), 0.35, 0.45),   # blue
     ("Rare", (22, 35), 0.45, 0.65),        # yellow
     ("Legendary", (5, 22), 0.60, 0.65),    # orange
-    ("Grün", (36, 90), 0.35, 0.45),
-    ("Lila", (131, 165), 0.30, 0.40),
+    ("Green", (36, 90), 0.35, 0.45),
+    ("Purple", (131, 165), 0.30, 0.40),
 ]
-RARITY_ORDER = (["Common", "Uncommon", "Rare", "Legendary", "Grün", "Lila"] + [f"Edelstein Stufe {i}" for i in range(1, 7)]
-                + ["Set-Rune", "Fähigkeits-Rune", "Attribut-Rune", "Rune", "Schatzschlüssel", "Boss-Material", "Schädel",
-                   "Soul Shard", "Erz", "Pflanze", "?"])
+RARITY_ORDER = (["Common", "Uncommon", "Rare", "Legendary", "Green", "Purple"] + [f"Gem Tier {i}" for i in range(1, 7)]
+                + ["Set Rune", "Ability Rune", "Attribute Rune", "Rune", "Treasure Key", "Boss Material", "Skull",
+                   "Soul Shard", "Ore", "Plant", "?"])
 
 
 def item_rarity(crop, line: Line | None, text: str) -> str:

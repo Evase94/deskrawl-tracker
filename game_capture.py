@@ -41,7 +41,7 @@ class GameCapture:
     def __init__(self, title: str = "Deskrawl", wnd_class: str = "UnityWndClass"):
         self.title, self.wnd_class = title, wnd_class
         self.hwnd = None
-        self.status = "Spiel nicht gefunden"
+        self.status = "game not found"
 
     def find(self):
         if self.hwnd and user32.IsWindow(self.hwnd):
@@ -61,10 +61,10 @@ class GameCapture:
         """Return the game's client area as a BGR numpy array, or None."""
         hwnd = self.find()
         if not hwnd:
-            self.status = "Spiel nicht gefunden"
+            self.status = "game not found"
             return None
         if user32.IsIconic(hwnd):
-            self.status = "Spiel minimiert"
+            self.status = "game minimized"
             return None
         size = self.client_size()
         if not size or size[0] <= 0 or size[1] <= 0:
@@ -81,7 +81,7 @@ class GameCapture:
             bi = _BITMAPINFOHEADER(40, w, -h, 1, 32, 0, 0, 0, 0, 0, 0)
             buf = ctypes.create_string_buffer(w * h * 4)
             gdi32.GetDIBits(mdc, bmp, 0, h, buf, ctypes.byref(bi), 0)
-            self.status = "Spiel ok"
+            self.status = "game ok"
             return np.frombuffer(buf, np.uint8).reshape(h, w, 4)[:, :, :3].copy()
         finally:
             gdi32.SelectObject(mdc, old)

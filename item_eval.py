@@ -49,10 +49,10 @@ OTHER_DEFAULTS = {
 }
 
 MODES = {
-    "Schaden": {"dps": 1.0, "surv": 0.2, "farm": 0.1},
-    "Überleben": {"dps": 0.2, "surv": 1.0, "farm": 0.05},
-    "Ausgewogen": {"dps": 1.0, "surv": 1.0, "farm": 0.3},
-    "Farmen": {"dps": 0.5, "surv": 0.2, "farm": 1.0},
+    "Damage": {"dps": 1.0, "surv": 0.2, "farm": 0.1},
+    "Survival": {"dps": 0.2, "surv": 1.0, "farm": 0.05},
+    "Balanced": {"dps": 1.0, "surv": 1.0, "farm": 0.3},
+    "Farming": {"dps": 0.5, "surv": 0.2, "farm": 1.0},
 }
 VERDICT_MARGIN = 1.0  # % of the weighted score; inside = sidegrade
 
@@ -248,16 +248,16 @@ def _legendary_deltas(L: dict, ocr_effect: str, sign: int, ctx: Context, base: d
     """Pseudo stat deltas of a legendary effect -> (deltas, valuation text, known?, fixed (dps%, surv%))."""
     ov = ctx.overrides.get(L["name"])
     if ov:
-        return {}, f"eigener Wert: {ov.get('dps', 0):+g} % Schaden, {ov.get('surv', 0):+g} % Überleben", True, \
+        return {}, f"own value: {ov.get('dps', 0):+g} % damage, {ov.get('surv', 0):+g} % survival", True, \
             (sign * ov.get("dps", 0), sign * ov.get("surv", 0))
     scale = 1.0
     t_num, o_num = _first_pct(L["effect"]), _first_pct(ocr_effect)
     if t_num and o_num and abs(o_num - t_num) / t_num < 2:  # rolled higher/lower (e.g. ancient)
         scale = o_num / t_num
     if "manual" in L:
-        return {}, f"nicht berechenbar ({L['manual']}) – im Tab Bewertung selbst bewerten", False, (0, 0)
+        return {}, f"cannot be calculated ({L['manual']}) – set your own value in the Weights tab", False, (0, 0)
     if "elements" in L and ctx.elem not in L["elements"]:
-        return {}, f"wirkt nicht auf {ctx.elem}-Schaden", True, (0, 0)
+        return {}, f"does not affect {ctx.elem} damage", True, (0, 0)
     if "special" in L:
         sp, val = L["special"], L["value"] * scale
         key = {"main_stat_pct": "Main Stat %", "phys_dr_from_dodge": "Phys DR from Dodge %",
@@ -267,16 +267,16 @@ def _legendary_deltas(L: dict, ocr_effect: str, sign: int, ctx: Context, base: d
     up = L.get("uptime", 1.0)
     deltas = {k: sign * v * scale * up for k, v in L["stats"].items()}
     txt = ", ".join(f"{k} {v * scale:+g}" for k, v in L["stats"].items())
-    return deltas, txt + (f" (Annahme: {up * 100:.0f} % aktiv)" if up < 1 else ""), True, (0, 0)
+    return deltas, txt + (f" (assumed {up * 100:.0f} % active)" if up < 1 else ""), True, (0, 0)
 
 
-def evaluate(res, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
+def evaluate(res, ctx: Context, mode: str = "Balanced") -> Evaluation:
     """res: item_ocr.ItemResult of a comparison tooltip."""
     base = dict(ctx.char)
     ev = Evaluation(main=ctx.main, element=ctx.elem)
     if not base:
         ev.confident = False
-        ev.reasons.append("Charakter nicht eingelesen (F9)")
+        ev.reasons.append("Character not read yet (F9)")
     # items list "+3.9% Attack Speed"; the character sheet calls that "Attack Speed Bonus"
     # ("Attack Speed" there is attacks per second)
     src = {("Attack Speed Bonus" if k == "Attack Speed" and p else k): (d, p) for k, (d, p) in res.deltas.items()}
@@ -289,7 +289,7 @@ def evaluate(res, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
         if "Weapon Damage" in wb:  # comparing weapons: the equipped one is right here
             weapon = (wb["Weapon Damage"], wb.get("Weapon Speed") or (weapon[1] if weapon else None))
     if weapon is None and ("Weapon Damage" in deltas or "Damage" in deltas):
-        ev.reasons.append("Waffenschaden unbekannt – einmal eine Waffe vergleichen (F8)")
+        ev.reasons.append("Weapon damage unknown – compare a weapon once (F8)")
 
     # legendary effects: add the new one, remove the old one
     fixed_dps = fixed_surv = 0.0
@@ -300,7 +300,7 @@ def evaluate(res, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
         L = find_legendary(name, fx_list)
         if not L:
             for fx in fx_list:
-                ev.effects.append((sign, name, fx, "unbekannter Effekt – nicht bewertet", False))
+                ev.effects.append((sign, name, fx, "unknown effect – not rated", False))
                 ev.confident = False
             continue
         other_side = res.old_name if sign > 0 else res.name
@@ -315,7 +315,7 @@ def evaluate(res, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
         ev.effects.append((sign, L["name"], L["effect"], txt, known))
         if not known:
             ev.confident = False
-            ev.reasons.append(f"Effekt von {L['name']} nicht bewertet")
+            ev.reasons.append(f"Effect of {L['name']} not rated")
 
     if not base:
         return ev
@@ -346,7 +346,7 @@ def evaluate(res, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
     if d0["ehp"] <= 0:  # sheet without Max Health (only part of the list read): survival unknown
         d0 = d1 = {"ehp": 1.0, "hp": 0.0, "toughness": 0.0}
         ev.confident = False
-        ev.reasons.append("Max Health fehlt – Charakterwerte vollständig einlesen (F9 oben und unten)")
+        ev.reasons.append("Max Health missing – read the full character sheet (F9 at the top and at the bottom)")
     ev.surv_pct = (d1["ehp"] / d0["ehp"] - 1) * 100 + fixed_surv
     for stat, label in FARM_STATS.items():
         ev.farm[label] = ((1 + new.get(stat, 0) / 100) / (1 + base.get(stat, 0) / 100) - 1) * 100
@@ -379,10 +379,10 @@ def evaluate(res, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
             have = sum(1 for h in g["have"] if h[0] == k)
             what = []
             if have:
-                what.append(f"{have}× vorhanden")
+                what.append(f"{have}× socketed")
             if n_fill:
-                what.append(f"{n_fill}× Vorschlag")
-            label = f"Sockel: {k}"  # sign tells new (+) from equipped (-)
+                what.append(f"{n_fill}× suggested")
+            label = f"Socket: {k}"  # sign tells new (+) from equipped (-)
             gem_rows.append((label, k, sign * v, p, ", ".join(what)))
     for label, k, d, is_pct, note in [(k, k, d, pct_flags.get(k, False), "") for k, d in deltas.items()] + gem_rows:
         one = dict(base)
@@ -390,7 +390,7 @@ def evaluate(res, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
             one[k] = one.get(k, 0.0) + d
         parts = []
         if k in unused:
-            parts.append(f"kein Effekt ({ctx.main if k in MAIN_STATS else ctx.elem + '-Build'})")
+            parts.append(f"no effect ({ctx.main if k in MAIN_STATS else ctx.elem + ' build'})")
         else:
             p_dps = (dps_factor(one, ctx) * weapon_factor({k: d}, base, weapon) / f0 - 1) * 100
             p_surv = (defense(one, base, ctx)["ehp"] / d0["ehp"] - 1) * 100 if d0["hp"] > 0 else 0.0
@@ -403,22 +403,22 @@ def evaluate(res, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
                 elif tgt == "surv":
                     p_surv += d * per
             if abs(p_dps) >= 0.05:
-                parts.append(f"{p_dps:+.1f} % Schaden")
+                parts.append(f"{p_dps:+.1f} % Damage")
             if abs(p_surv) >= 0.05:
-                parts.append(f"{p_surv:+.1f} % Überleben")
+                parts.append(f"{p_surv:+.1f} % Survival")
             if k in FARM_STATS:
                 fp = ((1 + one.get(k, 0) / 100) / (1 + base.get(k, 0) / 100) - 1) * 100
                 parts.append(f"{fp:+.1f} % {FARM_STATS[k]}")
             if not parts:
-                parts.append("kein Effekt" if k in WEAPON_STATS or note else "nicht bewertet")
+                parts.append("no effect" if k in WEAPON_STATS or note else "not rated")
         if note:
             parts.append(note)
         w = MODES[mode]
         weighted = 0.0
         for p in parts:
-            m = re.match(r"([+-][\d.]+) % (Schaden|Überleben|Gold|Items|EXP)", p)
+            m = re.match(r"([+-][\d.]+) % (Damage|Survival|Gold|Items|EXP)", p)
             if m:
-                key = {"Schaden": "dps", "Überleben": "surv"}.get(m.group(2), "farm")
+                key = {"Damage": "dps", "Survival": "surv"}.get(m.group(2), "farm")
                 weighted += float(m.group(1)) * w[key] / (3 if key == "farm" else 1)
         ev.rows.append((label, d, is_pct, " · ".join(parts), weighted))
     ev.rows.sort(key=lambda r: -abs(r[4]))
@@ -427,17 +427,17 @@ def evaluate(res, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
     ev.score = w["dps"] * ev.dps_pct + w["surv"] * ev.surv_pct + w["farm"] * ev.farm_pct
     lvl = ctx.level or int(base.get("Level", 0))
     if res.req_level and lvl and res.req_level > lvl:
-        ev.reasons.append(f"benötigt Level {res.req_level}")
+        ev.reasons.append(f"requires level {res.req_level}")
     if ev.score > VERDICT_MARGIN:
-        ev.verdict = "SPÄTER ANLEGEN" if res.req_level and lvl and res.req_level > lvl else "ANLEGEN"
+        ev.verdict = "EQUIP LATER" if res.req_level and lvl and res.req_level > lvl else "EQUIP"
     elif ev.score < -VERDICT_MARGIN:
-        ev.verdict = "NICHT ANLEGEN"
+        ev.verdict = "DO NOT EQUIP"
     else:
-        ev.verdict = "SEITWÄRTS"
+        ev.verdict = "SIDEGRADE"
     return ev
 
 
-def evaluate_deltas(deltas: dict, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
+def evaluate_deltas(deltas: dict, ctx: Context, mode: str = "Balanced") -> Evaluation:
     """Evaluate plain stat changes (gems, upgrade gains) without an item tooltip."""
     class _R:
         pass

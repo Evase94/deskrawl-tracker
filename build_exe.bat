@@ -12,4 +12,4 @@ if exist ".venv\Scripts\python.exe" set PY=.venv\Scripts\python.exe
 if errorlevel 1 (pause & exit /b 1)
 copy /y "README.md" "dist\DeskrawlTracker\" >nul
 powershell -NoProfile -Command "Compress-Archive -Force -Path dist\DeskrawlTracker -DestinationPath dist\DeskrawlTracker.zip"
-echo Fertig: dist\DeskrawlTracker.zip
+echo Done: dist\DeskrawlTracker.zip
