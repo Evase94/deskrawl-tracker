@@ -343,6 +343,10 @@ def evaluate(res, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
     d0, d1 = defense(base, base, ctx), defense(new, base, ctx)
     ev.tough_old, ev.tough_new = d0["toughness"], d1["toughness"]
     ev.dps_pct = (f1 / f0 - 1) * 100 + fixed_dps
+    if d0["ehp"] <= 0:  # sheet without Max Health (only part of the list read): survival unknown
+        d0 = d1 = {"ehp": 1.0, "hp": 0.0, "toughness": 0.0}
+        ev.confident = False
+        ev.reasons.append("Max Health fehlt – Charakterwerte vollständig einlesen (F9 oben und unten)")
     ev.surv_pct = (d1["ehp"] / d0["ehp"] - 1) * 100 + fixed_surv
     for stat, label in FARM_STATS.items():
         ev.farm[label] = ((1 + new.get(stat, 0) / 100) / (1 + base.get(stat, 0) / 100) - 1) * 100
@@ -389,7 +393,7 @@ def evaluate(res, ctx: Context, mode: str = "Ausgewogen") -> Evaluation:
             parts.append(f"kein Effekt ({ctx.main if k in MAIN_STATS else ctx.elem + '-Build'})")
         else:
             p_dps = (dps_factor(one, ctx) * weapon_factor({k: d}, base, weapon) / f0 - 1) * 100
-            p_surv = (defense(one, base, ctx)["ehp"] / d0["ehp"] - 1) * 100
+            p_surv = (defense(one, base, ctx)["ehp"] / d0["ehp"] - 1) * 100 if d0["hp"] > 0 else 0.0
             if k == "Damage" and weapon:
                 pass
             elif k in other:
