@@ -274,6 +274,7 @@ class GameState:
         self.hero = "-"
         self.char_name = "-"
         self.characters: dict = {}  # name -> (class, level) of every login seen in the log
+        self.ui_busy_until = 0.0   # the tracker window is being moved/resized: background readers pause
         self.level = 0
         self.map = "-"
         self.window_rect = None  # (x, y, w, h) of the game window from the log
@@ -367,6 +368,9 @@ class GameState:
     # screen during the run (DeathWatcher) confirms it.
     DEATH_XP_RATIO = 0.6
     DEATH_DUR_RATIO = 0.75
+
+    def ui_busy(self) -> bool:
+        return time.time() < self.ui_busy_until
 
     def apply_stage_end(self, info: dict, t: float):
         """Stage end screen: name the run that just ended (or remember it until the commit arrives)."""
@@ -937,7 +941,7 @@ class OCRWorker(threading.Thread):
                 self.enabled.wait(1.0)
                 continue
             t = time.time()
-            if t < self.suspend_until:
+            if t < self.suspend_until or self.state.ui_busy():
                 self.ocr.tracks = []  # drop half-seen numbers instead of counting them
                 time.sleep(0.2)
                 continue
@@ -986,6 +990,8 @@ class GoldWatcher(threading.Thread):
     def run(self):
         while True:
             time.sleep(self.INTERVAL_S)
+            if self.state.ui_busy():
+                continue
             try:
                 frame = self.capture.grab()
                 if frame is None:
@@ -1159,6 +1165,8 @@ class ToastWatcher(threading.Thread):
     def run(self):
         while True:
             time.sleep(self.INTERVAL_S)
+            if self.state.ui_busy():
+                continue
             try:
                 frame = self.capture.grab()
                 if frame is None:
@@ -1333,6 +1341,11 @@ class App:
         if geo and "-32000" not in geo:  # never restore a minimized position
             root.geometry(geo)
         root.protocol("WM_DELETE_WINDOW", self.close)
+        root.bind("<Configure>", self._root_configure, add="+")
+        try:  # 1 ms timer resolution: Tk's after() callbacks run on time instead of every ~16 ms
+            ctypes.windll.winmm.timeBeginPeriod(1)
+        except Exception:
+            pass
         self._build()
         root.update_idletasks()
         self.hwnd = ctypes.windll.user32.GetParent(root.winfo_id())
@@ -1433,6 +1446,10 @@ class App:
         self._update_hide_btn()
         self._update_top_btn()
         self.btn_ocr.configure(text="DPS meter: off")
+
+    def _root_configure(self, e):
+        if e.widget is self.root:  # the window itself moved or changed size
+            self.state.ui_busy_until = time.time() + 0.4
 
     def open_setup(self, first_run=False):
         setup_dialog.SetupDialog(self.root, self.cfg, self._log_chosen, first_run=first_run)
@@ -3850,6 +3867,9 @@ class App:
                  f"   ·   by EXP per hour: {fmt_dur(eta_rate) if eta_rate else '-'}")
 
     def tick(self):
+        if self.state.ui_busy():  # window is being moved or resized: keep the UI thread free
+            self.root.after(150, self.tick)
+            return
         try:
             self._check_profile()
             self._keep_visible()

@@ -200,6 +200,9 @@ class SkillWatcher(threading.Thread):
     def run(self):
         while True:
             self.enabled.wait()
+            if getattr(self.state, "ui_busy", lambda: False)():
+                time.sleep(0.05)  # the tracker window is being moved/resized
+                continue
             t0 = time.time()
             try:
                 hero = self.state.hero
