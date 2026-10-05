@@ -1,0 +1,1428 @@
+{
+ "items": [
+  {
+   "name": "Amber Skull Staff",
+   "slug": "amber-skull-staff",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Monk"
+   ],
+   "min_drop_level": 30,
+   "effect": "+100% Critical Damage against Immobilized or Slowed enemies.",
+   "max_sockets": 3,
+   "summary": "Legendary Weapon for the Warrior, Sorcerer and Monk. Drops from enemies of level 30 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Battle Draught Belt",
+   "slug": "battle-draught-belt",
+   "slot": "Belt",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 50,
+   "effect": "Drinking a Health Potion grants +35% All Damage for 6 seconds.",
+   "max_sockets": 0,
+   "summary": "Legendary Belt for all classes. Drops from enemies of level 50 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Bellow of the Open Wound",
+   "slug": "bellow-of-the-open-wound",
+   "slot": "Necklace",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior"
+   ],
+   "min_drop_level": 40,
+   "effect": "Rage Shout will trigger remaining Bleeding damage on surrounding enemies instantly.",
+   "max_sockets": 1,
+   "summary": "Legendary Necklace for the Warrior. Drops from enemies of level 40 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Blackcrow Recurve",
+   "slug": "blackcrow-recurve",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "classes": [
+    "Hunter"
+   ],
+   "min_drop_level": 10,
+   "effect": "Your Poison ability hits have a 15% chance to summon a flock of crows to attack the target, dealing a total of 720% weapon damage as Poison damage.",
+   "max_sockets": 3,
+   "summary": "Legendary Weapon for the Hunter. Drops from enemies of level 10 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Bloodfang Signet of the Wyrm",
+   "slug": "bloodfang-signet-of-the-wyrm",
+   "slot": "Ring",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior"
+   ],
+   "min_drop_level": 25,
+   "effect": "Half Moon Slash hurls two additional crescent blades.",
+   "max_sockets": 1,
+   "summary": "Legendary Ring for the Warrior. Drops from enemies of level 25 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Boots of the Mending Stride",
+   "slug": "boots-of-the-mending-stride",
+   "slot": "Boots",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 10,
+   "effect": "Restore 3% of Max Health per second while moving.",
+   "max_sockets": 0,
+   "summary": "Legendary Boots for all classes. Drops from enemies of level 10 and higher. Also a special drop of the Bloodmoon Werewolf.",
+   "enemy_drops": [
+    {
+     "enemy": "Bloodmoon Werewolf",
+     "chance": "0.5%",
+     "stage": "Kings Woods",
+     "stage_no": 7,
+     "level_normal": 10
+    }
+   ],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Boots of the Windcaller",
+   "slug": "boots-of-the-windcaller",
+   "slot": "Boots",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 25,
+   "effect": "+50% Movement Speed for 4 seconds after a kill.",
+   "max_sockets": 0,
+   "summary": "Legendary Boots for all classes. Drops from enemies of level 25 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Bottomless Potion Belt",
+   "slug": "bottomless-potion-belt",
+   "slot": "Belt",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 34,
+   "effect": "Increase Potion Charges by 4.",
+   "max_sockets": 0,
+   "summary": "Legendary Belt for all classes. Drops from enemies of level 34 and higher. Also a special drop of the Dread Sand Manticore.",
+   "enemy_drops": [
+    {
+     "enemy": "Dread Sand Manticore",
+     "chance": "0.5%",
+     "stage": "Tazan Wastes",
+     "stage_no": 7,
+     "level_normal": 34
+    }
+   ],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Bulwark of Wrath",
+   "slug": "bulwark-of-wrath",
+   "slot": "Chest Armor",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior"
+   ],
+   "min_drop_level": 35,
+   "effect": "While Rage Shield is active, deal 210% of Weapon Damage as Physical Damage to surrounding enemies every 3 seconds.",
+   "max_sockets": 2,
+   "summary": "Legendary Chest Armor for the Warrior. Drops from enemies of level 35 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Charged Ring",
+   "slug": "charged-ring",
+   "slot": "Ring",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 45,
+   "effect": "Your abilities deal up to 50% increased damage, scaling with how full your Mana is.",
+   "max_sockets": 1,
+   "summary": "Legendary Ring for all classes. Drops from enemies of level 45 and higher. Also a special drop of the Redrock Lord.",
+   "enemy_drops": [
+    {
+     "enemy": "Redrock Lord",
+     "chance": "0.5%",
+     "stage": "The Barrens",
+     "stage_no": 7,
+     "level_normal": 46
+    }
+   ],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Circlet of Focus",
+   "slug": "circlet-of-focus",
+   "slot": "Helm",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 65,
+   "effect": "Each Basic Attack grants 1 stack of Focus for 10 seconds, up to 5 stacks. Your next Strong Attack consumes all Focus, dealing 20% extra damage per stack.",
+   "max_sockets": 1,
+   "summary": "Legendary Helm for all classes. Drops from enemies of level 65 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Crown of the Fallen King",
+   "slug": "crown-of-the-fallen-king",
+   "slot": "Helm",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 10,
+   "effect": "+30% Attack Speed for 3 seconds after a kill.",
+   "max_sockets": 1,
+   "summary": "Legendary Helm for all classes. Drops from enemies of level 10 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Crown of the Wandering Gale",
+   "slug": "crown-of-the-wandering-gale",
+   "slot": "Helm",
+   "rarity": "Legendary",
+   "classes": [
+    "Monk"
+   ],
+   "min_drop_level": 35,
+   "effect": "Whirlwind Staff conjures 4 tornados, but each is 25% smaller and wanders for a shorter time.",
+   "max_sockets": 1,
+   "summary": "Legendary Helm for the Monk. Drops from enemies of level 35 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Deadeye Grips",
+   "slug": "deadeye-grips",
+   "slot": "Gloves",
+   "rarity": "Legendary",
+   "classes": [
+    "Hunter"
+   ],
+   "min_drop_level": 45,
+   "effect": "Knife Barrage and Twin Arrows can pierce through one target.",
+   "max_sockets": 0,
+   "summary": "Legendary Gloves for the Hunter. Drops from enemies of level 45 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Deflecting Handwraps",
+   "slug": "deflecting-handwraps",
+   "slot": "Gloves",
+   "rarity": "Legendary",
+   "classes": [
+    "Monk"
+   ],
+   "min_drop_level": 40,
+   "effect": "Each stack of Furious Fist also grants +1% Dodge Chance.",
+   "max_sockets": 0,
+   "summary": "Legendary Gloves for the Monk. Drops from enemies of level 40 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Duskfeather Wings",
+   "slug": "duskfeather-wings",
+   "slot": "Back",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": null,
+   "effect": "",
+   "max_sockets": 0,
+   "summary": "Legendary Back for all classes. Given by the Support Pack.",
+   "enemy_drops": [],
+   "world_drop": false,
+   "divine_drop": false,
+   "mystery_vendor": false
+  },
+  {
+   "name": "Elemental Burst Pauldron",
+   "slug": "elemental-burst-pauldron",
+   "slot": "Shoulder",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 45,
+   "effect": "After using a Strong Attack Ability, gain +20% Fire, Lightning and Arcane Damage for 6 seconds, stacking up to 5 times.",
+   "max_sockets": 0,
+   "summary": "Legendary Shoulder for all classes. Drops from enemies of level 45 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Emberdusk Mantle",
+   "slug": "emberdusk-mantle",
+   "slot": "Back",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 30,
+   "effect": "",
+   "max_sockets": 0,
+   "summary": "Legendary Back for all classes. Drops from enemies of level 30 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": false
+  },
+  {
+   "name": "Endless Mana Belt",
+   "slug": "endless-mana-belt",
+   "slot": "Belt",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 10,
+   "effect": "Drinking a Health Potion also instantly restores 40% of your Maximum Mana.",
+   "max_sockets": 0,
+   "summary": "Legendary Belt for all classes. Drops from enemies of level 10 and higher. Also a special drop of the Ancient Oak Treant.",
+   "enemy_drops": [
+    {
+     "enemy": "Ancient Oak Treant",
+     "chance": "0.5%",
+     "stage": "Kings Woods South",
+     "stage_no": 7,
+     "level_normal": 28
+    }
+   ],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Evasive Cuirass",
+   "slug": "evasive-cuirass",
+   "slot": "Chest Armor",
+   "rarity": "Legendary",
+   "classes": [
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 30,
+   "effect": "Gain bonus Physical Damage Reduction equal to 50% of your Dodge Chance.",
+   "max_sockets": 2,
+   "summary": "Legendary Chest Armor for the Hunter and Monk. Drops from enemies of level 30 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Festering Gauntlets",
+   "slug": "festering-gauntlets",
+   "slot": "Gloves",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter"
+   ],
+   "min_drop_level": 40,
+   "effect": "Your Damage Over Time deals 80% increased damage.",
+   "max_sockets": 0,
+   "summary": "Legendary Gloves for the Warrior, Sorcerer and Hunter. Drops from enemies of level 40 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Fire Lord's Necklace",
+   "slug": "fire-lords-necklace",
+   "slot": "Necklace",
+   "rarity": "Legendary",
+   "classes": [
+    "Sorcerer"
+   ],
+   "min_drop_level": 30,
+   "effect": "Fire Elemental will summon one additional Fire Elemental.",
+   "max_sockets": 1,
+   "summary": "Legendary Necklace for the Sorcerer. Drops from enemies of level 30 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Glorious Gladiator Helmet",
+   "slug": "glorious-gladiator-helmet",
+   "slot": "Helm",
+   "rarity": "Divine",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 70,
+   "effect": "+30% Strength, Dexterity, and Intelligence.",
+   "max_sockets": 1,
+   "summary": "Divine Helm for all classes. A Divine drop from elites and bosses of level 70 on Inferno, from treasure chests and from Mystery items.",
+   "base": {
+    "Armor": 840.0
+   },
+   "stats": [
+    [
+     "Bonus Armor",
+     35.0,
+     true
+    ],
+    [
+     "Max Health",
+     850.0,
+     false
+    ],
+    [
+     "Mana Cost Reduction",
+     17.0,
+     true
+    ],
+    [
+     "Max Mana",
+     80.0,
+     false
+    ],
+    [
+     "Life Regeneration",
+     35.0,
+     false
+    ],
+    [
+     "Item Find",
+     35.0,
+     true
+    ]
+   ],
+   "enemy_drops": [],
+   "world_drop": false,
+   "divine_drop": true,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Greaves of the Arcane Edge",
+   "slug": "greaves-of-the-arcane-edge",
+   "slot": "Pants",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 50,
+   "effect": "+150% Critical Hit Damage from Fire, Lightning and Arcane Abilities.",
+   "max_sockets": 2,
+   "summary": "Legendary Pants for all classes. Drops from enemies of level 50 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Greaves of the Stalwart Tonic",
+   "slug": "greaves-of-the-stalwart-tonic",
+   "slot": "Pants",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 10,
+   "effect": "Gain 30% Damage Reduction for 5 seconds after consuming Health Potion.",
+   "max_sockets": 2,
+   "summary": "Legendary Pants for all classes. Drops from enemies of level 10 and higher. Also a special drop of the Tidewrath Crab King.",
+   "enemy_drops": [
+    {
+     "enemy": "Tidewrath Crab King",
+     "chance": "0.5%",
+     "stage": "Tazan Isles",
+     "stage_no": 7,
+     "level_normal": 40
+    }
+   ],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Hellstorm Mace",
+   "slug": "hellstorm-mace",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Monk"
+   ],
+   "min_drop_level": 20,
+   "effect": "Every 10 Basic Attack Abilities used, summons a Lightning Strike that deals 1,000% Weapon Damage as Lightning Damage to a random enemy.",
+   "max_sockets": 3,
+   "summary": "Legendary Weapon for the Warrior, Sorcerer and Monk. Drops from enemies of level 20 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Kabuto of the Crimson Tempest",
+   "slug": "kabuto-of-the-crimson-tempest",
+   "slot": "Helm",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior"
+   ],
+   "min_drop_level": 35,
+   "effect": "Whirlwind has 30% chance to inflict Bleeding on each hit.",
+   "max_sockets": 1,
+   "summary": "Legendary Helm for the Warrior. Drops from enemies of level 35 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Manaflow Greaves",
+   "slug": "manaflow-greaves",
+   "slot": "Pants",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 25,
+   "effect": "Killing an enemy grants 15 Mana Regeneration for 4 seconds.",
+   "max_sockets": 2,
+   "summary": "Legendary Pants for all classes. Drops from enemies of level 25 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Northern Giant's Great Axe",
+   "slug": "northern-giants-great-axe",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Monk"
+   ],
+   "min_drop_level": 10,
+   "effect": "Each Basic Attack also deals 50% of Weapon Damage as Cold Damage, with a 3% chance to Freeze the target on hit.",
+   "max_sockets": 3,
+   "summary": "Legendary Weapon for the Warrior and Monk. Drops from enemies of level 10 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Pendant of the Surging Mind",
+   "slug": "pendant-of-the-surging-mind",
+   "slot": "Necklace",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 10,
+   "effect": "Every 100 Mana spent, +20% Critical Hit Chance for 4 seconds.",
+   "max_sockets": 1,
+   "summary": "Legendary Necklace for all classes. Drops from enemies of level 10 and higher. Also a special drop of the Lord of the Cinder.",
+   "enemy_drops": [
+    {
+     "enemy": "Lord of the Cinder",
+     "chance": "0.5%",
+     "stage": "The Cinder Crown",
+     "stage_no": 7,
+     "level_normal": 70
+    }
+   ],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Pendant of Vigor",
+   "slug": "pendant-of-vigor",
+   "slot": "Necklace",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 55,
+   "effect": "+75% All Damage while you are Healthy (above 80% HP).",
+   "max_sockets": 1,
+   "summary": "Legendary Necklace for all classes. Drops from enemies of level 55 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Phantom Mask",
+   "slug": "phantom-mask",
+   "slot": "Helm",
+   "rarity": "Legendary",
+   "classes": [
+    "Hunter"
+   ],
+   "min_drop_level": 40,
+   "effect": "Gain +100% Arcane Damage and +100% Poison Damage while Phantom Form is active.",
+   "max_sockets": 1,
+   "summary": "Legendary Helm for the Hunter. Drops from enemies of level 40 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Ragefire Gauntlets",
+   "slug": "ragefire-gauntlets",
+   "slot": "Gloves",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior"
+   ],
+   "min_drop_level": 30,
+   "effect": "Flame Strike has a 30% chance to cost no Mana.",
+   "max_sockets": 0,
+   "summary": "Legendary Gloves for the Warrior. Drops from enemies of level 30 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Raincaller Bow",
+   "slug": "raincaller-bow",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "classes": [
+    "Hunter"
+   ],
+   "min_drop_level": 30,
+   "effect": "Casting a basic attack has a 10% chance to also cast Arcane Arrowstorm for free.",
+   "max_sockets": 3,
+   "summary": "Legendary Weapon for the Hunter. Drops from enemies of level 30 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Reaper's Pauldron",
+   "slug": "reapers-pauldron",
+   "slot": "Shoulder",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 10,
+   "effect": "Direct damage hits have a 10% chance to trigger your on-kill effects.",
+   "max_sockets": 0,
+   "summary": "Legendary Shoulder for all classes. Drops from enemies of level 10 and higher. Also a special drop of the Frost Dragon.",
+   "enemy_drops": [
+    {
+     "enemy": "Frost Dragon",
+     "chance": "0.5%",
+     "stage": "Veldak Highlands",
+     "stage_no": 7,
+     "level_normal": 58
+    }
+   ],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Remnant of the Elder Sage",
+   "slug": "remnant-of-the-elder-sage",
+   "slot": "Ring",
+   "rarity": "Divine",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 70,
+   "effect": "",
+   "max_sockets": 1,
+   "summary": "Divine Ring for all classes. A Divine drop from elites and bosses of level 70 on Inferno, from treasure chests and from Mystery items.",
+   "base": {},
+   "stats": [
+    [
+     "Mana Cost Reduction",
+     17.0,
+     true
+    ],
+    [
+     "Cooldown Reduction",
+     17.0,
+     true
+    ],
+    [
+     "Critical Hit Chance",
+     13.5,
+     true
+    ],
+    [
+     "Critical Hit Damage",
+     100.0,
+     true
+    ],
+    [
+     "Gold Find",
+     35.0,
+     true
+    ],
+    [
+     "Item Find",
+     35.0,
+     true
+    ]
+   ],
+   "enemy_drops": [],
+   "world_drop": false,
+   "divine_drop": true,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Rimeshard Shroud",
+   "slug": "rimeshard-shroud",
+   "slot": "Back",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 30,
+   "effect": "",
+   "max_sockets": 0,
+   "summary": "Legendary Back for all classes. Drops from enemies of level 30 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": false
+  },
+  {
+   "name": "Ring of Arcane Precision",
+   "slug": "ring-of-arcane-precision",
+   "slot": "Ring",
+   "rarity": "Legendary",
+   "classes": [
+    "Hunter"
+   ],
+   "min_drop_level": 15,
+   "effect": "Arcane abilities gain +9% Critical Hit Chance.",
+   "max_sockets": 1,
+   "summary": "Legendary Ring for the Hunter. Drops from enemies of level 15 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Ring of Dragonslayer",
+   "slug": "ring-of-dragonslayer",
+   "slot": "Ring",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 10,
+   "effect": "Your Attack Speed increases by 35% while in combat with only one living enemy remaining.",
+   "max_sockets": 1,
+   "summary": "Legendary Ring for all classes. Drops from enemies of level 10 and higher. Also a special drop of the Defiled Wyrm.",
+   "enemy_drops": [
+    {
+     "enemy": "Defiled Wyrm",
+     "chance": "0.5%",
+     "stage": "The Defiled Keep",
+     "stage_no": 7,
+     "level_normal": 64
+    }
+   ],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Ring of Revelation",
+   "slug": "ring-of-revelation",
+   "slot": "Ring",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 60,
+   "effect": "While standing still, gain +10% Basic Attack Damage every second, stacking up to 20 times.",
+   "max_sockets": 1,
+   "summary": "Legendary Ring for all classes. Drops from enemies of level 60 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Ring of the Fourth Flame",
+   "slug": "ring-of-the-fourth-flame",
+   "slot": "Ring",
+   "rarity": "Legendary",
+   "classes": [
+    "Sorcerer"
+   ],
+   "min_drop_level": 40,
+   "effect": "Every 4th Fire Ball becomes a Pyroblast that seeks its target and erupts, damaging all enemies caught in the blast.",
+   "max_sockets": 1,
+   "summary": "Legendary Ring for the Sorcerer. Drops from enemies of level 40 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Ring of the Third Eye",
+   "slug": "ring-of-the-third-eye",
+   "slot": "Ring",
+   "rarity": "Legendary",
+   "classes": [
+    "Monk"
+   ],
+   "min_drop_level": 25,
+   "effect": "Sacred Orbs conjures one additional orb.",
+   "max_sockets": 1,
+   "summary": "Legendary Ring for the Monk. Drops from enemies of level 25 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Runeward Vestment",
+   "slug": "runeward-vestment",
+   "slot": "Chest Armor",
+   "rarity": "Legendary",
+   "classes": [
+    "Sorcerer",
+    "Hunter"
+   ],
+   "min_drop_level": 25,
+   "effect": "When struck by an enemy critical hit, gain a Spirit Shield based on your Max Health. (8s cooldown)",
+   "max_sockets": 2,
+   "summary": "Legendary Chest Armor for the Sorcerer and Hunter. Drops from enemies of level 25 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Serrated Greatsword of Agony",
+   "slug": "serrated-greatsword-of-agony",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer"
+   ],
+   "min_drop_level": 40,
+   "effect": "Additional 30% Critical Chance against Vulnerable targets.",
+   "max_sockets": 3,
+   "summary": "Legendary Weapon for the Warrior and Sorcerer. Drops from enemies of level 40 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Shell Spike Pauldron",
+   "slug": "shell-spike-pauldron",
+   "slot": "Shoulder",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 30,
+   "effect": "10% of your Armor also contributes to Thorns.",
+   "max_sockets": 0,
+   "summary": "Legendary Shoulder for all classes. Drops from enemies of level 30 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Snowpelt Mantle",
+   "slug": "snowpelt-mantle",
+   "slot": "Back",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 30,
+   "effect": "",
+   "max_sockets": 0,
+   "summary": "Legendary Back for all classes. Drops from enemies of level 30 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": false
+  },
+  {
+   "name": "Soulrender",
+   "slug": "soulrender",
+   "slot": "Weapon",
+   "rarity": "Divine",
+   "classes": [
+    "Warrior",
+    "Sorcerer"
+   ],
+   "min_drop_level": 70,
+   "effect": "Every hit has a 25% chance to gain a stack of Harvest of Souls. Consumes 25 stacks to release Soul Impact, dealing 800% Weapon Damage as Physical Damage to all nearby enemies and applying Dazed to them.",
+   "max_sockets": 3,
+   "summary": "Divine Weapon for the Warrior and Sorcerer. A Divine drop from elites and bosses of level 70 on Inferno, from treasure chests and from Mystery items.",
+   "base": {
+    "Weapon Damage": 290.0,
+    "Weapon Speed": 1.2,
+    "Weapon DPS": 348.0
+   },
+   "stats": [
+    [
+     "Damage vs Slowed",
+     170.0,
+     true
+    ],
+    [
+     "Basic Attack Damage",
+     120.0,
+     true
+    ],
+    [
+     "Bonus Health",
+     35.0,
+     true
+    ],
+    [
+     "Damage Reduction",
+     10.0,
+     true
+    ],
+    [
+     "Life on Kill",
+     100.0,
+     false
+    ],
+    [
+     "Life on Hit",
+     34.0,
+     false
+    ]
+   ],
+   "enemy_drops": [],
+   "world_drop": false,
+   "divine_drop": true,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Staff of the Frostwyrm",
+   "slug": "staff-of-the-frostwyrm",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "classes": [
+    "Sorcerer"
+   ],
+   "min_drop_level": 15,
+   "effect": "Ice Shards deflect to 1 additional enemy on hit.",
+   "max_sockets": 3,
+   "summary": "Legendary Weapon for the Sorcerer. Drops from enemies of level 15 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Stormcaller Gauntlets",
+   "slug": "stormcaller-gauntlets",
+   "slot": "Gloves",
+   "rarity": "Legendary",
+   "classes": [
+    "Sorcerer"
+   ],
+   "min_drop_level": 35,
+   "effect": "+150% Critical Damage with Lightning Storm.",
+   "max_sockets": 0,
+   "summary": "Legendary Gloves for the Sorcerer. Drops from enemies of level 35 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Stormguard Necklace",
+   "slug": "stormguard-necklace",
+   "slot": "Necklace",
+   "rarity": "Legendary",
+   "classes": [
+    "Sorcerer"
+   ],
+   "min_drop_level": 45,
+   "effect": "When hit, you have a 30% chance to cast Flame Lightning at the attacker.",
+   "max_sockets": 1,
+   "summary": "Legendary Necklace for the Sorcerer. Drops from enemies of level 45 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "The Grandmother",
+   "slug": "the-grandmother",
+   "slot": "Weapon",
+   "rarity": "Divine",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Monk"
+   ],
+   "min_drop_level": 70,
+   "effect": "+5% Critical Hit Chance and +120% Critical Hit Damage.",
+   "max_sockets": 3,
+   "summary": "Divine Weapon for the Warrior, Sorcerer and Monk. A Divine drop from elites and bosses of level 70 on Inferno, from treasure chests and from Mystery items.",
+   "base": {
+    "Weapon Damage": 430.0,
+    "Weapon Speed": 0.8,
+    "Weapon DPS": 344.0
+   },
+   "stats": [
+    [
+     "Damage",
+     50.0,
+     false
+    ],
+    [
+     "Strong Attack Damage",
+     120.0,
+     true
+    ],
+    [
+     "Damage vs Healthy",
+     170.0,
+     true
+    ],
+    [
+     "Max Health",
+     850.0,
+     false
+    ],
+    [
+     "Mana on Kill",
+     17.0,
+     false
+    ],
+    [
+     "Life on Hit",
+     34.0,
+     false
+    ]
+   ],
+   "enemy_drops": [],
+   "world_drop": false,
+   "divine_drop": true,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Thornheart Cuirass",
+   "slug": "thornheart-cuirass",
+   "slot": "Chest Armor",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 10,
+   "effect": "Damage dealt by Thorns is increased by 500%, but you lose 15% Max Health.",
+   "max_sockets": 2,
+   "summary": "Legendary Chest Armor for all classes. Drops from enemies of level 10 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Treads of the Falling Leaf",
+   "slug": "treads-of-the-falling-leaf",
+   "slot": "Boots",
+   "rarity": "Legendary",
+   "classes": [
+    "Monk"
+   ],
+   "min_drop_level": 40,
+   "effect": "While Wind Steps is active, you also gain 30% Attack Speed.",
+   "max_sockets": 0,
+   "summary": "Legendary Boots for the Monk. Drops from enemies of level 40 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Unstoppable Gauntlets",
+   "slug": "unstoppable-gauntlets",
+   "slot": "Gloves",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 10,
+   "effect": "Each Ability hit grants 1% Armor for 5 seconds. (Max 100 stacks)",
+   "max_sockets": 0,
+   "summary": "Legendary Gloves for all classes. Drops from enemies of level 10 and higher. Also a special drop of the Ogre.",
+   "enemy_drops": [
+    {
+     "enemy": "Ogre",
+     "chance": "0.5%",
+     "stage": "Spire Hill Crypt Lower",
+     "stage_no": 3,
+     "level_normal": 19
+    }
+   ],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Unyielding Cuirass",
+   "slug": "unyielding-cuirass",
+   "slot": "Chest Armor",
+   "rarity": "Legendary",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 35,
+   "effect": "Taking damage while below 30% Health makes you Invulnerable for 4 seconds. (25s cooldown)",
+   "max_sockets": 2,
+   "summary": "Legendary Chest Armor for all classes. Drops from enemies of level 35 and higher. Also a special drop of the Lord of the Crimson Vale.",
+   "enemy_drops": [
+    {
+     "enemy": "Lord of the Crimson Vale",
+     "chance": "0.5%",
+     "stage": "The Crimson Vale",
+     "stage_no": 7,
+     "level_normal": 52
+    }
+   ],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Vessel of the Endless Stream",
+   "slug": "vessel-of-the-endless-stream",
+   "slot": "Chest Armor",
+   "rarity": "Legendary",
+   "classes": [
+    "Monk"
+   ],
+   "min_drop_level": 35,
+   "effect": "Spirit Stream no longer heals you. Instead it pulses every second, dealing 160% weapon damage as Lightning damage to nearby enemies.",
+   "max_sockets": 2,
+   "summary": "Legendary Chest Armor for the Monk. Drops from enemies of level 35 and higher.",
+   "enemy_drops": [],
+   "world_drop": true,
+   "divine_drop": false,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Violet Skybow",
+   "slug": "violet-skybow",
+   "slot": "Weapon",
+   "rarity": "Divine",
+   "classes": [
+    "Hunter"
+   ],
+   "min_drop_level": 70,
+   "effect": "Your attack hits have a 20% chance to rain multiple Arcane daggers down at the target's position. Each dagger hit deals 80% weapon damage as Arcane.",
+   "max_sockets": 3,
+   "summary": "Divine Weapon for the Hunter. A Divine drop from elites and bosses of level 70 on Inferno, from treasure chests and from Mystery items.",
+   "base": {
+    "Weapon Damage": 315.0,
+    "Weapon Speed": 1.1,
+    "Weapon DPS": 346.5
+   },
+   "stats": [
+    [
+     "Attack Speed",
+     25.0,
+     true
+    ],
+    [
+     "Critical Hit Damage",
+     100.0,
+     true
+    ],
+    [
+     "Damage vs Injured",
+     170.0,
+     true
+    ],
+    [
+     "Damage vs Elite",
+     170.0,
+     true
+    ],
+    [
+     "Life on Hit",
+     34.0,
+     false
+    ],
+    [
+     "Gold Find",
+     35.0,
+     true
+    ]
+   ],
+   "enemy_drops": [],
+   "world_drop": false,
+   "divine_drop": true,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Visage of the Undying",
+   "slug": "visage-of-the-undying",
+   "slot": "Helm",
+   "rarity": "Divine",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 70,
+   "effect": "Reduces all damage taken by 25%.",
+   "max_sockets": 1,
+   "summary": "Divine Helm for all classes. A Divine drop from elites and bosses of level 70 on Inferno, from treasure chests and from Mystery items.",
+   "base": {
+    "Armor": 840.0
+   },
+   "stats": [
+    [
+     "Max Health",
+     850.0,
+     false
+    ],
+    [
+     "Bonus Health",
+     35.0,
+     true
+    ],
+    [
+     "Special Ability Bonus Damage",
+     135.0,
+     true
+    ],
+    [
+     "Cooldown Reduction",
+     17.0,
+     true
+    ],
+    [
+     "Health Potion Find",
+     35.0,
+     true
+    ]
+   ],
+   "enemy_drops": [],
+   "world_drop": false,
+   "divine_drop": true,
+   "mystery_vendor": true
+  },
+  {
+   "name": "Wings of the Cinderlord",
+   "slug": "wings-of-the-cinderlord",
+   "slot": "Back",
+   "rarity": "Divine",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 70,
+   "effect": "",
+   "max_sockets": 0,
+   "summary": "Divine Back for all classes. Drops from the Lord of the Cinder on all difficulties, and as a Divine drop from elites and bosses of level 70 on Inferno, treasure chests and Mystery items.",
+   "base": {},
+   "stats": [],
+   "enemy_drops": [
+    {
+     "enemy": "Lord of the Cinder",
+     "chance": "0.002%",
+     "stage": "The Cinder Crown",
+     "stage_no": 7,
+     "level_normal": 70
+    }
+   ],
+   "world_drop": false,
+   "divine_drop": true,
+   "mystery_vendor": false
+  },
+  {
+   "name": "Wings of the Light",
+   "slug": "wings-of-the-light",
+   "slot": "Back",
+   "rarity": "Divine",
+   "classes": [
+    "Warrior",
+    "Sorcerer",
+    "Hunter",
+    "Monk"
+   ],
+   "min_drop_level": 70,
+   "effect": "",
+   "max_sockets": 0,
+   "summary": "Divine Back for all classes. A Divine drop from elites and bosses of level 70 on Inferno, from treasure chests and from Mystery items.",
+   "base": {},
+   "stats": [],
+   "enemy_drops": [],
+   "world_drop": false,
+   "divine_drop": true,
+   "mystery_vendor": false
+  }
+ ]
+}

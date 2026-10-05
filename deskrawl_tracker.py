@@ -24,6 +24,7 @@ from tkinter import ttk
 
 import paths
 import setup_dialog
+import bis
 import item_ocr  # first: loads onnxruntime before WinRT/winocr (avoids a crash)
 import item_eval
 import stages
@@ -1302,12 +1303,14 @@ class App:
         self.tab_drops = tk.Frame(self.nb, bg=BG)
         self.tab_stages = tk.Frame(self.nb, bg=BG)
         self.tab_gems = tk.Frame(self.nb, bg=BG)
+        self.tab_bis = tk.Frame(self.nb, bg=BG)
         self.nb.add(self.tab_farm, text="Overview")
         self.nb.add(self.tab_char, text="Character Stats")
         self.nb.add(self.tab_stages, text="Stages")
         self.nb.add(self.tab_drops, text="Drops")
         self.nb.add(self.tab_death, text="Deaths")
         self.nb.add(self.tab_items, text="Item Comparer")
+        self.nb.add(self.tab_bis, text="BiS Gear")
         self.nb.add(self.tab_gems, text="Gems")
         self.nb.add(self.tab_w, text="Weights")
         self._build_farm(self.tab_farm)
@@ -1318,6 +1321,7 @@ class App:
         self._build_drops(self.tab_drops)
         self._build_stages(self.tab_stages)
         self._build_gems(self.tab_gems)
+        self._build_bis(self.tab_bis)
 
         side = self.nb.bottom
         tk.Label(side, text="Controls", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=14, pady=(0, 4))
@@ -1682,7 +1686,7 @@ class App:
                           state="readonly")
         cb.pack(side="right", padx=(0, 10))
         cb.bind("<<ComboboxSelected>>", lambda _: (self._set_cfg("gem_tier", int(self.var_gem_tier.get())),
-                                                    self._fill_gems()))
+                                                    self._fill_gems(), self._fill_bis()))
         tk.Label(top, text="Tier", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="right", padx=(0, 6))
         self.lbl_gems = ui.autowrap(tk.Label(p, bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w", justify="left"))
         self.lbl_gems.pack(fill="x", padx=16, pady=(0, 6))
@@ -1738,6 +1742,115 @@ class App:
             seen.add(group)
             self.gem_tree.insert("", "end", tags=("good",) if first else ("meh",) if score <= 0 else (),
                                  values=(label[group], ("★ " if first else "") + gem, bonus, eff))
+
+    # -- best in slot ----------------------------------------------------------
+    def _build_bis(self, p):
+        hdr = ui.page_header(p, "BiS Gear", (
+            "The best theoretical item per slot for the logged-in character in the chosen mode: the Legendary "
+            "or Divine whose effect is worth most, with the best attributes the slot can roll for your class "
+            "(item level 850, top roll – Ancient) and the best gem of the tier chosen on the Gems page in "
+            "every socket.\n\nScore: what the item adds on top of your current stats in this mode – only for "
+            "ranking items against each other. vs yours: what swapping your equipped item for it changes "
+            "(weighted %, like the Item Comparer) – read each equipped item once with F8.\n"
+            "“?” = effect cannot be calculated; enter your own value on the Weights page."))
+        self.var_bis_mode = tk.StringVar(value=self.cfg.get("bis_mode") or self.cfg.get("item_mode", "Balanced"))
+        cb = ttk.Combobox(hdr, textvariable=self.var_bis_mode, values=list(item_eval.MODES), width=11, state="readonly")
+        cb.pack(side="right")
+        cb.bind("<<ComboboxSelected>>", lambda _: (self._set_cfg("bis_mode", self.var_bis_mode.get()), self._fill_bis()))
+        tk.Label(hdr, text="Mode", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="right", padx=(14, 6))
+        self.lbl_bis = ui.autowrap(tk.Label(p, bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w", justify="left"))
+        self.lbl_bis.pack(fill="x", padx=16, pady=(0, 6))
+        cols = [("slot", "Slot", 86, "w"), ("item", "Best item", 220, "w"), ("val", "Score", 66, "e"),
+                ("vs", "vs yours", 74, "e"), ("farm", "Where", 230, "w")]
+        f, self.bis_tree = self._tree(p, cols, 12)
+        f.pack(fill="x", padx=14, pady=(0, 6))
+        for tag, col in (("leg", ui.RARITY["Legendary"]), ("div", ui.ACCENT), ("up", C_GOOD), ("meh", MUTED)):
+            self.bis_tree.tag_configure(tag, foreground=col)
+        self.bis_tree.bind("<<TreeviewSelect>>", self._bis_select)
+        det = ui.card(p, fill="both", expand=True, padx=14, pady=(0, 12))
+        self.lbl_bis_detail = ui.autowrap(tk.Label(det, bg=PANEL, fg=FG, font=ui.F_SMALL, anchor="nw", justify="left",
+                                                   text="Click a slot for details."), 24)
+        self.lbl_bis_detail.pack(fill="both", expand=True, padx=12, pady=10)
+        self._bis_rows = []
+
+    def _bis_stage_level(self, stage):
+        info = stages.stage_info(stage, getattr(self, "enemy_data", {}))
+        return info.get("level_min") if info else None
+
+    def _fill_bis(self):
+        if not hasattr(self, "bis_tree"):
+            return
+        ctx = self._eval_context()
+        mode = self.var_bis_mode.get() if self.var_bis_mode.get() in item_eval.MODES else "Balanced"
+        self.bis_tree.delete(*self.bis_tree.get_children())
+        self._bis_rows = []
+        if not ctx.char:
+            self.lbl_bis.configure(text="Read your character with F9 first – the best items depend on your stats.")
+            return
+        self.lbl_bis.configure(text=f"{self.state.char_name} · {ctx.hero or 'class unknown'} · {mode} mode · "
+                                    f"gems tier {ctx.gem_tier}"
+                                    + ("" if ctx.weapon else " · weapon damage unknown (F8 on your weapon)"))
+        eq = self.cfg.get("equipped", {})
+        rows = self.stage_stats.rows(self.cfg.get("profile") or self.state.char_name)
+        for slot in bis.SLOTS:
+            cands = bis.candidates(slot, ctx, mode)
+            picks = cands[:2] if slot == "Ring" else cands[:1]
+            if not picks:
+                self.bis_tree.insert("", "end", values=(slot, "none for this class", "-", "-", ""), tags=("meh",))
+                continue
+            for n, c in enumerate(picks):
+                it = c["item"]
+                label = f"Ring {n + 1}" if slot == "Ring" else slot
+                vs = "-"
+                if slot in eq and n == 0:
+                    vs = f"{bis.swap(c, eq[slot], ctx, mode).score:+.1f} %"
+                elif slot not in eq:
+                    vs = "F8 yours"
+                value = "cosmetic" if slot == "Back" and not c["stats"] and not it.get("effect") else (
+                    f"{c['score']:+.1f} %" + ("" if c["effect_known"] else " ?"))
+                farm = bis.farm_text(it, rows, self._bis_stage_level)
+                tag = "div" if it["rarity"] == "Divine" else "leg"
+                iid = str(len(self._bis_rows))
+                self._bis_rows.append((label, c, cands))
+                self.bis_tree.insert("", "end", iid=iid, values=(label, it["name"], value, vs,
+                                                                 farm[0] if farm else "-"), tags=(tag,))
+
+    def _bis_select(self, _=None):
+        sel = self.bis_tree.selection()
+        if not sel:
+            return
+        label, c, cands = self._bis_rows[int(sel[0])]
+        it, ev = c["item"], c["ev"]
+        parts = [f"{it['name']} – {it['rarity']} {it['slot']} for {', '.join(it['classes'])}"]
+        if it.get("effect"):
+            parts.append(f"Effect: {it['effect']}")
+            for _, _, _, txt, known in ev.effects:
+                parts.append(f"   rated: {txt}")
+        nums = [f"{v:g} {k.replace('Weapon ', '')}" for k, (v, _) in c["numbers"].items()]
+        if nums:
+            parts.append(("Base (iLvl 850, top roll): " if it["rarity"] != "Divine" else "Base: ") + ", ".join(nums))
+        if c["stats"]:
+            head = "Fixed attributes: " if it["rarity"] == "Divine" else "Best attributes to look for: "
+            parts.append(head + ", ".join(f"+{v:g}{'%' if p else ''} {s_}" for s_, v, p in c["stats"]))
+        if c["sockets"] and c["gem"]:
+            g = c["gem"]
+            parts.append(f"Sockets: {c['sockets']}× {g[0]} (+{g[2]:g}{'%' if g[3] else ''} {g[1]} each)")
+        parts.append(f"Score in this mode: {ev.dps_pct:+.1f} % damage · {ev.surv_pct:+.1f} % survival · "
+                     f"{ev.farm_pct:+.1f} % income → {c['score']:+.1f} % weighted")
+        eq = self.cfg.get("equipped", {}).get(it["slot"])
+        if eq:
+            sw = bis.swap(c, eq, self._eval_context(), self.var_bis_mode.get())
+            parts.append(f"Your {it['slot']}: {eq['name']} (iLvl {eq.get('item_level') or '?'}, read {eq.get('time', '?')})"
+                         f" → swapping: {sw.dps_pct:+.1f} % damage · {sw.surv_pct:+.1f} % survival · "
+                         f"{sw.farm_pct:+.1f} % income → {sw.score:+.1f} % weighted")
+        parts.append("Where to get it:\n   " + "\n   ".join(
+            bis.farm_text(it, self.stage_stats.rows(self.cfg.get("profile") or self.state.char_name),
+                          self._bis_stage_level) or ["unknown"]))
+        others = [x for x in cands if x is not c][:4]
+        if others:
+            parts.append("Alternatives: " + " · ".join(
+                f"{x['item']['name']} {x['score']:+.1f} %" + ("" if x["effect_known"] else " ?") for x in others))
+        self.lbl_bis_detail.configure(text="\n".join(parts))
 
     def _build_stages(self, p):
         ui.page_header(p, "Stages", "All runs per stage and difficulty of this character, across restarts. Gold "
@@ -2035,6 +2148,7 @@ class App:
         return out
 
     def _fill_eval_tab(self):
+        self._fill_bis()
         ctx = self._eval_context()
         deaths = self._death_history()
         dw = ", ".join(f"{e} {w * 100:.0f} %" for e, w in sorted(ctx.damage_weights.items(), key=lambda kv: -kv[1])
@@ -2208,6 +2322,27 @@ class App:
         self.lbl_char.configure(text=f"+{len(stats)} read · {len(self.char_stats)} values · as of {self.char_stats_time}")
         self.nb.select(self.tab_char)
 
+    def _remember_equipped(self, res):
+        """Store the equipped item of a slot whenever a tooltip shows it (comparison or equipped single)."""
+        its = [getattr(res, "old_item", None)]
+        if res.mode == "single" and getattr(res, "new_item", None) is not None and res.new_item.equipped:
+            its.append(res.new_item)
+        eq = self.cfg.setdefault("equipped", {})
+        for it in its:
+            if it is None or not it.type_line:
+                continue
+            slot = item_quality.item_kind(it.type_line)[1]
+            if not slot:
+                continue
+            stats = {}
+            for st in it.base + it.primary + it.secondary + it.sockets:
+                v, p_ = stats.get(st.name, (0.0, st.pct))
+                stats[st.name] = [v + st.value, p_ or st.pct]
+            eq[slot] = {"name": it.name, "rarity": item_quality.item_kind(it.type_line)[0], "stats": stats,
+                        "effects": list(it.effects), "item_level": it.item_level,
+                        "time": datetime.now().strftime("%d.%m. %H:%M")}
+        save_config(self.cfg)
+
     def _remember_weapon(self, res):
         """Damage and speed of the equipped weapon: needed to value flat Damage and other weapons."""
         for it in (getattr(res, "old_item", None), getattr(res, "new_item", None)):
@@ -2224,6 +2359,8 @@ class App:
         self._last_item = res
         if record:
             self._remember_weapon(res)
+            self._remember_equipped(res)
+            self._fill_bis()
         self.nb.select(self.tab_items)
         self.item_tree.delete(*self.item_tree.get_children())
         if res.mode == "none":
@@ -2571,7 +2708,7 @@ class App:
     # Settings that belong to one character live at the top level of the config while that
     # character is played and in cfg["profiles"][name] otherwise.
     PROFILE_KEYS = ("char_stats", "char_stats_time", "weapon", "other_stats", "legendary_values", "element",
-                    "item_mode", "weights")
+                    "item_mode", "weights", "equipped", "bis_mode")
 
     def _check_profile(self):
         if self.tailer.first:
@@ -2617,6 +2754,7 @@ class App:
         self.char_stats = {k: tuple(v) for k, v in self.cfg.get("char_stats", {}).items()}
         self.char_stats_time = self.cfg.get("char_stats_time", "")
         self.var_mode.set(self.cfg.get("item_mode", "Balanced"))
+        self.var_bis_mode.set(self.cfg.get("bis_mode") or self.cfg.get("item_mode", "Balanced"))
         self.var_elem.set(self.cfg.get("element", "Auto"))
         self._last_item = None
         self.item_history.clear()

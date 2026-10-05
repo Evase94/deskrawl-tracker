@@ -1,4 +1,4 @@
-# Deskrawl Tracker
+﻿# Deskrawl Tracker
 
 Companion tool for **Deskrawl**: shows EXP/h, gold/h, runs, deaths, drops and stage comparisons live, and
 rates items at the press of a key – "equip or not?" in terms of damage, survival and income.
@@ -19,6 +19,7 @@ It does **not** read game memory, does not change any game files and sends nothi
 | Drops | Drops by rarity, gems by tier, runes, keys |
 | Deaths | Who killed you and with what |
 | Item Comparer | Item comparison with F8: values like in the game, differences, effects, verdict |
+| BiS Gear | Best theoretical item per slot for your class and mode, compared with what you wear, and where it drops |
 | Gems | Which gem helps you most |
 | Weights | Your own values for effects that cannot be calculated |
 
