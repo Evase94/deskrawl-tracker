@@ -2154,7 +2154,7 @@ class App:
         tk.Label(tools, text="Right-click removes a point.", bg=T["bg"], fg=MUTED, font=ui.F_SMALL).pack(side="left", padx=10)
         self.tal_canvas = tk.Canvas(tin, bg=T["bg"], highlightthickness=0, height=640)
         self.tal_canvas.pack(fill="both", expand=True, padx=6, pady=(0, 6))
-        self.tal_canvas.bind("<Configure>", lambda _e: self._tal_draw())
+        self.tal_canvas.bind("<Configure>", self._tal_resized)
         tk.Label(tin, text="The number on each row is the points you must spend in the tree to open it.",
                  bg=T["bg"], fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=12, pady=(0, 8))
         # build panel
@@ -2281,6 +2281,19 @@ class App:
         self._tal_icons = {}
         self._tal_tip = None
         self._tal_load()
+
+    def _tal_resized(self, e):
+        """Redraw the tree once the width settled (not for every pixel while the window is dragged)."""
+        if e.width == getattr(self, "_tal_drawn_w", None):
+            return
+        if getattr(self, "_tal_job", None):
+            self.root.after_cancel(self._tal_job)
+
+        def go():
+            self._tal_job = None
+            self._tal_drawn_w = self.tal_canvas.winfo_width()
+            self._tal_draw()
+        self._tal_job = self.root.after(120, go)
 
     def _tal_set_mode(self, add):
         T = self.TC

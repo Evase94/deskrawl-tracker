@@ -170,8 +170,26 @@ def card(parent, **pack):
 # ----------------------------------------------------------------------------- table with zebra rows
 
 def autowrap(label, pad=8):
-    """Wrap a label's text at its current width (labels otherwise get cut off in narrow windows)."""
-    label.bind("<Configure>", lambda e: label.configure(wraplength=max(e.width - pad, 80)), add="+")
+    """Wrap a label's text at its current width (labels otherwise get cut off in narrow windows).
+    Waits until resizing pauses and ignores small changes: a new wrap changes the label's height,
+    which would otherwise start the next layout pass while the window is dragged."""
+    state = {"w": None, "job": None}
+
+    def apply():
+        state["job"] = None
+        try:
+            w = label.winfo_width()
+        except tk.TclError:
+            return
+        if state["w"] is None or abs(w - state["w"]) >= 6:
+            state["w"] = w
+            label.configure(wraplength=max(w - pad, 80))
+
+    def on_configure(_e):
+        if state["job"] is None:
+            state["job"] = label.after(80, apply)
+
+    label.bind("<Configure>", on_configure, add="+")
     return label
 
 
@@ -244,14 +262,25 @@ class ZTree(ttk.Treeview):
             super().heading(c, text=arrow + title)
 
     def _fit(self, e):
+        # column widths follow the table width once resizing pauses
+        self._fit_w = e.width
+        if getattr(self, "_fit_job", None) is None:
+            self._fit_job = self.after(60, self._fit_now)
+
+    def _fit_now(self):
+        self._fit_job = None
+        width = getattr(self, "_fit_w", 0)
+        if width == getattr(self, "_fit_done", None):
+            return
+        self._fit_done = width
         cols = self["columns"]
         if self._base is None:
             self._base = [max(self.column(c, "width"), 30) for c in cols]
         total = sum(self._base)
-        if e.width < 50 or not total:
+        if width < 50 or not total:
             return
         tree_col = self.column("#0", "width") if "tree" in str(self["show"]) else 0
-        scale = (e.width - tree_col - 12) / total  # 12 px breathing room on the right
+        scale = (width - tree_col - 12) / total  # 12 px breathing room on the right
         for c, b in zip(cols, self._base):
             self.column(c, width=max(int(b * scale), 28), minwidth=20)
 
@@ -290,6 +319,7 @@ class SideNav(tk.Frame):
 
     def add(self, page, text=""):
         page.grid(row=0, column=1, sticky="nsew")
+        page.grid_remove()  # shown by select(); hidden pages are not laid out on every resize
         row = tk.Frame(self.nav, bg=PANEL, cursor="hand2")
         row.pack(fill="x")
         bar = tk.Frame(row, bg=PANEL, width=3)
@@ -311,7 +341,10 @@ class SideNav(tk.Frame):
                 w.configure(bg=RAISED if on else PANEL)
 
     def select(self, page):
+        if self.current is not None and self.current is not page:
+            self.current.grid_remove()
         self.current = page
+        page.grid()
         page.tkraise()
         for p, (row, bar, lab) in self.pages.items():
             sel = p is page
