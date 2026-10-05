@@ -33,6 +33,20 @@ ELEMENTS = ["Fire", "Cold", "Lightning", "Poison", "Arcane", "Physical"]
 TAG_ELEMENT = {"Frost": "Cold"}
 
 
+def key(t) -> str:
+    """Build key of a talent: its id (two Sorcerer talents are both called "Flame Ward")."""
+    return t.get("id") or t["name"]
+
+
+def normalize(build: dict, hero: str) -> dict:
+    """Builds saved with talent names (older versions) -> keyed by talent id."""
+    ids = {key(t) for t in HEROES.get(hero, [])}
+    by_name = {}
+    for t in HEROES.get(hero, []):
+        by_name.setdefault(t["name"], key(t))
+    return {(k if k in ids else by_name.get(k, k)): v for k, v in (build or {}).items() if v}
+
+
 def abilities_of(hero):
     return [a for a in ABILITIES if a.get("hero") == hero]
 
@@ -89,6 +103,8 @@ def parse(text: str, hero: str) -> list:
          lambda m: (("crit_damage", ability_target(m.group(2)), float(m.group(1))) if ability_target(m.group(2)) else None))
     take(rf"\+{_N}% ([A-Z][\w' ]+?) Critical Hit Chance",
          lambda m: (("crit_chance", ability_target(m.group(2)), float(m.group(1))) if ability_target(m.group(2)) else None))
+    take(rf"([A-Z][\w' ]+?) deals \+{_N}% [Dd]amage to enemies affected", lambda m: [])  # conditional
+    take(r"While \[?[A-Z][^\].,]*\]? is active[^.]*", lambda m: [])  # only while one ability runs
     take(rf"([A-Z][\w' ]+?) deals \+{_N}% [Dd]amage",
          lambda m: (("ability", ability_target(m.group(1)), float(m.group(2))) if ability_target(m.group(1)) else None))
     take(rf"[Rr]educes the cooldown of (\w+) abilities by {_N}%",
@@ -160,7 +176,7 @@ def effects(build: dict, hero: str):
     """Summed effects of a build {talent name: rank}."""
     stats, ab = {}, []
     for t in tree(hero):
-        r = build.get(t["name"], 0)
+        r = build.get(key(t), 0)
         if not r:
             continue
         for kind, tg, v in per_rank(t, hero):
@@ -218,32 +234,32 @@ def evaluate(build: dict, current: dict, hero: str, ctx, mode: str, shares: dict
 # ----------------------------------------------------------------------------- rules and optimizer
 
 def spent_below(build, hero, threshold):
-    return sum(r for t in tree(hero) for r in [build.get(t["name"], 0)] if t["points"] < threshold)
+    return sum(r for t in tree(hero) for r in [build.get(key(t), 0)] if t["points"] < threshold)
 
 
 def can_add(build, t, hero):
-    if build.get(t["name"], 0) >= t["ranks"]:
+    if build.get(key(t), 0) >= t["ranks"]:
         return False
     if spent_below(build, hero, t["points"]) < t["points"]:
         return False
     if t.get("capstone"):
         same_row = [x for x in tree(hero) if x["points"] == t["points"] and x.get("capstone") and x is not t]
-        if any(build.get(x["name"], 0) for x in same_row):
+        if any(build.get(key(x), 0) for x in same_row):
             return False
     return True
 
 
 def can_remove(build, t, hero):
-    if build.get(t["name"], 0) <= 0:
+    if build.get(key(t), 0) <= 0:
         return False
     b = dict(build)
-    b[t["name"]] -= 1
+    b[key(t)] -= 1
     return valid(b, hero)
 
 
 def valid(build, hero):
     for t in tree(hero):
-        if build.get(t["name"], 0) and spent_below(build, hero, t["points"]) < t["points"]:
+        if build.get(key(t), 0) and spent_below(build, hero, t["points"]) < t["points"]:
             return False
     return True
 
@@ -259,7 +275,7 @@ def best_build(points: int, hero: str, ctx, mode: str, shares: dict, current: di
             if not can_add(build, t, hero):
                 continue
             b = dict(build)
-            b[t["name"]] = b.get(t["name"], 0) + 1
+            b[key(t)] = b.get(key(t), 0) + 1
             s = base(b)
             # a talent without any rated effect still opens rows: tiny preference for cheap, early ones
             s -= t["points"] * 1e-6
@@ -267,7 +283,7 @@ def best_build(points: int, hero: str, ctx, mode: str, shares: dict, current: di
                 best, best_s = t, s
         if best is None:
             break
-        build[best["name"]] = build.get(best["name"], 0) + 1
+        build[key(best)] = build.get(key(best), 0) + 1
         score = best_s
     # local improvement: move one point from one talent to another
     improved = True
@@ -275,19 +291,19 @@ def best_build(points: int, hero: str, ctx, mode: str, shares: dict, current: di
     while improved and rounds < 40:
         improved, rounds = False, rounds + 1
         for a in tree(hero):
-            if not build.get(a["name"]):
+            if not build.get(key(a)):
                 continue
             b1 = dict(build)
-            b1[a["name"]] -= 1
-            if not b1[a["name"]]:
-                del b1[a["name"]]
+            b1[key(a)] -= 1
+            if not b1[key(a)]:
+                del b1[key(a)]
             if not valid(b1, hero):
                 continue
             for t in tree(hero):
                 if t is a or not can_add(b1, t, hero):
                     continue
                 b2 = dict(b1)
-                b2[t["name"]] = b2.get(t["name"], 0) + 1
+                b2[key(t)] = b2.get(key(t), 0) + 1
                 s = base(b2)
                 if s > score + 1e-6:
                     build, score, improved = b2, s, True

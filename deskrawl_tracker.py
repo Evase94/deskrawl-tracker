@@ -1809,9 +1809,12 @@ class App:
                 import base64
                 import urllib.request
                 try:
-                    b64 = base64.urlsafe_b64encode(url.encode()).decode().rstrip("=")
-                    req = urllib.request.Request(f"https://img.wikily.gg/unsafe/w:128/{b64}",
-                                                 headers={"User-Agent": "DeskrawlTracker"})
+                    if "media.wikily.gg" in url:  # the wiki's image server scales the picture down
+                        b64 = base64.urlsafe_b64encode(url.encode()).decode().rstrip("=")
+                        src = f"https://img.wikily.gg/unsafe/w:128/{b64}"
+                    else:
+                        src = url
+                    req = urllib.request.Request(src, headers={"User-Agent": "Mozilla/5.0 (DeskrawlTracker)"})
                     data = urllib.request.urlopen(req, timeout=20).read()
                     os.makedirs(os.path.dirname(path), exist_ok=True)
                     with open(path, "wb") as f:
@@ -2031,92 +2034,176 @@ class App:
             tk.Frame(d, bg=PANEL, height=12).pack()
 
     # -- talents ---------------------------------------------------------------
+    # Layout and look follow the afkmeta.com talent planner: a tree with a gold rail and round row
+    # markers on the left, round talent icons with a "rank/max" badge, and a "Your build" panel.
     ABILITY_SLOTS = [("Basic Attack", "Basic Attack"), ("Strong Attack", "Strong Attack"), ("Special 1", "Special"),
                      ("Special 2", "Special")]
+    TC = {"bg": "#100e0d", "row": "#171413", "row_line": "#2c2725", "ring": "#3b3431", "gold": "#d4a73c",
+          "rail": "#b8902f", "badge": "#3a1714", "badge_line": "#5a2a24", "badge_fg": "#f3e4d0", "panel": "#141211",
+          "panel_line": "#3d3833", "title": "#d9b25c", "green": "#7bc47f", "btn": "#4a1d1a", "btn_line": "#7a3a30"}
 
     def _build_talents(self, p):
+        T = self.TC
         hdr = ui.page_header(p, "Talents", (
-            "Talent calculator for the logged-in character. Left click adds a point, right click removes one. "
-            "Rows open when the rows above hold enough points; one capstone per capstone row.\n\n"
-            "First set the build you have in the game and click “Save as my build” – your character sheet "
-            "already contains it, so every other build is compared with it.\n\nAbilities: which four you use "
-            "and roughly how much of your damage each deals. Talents for one ability count with that share.\n"
-            "Number on a talent: what the next point adds in the chosen mode (weighted %). “–” = effect "
-            "cannot be calculated (status effects, mana, range…)."))
-        self.var_tal_mode = tk.StringVar(value=self.cfg.get("talent_mode", "Damage"))
-        cb = ttk.Combobox(hdr, textvariable=self.var_tal_mode, values=list(item_eval.MODES), width=11, state="readonly")
-        cb.pack(side="right")
-        cb.bind("<<ComboboxSelected>>", lambda _: (self._set_cfg("talent_mode", self.var_tal_mode.get()), self._tal_fill()))
-        tk.Label(hdr, text="Mode", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="right", padx=(14, 6))
+            "Talent planner for the logged-in character (layout of afkmeta.com). Left click adds a point, right "
+            "click or “− Remove” mode removes one. Rows open when the rows above hold enough points; one "
+            "capstone per capstone row.\n\nSet the build you have in the game and click “Save as my build” – "
+            "your character sheet already contains it, so other builds are compared with it. “Best build” "
+            "spends your points where they add most in the chosen mode. Hover a talent for its effect and what "
+            "the next point is worth."))
         sf = ui.ScrollFrame(p)
         sf.pack(fill="both", expand=True)
         body = sf.inner
-
-        # abilities in use
-        ab = ui.card(body, fill="x", padx=14, pady=(0, 6))
-        tk.Label(ab, text="Abilities you use and their share of your damage", bg=PANEL, fg=MUTED, font=ui.F_SMALL,
-                 anchor="w").pack(fill="x", padx=12, pady=(8, 2))
-        row = tk.Frame(ab, bg=PANEL)
-        row.pack(fill="x", padx=8, pady=(0, 10))
-        self.tal_ab = []
-        for i, (label, _slot) in enumerate(self.ABILITY_SLOTS):
-            f = tk.Frame(row, bg=PANEL)
-            f.grid(row=i // 2, column=i % 2, sticky="w", padx=4, pady=2)
-            row.columnconfigure(i % 2, weight=1)
-            tk.Label(f, text=label, bg=PANEL, fg=MUTED, font=ui.F_SMALL).pack(anchor="w")
-            line = tk.Frame(f, bg=PANEL)
-            line.pack(anchor="w")
-            v_name, v_share = tk.StringVar(), tk.StringVar()
-            c = ttk.Combobox(line, textvariable=v_name, width=17, state="readonly")
-            c.pack(side="left")
-            e = tk.Entry(line, textvariable=v_share, width=4, bg=ui.RAISED, fg=FG, insertbackground=FG, relief="flat",
-                         justify="right")
-            e.pack(side="left", padx=(4, 0), ipady=2)
-            tk.Label(line, text="%", bg=PANEL, fg=MUTED, font=ui.F_SMALL).pack(side="left")
-            c.bind("<<ComboboxSelected>>", lambda _e: self._tal_abilities_changed())
-            e.bind("<FocusOut>", lambda _e: self._tal_abilities_changed())
-            e.bind("<Return>", lambda _e: self._tal_abilities_changed())
-            self.tal_ab.append((c, v_name, v_share))
-
-        # points, buttons, result
-        bar = tk.Frame(body, bg=BG)
-        bar.pack(fill="x", padx=14, pady=(2, 4))
-        self.lbl_tal_pts = tk.Label(bar, text="", bg=BG, fg=FG, font=("Bahnschrift SemiBold", 13))
-        self.lbl_tal_pts.pack(side="left")
-        for text, cmd, acc in (("Clear", self._tal_clear, False), ("Load my build", self._tal_load_mine, False),
-                               ("Save as my build", self._tal_save_mine, False), ("Best build", self._tal_best, True)):
-            ui.button(bar, text, cmd, accent=acc, small=True).pack(side="right", padx=3)
-        tk.Label(body, text="Compared with my build", bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=16)
-        res = tk.Frame(body, bg=BG)
-        res.pack(fill="x", padx=10, pady=(0, 4))
+        wrap = tk.Frame(body, bg=BG)
+        wrap.pack(fill="both", expand=True, padx=12, pady=(0, 12))
+        wrap.columnconfigure(0, weight=1)
+        # tree panel
+        tp = tk.Frame(wrap, bg=T["panel_line"])
+        tp.grid(row=0, column=0, sticky="nsew")
+        tin = tk.Frame(tp, bg=T["bg"])
+        tin.pack(fill="both", expand=True, padx=1, pady=1)
+        tools = tk.Frame(tin, bg=T["bg"])
+        tools.pack(fill="x", padx=10, pady=(8, 4))
+        self.tal_add_mode = True
+        self.btn_tal_add = tk.Label(tools, text="+ Add", bg=T["bg"], fg=T["gold"], font=("Segoe UI Semibold", 9),
+                                    padx=8, pady=2, cursor="hand2", highlightthickness=1, highlightbackground=T["gold"])
+        self.btn_tal_add.pack(side="left")
+        self.btn_tal_rem = tk.Label(tools, text="− Remove", bg=T["bg"], fg=FG, font=("Segoe UI Semibold", 9),
+                                    padx=8, pady=2, cursor="hand2", highlightthickness=1, highlightbackground=T["ring"])
+        self.btn_tal_rem.pack(side="left", padx=(6, 0))
+        self.btn_tal_add.bind("<Button-1>", lambda _e: self._tal_set_mode(True))
+        self.btn_tal_rem.bind("<Button-1>", lambda _e: self._tal_set_mode(False))
+        tk.Label(tools, text="Right-click removes a point.", bg=T["bg"], fg=MUTED, font=ui.F_SMALL).pack(side="left", padx=10)
+        self.tal_canvas = tk.Canvas(tin, bg=T["bg"], highlightthickness=0, height=640)
+        self.tal_canvas.pack(fill="both", expand=True, padx=6, pady=(0, 6))
+        self.tal_canvas.bind("<Configure>", lambda _e: self._tal_draw())
+        tk.Label(tin, text="The number on each row is the points you must spend in the tree to open it.",
+                 bg=T["bg"], fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=12, pady=(0, 8))
+        # build panel
+        bp = tk.Frame(wrap, bg=T["panel_line"], width=250)
+        bp.grid(row=0, column=1, sticky="n", padx=(10, 0))
+        b = tk.Frame(bp, bg=T["panel"])
+        b.pack(fill="both", expand=True, padx=1, pady=1)
+        tk.Label(b, text="Your build", bg=T["panel"], fg=T["title"], font=("Georgia", 13), anchor="w").pack(
+            fill="x", padx=12, pady=(10, 6))
+        grid = tk.Frame(b, bg=T["panel"])
+        grid.pack(fill="x", padx=12)
+        tk.Label(grid, text="Class", bg=T["panel"], fg=MUTED, font=ui.F_SMALL).grid(row=0, column=0, sticky="w")
+        tk.Label(grid, text="Hero level", bg=T["panel"], fg=MUTED, font=ui.F_SMALL).grid(row=0, column=1, sticky="w", padx=(10, 0))
+        self.lbl_tal_class = tk.Label(grid, text="-", bg=ui.RAISED, fg=FG, font=ui.F_BODY, anchor="w", padx=6, width=11)
+        self.lbl_tal_class.grid(row=1, column=0, sticky="w")
+        self.var_tal_level = tk.StringVar()
+        e = tk.Entry(grid, textvariable=self.var_tal_level, width=6, bg=ui.RAISED, fg=FG, insertbackground=FG,
+                     relief="flat", font=ui.F_BODY)
+        e.grid(row=1, column=1, sticky="w", padx=(10, 0), ipady=2)
+        e.bind("<Return>", lambda _e: self._tal_fill())
+        e.bind("<FocusOut>", lambda _e: self._tal_fill())
+        facts = tk.Frame(b, bg=T["panel"])
+        facts.pack(fill="x", padx=12, pady=(10, 0))
+        self.tal_facts = {}
+        for k, label in (("pts", "Combat Talent points"), ("need", "Level it needs"), ("mode", "Mode")):
+            r = tk.Frame(facts, bg=T["panel"])
+            r.pack(fill="x", pady=1)
+            tk.Label(r, text=label, bg=T["panel"], fg=MUTED, font=ui.F_SMALL).pack(side="left")
+            if k == "mode":
+                self.var_tal_mode = tk.StringVar(value=self.cfg.get("talent_mode", "Damage"))
+                cb = ttk.Combobox(r, textvariable=self.var_tal_mode, values=list(item_eval.MODES), width=9,
+                                  state="readonly")
+                cb.pack(side="right")
+                cb.bind("<<ComboboxSelected>>", lambda _e: (self._set_cfg("talent_mode", self.var_tal_mode.get()),
+                                                             self._tal_fill()))
+            else:
+                v = tk.Label(r, text="-", bg=T["panel"], fg=FG, font=("Bahnschrift SemiBold", 11))
+                v.pack(side="right")
+                self.tal_facts[k] = v
+        tk.Frame(b, bg=T["panel_line"], height=1).pack(fill="x", padx=12, pady=(8, 6))
+        tk.Label(b, text="Compared with my build", bg=T["panel"], fg=T["title"], font=("Georgia", 10), anchor="w").pack(
+            fill="x", padx=12)
+        cmp_ = tk.Frame(b, bg=T["panel"])
+        cmp_.pack(fill="x", padx=12, pady=(2, 0))
         self.tal_m = {}
-        for i, (key, title) in enumerate((("dps", "Damage"), ("surv", "Survival"), ("farm", "Income"), ("score", "Weighted"))):
-            f = ui.card(res)
-            f.grid(row=0, column=i, sticky="nsew", padx=4)
-            res.columnconfigure(i, weight=1, uniform="tm")
-            tk.Label(f, text=title, bg=PANEL, fg=MUTED, font=ui.F_SMALL).pack(anchor="w", padx=10, pady=(6, 0))
-            v = tk.Label(f, text="-", bg=PANEL, fg=FG, font=ui.F_NUM_M)
-            v.pack(anchor="w", padx=10, pady=(0, 6))
+        for i2, (key, title) in enumerate((("dps", "Damage"), ("surv", "Survival"), ("farm", "Income"))):
+            f = tk.Frame(cmp_, bg=ui.RAISED)
+            f.grid(row=0, column=i2, sticky="nsew", padx=(0 if i2 == 0 else 4, 0))
+            cmp_.columnconfigure(i2, weight=1, uniform="tc")
+            tk.Label(f, text=title, bg=ui.RAISED, fg=MUTED, font=ui.F_SMALL).pack(anchor="w", padx=6, pady=(3, 0))
+            v = tk.Label(f, text="-", bg=ui.RAISED, fg=FG, font=("Bahnschrift SemiBold", 12))
+            v.pack(anchor="w", padx=6, pady=(0, 3))
             self.tal_m[key] = v
-        self.lbl_tal_note = ui.autowrap(tk.Label(body, bg=BG, fg=C_MEH, font=ui.F_SMALL, anchor="w", justify="left"))
-        self.lbl_tal_note.pack(fill="x", padx=16)
-        self.tal_tree = tk.Frame(body, bg=BG)
-        self.tal_tree.pack(fill="x", padx=10, pady=(4, 14))
+        tk.Label(b, text="Effects", bg=T["panel"], fg=T["title"], font=("Georgia", 10), anchor="w").pack(
+            fill="x", padx=12, pady=(10, 0))
+        self.lbl_tal_fx = tk.Label(b, text="", bg=T["panel"], fg=T["green"], font=ui.F_SMALL, anchor="w",
+                                   justify="left", wraplength=220)
+        self.lbl_tal_fx.pack(fill="x", padx=12)
+        self.lbl_tal_note = tk.Label(b, text="", bg=T["panel"], fg=C_MEH, font=ui.F_SMALL, anchor="w",
+                                     justify="left", wraplength=220)
+        self.lbl_tal_note.pack(fill="x", padx=12, pady=(6, 0))
+        btns = tk.Frame(b, bg=T["panel"])
+        btns.pack(fill="x", padx=12, pady=(10, 4))
+
+        def btn(parent, text, cmd, strong=False):
+            l = tk.Label(parent, text=text, bg=T["btn"] if strong else ui.RAISED, fg=FG, font=("Georgia", 9),
+                         padx=8, pady=5, cursor="hand2", highlightthickness=1,
+                         highlightbackground=T["btn_line"] if strong else T["ring"])
+            l.bind("<Button-1>", lambda _e: cmd())
+            return l
+        btn(btns, "Best build", self._tal_best, True).grid(row=0, column=0, sticky="ew", padx=(0, 4), pady=2)
+        btn(btns, "Start over", self._tal_clear).grid(row=0, column=1, sticky="ew", pady=2)
+        btn(btns, "Save as my build", self._tal_save_mine).grid(row=1, column=0, sticky="ew", padx=(0, 4), pady=2)
+        btn(btns, "Load my build", self._tal_load_mine).grid(row=1, column=1, sticky="ew", pady=2)
+        btns.columnconfigure(0, weight=1)
+        btns.columnconfigure(1, weight=1)
+        # abilities in use
+        tk.Label(b, text="Abilities and share of damage", bg=T["panel"], fg=T["title"], font=("Georgia", 10),
+                 anchor="w").pack(fill="x", padx=12, pady=(10, 2))
+        self.tal_ab = []
+        for label, _slot in self.ABILITY_SLOTS:
+            r = tk.Frame(b, bg=T["panel"])
+            r.pack(fill="x", padx=12, pady=1)
+            v_name, v_share = tk.StringVar(), tk.StringVar()
+            c = ttk.Combobox(r, textvariable=v_name, width=16, state="readonly")
+            c.pack(side="left")
+            en = tk.Entry(r, textvariable=v_share, width=4, bg=ui.RAISED, fg=FG, insertbackground=FG, relief="flat",
+                          justify="right")
+            en.pack(side="left", padx=(4, 0), ipady=2)
+            tk.Label(r, text="%", bg=T["panel"], fg=MUTED, font=ui.F_SMALL).pack(side="left")
+            c.bind("<<ComboboxSelected>>", lambda _e: self._tal_abilities_changed())
+            en.bind("<FocusOut>", lambda _e: self._tal_abilities_changed())
+            en.bind("<Return>", lambda _e: self._tal_abilities_changed())
+            ui.Tooltip(c, label)
+            self.tal_ab.append((c, v_name, v_share))
+        tk.Frame(b, bg=T["panel"], height=10).pack()
         self.tal_build = {}
+        self._tal_icons = {}
+        self._tal_tip = None
         self._tal_load()
+
+    def _tal_set_mode(self, add):
+        T = self.TC
+        self.tal_add_mode = add
+        self.btn_tal_add.configure(fg=T["gold"] if add else FG, highlightbackground=T["gold"] if add else T["ring"])
+        self.btn_tal_rem.configure(fg=T["gold"] if not add else FG, highlightbackground=T["gold"] if not add else T["ring"])
 
     def _tal_hero(self):
         return self.state.hero if self.state.hero in talents.HEROES else None
 
     def _tal_points(self):
-        return int(self.state.level or (self.char_stats.get("Level") or (0,))[0] or 0)
+        try:
+            return int(self.var_tal_level.get())
+        except (ValueError, AttributeError):
+            return int(self.state.level or (self.char_stats.get("Level") or (0,))[0] or 0)
 
     def _tal_load(self):
         """Fill the page for the logged-in character (also after a character change)."""
-        if not hasattr(self, "tal_tree"):
+        if not hasattr(self, "tal_canvas"):
             return
         hero = self._tal_hero()
+        if hero:
+            for k in ("talents_mine", "talents_plan"):
+                if self.cfg.get(k):
+                    self.cfg[k] = talents.normalize(self.cfg[k], hero)
         self.tal_build = dict(self.cfg.get("talents_plan") or self.cfg.get("talents_mine") or {})
+        self.var_tal_level.set(str(int(self.state.level or (self.char_stats.get("Level") or (0,))[0] or 0)))
         setup = self.cfg.get("ability_setup") or {}
         defaults = {"Sorcerer": {"Basic Attack": ("Electrocute", 60), "Strong Attack": ("Lightning Storm", 40)}}.get(hero, {})
         for (label, slot), (c, v_name, v_share) in zip(self.ABILITY_SLOTS, self.tal_ab):
@@ -2129,7 +2216,7 @@ class App:
 
     def _tal_shares(self):
         out = {}
-        for (label, _slot), (_c, v_name, v_share) in zip(self.ABILITY_SLOTS, self.tal_ab):
+        for (_label, _slot), (_c, v_name, v_share) in zip(self.ABILITY_SLOTS, self.tal_ab):
             try:
                 sh = float(v_share.get().replace(",", ".") or 0)
             except ValueError:
@@ -2173,109 +2260,194 @@ class App:
             return
         self.lbl_tal_note.configure(text="Searching the best build…")
         self.root.update_idletasks()
-        mode = self.var_tal_mode.get()
-        self.tal_build = talents.best_build(self._tal_points(), hero, self._eval_context(), mode, self._tal_shares(),
-                                            self.cfg.get("talents_mine") or {})
+        self.tal_build = talents.best_build(self._tal_points(), hero, self._eval_context(), self.var_tal_mode.get(),
+                                            self._tal_shares(), self.cfg.get("talents_mine") or {})
         self._tal_store()
         self._tal_fill()
 
     def _tal_click(self, t, delta):
         hero = self._tal_hero()
+        if delta > 0 and not self.tal_add_mode:
+            delta = -1
         used = sum(self.tal_build.values())
         if delta > 0 and used < self._tal_points() and talents.can_add(self.tal_build, t, hero):
-            self.tal_build[t["name"]] = self.tal_build.get(t["name"], 0) + 1
+            self.tal_build[talents.key(t)] = self.tal_build.get(talents.key(t), 0) + 1
         elif delta < 0 and talents.can_remove(self.tal_build, t, hero):
-            self.tal_build[t["name"]] -= 1
-            if not self.tal_build[t["name"]]:
-                del self.tal_build[t["name"]]
+            self.tal_build[talents.key(t)] -= 1
+            if not self.tal_build[talents.key(t)]:
+                del self.tal_build[talents.key(t)]
         else:
             return
         self._tal_store()
         self._tal_fill()
 
+    def _tal_icon(self, url, size, active, locked):
+        """Round talent picture (cached per state)."""
+        key = (url, size, active, locked)
+        if key in self._tal_icons:
+            return self._tal_icons[key]
+        base = self._item_photo(url, 64)  # loads/caches the file
+        if base is None:
+            return None
+        import hashlib
+        from PIL import Image, ImageDraw, ImageEnhance, ImageTk
+        path = paths.user("cache", "icons", hashlib.sha1(url.encode()).hexdigest()[:16] + ".png")
+        try:
+            img = Image.open(path).convert("RGBA").resize((size, size), Image.LANCZOS)
+        except Exception:
+            return None
+        if locked:
+            img = ImageEnhance.Brightness(ImageEnhance.Color(img).enhance(0.25)).enhance(0.45)
+        mask = Image.new("L", (size * 4, size * 4), 0)
+        ImageDraw.Draw(mask).ellipse((0, 0, size * 4 - 1, size * 4 - 1), fill=255)
+        img.putalpha(mask.resize((size, size), Image.LANCZOS))
+        ph = ImageTk.PhotoImage(img)
+        self._tal_icons[key] = ph
+        return ph
+
     def _tal_fill(self):
-        if not hasattr(self, "tal_tree"):
+        if not hasattr(self, "tal_canvas"):
             return
-        for w in self.tal_tree.winfo_children():
-            w.destroy()
+        T = self.TC
         hero = self._tal_hero()
-        if not hero:
-            self.lbl_tal_pts.configure(text="")
-            self.lbl_tal_note.configure(text="Class unknown – log in once with the game running so the log names your hero.")
-            return
+        self.lbl_tal_class.configure(text=hero or "unknown")
         ctx = self._eval_context()
         mode = self.var_tal_mode.get() if self.var_tal_mode.get() in item_eval.MODES else "Damage"
         shares = self._tal_shares()
         mine = self.cfg.get("talents_mine") or {}
         pts, used = self._tal_points(), sum(self.tal_build.values())
-        self.lbl_tal_pts.configure(text=f"{hero} · {used} / {pts} points")
+        self.tal_facts["pts"].configure(text=f"{used} / {pts}", fg=T["gold"] if used else FG)
+        self.tal_facts["need"].configure(text=str(used) if used else "–")
         notes = []
+        if not hero:
+            notes.append("Class unknown – start the game once so the log names your hero.")
         if not self.char_stats:
-            notes.append("Read your character with F9 first – talent values depend on your stats.")
-        if not mine:
-            notes.append("Your current build is not saved yet: set it and click “Save as my build”, "
-                         "otherwise the values are counted on top of what you already have.")
-        if not shares:
-            notes.append("Choose at least one ability with a share, or ability talents count as nothing.")
+            notes.append("Read your character with F9 – talent values depend on your stats.")
+        if hero and not mine:
+            notes.append("Set your current build and click “Save as my build”.")
+        if hero and not shares:
+            notes.append("Choose your abilities below, or ability talents count as nothing.")
         self.lbl_tal_note.configure(text="\n".join(notes))
-        have = bool(ctx.char)
-        if have:
+        self._tal_vals = {}
+        if hero and ctx.char:
             dps, surv, farm, score = talents.evaluate(self.tal_build, mine, hero, ctx, mode, shares)
-            for key, val in (("dps", dps), ("surv", surv), ("farm", farm), ("score", score)):
+            for key, val in (("dps", dps), ("surv", surv), ("farm", farm)):
                 self.tal_m[key].configure(text=f"{val:+.1f} %", fg=C_GOOD if val > 0.05 else (C_BAD if val < -0.05 else FG))
-            base_score = score
+            for t in talents.tree(hero):
+                rank = self.tal_build.get(talents.key(t), 0)
+                if talents.rated(t, hero) and rank < t["ranks"] and talents.can_add(self.tal_build, t, hero):
+                    b2 = dict(self.tal_build)
+                    b2[talents.key(t)] = rank + 1
+                    self._tal_vals[talents.key(t)] = talents.evaluate(b2, mine, hero, ctx, mode, shares)[3] - score
         else:
             for v in self.tal_m.values():
                 v.configure(text="-", fg=FG)
-        for r_i, thr in enumerate(talents.rows(hero)):
-            row_t = [t for t in talents.tree(hero) if t["points"] == thr]
+        # effects of the planned build, like the planner's list
+        lines = []
+        if hero:
+            stats, ab = talents.effects(self.tal_build, hero)
+            for k, v in sorted(stats.items()):
+                pct = k not in ("Intelligence", "Strength", "Dexterity", "Armor", "Max Health", "Magic Resist",
+                                "Max Mana", "Mana Regeneration", "Life Regeneration", "Thorns")
+                lines.append(f"+{v:g}{'%' if pct else ''} {k}")
+            names = {"ability": "damage", "crit_chance": "crit chance", "crit_damage": "crit damage"}
+            for kind, tg, v in ab:
+                if kind in names:
+                    lines.append(f"+{v:g}% {tg.replace('tag:', '')} {names[kind]}")
+                elif kind == "mana_to_int":
+                    lines.append(f"{v:g}% of Max Mana as Intelligence")
+                elif kind == "mr_pct":
+                    lines.append(f"+{v:g}% Magic Resist")
+            for t in talents.tree(hero):
+                if self.tal_build.get(talents.key(t)) and not talents.rated(t, hero):
+                    lines.append(f"{t['name']} {self.tal_build[talents.key(t)]}/{t['ranks']} (not rated)")
+        self.lbl_tal_fx.configure(text="\n".join("• " + l for l in lines) if lines else "Pick talents to see their effects.")
+        self._tal_draw()
+
+    def _tal_draw(self):
+        cv = self.tal_canvas
+        cv.delete("all")
+        hero = self._tal_hero()
+        if not hero:
+            return
+        T = self.TC
+        W = max(cv.winfo_width(), 300)
+        rows = talents.rows(hero)
+        size = max(30, min(44, int((W - 70) / 7)))
+        row_h = size + 30
+        cv.configure(height=row_h * len(rows) + 8)
+        rail_x = 18
+        x0, x1 = 40, W - 6
+        # rail
+        cv.create_line(rail_x, row_h / 2, rail_x, row_h * (len(rows) - 0.5), fill=T["rail"], width=5)
+        tree_ = talents.tree(hero)
+        for r_i, thr in enumerate(rows):
+            y0 = r_i * row_h + 3
             open_ = talents.spent_below(self.tal_build, hero, thr) >= thr
-            head = tk.Frame(self.tal_tree, bg=BG)
-            head.pack(fill="x", padx=4, pady=(8, 2))
-            cap = any(t.get("capstone") for t in row_t)
-            tk.Label(head, text=f"{thr} points" + ("  ·  choose one capstone" if cap else ""),
-                     bg=BG, fg=FG if open_ else MUTED, font=("Bahnschrift", 10)).pack(side="left")
-            grid = tk.Frame(self.tal_tree, bg=BG)
-            grid.pack(fill="x")
-            for c in range(5):
-                grid.columnconfigure(c, weight=1, uniform="tal")
-            for i, t in enumerate(row_t):
-                rank = self.tal_build.get(t["name"], 0)
-                rated = talents.rated(t, hero)
-                gain = None
-                if have and rated and rank < t["ranks"] and talents.can_add(self.tal_build, t, hero):
-                    b = dict(self.tal_build)
-                    b[t["name"]] = rank + 1
-                    gain = talents.evaluate(b, mine, hero, ctx, mode, shares)[3] - base_score
-                border = ui.ACCENT if t.get("capstone") else (LINE if open_ else BG)
-                outer = tk.Frame(grid, bg=border)
-                outer.grid(row=i // 5, column=i % 5, sticky="nsew", padx=3, pady=3)
-                tile = tk.Frame(outer, bg=ui.RAISED if rank else PANEL, cursor="hand2")
-                tile.pack(fill="both", expand=True, padx=1, pady=1)
-                bg = ui.RAISED if rank else PANEL
-                name_fg = ui.ACCENT if rank else (FG if open_ else MUTED)
-                ui.autowrap(tk.Label(tile, text=t["name"], bg=bg, fg=name_fg, font=("Segoe UI Semibold", 8),
-                                     anchor="w", justify="left"), 6).pack(fill="x", padx=6, pady=(5, 0))
-                low = tk.Frame(tile, bg=bg)
-                low.pack(fill="x", padx=6, pady=(0, 5))
-                tk.Label(low, text=f"{rank}/{t['ranks']}", bg=bg, fg=FG if rank else MUTED,
-                         font=("Bahnschrift SemiBold", 12)).pack(side="left")
-                if not rated:
-                    g_txt, g_col = "–", MUTED
-                elif gain is None:
-                    g_txt, g_col = ("max" if rank >= t["ranks"] else ""), MUTED
+            cv.create_rectangle(x0, y0, x1, y0 + row_h - 6, fill=T["row"], outline=T["row_line"])
+            cy = y0 + (row_h - 6) / 2
+            cv.create_oval(rail_x - 12, cy - 12, rail_x + 12, cy + 12, fill="#1d1916",
+                           outline=T["gold"] if open_ else T["ring"], width=2)
+            cv.create_text(rail_x, cy, text=str(thr), fill=T["gold"] if open_ else MUTED, font=("Segoe UI Semibold", 8))
+            for t in [x for x in tree_ if x["points"] == thr]:
+                rank = self.tal_build.get(talents.key(t), 0)
+                cx = x0 + 10 + size / 2 + t.get("x", 0.5) * (x1 - x0 - 20 - size)
+                iy = y0 + 4 + size / 2
+                tag = "t_" + t["id"] if t.get("id") else "t_" + str(abs(hash(t["name"])))
+                ph = self._tal_icon(t.get("icon_url"), size, rank > 0, not open_)
+                if ph:
+                    cv.create_image(cx, iy, image=ph, tags=(tag,))
                 else:
-                    g_txt, g_col = f"{gain:+.1f}", C_GOOD if gain > 0.05 else MUTED
-                tk.Label(low, text=g_txt, bg=bg, fg=g_col, font=ui.F_SMALL).pack(side="right")
-                mine_r = mine.get(t["name"], 0)
-                tip = f"{t['name']}  ({t['points']} points, {t['ranks']} ranks{', ' + t['capstone'] if t.get('capstone') else ''})\n" \
-                      f"Rank 1: {t['rank1']}\nRank {t['ranks']}: {t['rank_max']}" \
-                      + ("" if rated else "\nNot rated – effect cannot be calculated.") \
-                      + (f"\nYour build: {mine_r}" if mine else "")
-                for w in (outer, tile, low) + tuple(tile.winfo_children()) + tuple(low.winfo_children()):
-                    w.bind("<Button-1>", lambda _e, tt=t: self._tal_click(tt, +1))
-                    w.bind("<Button-3>", lambda _e, tt=t: self._tal_click(tt, -1))
-                ui.Tooltip(tile, tip)
+                    cv.create_oval(cx - size / 2, iy - size / 2, cx + size / 2, iy + size / 2, fill="#221d1a",
+                                   outline="", tags=(tag,))
+                ring = T["gold"] if rank else (T["ring"] if open_ else "#2a2523")
+                cv.create_oval(cx - size / 2 - 1, iy - size / 2 - 1, cx + size / 2 + 1, iy + size / 2 + 1,
+                               outline=ring, width=2, tags=(tag,))
+                txt = f"{rank}/{t['ranks']}"
+                bw = 8 + 6 * len(txt)
+                by = iy + size / 2 + 2
+                cv.create_rectangle(cx - bw / 2, by, cx + bw / 2, by + 14, fill=T["badge"], outline=T["badge_line"], tags=(tag,))
+                cv.create_text(cx, by + 7, text=txt, fill=T["badge_fg"] if open_ else MUTED,
+                               font=("Segoe UI Semibold", 7), tags=(tag,))
+                cv.tag_bind(tag, "<Button-1>", lambda _e, tt=t: self._tal_click(tt, +1))
+                cv.tag_bind(tag, "<Button-3>", lambda _e, tt=t: self._tal_click(tt, -1))
+                cv.tag_bind(tag, "<Shift-Button-1>", lambda _e, tt=t: self._tal_click(tt, -1))
+                cv.tag_bind(tag, "<Enter>", lambda e, tt=t: self._tal_show_tip(e, tt))
+                cv.tag_bind(tag, "<Leave>", lambda _e: self._tal_hide_tip())
+        cv.configure(cursor="hand2")
+
+    def _tal_show_tip(self, e, t):
+        self._tal_hide_tip()
+        hero = self._tal_hero()
+        rank = self.tal_build.get(talents.key(t), 0)
+        mine = (self.cfg.get("talents_mine") or {}).get(talents.key(t), 0)
+        lines = [f"{t['name']}   {rank}/{t['ranks']}",
+                 f"{t['points']} points spent" + (f" · {t['capstone']}" if t.get("capstone") else "")]
+        if t.get("rank1") and t["ranks"] > 1:
+            lines.append(f"Rank 1: {t['rank1']}")
+        lines.append(f"Rank {t['ranks']}: {t['rank_max']}" if t["ranks"] > 1 else t["rank_max"])
+        if not talents.rated(t, hero):
+            lines.append("Not rated – the effect cannot be calculated.")
+        elif talents.key(t) in self._tal_vals:
+            lines.append(f"Next point: {self._tal_vals[talents.key(t)]:+.2f} % ({self.var_tal_mode.get()})")
+        if self.cfg.get("talents_mine"):
+            lines.append(f"Your build: {mine}/{t['ranks']}")
+        tip = tk.Toplevel(self.root)
+        tip.wm_overrideredirect(True)
+        tip.attributes("-topmost", True)
+        tk.Label(tip, text="\n".join(lines), bg=ui.RAISED, fg=FG, font=ui.F_SMALL, justify="left", wraplength=300,
+                 padx=10, pady=7).pack(padx=1, pady=1)
+        tip.configure(bg=self.TC["gold"])
+        tip.geometry(f"+{e.x_root + 14}+{e.y_root + 12}")
+        self._tal_tip = tip
+
+    def _tal_hide_tip(self):
+        if self._tal_tip is not None:
+            try:
+                self._tal_tip.destroy()
+            except Exception:
+                pass
+            self._tal_tip = None
 
     def _build_stages(self, p):
         ui.page_header(p, "Stages", "All runs per stage and difficulty of this character, across restarts. Gold "
@@ -2723,6 +2895,7 @@ class App:
                         def refill():
                             self._icon_refill = False
                             self._fill_bis()
+                            self._tal_draw()
                         self.root.after(300, refill)
                 elif ev[0] == "hotkey":
                     {"item": self.scan_item, "attributes": self.scan_attributes,
