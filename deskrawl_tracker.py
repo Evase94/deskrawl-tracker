@@ -2176,6 +2176,26 @@ class App:
         btn(btns, "Start over", self._tal_clear).grid(row=0, column=1, sticky="ew", pady=2)
         btn(btns, "Save as my build", self._tal_save_mine).grid(row=1, column=0, sticky="ew", padx=(0, 4), pady=2)
         btn(btns, "Load my build", self._tal_load_mine).grid(row=1, column=1, sticky="ew", pady=2)
+        btn(btns, "Share build", self._tal_share).grid(row=2, column=0, sticky="ew", padx=(0, 4), pady=2)
+        btn(btns, "Load build…", self._tal_load_dialog).grid(row=2, column=1, sticky="ew", pady=2)
+        self.lbl_tal_share = tk.Label(b, text="", bg=T["panel"], fg=T["green"], font=ui.F_SMALL, anchor="w",
+                                      justify="left", wraplength=220)
+        self.lbl_tal_share.pack(fill="x", padx=12)
+        # saved builds to compare
+        tk.Label(b, text="Saved builds", bg=T["panel"], fg=T["title"], font=("Georgia", 10), anchor="w").pack(
+            fill="x", padx=12, pady=(10, 2))
+        sv = tk.Frame(b, bg=T["panel"])
+        sv.pack(fill="x", padx=12)
+        self.var_tal_name = tk.StringVar()
+        en = tk.Entry(sv, textvariable=self.var_tal_name, bg=ui.RAISED, fg=FG, insertbackground=FG, relief="flat",
+                      font=ui.F_SMALL, width=18)
+        en.pack(side="left", fill="x", expand=True, ipady=3)
+        en.bind("<Return>", lambda _e: self._tal_save_named())
+        btn(sv, "Save", self._tal_save_named).pack(side="left", padx=(4, 0))
+        ui.Tooltip(en, "Name for the planned build, e.g. “Lightning crit”. Saved builds are compared with your "
+                       "build in the current mode; click a name to load it.")
+        self.tal_saved = tk.Frame(b, bg=T["panel"])
+        self.tal_saved.pack(fill="x", padx=12, pady=(4, 0))
         btns.columnconfigure(0, weight=1)
         btns.columnconfigure(1, weight=1)
         # abilities in use
@@ -2295,6 +2315,126 @@ class App:
                 setup[label] = [name, round(sh)]
         self._set_cfg("ability_setup", setup)
         self._tal_load()
+
+    # share / load / saved builds
+    def _tal_share(self):
+        hero = self._tal_hero()
+        if not hero:
+            return
+        link = talents.share_link(self.tal_build, hero)
+        self.root.clipboard_clear()
+        self.root.clipboard_append(link)
+        self.lbl_tal_share.configure(text="Link copied – it opens this build on afkmeta.com and can be loaded "
+                                          "here with “Load build…”.")
+
+    def _tal_load_dialog(self):
+        hero = self._tal_hero()
+        if not hero:
+            return
+        d = tk.Toplevel(self.root, bg=BG)
+        d.title("Load build")
+        d.transient(self.root)
+        d.resizable(False, False)
+        tk.Label(d, text="Paste a build link (afkmeta.com talent planner) or code:", bg=BG, fg=FG,
+                 font=ui.F_SMALL, anchor="w").pack(fill="x", padx=14, pady=(12, 4))
+        var = tk.StringVar()
+        try:
+            clip = self.root.clipboard_get()
+            if "afkmeta.com" in clip and "talents" in clip:
+                var.set(clip.strip())
+        except Exception:
+            pass
+        e = tk.Entry(d, textvariable=var, width=60, bg=ui.RAISED, fg=FG, insertbackground=FG, relief="flat",
+                     font=ui.F_SMALL)
+        e.pack(fill="x", padx=14, ipady=4)
+        msg = tk.Label(d, text="", bg=BG, fg=C_BAD, font=ui.F_SMALL, anchor="w")
+        msg.pack(fill="x", padx=14, pady=(4, 0))
+
+        def ok():
+            r = talents.decode(var.get(), hero)
+            if r is None:
+                msg.configure(text="Not a talent build link or code.")
+                return
+            build, link_hero = r
+            if link_hero and link_hero != hero:
+                msg.configure(text=f"That is a {link_hero} build – you are playing {hero}.")
+                return
+            self.tal_build = build
+            self._tal_store()
+            self._tal_fill()
+            used = sum(build.values())
+            note = "" if talents.valid(build, hero) else " (rows are not open for every point)"
+            self.lbl_tal_share.configure(text=f"Build loaded: {used} points{note}.")
+            d.destroy()
+
+        bar = tk.Frame(d, bg=BG)
+        bar.pack(fill="x", padx=14, pady=12)
+        ui.button(bar, "Load", ok, accent=True).pack(side="right")
+        ui.button(bar, "Cancel", d.destroy).pack(side="right", padx=6)
+        e.bind("<Return>", lambda _e: ok())
+        d.update_idletasks()
+        d.geometry(f"+{self.root.winfo_rootx() + 60}+{self.root.winfo_rooty() + 120}")
+        e.focus_set()
+
+    def _tal_save_named(self):
+        name = self.var_tal_name.get().strip()
+        if not name or not self.tal_build:
+            self.lbl_tal_share.configure(text="Plan a build and give it a name first.")
+            return
+        builds = self.cfg.setdefault("talent_builds", {})
+        builds[name] = dict(self.tal_build)
+        save_config(self.cfg)
+        self.var_tal_name.set("")
+        self._tal_fill()
+
+    def _tal_load_named(self, name):
+        b = (self.cfg.get("talent_builds") or {}).get(name)
+        if b is not None:
+            self.tal_build = dict(b)
+            self._tal_store()
+            self._tal_fill()
+
+    def _tal_delete_named(self, name):
+        (self.cfg.get("talent_builds") or {}).pop(name, None)
+        save_config(self.cfg)
+        self._tal_fill()
+
+    def _tal_fill_saved(self, hero, ctx, mode, shares, mine):
+        T = self.TC
+        for w in self.tal_saved.winfo_children():
+            w.destroy()
+        builds = self.cfg.get("talent_builds") or {}
+        if not builds:
+            tk.Label(self.tal_saved, text="No saved builds yet.", bg=T["panel"], fg=MUTED, font=ui.F_SMALL,
+                     anchor="w").pack(fill="x")
+            return
+        head = tk.Frame(self.tal_saved, bg=T["panel"])
+        head.pack(fill="x")
+        for txt, w in (("Build", 0), ("Dmg", 6), ("Surv", 6)):
+            tk.Label(head, text=txt, bg=T["panel"], fg=MUTED, font=ui.F_SMALL, width=w or None,
+                     anchor="w" if not w else "e").pack(side="left", fill="x", expand=not w)
+        rows = []
+        for name, b in builds.items():
+            b = talents.normalize(b, hero)
+            vals = talents.evaluate(b, mine, hero, ctx, mode, shares) if ctx.char else (0, 0, 0, 0)
+            rows.append((vals[3], name, b, vals))
+        best = max(r[0] for r in rows)
+        for score, name, b, (dps, surv, farm, _) in sorted(rows, key=lambda r: -r[0]):
+            r = tk.Frame(self.tal_saved, bg=T["panel"])
+            r.pack(fill="x", pady=1)
+            cur = b == self.tal_build
+            nm = tk.Label(r, text=("● " if cur else "") + name, bg=T["panel"],
+                          fg=T["gold"] if score == best and ctx.char else FG, font=ui.F_SMALL, anchor="w", cursor="hand2")
+            nm.pack(side="left", fill="x", expand=True)
+            nm.bind("<Button-1>", lambda _e, n=name: self._tal_load_named(n))
+            x = tk.Label(r, text="✕", bg=T["panel"], fg=MUTED, font=ui.F_SMALL, cursor="hand2")
+            x.pack(side="right", padx=(4, 0))
+            x.bind("<Button-1>", lambda _e, n=name: self._tal_delete_named(n))
+            for val in (surv, dps):
+                tk.Label(r, text=f"{val:+.0f}%", bg=T["panel"], width=6, anchor="e", font=ui.F_SMALL,
+                         fg=C_GOOD if val > 0.5 else (C_BAD if val < -0.5 else MUTED)).pack(side="right")
+            ui.Tooltip(nm, f"{name}: {sum(b.values())} points · {dps:+.1f} % damage · {surv:+.1f} % survival · "
+                           f"{farm:+.1f} % income compared with your build ({mode} mode). Click to load.")
 
     def _tal_store(self):
         self.cfg["talents_plan"] = dict(self.tal_build)
@@ -2430,6 +2570,8 @@ class App:
                 if self.tal_build.get(talents.key(t)) and not talents.rated(t, hero):
                     lines.append(f"{t['name']} {self.tal_build[talents.key(t)]}/{t['ranks']} (not rated)")
         self.lbl_tal_fx.configure(text="\n".join("• " + l for l in lines) if lines else "Pick talents to see their effects.")
+        if hero:
+            self._tal_fill_saved(hero, ctx, mode, shares, mine)
         self._tal_draw()
 
     def _tal_draw(self):
@@ -3493,7 +3635,7 @@ class App:
     # character is played and in cfg["profiles"][name] otherwise.
     PROFILE_KEYS = ("char_stats", "char_stats_time", "weapon", "other_stats", "legendary_values", "element",
                     "item_mode", "weights", "equipped", "bis_mode", "talents_mine", "talents_plan",
-                    "talent_mode", "ability_setup")
+                    "talent_mode", "ability_setup", "talent_builds")
 
     def _check_profile(self):
         if self.tailer.first:

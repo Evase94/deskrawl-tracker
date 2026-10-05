@@ -315,3 +315,39 @@ def best_build(points: int, hero: str, ctx, mode: str, shares: dict, current: di
 
 def rated(t, hero) -> bool:
     return bool(per_rank(t, hero))
+
+
+# ----------------------------------------------------------------------------- share / load (afkmeta links)
+# afkmeta.com/en/deskrawl/talents/<hero>?c=0x2-1-2x2 : talent index in tree order, "xN" for N points (1 = no x)
+
+def encode(build: dict, hero: str) -> str:
+    parts = []
+    for i, t in enumerate(tree(hero)):
+        r = build.get(key(t), 0)
+        if r:
+            parts.append(str(i) if r == 1 else f"{i}x{r}")
+    return "-".join(parts)
+
+
+def share_link(build: dict, hero: str) -> str:
+    return f"https://afkmeta.com/en/deskrawl/talents/{hero.lower()}?c={encode(build, hero)}"
+
+
+def decode(text: str, hero: str):
+    """Build from an afkmeta link or a bare code; (build, hero of the link or None). None if unreadable."""
+    import re as _re
+    text = (text or "").strip()
+    m = _re.search(r"talents/(\w+)", text)
+    link_hero = m.group(1).capitalize() if m else None
+    m = _re.search(r"[?&]c=([0-9x\-]*)", text)
+    code = m.group(1) if m else text
+    if not _re.fullmatch(r"(\d+(x\d+)?)(-\d+(x\d+)?)*|", code):
+        return None
+    nodes = tree(link_hero or hero)
+    build = {}
+    for part in filter(None, code.split("-")):
+        i, _, n = part.partition("x")
+        i, n = int(i), int(n or 1)
+        if i < len(nodes):
+            build[key(nodes[i])] = min(n, nodes[i]["ranks"])
+    return build, link_hero
