@@ -26,6 +26,7 @@ import paths
 import setup_dialog
 import bis
 import talents
+import skills
 import item_ocr  # first: loads onnxruntime before WinRT/winocr (avoids a crash)
 import item_eval
 import stages
@@ -128,6 +129,7 @@ def hero_class(hero_id: str) -> str:
 @dataclass
 class Run:
     run_id: str
+    casts: dict = field(default_factory=dict)  # ability -> casts seen on the skill bar
     char: str = ""           # character that played the run
     start: float | None = None
     end: float | None = None
@@ -364,6 +366,15 @@ class GameState:
         (difficulty, waves) differ from the last stage the log named - then the stage changed."""
         with self.lock:
             return bool(r.death) or not self.stage_name or self.stage_key != (r.difficulty, r.waves)
+
+    def add_casts(self, events):
+        """Ability casts from the skill bar: count them on the running run."""
+        with self.lock:
+            r = self.current
+            if r is None:
+                return
+            for _t, name in events:
+                r.casts[name] = r.casts.get(name, 0) + 1
 
     def mark_death_seen(self, t: float, text: str, extra: dict | None = None, max_age: float = 15):
         with self.lock:
@@ -1240,6 +1251,8 @@ class App:
         self.panels.start()
         ClickThroughGuard(self.capture, self.cfg).start()
         ToastWatcher(self.state, self.capture).start()
+        self.skills = skills.SkillWatcher(self.state, self.capture)
+        self.skills.start()
         self._last_item = None
         self.stage_stats = stages.StageStats()
         self.enemy_data = stages.load_enemies()
@@ -1270,6 +1283,7 @@ class App:
         self.hwnd = ctypes.windll.user32.GetParent(root.winfo_id())
         if self.cfg.get("ocr_on"):
             self.toggle_ocr()
+        self.toggle_skills(bool(self.cfg.get("skills_on")))
         self._fill_char()
         self._fill_eval_tab()
         self.tick()
@@ -1346,6 +1360,9 @@ class App:
                                                      "– after a death or a stage change. When it is open it is read "
                                                      "without a key press. "
                                                      "“with focus switch” briefly brings Deskrawl to the front for that.")
+        self.btn_skills = ctl("", self.toggle_skills, "Count which abilities you use per run from the skill bar "
+                                                       "(about 15 pictures a second – costs some CPU). Results: Stages "
+                                                       "page and the ability shares on the Talents page.")
         self.btn_top = ctl("", self.toggle_topmost, "Keep the tracker window on top of other windows.")
         ctl("Change log file", self.open_setup, "Choose the path to Deskrawl's Game.log and check that "
                                                  "Windows' English text recognition is installed.")
@@ -2172,6 +2189,11 @@ class App:
             en.bind("<Return>", lambda _e: self._tal_abilities_changed())
             ui.Tooltip(c, label)
             self.tal_ab.append((c, v_name, v_share))
+        self.lbl_tal_measured = tk.Label(b, text="", bg=T["panel"], fg=MUTED, font=ui.F_SMALL, anchor="w",
+                                         justify="left", wraplength=220)
+        self.lbl_tal_measured.pack(fill="x", padx=12, pady=(6, 0))
+        self.btn_tal_measured = btn(b, "Use measured shares", self._tal_use_measured)
+        self.btn_tal_measured.pack(fill="x", padx=12, pady=(4, 0))
         tk.Frame(b, bg=T["panel"], height=10).pack()
         self.tal_build = {}
         self._tal_icons = {}
@@ -2234,6 +2256,37 @@ class App:
                 setup[label] = [v_name.get(), 0]
         self._set_cfg("ability_setup", setup)
         self._tal_fill()
+
+    def _cast_shares(self, casts: dict) -> dict:
+        """Damage share per ability from cast counts: casts x damage % x targets."""
+        info = {a["name"]: a for a in skills.ABILITIES}
+        w = {k: v * skills.damage_weight(info[k]) for k, v in casts.items() if k in info}
+        tot = sum(w.values()) or 1
+        return {k: v / tot * 100 for k, v in sorted(w.items(), key=lambda kv: -kv[1])}
+
+    def _measured_casts(self):
+        """All casts counted on this character's stages, plus the running session."""
+        total, runs = {}, 0
+        for x in self.stage_stats.rows(self.cfg.get("profile") or self.state.char_name):
+            for k, v in x.get("casts", {}).items():
+                total[k] = total.get(k, 0) + v
+            runs += x.get("cast_runs", 0)
+        return total, runs
+
+    def _tal_use_measured(self):
+        casts, runs = self._measured_casts()
+        if not casts:
+            return
+        shares = self._cast_shares(casts)
+        slot_of = {a["name"]: a.get("slot") for a in skills.ABILITIES}
+        setup, specials = {}, ["Special 1", "Special 2"]
+        for name, sh in shares.items():
+            slot = slot_of.get(name)
+            label = slot if slot in ("Basic Attack", "Strong Attack") else (specials.pop(0) if specials else None)
+            if label and label not in setup:
+                setup[label] = [name, round(sh)]
+        self._set_cfg("ability_setup", setup)
+        self._tal_load()
 
     def _tal_store(self):
         self.cfg["talents_plan"] = dict(self.tal_build)
@@ -2328,6 +2381,13 @@ class App:
         if hero and not shares:
             notes.append("Choose your abilities below, or ability talents count as nothing.")
         self.lbl_tal_note.configure(text="\n".join(notes))
+        casts, runs = self._measured_casts()
+        if casts:
+            self.lbl_tal_measured.configure(text=f"Measured on the skill bar ({runs} runs): " + " · ".join(
+                f"{k} {v:.0f} %" for k, v in self._cast_shares(casts).items()))
+        else:
+            self.lbl_tal_measured.configure(text="Switch on “Skill tracking” (Controls) to measure your ability "
+                                                 "use instead of guessing.")
         self._tal_vals = {}
         if hero and ctx.char:
             dps, surv, farm, score = talents.evaluate(self.tal_build, mine, hero, ctx, mode, shares)
@@ -2490,7 +2550,7 @@ class App:
             self.stage_stats.add_run(r.char or self.state.char_name, stage, r.difficulty, cycle, r.xp, r.gold,
                                      sold_gold, r.items,
                                      r.death == "confirmed" or r.death == "suspected",
-                                     r.damage, r.duration if r.damage else 0)
+                                     r.damage, r.duration if r.damage else 0, r.casts or None)
             r.aggregated = True
             changed = True
             prev = r
@@ -2521,6 +2581,12 @@ class App:
         x = self._stage_rows[int(sel[0])]
         info = stages.stage_info(x["stage"], self.enemy_data)
         parts = [f"{x['stage']} · {x['difficulty']} · {x['runs']} runs · avg {fmt(x['xp_run'])} EXP/run"]
+        if x.get("cast_runs"):
+            n = x["cast_runs"]
+            per = sorted(((v / n, k) for k, v in x["casts"].items()), reverse=True)
+            shares = self._cast_shares(x["casts"])
+            parts.append(f"Abilities per run ({n} watched runs): " + " · ".join(f"{k} {v:.0f}" for v, k in per))
+            parts.append("Estimated damage share: " + " · ".join(f"{k} {v:.0f} %" for k, v in shares.items()))
         if info:
             prof = stages.damage_profile(info)
             lv = f"Level {info.get('level_min')}–{info.get('level_max')}" if info.get("level_min") else ""
@@ -3126,6 +3192,16 @@ class App:
             pass
 
     # -- actions -------------------------------------------------------------
+    def toggle_skills(self, on=None):
+        on = (not self.skills.enabled.is_set()) if on is None else on
+        if on:
+            self.skills.enabled.set()
+        else:
+            self.skills.enabled.clear()
+        self.cfg["skills_on"] = on
+        save_config(self.cfg)
+        self.btn_skills.configure(text="Skill tracking: on" if on else "Skill tracking: off", fg=C_RUN if on else FG)
+
     def toggle_ocr(self):
         if self.ocr.enabled.is_set():
             self.ocr.enabled.clear()

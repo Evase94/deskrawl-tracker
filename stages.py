@@ -63,11 +63,16 @@ class StageStats:
             self.data[f"{char}|{k}"] = self.data.pop(k)
 
     def add_run(self, char: str, stage: str, difficulty: str, cycle_s: float, xp: int, gold: int, sold_gold: int,
-                items: int, died: bool, damage: float, dmg_seconds: float):
+                items: int, died: bool, damage: float, dmg_seconds: float, casts: dict | None = None):
         d = self.data.setdefault(self.key(char, stage, difficulty), {f: 0 for f in self.FIELDS})
         for f, v in (("runs", 1), ("seconds", cycle_s), ("xp", xp), ("gold", gold), ("sold_gold", sold_gold),
                      ("items", items), ("deaths", int(died)), ("damage", damage), ("dmg_seconds", dmg_seconds)):
             d[f] = d.get(f, 0) + v
+        if casts:  # ability casts counted from the skill bar; cast_runs = runs that were watched
+            c = d.setdefault("casts", {})
+            for k, v in casts.items():
+                c[k] = c.get(k, 0) + v
+            d["cast_runs"] = d.get("cast_runs", 0) + 1
 
     def rows(self, char: str) -> list:
         out = []
@@ -85,6 +90,7 @@ class StageStats:
                 "items_h": d["items"] / h if h else 0, "death_rate": d["deaths"] / d["runs"] if d["runs"] else 0,
                 "xp_run": d["xp"] / d["runs"] if d["runs"] else 0,
                 "dps": d["damage"] / d["dmg_seconds"] if d.get("dmg_seconds") else None,
+                "casts": dict(d.get("casts", {})), "cast_runs": d.get("cast_runs", 0),
             })
         return out
 
