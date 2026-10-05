@@ -96,7 +96,7 @@ def _first_pct(text: str) -> float | None:
 @dataclass
 class Context:
     char: dict                     # {stat: value} from the character sheet
-    hero: str = ""                 # "Mage", "Barbarian"... from the log
+    hero: str = ""                 # "Sorcerer", "Warrior", "Hunter", "Monk" (from the log)
     level: int = 0
     element: str = "Auto"
     enemy_level: int | None = None

@@ -45,20 +45,29 @@ class StageStats:
             pass
 
     @staticmethod
-    def key(stage: str, difficulty: str) -> str:
-        return f"{stage}|{difficulty}"
+    def key(char: str, stage: str, difficulty: str) -> str:
+        return f"{char}|{stage}|{difficulty}"
 
-    def add_run(self, stage: str, difficulty: str, cycle_s: float, xp: int, gold: int, sold_gold: int,
+    def adopt(self, char: str):
+        """Entries from before per-character statistics ("stage|difficulty") go to this character."""
+        for k in [k for k in self.data if k.count("|") == 1]:
+            self.data[f"{char}|{k}"] = self.data.pop(k)
+
+    def add_run(self, char: str, stage: str, difficulty: str, cycle_s: float, xp: int, gold: int, sold_gold: int,
                 items: int, died: bool, damage: float, dmg_seconds: float):
-        d = self.data.setdefault(self.key(stage, difficulty), {f: 0 for f in self.FIELDS})
+        d = self.data.setdefault(self.key(char, stage, difficulty), {f: 0 for f in self.FIELDS})
         for f, v in (("runs", 1), ("seconds", cycle_s), ("xp", xp), ("gold", gold), ("sold_gold", sold_gold),
                      ("items", items), ("deaths", int(died)), ("damage", damage), ("dmg_seconds", dmg_seconds)):
             d[f] = d.get(f, 0) + v
 
-    def rows(self) -> list:
+    def rows(self, char: str) -> list:
         out = []
         for k, d in self.data.items():
-            stage, diff = k.rsplit("|", 1)
+            if k.count("|") != 2:
+                continue
+            who, stage, diff = k.split("|", 2)
+            if who != char:
+                continue
             h = d["seconds"] / 3600 if d["seconds"] else None
             out.append({
                 "stage": stage, "difficulty": diff, "runs": d["runs"],

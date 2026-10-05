@@ -106,9 +106,19 @@ RE_LOGIN = re.compile(r"\[cloud\] login — name='(?P<name>[^']*)' hero=(?P<hero
 RE_PLACED = re.compile(r"\[TransparentWindow\] placed \((?P<x>-?\d+),(?P<y>-?\d+)\) (?P<w>\d+)x(?P<h>\d+)")
 
 
+# internal hero ids in Game.log -> class names in the game
+HERO_CLASSES = {"Barbarian": "Warrior", "Mage": "Sorcerer", "Hunter": "Hunter", "Monk": "Monk"}
+
+
+def hero_class(hero_id: str) -> str:
+    h = hero_id.replace("Hero", "")
+    return HERO_CLASSES.get(h, h)
+
+
 @dataclass
 class Run:
     run_id: str
+    char: str = ""           # character that played the run
     start: float | None = None
     end: float | None = None
     difficulty: str = "?"
@@ -248,6 +258,7 @@ class GameState:
         self.reset()
         self.hero = "-"
         self.char_name = "-"
+        self.characters: dict = {}  # name -> (class, level) of every login seen in the log
         self.level = 0
         self.map = "-"
         self.window_rect = None  # (x, y, w, h) of the game window from the log
@@ -284,7 +295,8 @@ class GameState:
                 if not live:
                     return
                 r = Run(run_id=m["id"], start=now, difficulty=m["diff"], waves=int(m["waves"]),
-                        mode=m["mode"] or "", mf=num(m["mf"]), gf=num(m["gf"]), xpm=num(m["xpm"]))
+                        mode=m["mode"] or "", mf=num(m["mf"]), gf=num(m["gf"]), xpm=num(m["xpm"]),
+                        char=self.char_name)
                 with self.lock:
                     self.by_id[r.run_id] = r
                     self.current = r
@@ -302,7 +314,7 @@ class GameState:
                         self.backlog["items"] += items
                         return
                     self.committed_gold += gold
-                    r = self.by_id.get(m["id"]) or Run(run_id=m["id"])
+                    r = self.by_id.get(m["id"]) or Run(run_id=m["id"], char=self.char_name)
                     r.end, r.xp, r.gold, r.items, r.level = now, xp, gold, items, lvl
                     self.runs.append(r)
                     if self.current is r:
@@ -319,7 +331,8 @@ class GameState:
             m = RE_LOGIN.search(line)
             if m:
                 with self.lock:
-                    self.char_name, self.hero = m["name"], m["hero"].replace("Hero", "")
+                    self.char_name, self.hero = m["name"], hero_class(m["hero"])
+                    self.characters[m["name"]] = (self.hero, int(m["lvl"]))
                     self.level, self.map = int(m["lvl"]), m["map"]
                     self.xpm.login(m["name"], int(m["lvl"]), int(m["xp"]))
             return
@@ -1742,7 +1755,8 @@ class App:
             cycle = r.end - prev.end if prev and prev.end and 0 < r.end - prev.end < r.duration * 1.5 + 60 else r.duration
             t0 = prev.end if prev and prev.end else r.start
             sold_gold = sum(g for t, _, g, _ in sold if t0 < t <= r.end + 10)
-            self.stage_stats.add_run(stage, r.difficulty, cycle, r.xp, r.gold, sold_gold, r.items,
+            self.stage_stats.add_run(r.char or self.state.char_name, stage, r.difficulty, cycle, r.xp, r.gold,
+                                     sold_gold, r.items,
                                      r.death == "bestätigt" or r.death == "vermutet",
                                      r.damage, r.duration if r.damage else 0)
             r.aggregated = True
@@ -1750,7 +1764,7 @@ class App:
             prev = r
         if changed:
             self.stage_stats.save()
-        rows = self.stage_stats.rows()
+        rows = self.stage_stats.rows(self.cfg.get("profile") or self.state.char_name)
         sig = tuple((x["stage"], x["difficulty"], x["runs"]) for x in rows)
         if sig == self._stage_sig:
             return
@@ -2524,11 +2538,79 @@ class App:
 
     def tick(self):
         try:
+            self._check_profile()
             self._keep_visible()
             self._sync_game_window()
             self._refresh()
         finally:
             self.root.after(500, self.tick)
+
+    # -- characters ----------------------------------------------------------
+    # Settings that belong to one character live at the top level of the config while that
+    # character is played and in cfg["profiles"][name] otherwise.
+    PROFILE_KEYS = ("char_stats", "char_stats_time", "weapon", "other_stats", "legendary_values", "element",
+                    "item_mode", "weights")
+
+    def _check_profile(self):
+        if self.tailer.first:
+            return  # the log is still being read; the last login decides
+        name = self.state.char_name
+        if not name or name == "-":
+            return
+        cur = self.cfg.get("profile")
+        if cur is None:
+            cur = self._adopt_old_settings()
+            if cur is None:
+                return
+        if name != cur:
+            self._switch_profile(cur, name)
+
+    def _adopt_old_settings(self):
+        """Config from before profiles: give its character sheet to the character it fits."""
+        chars = self.state.characters
+        if not chars:
+            return None
+        stats = self.cfg.get("char_stats") or {}
+        owner = self.state.char_name
+        if stats:
+            lvl = (stats.get("Level") or [0])[0]
+            main = max(item_eval.MAIN_STATS, key=lambda k: (stats.get(k) or [0])[0])
+            fits = [n for n, (cls, l) in chars.items() if item_eval.CLASS_MAIN.get(cls) == main]
+            if fits:
+                owner = min(fits, key=lambda n: abs(chars[n][1] - lvl))
+        self.cfg["profile"] = owner
+        self.stage_stats.adopt(owner)
+        self.stage_stats.save()
+        save_config(self.cfg)
+        return owner
+
+    def _switch_profile(self, old, new):
+        profiles = self.cfg.setdefault("profiles", {})
+        profiles[old] = {k: self.cfg[k] for k in self.PROFILE_KEYS if k in self.cfg}
+        for k in self.PROFILE_KEYS:
+            self.cfg.pop(k, None)
+        self.cfg.update(profiles.pop(new, {}))
+        self.cfg["profile"] = new
+        save_config(self.cfg)
+        self.char_stats = {k: tuple(v) for k, v in self.cfg.get("char_stats", {}).items()}
+        self.char_stats_time = self.cfg.get("char_stats_time", "")
+        self.var_mode.set(self.cfg.get("item_mode", "Ausgewogen"))
+        self.var_elem.set(self.cfg.get("element", "Auto"))
+        self._last_item = None
+        self.item_history.clear()
+        self.hist_tree.delete(*self.hist_tree.get_children())
+        self.item_tree.delete(*self.item_tree.get_children())
+        for card in (self.card_new, self.card_old):
+            for w in card.winfo_children():
+                w.destroy()
+        self.state.reset()  # rates of one character must not mix with another's
+        self._stage_sig = None
+        self._fill_char()
+        self._fill_gems()
+        self._fill_eval_tab()
+        cls = self.state.characters.get(new, ("?", 0))[0]
+        self.lbl_char.configure(text=(f"Charakter gewechselt: {new} ({cls}). " +
+                                      ("Werte geladen." if self.char_stats else "Noch keine Werte – F9 drücken.")))
 
     def _refresh(self):
         st = self.state
