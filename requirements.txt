@@ -1,0 +1,13 @@
+numpy==2.5.3
+opencv-python==5.0.0.93
+pillow==12.3.0
+onnxruntime==1.30.0
+rapidocr-onnxruntime==1.4.4
+winocr==0.0.15
+winrt-runtime==3.2.1
+winrt-Windows.Foundation==3.2.1
+winrt-Windows.Foundation.Collections==3.2.1
+winrt-Windows.Globalization==3.2.1
+winrt-Windows.Graphics.Imaging==3.2.1
+winrt-Windows.Media.Ocr==3.2.1
+winrt-Windows.Storage.Streams==3.2.1

@@ -1,0 +1,766 @@
+{
+  "source": [
+    "https://wikily.gg/deskrawl/gems",
+    "https://wikily.gg/deskrawl/gems/bonuses",
+    "https://wikily.gg/deskrawl/gems/upgrades",
+    "https://wikily.gg/deskrawl/gems/drops",
+    "https://wikily.gg/deskrawl/equipment-upgrades/sockets"
+  ],
+  "gems": {
+    "Ruby": {
+      "tiers": {
+        "1": {
+          "name": "Raw Sphere Ruby",
+          "weapon": {
+            "stat": "Fire Damage",
+            "value": 10,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Strength",
+            "value": 5,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Fire Damage Reduction",
+            "value": 5,
+            "percent": true
+          }
+        },
+        "2": {
+          "name": "Chipped Teardrop Ruby",
+          "weapon": {
+            "stat": "Fire Damage",
+            "value": 15,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Strength",
+            "value": 10,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Fire Damage Reduction",
+            "value": 7,
+            "percent": true
+          }
+        },
+        "3": {
+          "name": "Rough Square Ruby",
+          "weapon": {
+            "stat": "Fire Damage",
+            "value": 20,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Strength",
+            "value": 15,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Fire Damage Reduction",
+            "value": 9,
+            "percent": true
+          }
+        },
+        "4": {
+          "name": "Polished Rhombus Ruby",
+          "weapon": {
+            "stat": "Fire Damage",
+            "value": 25,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Strength",
+            "value": 20,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Fire Damage Reduction",
+            "value": 11,
+            "percent": true
+          }
+        },
+        "5": {
+          "name": "Flawless Hexagon Ruby",
+          "weapon": {
+            "stat": "Fire Damage",
+            "value": 35,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Strength",
+            "value": 25,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Fire Damage Reduction",
+            "value": 13,
+            "percent": true
+          }
+        },
+        "6": {
+          "name": "Radiant Octagon Ruby",
+          "weapon": {
+            "stat": "Fire Damage",
+            "value": 50,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Strength",
+            "value": 30,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Fire Damage Reduction",
+            "value": 15,
+            "percent": true
+          }
+        }
+      }
+    },
+    "Sapphire": {
+      "tiers": {
+        "1": {
+          "name": "Raw Sphere Sapphire",
+          "weapon": {
+            "stat": "Cold Damage",
+            "value": 10,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Bonus Health",
+            "value": 5,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Cold Damage Reduction",
+            "value": 5,
+            "percent": true
+          }
+        },
+        "2": {
+          "name": "Chipped Teardrop Sapphire",
+          "weapon": {
+            "stat": "Cold Damage",
+            "value": 15,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Bonus Health",
+            "value": 8,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Cold Damage Reduction",
+            "value": 7,
+            "percent": true
+          }
+        },
+        "3": {
+          "name": "Rough Square Sapphire",
+          "weapon": {
+            "stat": "Cold Damage",
+            "value": 20,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Bonus Health",
+            "value": 10,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Cold Damage Reduction",
+            "value": 9,
+            "percent": true
+          }
+        },
+        "4": {
+          "name": "Polished Rhombus Sapphire",
+          "weapon": {
+            "stat": "Cold Damage",
+            "value": 25,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Bonus Health",
+            "value": 12,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Cold Damage Reduction",
+            "value": 11,
+            "percent": true
+          }
+        },
+        "5": {
+          "name": "Flawless Hexagon Sapphire",
+          "weapon": {
+            "stat": "Cold Damage",
+            "value": 35,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Bonus Health",
+            "value": 15,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Cold Damage Reduction",
+            "value": 13,
+            "percent": true
+          }
+        },
+        "6": {
+          "name": "Radiant Octagon Sapphire",
+          "weapon": {
+            "stat": "Cold Damage",
+            "value": 50,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Bonus Health",
+            "value": 18,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Cold Damage Reduction",
+            "value": 15,
+            "percent": true
+          }
+        }
+      }
+    },
+    "Topaz": {
+      "tiers": {
+        "1": {
+          "name": "Raw Sphere Topaz",
+          "weapon": {
+            "stat": "Lightning Damage",
+            "value": 10,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Dexterity",
+            "value": 5,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Lightning Damage Reduction",
+            "value": 5,
+            "percent": true
+          }
+        },
+        "2": {
+          "name": "Chipped Teardrop Topaz",
+          "weapon": {
+            "stat": "Lightning Damage",
+            "value": 15,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Dexterity",
+            "value": 10,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Lightning Damage Reduction",
+            "value": 7,
+            "percent": true
+          }
+        },
+        "3": {
+          "name": "Rough Square Topaz",
+          "weapon": {
+            "stat": "Lightning Damage",
+            "value": 20,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Dexterity",
+            "value": 15,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Lightning Damage Reduction",
+            "value": 9,
+            "percent": true
+          }
+        },
+        "4": {
+          "name": "Polished Rhombus Topaz",
+          "weapon": {
+            "stat": "Lightning Damage",
+            "value": 25,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Dexterity",
+            "value": 20,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Lightning Damage Reduction",
+            "value": 11,
+            "percent": true
+          }
+        },
+        "5": {
+          "name": "Flawless Hexagon Topaz",
+          "weapon": {
+            "stat": "Lightning Damage",
+            "value": 35,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Dexterity",
+            "value": 25,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Lightning Damage Reduction",
+            "value": 13,
+            "percent": true
+          }
+        },
+        "6": {
+          "name": "Radiant Octagon Topaz",
+          "weapon": {
+            "stat": "Lightning Damage",
+            "value": 50,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Dexterity",
+            "value": 30,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Lightning Damage Reduction",
+            "value": 15,
+            "percent": true
+          }
+        }
+      }
+    },
+    "Emerald": {
+      "tiers": {
+        "1": {
+          "name": "Raw Sphere Emerald",
+          "weapon": {
+            "stat": "Poison Damage",
+            "value": 10,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Thorns",
+            "value": 10,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Poison Damage Reduction",
+            "value": 5,
+            "percent": true
+          }
+        },
+        "2": {
+          "name": "Chipped Teardrop Emerald",
+          "weapon": {
+            "stat": "Poison Damage",
+            "value": 15,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Thorns",
+            "value": 20,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Poison Damage Reduction",
+            "value": 7,
+            "percent": true
+          }
+        },
+        "3": {
+          "name": "Rough Square Emerald",
+          "weapon": {
+            "stat": "Poison Damage",
+            "value": 20,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Thorns",
+            "value": 40,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Poison Damage Reduction",
+            "value": 9,
+            "percent": true
+          }
+        },
+        "4": {
+          "name": "Polished Rhombus Emerald",
+          "weapon": {
+            "stat": "Poison Damage",
+            "value": 25,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Thorns",
+            "value": 80,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Poison Damage Reduction",
+            "value": 11,
+            "percent": true
+          }
+        },
+        "5": {
+          "name": "Flawless Hexagon Emerald",
+          "weapon": {
+            "stat": "Poison Damage",
+            "value": 35,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Thorns",
+            "value": 105,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Poison Damage Reduction",
+            "value": 13,
+            "percent": true
+          }
+        },
+        "6": {
+          "name": "Radiant Octagon Emerald",
+          "weapon": {
+            "stat": "Poison Damage",
+            "value": 50,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Thorns",
+            "value": 130,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Poison Damage Reduction",
+            "value": 15,
+            "percent": true
+          }
+        }
+      }
+    },
+    "Amethyst": {
+      "tiers": {
+        "1": {
+          "name": "Raw Sphere Amethyst",
+          "weapon": {
+            "stat": "Arcane Damage",
+            "value": 10,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Intelligence",
+            "value": 5,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Arcane Damage Reduction",
+            "value": 5,
+            "percent": true
+          }
+        },
+        "2": {
+          "name": "Chipped Teardrop Amethyst",
+          "weapon": {
+            "stat": "Arcane Damage",
+            "value": 15,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Intelligence",
+            "value": 10,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Arcane Damage Reduction",
+            "value": 7,
+            "percent": true
+          }
+        },
+        "3": {
+          "name": "Rough Square Amethyst",
+          "weapon": {
+            "stat": "Arcane Damage",
+            "value": 20,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Intelligence",
+            "value": 15,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Arcane Damage Reduction",
+            "value": 9,
+            "percent": true
+          }
+        },
+        "4": {
+          "name": "Polished Rhombus Amethyst",
+          "weapon": {
+            "stat": "Arcane Damage",
+            "value": 25,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Intelligence",
+            "value": 20,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Arcane Damage Reduction",
+            "value": 11,
+            "percent": true
+          }
+        },
+        "5": {
+          "name": "Flawless Hexagon Amethyst",
+          "weapon": {
+            "stat": "Arcane Damage",
+            "value": 35,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Intelligence",
+            "value": 25,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Arcane Damage Reduction",
+            "value": 13,
+            "percent": true
+          }
+        },
+        "6": {
+          "name": "Radiant Octagon Amethyst",
+          "weapon": {
+            "stat": "Arcane Damage",
+            "value": 50,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Intelligence",
+            "value": 30,
+            "percent": false
+          },
+          "accessory": {
+            "stat": "Arcane Damage Reduction",
+            "value": 15,
+            "percent": true
+          }
+        }
+      }
+    },
+    "Diamond": {
+      "tiers": {
+        "1": {
+          "name": "Raw Sphere Diamond",
+          "weapon": {
+            "stat": "Physical Damage",
+            "value": 10,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Cooldown Reduction",
+            "value": 1,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Physical Damage Reduction",
+            "value": 4,
+            "percent": true
+          }
+        },
+        "2": {
+          "name": "Chipped Teardrop Diamond",
+          "weapon": {
+            "stat": "Physical Damage",
+            "value": 15,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Cooldown Reduction",
+            "value": 1.5,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Physical Damage Reduction",
+            "value": 5.5,
+            "percent": true
+          }
+        },
+        "3": {
+          "name": "Rough Square Diamond",
+          "weapon": {
+            "stat": "Physical Damage",
+            "value": 20,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Cooldown Reduction",
+            "value": 2,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Physical Damage Reduction",
+            "value": 7,
+            "percent": true
+          }
+        },
+        "4": {
+          "name": "Polished Rhombus Diamond",
+          "weapon": {
+            "stat": "Physical Damage",
+            "value": 25,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Cooldown Reduction",
+            "value": 2.5,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Physical Damage Reduction",
+            "value": 8.5,
+            "percent": true
+          }
+        },
+        "5": {
+          "name": "Flawless Hexagon Diamond",
+          "weapon": {
+            "stat": "Physical Damage",
+            "value": 35,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Cooldown Reduction",
+            "value": 3,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Physical Damage Reduction",
+            "value": 10,
+            "percent": true
+          }
+        },
+        "6": {
+          "name": "Radiant Octagon Diamond",
+          "weapon": {
+            "stat": "Physical Damage",
+            "value": 50,
+            "percent": true
+          },
+          "armor": {
+            "stat": "Cooldown Reduction",
+            "value": 4,
+            "percent": true
+          },
+          "accessory": {
+            "stat": "Physical Damage Reduction",
+            "value": 11.5,
+            "percent": true
+          }
+        }
+      }
+    }
+  },
+  "socket_groups": {
+    "weapon": [
+      "Weapon"
+    ],
+    "armor": [
+      "Helm",
+      "Chest Armor",
+      "Pants"
+    ],
+    "accessory": [
+      "Ring",
+      "Necklace"
+    ]
+  },
+  "sockets": {
+    "Weapon": 3,
+    "Helm": 1,
+    "Chest Armor": 2,
+    "Pants": 2,
+    "Necklace": 1,
+    "Ring": 1,
+    "Shoulder": 0,
+    "Gloves": 0,
+    "Belt": 0,
+    "Boots": 0,
+    "Back": 0
+  },
+  "socket_rules": "Only items requiring level 30+ (item level 300+) can get sockets. Drops from item level 300 come with 0..max sockets at random; Ancient from ilvl 300 has all sockets. Black Mist items have no sockets. Adding a socket makes the item untradable forever.",
+  "socket_cost": {
+    "Earth Essence": 100,
+    "gold": "item level x 400",
+    "per": "socket"
+  },
+  "gem_removal": {
+    "gold": 10000,
+    "destroys_gem": true
+  },
+  "combine": "Gem Specialists turn 10 gems of one tier into 1 gem of the next tier of the same type.",
+  "combine_cost_gold": {
+    "1->2": 300,
+    "2->3": 1300,
+    "3->4": 5500,
+    "4->5": 23000,
+    "5->6": 100000
+  },
+  "buy_tier1_gold": 2000,
+  "sell_price_gold": {
+    "1": 500,
+    "2": 1000,
+    "3": 1500,
+    "4": 2000,
+    "5": 2500,
+    "6": 3000
+  },
+  "drops": {
+    "tier_by_enemy_level": {
+      "1": "30-34",
+      "2": "35-39",
+      "3": "40-44",
+      "4": "45+",
+      "5": "upgrade only",
+      "6": "upgrade only"
+    },
+    "chance_per_encounter": {
+      "normal": 0.01,
+      "elite": 0.06,
+      "mini_boss": 0.1,
+      "boss": 0.12
+    },
+    "mythic_rift": "only the boss encounter has a gem chance",
+    "selection": "picked evenly among gems that drop at the level of the enemy killed last",
+    "chests": {
+      "Silver Treasure Chest": 0.1,
+      "Golden Treasure Chest": 0.2,
+      "Mythic Treasure Chest": 0.1
+    },
+    "treasure_drakes": {
+      "Dreamwood Treasure Drake": "each of the 6 tier 2 gems, 70% each, per cleared encounter",
+      "Dreamsand Treasure Drake": "each of the 6 tier 3 gems, 70% each",
+      "Dreamvault Treasure Drake": "each of the 6 tier 4 gems, 70% each"
+    }
+  },
+  "missing": []
+}

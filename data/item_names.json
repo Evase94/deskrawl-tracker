@@ -1,0 +1,1259 @@
+{
+ "source": "https://wikily.gg/deskrawl/equipment (page titles)",
+ "items": [
+  {
+   "name": "Woodsman's Hatchet",
+   "rarity": "Common",
+   "slot": "Weapon",
+   "slug": "woodsmans-hatchet"
+  },
+  {
+   "name": "Simple Wooden Bow",
+   "rarity": "Common",
+   "slot": "Weapon",
+   "slug": "simple-wooden-bow"
+  },
+  {
+   "name": "Iron Spiked Mace",
+   "rarity": "Common",
+   "slot": "Weapon",
+   "slug": "iron-spiked-mace"
+  },
+  {
+   "name": "Hooked Bronze Staff",
+   "rarity": "Common",
+   "slot": "Weapon",
+   "slug": "hooked-bronze-staff"
+  },
+  {
+   "name": "Leather-Wrapped Quarterstaff",
+   "rarity": "Common",
+   "slot": "Weapon",
+   "slug": "leather-wrapped-quarterstaff"
+  },
+  {
+   "name": "Iron Arming Sword",
+   "rarity": "Common",
+   "slot": "Weapon",
+   "slug": "iron-arming-sword"
+  },
+  {
+   "name": "Weathered Battleaxe",
+   "rarity": "Uncommon",
+   "slot": "Weapon",
+   "slug": "weathered-battleaxe"
+  },
+  {
+   "name": "Redwood Hunting Bow",
+   "rarity": "Uncommon",
+   "slot": "Weapon",
+   "slug": "redwood-hunting-bow"
+  },
+  {
+   "name": "Forged Warhammer",
+   "rarity": "Uncommon",
+   "slot": "Weapon",
+   "slug": "forged-warhammer"
+  },
+  {
+   "name": "Rubycrown Scepter",
+   "rarity": "Uncommon",
+   "slot": "Weapon",
+   "slug": "rubycrown-scepter"
+  },
+  {
+   "name": "Serpent's Tongue Blade",
+   "rarity": "Uncommon",
+   "slot": "Weapon",
+   "slug": "serpents-tongue-blade"
+  },
+  {
+   "name": "Gilded Ripper Axe",
+   "rarity": "Rare",
+   "slot": "Weapon",
+   "slug": "gilded-ripper-axe"
+  },
+  {
+   "name": "Blacksteel Battleaxe",
+   "rarity": "Rare",
+   "slot": "Weapon",
+   "slug": "blacksteel-battleaxe"
+  },
+  {
+   "name": "Bladed Steel Bow",
+   "rarity": "Rare",
+   "slot": "Weapon",
+   "slug": "bladed-steel-bow"
+  },
+  {
+   "name": "Gilded Recurve Bow",
+   "rarity": "Rare",
+   "slot": "Weapon",
+   "slug": "gilded-recurve-bow"
+  },
+  {
+   "name": "Ironbraced Hunting Bow",
+   "rarity": "Rare",
+   "slot": "Weapon",
+   "slug": "ironbraced-hunting-bow"
+  },
+  {
+   "name": "Sunburst Scepter Mace",
+   "rarity": "Rare",
+   "slot": "Weapon",
+   "slug": "sunburst-scepter-mace"
+  },
+  {
+   "name": "Gilded War Mace",
+   "rarity": "Rare",
+   "slot": "Weapon",
+   "slug": "gilded-war-mace"
+  },
+  {
+   "name": "Lunar Crescent Staff",
+   "rarity": "Rare",
+   "slot": "Weapon",
+   "slug": "lunar-crescent-staff"
+  },
+  {
+   "name": "Ironbound Warstaff",
+   "rarity": "Rare",
+   "slot": "Weapon",
+   "slug": "ironbound-warstaff"
+  },
+  {
+   "name": "Golden Falchion",
+   "rarity": "Rare",
+   "slot": "Weapon",
+   "slug": "golden-falchion"
+  },
+  {
+   "name": "Silverfang Greatsword",
+   "rarity": "Rare",
+   "slot": "Weapon",
+   "slug": "silverfang-greatsword"
+  },
+  {
+   "name": "Northern Giant's Great Axe",
+   "rarity": "Legendary",
+   "slot": "Weapon",
+   "slug": "northern-giants-great-axe"
+  },
+  {
+   "name": "Raincaller Bow",
+   "rarity": "Legendary",
+   "slot": "Weapon",
+   "slug": "raincaller-bow"
+  },
+  {
+   "name": "Blackcrow Recurve",
+   "rarity": "Legendary",
+   "slot": "Weapon",
+   "slug": "blackcrow-recurve"
+  },
+  {
+   "name": "Hellstorm Mace",
+   "rarity": "Legendary",
+   "slot": "Weapon",
+   "slug": "hellstorm-mace"
+  },
+  {
+   "name": "Staff of the Frostwyrm",
+   "rarity": "Legendary",
+   "slot": "Weapon",
+   "slug": "staff-of-the-frostwyrm"
+  },
+  {
+   "name": "Amber Skull Staff",
+   "rarity": "Legendary",
+   "slot": "Weapon",
+   "slug": "amber-skull-staff"
+  },
+  {
+   "name": "Serrated Greatsword of Agony",
+   "rarity": "Legendary",
+   "slot": "Weapon",
+   "slug": "serrated-greatsword-of-agony"
+  },
+  {
+   "name": "Violet Skybow",
+   "rarity": "Divine",
+   "slot": "Weapon",
+   "slug": "violet-skybow"
+  },
+  {
+   "name": "The Grandmother",
+   "rarity": "Divine",
+   "slot": "Weapon",
+   "slug": "the-grandmother"
+  },
+  {
+   "name": "Soulrender",
+   "rarity": "Divine",
+   "slot": "Weapon",
+   "slug": "soulrender"
+  },
+  {
+   "name": "Wanderer's Brimmed Hat",
+   "rarity": "Common",
+   "slot": "Helm",
+   "slug": "wanderers-brimmed-hat"
+  },
+  {
+   "name": "Worn Leather Hood",
+   "rarity": "Common",
+   "slot": "Helm",
+   "slug": "worn-leather-hood"
+  },
+  {
+   "name": "Padded Leather Coif",
+   "rarity": "Common",
+   "slot": "Helm",
+   "slug": "padded-leather-coif"
+  },
+  {
+   "name": "Plain Cloth Coif",
+   "rarity": "Common",
+   "slot": "Helm",
+   "slug": "plain-cloth-coif"
+  },
+  {
+   "name": "Iron Nasal Helm",
+   "rarity": "Uncommon",
+   "slot": "Helm",
+   "slug": "iron-nasal-helm"
+  },
+  {
+   "name": "Steel Kettle Helm",
+   "rarity": "Uncommon",
+   "slot": "Helm",
+   "slug": "steel-kettle-helm"
+  },
+  {
+   "name": "Guardsman's Helm",
+   "rarity": "Uncommon",
+   "slot": "Helm",
+   "slug": "guardsmans-helm"
+  },
+  {
+   "name": "Feathered Wayfarer's Hat",
+   "rarity": "Uncommon",
+   "slot": "Helm",
+   "slug": "feathered-wayfarers-hat"
+  },
+  {
+   "name": "Crusader's Great Helm",
+   "rarity": "Rare",
+   "slot": "Helm",
+   "slug": "crusaders-great-helm"
+  },
+  {
+   "name": "Sunforged Warhelm",
+   "rarity": "Rare",
+   "slot": "Helm",
+   "slug": "sunforged-warhelm"
+  },
+  {
+   "name": "Doomhorn Helm",
+   "rarity": "Rare",
+   "slot": "Helm",
+   "slug": "doomhorn-helm"
+  },
+  {
+   "name": "Blacksteel Helm",
+   "rarity": "Rare",
+   "slot": "Helm",
+   "slug": "blacksteel-helm"
+  },
+  {
+   "name": "Amber Seer's Turban",
+   "rarity": "Rare",
+   "slot": "Helm",
+   "slug": "amber-seers-turban"
+  },
+  {
+   "name": "Jade Spirit Circlet",
+   "rarity": "Rare",
+   "slot": "Helm",
+   "slug": "jade-spirit-circlet"
+  },
+  {
+   "name": "Sage's Feathered Hat",
+   "rarity": "Rare",
+   "slot": "Helm",
+   "slug": "sages-feathered-hat"
+  },
+  {
+   "name": "Duskweave Cowl",
+   "rarity": "Rare",
+   "slot": "Helm",
+   "slug": "duskweave-cowl"
+  },
+  {
+   "name": "Crown of the Fallen King",
+   "rarity": "Legendary",
+   "slot": "Helm",
+   "slug": "crown-of-the-fallen-king"
+  },
+  {
+   "name": "Kabuto of the Crimson Tempest",
+   "rarity": "Legendary",
+   "slot": "Helm",
+   "slug": "kabuto-of-the-crimson-tempest"
+  },
+  {
+   "name": "Crown of the Wandering Gale",
+   "rarity": "Legendary",
+   "slot": "Helm",
+   "slug": "crown-of-the-wandering-gale"
+  },
+  {
+   "name": "Circlet of Focus",
+   "rarity": "Legendary",
+   "slot": "Helm",
+   "slug": "circlet-of-focus"
+  },
+  {
+   "name": "Phantom Mask",
+   "rarity": "Legendary",
+   "slot": "Helm",
+   "slug": "phantom-mask"
+  },
+  {
+   "name": "Glorious Gladiator Helmet",
+   "rarity": "Divine",
+   "slot": "Helm",
+   "slug": "glorious-gladiator-helmet"
+  },
+  {
+   "name": "Visage of the Undying",
+   "rarity": "Divine",
+   "slot": "Helm",
+   "slug": "visage-of-the-undying"
+  },
+  {
+   "name": "Peasant's Tunic",
+   "rarity": "Common",
+   "slot": "Chest Armor",
+   "slug": "peasants-tunic"
+  },
+  {
+   "name": "Tattered Hooded Jerkin",
+   "rarity": "Common",
+   "slot": "Chest Armor",
+   "slug": "tattered-hooded-jerkin"
+  },
+  {
+   "name": "Padded Gambeson",
+   "rarity": "Common",
+   "slot": "Chest Armor",
+   "slug": "padded-gambeson"
+  },
+  {
+   "name": "Rustic Belted Vest",
+   "rarity": "Common",
+   "slot": "Chest Armor",
+   "slug": "rustic-belted-vest"
+  },
+  {
+   "name": "Riveted Mail Vest",
+   "rarity": "Uncommon",
+   "slot": "Chest Armor",
+   "slug": "riveted-mail-vest"
+  },
+  {
+   "name": "Verdant Hooded Garb",
+   "rarity": "Uncommon",
+   "slot": "Chest Armor",
+   "slug": "verdant-hooded-garb"
+  },
+  {
+   "name": "Bluewatch Gambeson",
+   "rarity": "Uncommon",
+   "slot": "Chest Armor",
+   "slug": "bluewatch-gambeson"
+  },
+  {
+   "name": "Cross-Strapped Leather Vest",
+   "rarity": "Uncommon",
+   "slot": "Chest Armor",
+   "slug": "cross-strapped-leather-vest"
+  },
+  {
+   "name": "Goldstud Brigandine",
+   "rarity": "Rare",
+   "slot": "Chest Armor",
+   "slug": "goldstud-brigandine"
+  },
+  {
+   "name": "Sigilguard Cuirass",
+   "rarity": "Rare",
+   "slot": "Chest Armor",
+   "slug": "sigilguard-cuirass"
+  },
+  {
+   "name": "Argent Knight's Plate",
+   "rarity": "Rare",
+   "slot": "Chest Armor",
+   "slug": "argent-knights-plate"
+  },
+  {
+   "name": "Gilded Sentinel Cuirass",
+   "rarity": "Rare",
+   "slot": "Chest Armor",
+   "slug": "gilded-sentinel-cuirass"
+  },
+  {
+   "name": "Dawnweave Vestments",
+   "rarity": "Rare",
+   "slot": "Chest Armor",
+   "slug": "dawnweave-vestments"
+  },
+  {
+   "name": "Sage's Meditation Garb",
+   "rarity": "Rare",
+   "slot": "Chest Armor",
+   "slug": "sages-meditation-garb"
+  },
+  {
+   "name": "Azure Ritual Robe",
+   "rarity": "Rare",
+   "slot": "Chest Armor",
+   "slug": "azure-ritual-robe"
+  },
+  {
+   "name": "Violet Dusk Robe",
+   "rarity": "Rare",
+   "slot": "Chest Armor",
+   "slug": "violet-dusk-robe"
+  },
+  {
+   "name": "Bulwark of Wrath",
+   "rarity": "Legendary",
+   "slot": "Chest Armor",
+   "slug": "bulwark-of-wrath"
+  },
+  {
+   "name": "Thornheart Cuirass",
+   "rarity": "Legendary",
+   "slot": "Chest Armor",
+   "slug": "thornheart-cuirass"
+  },
+  {
+   "name": "Runeward Vestment",
+   "rarity": "Legendary",
+   "slot": "Chest Armor",
+   "slug": "runeward-vestment"
+  },
+  {
+   "name": "Vessel of the Endless Stream",
+   "rarity": "Legendary",
+   "slot": "Chest Armor",
+   "slug": "vessel-of-the-endless-stream"
+  },
+  {
+   "name": "Unyielding Cuirass",
+   "rarity": "Legendary",
+   "slot": "Chest Armor",
+   "slug": "unyielding-cuirass"
+  },
+  {
+   "name": "Evasive Cuirass",
+   "rarity": "Legendary",
+   "slot": "Chest Armor",
+   "slug": "evasive-cuirass"
+  },
+  {
+   "name": "Leather Spaulder",
+   "rarity": "Common",
+   "slot": "Shoulder",
+   "slug": "leather-spaulder"
+  },
+  {
+   "name": "Worn Pauldron",
+   "rarity": "Common",
+   "slot": "Shoulder",
+   "slug": "worn-pauldron"
+  },
+  {
+   "name": "Padded Shoulderguard",
+   "rarity": "Common",
+   "slot": "Shoulder",
+   "slug": "padded-shoulderguard"
+  },
+  {
+   "name": "Buckled Leather Spaulder",
+   "rarity": "Common",
+   "slot": "Shoulder",
+   "slug": "buckled-leather-spaulder"
+  },
+  {
+   "name": "Layered Iron Pauldron",
+   "rarity": "Uncommon",
+   "slot": "Shoulder",
+   "slug": "layered-iron-pauldron"
+  },
+  {
+   "name": "Iron Shoulderplate",
+   "rarity": "Uncommon",
+   "slot": "Shoulder",
+   "slug": "iron-shoulderplate"
+  },
+  {
+   "name": "Riveted Steel Spaulder",
+   "rarity": "Uncommon",
+   "slot": "Shoulder",
+   "slug": "riveted-steel-spaulder"
+  },
+  {
+   "name": "Riveted Bronze Spaulder",
+   "rarity": "Uncommon",
+   "slot": "Shoulder",
+   "slug": "riveted-bronze-spaulder"
+  },
+  {
+   "name": "Crimsonguard Pauldron",
+   "rarity": "Rare",
+   "slot": "Shoulder",
+   "slug": "crimsonguard-pauldron"
+  },
+  {
+   "name": "Deathskull Pauldron",
+   "rarity": "Rare",
+   "slot": "Shoulder",
+   "slug": "deathskull-pauldron"
+  },
+  {
+   "name": "Sunspike Pauldron",
+   "rarity": "Rare",
+   "slot": "Shoulder",
+   "slug": "sunspike-pauldron"
+  },
+  {
+   "name": "Gilded Lamellar Pauldron",
+   "rarity": "Rare",
+   "slot": "Shoulder",
+   "slug": "gilded-lamellar-pauldron"
+  },
+  {
+   "name": "Violet Acolyte's Mantle",
+   "rarity": "Rare",
+   "slot": "Shoulder",
+   "slug": "violet-acolytes-mantle"
+  },
+  {
+   "name": "Ivory Sigil Mantle",
+   "rarity": "Rare",
+   "slot": "Shoulder",
+   "slug": "ivory-sigil-mantle"
+  },
+  {
+   "name": "Azure Ceremonial Epaulet",
+   "rarity": "Rare",
+   "slot": "Shoulder",
+   "slug": "azure-ceremonial-epaulet"
+  },
+  {
+   "name": "Moonfeather Mantle",
+   "rarity": "Rare",
+   "slot": "Shoulder",
+   "slug": "moonfeather-mantle"
+  },
+  {
+   "name": "Shell Spike Pauldron",
+   "rarity": "Legendary",
+   "slot": "Shoulder",
+   "slug": "shell-spike-pauldron"
+  },
+  {
+   "name": "Elemental Burst Pauldron",
+   "rarity": "Legendary",
+   "slot": "Shoulder",
+   "slug": "elemental-burst-pauldron"
+  },
+  {
+   "name": "Reaper's Pauldron",
+   "rarity": "Legendary",
+   "slot": "Shoulder",
+   "slug": "reapers-pauldron"
+  },
+  {
+   "name": "Worn Leather Gloves",
+   "rarity": "Common",
+   "slot": "Gloves",
+   "slug": "worn-leather-gloves"
+  },
+  {
+   "name": "Studded Hide Gloves",
+   "rarity": "Common",
+   "slot": "Gloves",
+   "slug": "studded-hide-gloves"
+  },
+  {
+   "name": "Plain Cloth Gloves",
+   "rarity": "Common",
+   "slot": "Gloves",
+   "slug": "plain-cloth-gloves"
+  },
+  {
+   "name": "Fingerless Work Gloves",
+   "rarity": "Common",
+   "slot": "Gloves",
+   "slug": "fingerless-work-gloves"
+  },
+  {
+   "name": "Steel Plated Gauntlets",
+   "rarity": "Uncommon",
+   "slot": "Gloves",
+   "slug": "steel-plated-gauntlets"
+  },
+  {
+   "name": "Verdant Leather Gloves",
+   "rarity": "Uncommon",
+   "slot": "Gloves",
+   "slug": "verdant-leather-gloves"
+  },
+  {
+   "name": "Mariner's Gloves",
+   "rarity": "Uncommon",
+   "slot": "Gloves",
+   "slug": "mariners-gloves"
+  },
+  {
+   "name": "Black Sigil Gloves",
+   "rarity": "Uncommon",
+   "slot": "Gloves",
+   "slug": "black-sigil-gloves"
+  },
+  {
+   "name": "Deathskull Gauntlets",
+   "rarity": "Rare",
+   "slot": "Gloves",
+   "slug": "deathskull-gauntlets"
+  },
+  {
+   "name": "Crimson Claw Gauntlets",
+   "rarity": "Rare",
+   "slot": "Gloves",
+   "slug": "crimson-claw-gauntlets"
+  },
+  {
+   "name": "Rune-Etched Gauntlets",
+   "rarity": "Rare",
+   "slot": "Gloves",
+   "slug": "rune-etched-gauntlets"
+  },
+  {
+   "name": "Gilded Guardian Gauntlets",
+   "rarity": "Rare",
+   "slot": "Gloves",
+   "slug": "gilded-guardian-gauntlets"
+  },
+  {
+   "name": "Ragefire Gauntlets",
+   "rarity": "Legendary",
+   "slot": "Gloves",
+   "slug": "ragefire-gauntlets"
+  },
+  {
+   "name": "Unstoppable Gauntlets",
+   "rarity": "Legendary",
+   "slot": "Gloves",
+   "slug": "unstoppable-gauntlets"
+  },
+  {
+   "name": "Stormcaller Gauntlets",
+   "rarity": "Legendary",
+   "slot": "Gloves",
+   "slug": "stormcaller-gauntlets"
+  },
+  {
+   "name": "Deflecting Handwraps",
+   "rarity": "Legendary",
+   "slot": "Gloves",
+   "slug": "deflecting-handwraps"
+  },
+  {
+   "name": "Deadeye Grips",
+   "rarity": "Legendary",
+   "slot": "Gloves",
+   "slug": "deadeye-grips"
+  },
+  {
+   "name": "Festering Gauntlets",
+   "rarity": "Legendary",
+   "slot": "Gloves",
+   "slug": "festering-gauntlets"
+  },
+  {
+   "name": "Worn Iron-Buckle Belt",
+   "rarity": "Common",
+   "slot": "Belt",
+   "slug": "worn-iron-buckle-belt"
+  },
+  {
+   "name": "Frayed Leather Strap",
+   "rarity": "Common",
+   "slot": "Belt",
+   "slug": "frayed-leather-strap"
+  },
+  {
+   "name": "Simple Leather Belt",
+   "rarity": "Common",
+   "slot": "Belt",
+   "slug": "simple-leather-belt"
+  },
+  {
+   "name": "Knotted Cloth Sash",
+   "rarity": "Common",
+   "slot": "Belt",
+   "slug": "knotted-cloth-sash"
+  },
+  {
+   "name": "Sturdy Buckled Belt",
+   "rarity": "Uncommon",
+   "slot": "Belt",
+   "slug": "sturdy-buckled-belt"
+  },
+  {
+   "name": "Ringclasp Belt",
+   "rarity": "Uncommon",
+   "slot": "Belt",
+   "slug": "ringclasp-belt"
+  },
+  {
+   "name": "Wayfarer's Wrap Belt",
+   "rarity": "Uncommon",
+   "slot": "Belt",
+   "slug": "wayfarers-wrap-belt"
+  },
+  {
+   "name": "Steelbound Belt",
+   "rarity": "Uncommon",
+   "slot": "Belt",
+   "slug": "steelbound-belt"
+  },
+  {
+   "name": "Verdant Talon Girdle",
+   "rarity": "Rare",
+   "slot": "Belt",
+   "slug": "verdant-talon-girdle"
+  },
+  {
+   "name": "Sunstone Sash",
+   "rarity": "Rare",
+   "slot": "Belt",
+   "slug": "sunstone-sash"
+  },
+  {
+   "name": "Amethyst Shadow Sash",
+   "rarity": "Rare",
+   "slot": "Belt",
+   "slug": "amethyst-shadow-sash"
+  },
+  {
+   "name": "Amber Sigil Belt",
+   "rarity": "Rare",
+   "slot": "Belt",
+   "slug": "amber-sigil-belt"
+  },
+  {
+   "name": "Bottomless Potion Belt",
+   "rarity": "Legendary",
+   "slot": "Belt",
+   "slug": "bottomless-potion-belt"
+  },
+  {
+   "name": "Endless Mana Belt",
+   "rarity": "Legendary",
+   "slot": "Belt",
+   "slug": "endless-mana-belt"
+  },
+  {
+   "name": "Battle Draught Belt",
+   "rarity": "Legendary",
+   "slot": "Belt",
+   "slug": "battle-draught-belt"
+  },
+  {
+   "name": "Linen Breeches",
+   "rarity": "Common",
+   "slot": "Pants",
+   "slug": "linen-breeches"
+  },
+  {
+   "name": "Patched Trousers",
+   "rarity": "Common",
+   "slot": "Pants",
+   "slug": "patched-trousers"
+  },
+  {
+   "name": "Black Cloth Pants",
+   "rarity": "Common",
+   "slot": "Pants",
+   "slug": "black-cloth-pants"
+  },
+  {
+   "name": "Canvas Shorts",
+   "rarity": "Common",
+   "slot": "Pants",
+   "slug": "canvas-shorts"
+  },
+  {
+   "name": "Reinforced Hide Leggings",
+   "rarity": "Uncommon",
+   "slot": "Pants",
+   "slug": "reinforced-hide-leggings"
+  },
+  {
+   "name": "Thornguard Leggings",
+   "rarity": "Uncommon",
+   "slot": "Pants",
+   "slug": "thornguard-leggings"
+  },
+  {
+   "name": "Forester's Breeches",
+   "rarity": "Uncommon",
+   "slot": "Pants",
+   "slug": "foresters-breeches"
+  },
+  {
+   "name": "Quilted Leather Leggings",
+   "rarity": "Uncommon",
+   "slot": "Pants",
+   "slug": "quilted-leather-leggings"
+  },
+  {
+   "name": "Tealsteel Legguards",
+   "rarity": "Rare",
+   "slot": "Pants",
+   "slug": "tealsteel-legguards"
+  },
+  {
+   "name": "Magmacrack Trousers",
+   "rarity": "Rare",
+   "slot": "Pants",
+   "slug": "magmacrack-trousers"
+  },
+  {
+   "name": "Gilded Silk Leggings",
+   "rarity": "Rare",
+   "slot": "Pants",
+   "slug": "gilded-silk-leggings"
+  },
+  {
+   "name": "Duskstalker Legguards",
+   "rarity": "Rare",
+   "slot": "Pants",
+   "slug": "duskstalker-legguards"
+  },
+  {
+   "name": "Crimson Ritual Kilt",
+   "rarity": "Rare",
+   "slot": "Pants",
+   "slug": "crimson-ritual-kilt"
+  },
+  {
+   "name": "Sage's Rune Skirt",
+   "rarity": "Rare",
+   "slot": "Pants",
+   "slug": "sages-rune-skirt"
+  },
+  {
+   "name": "Jade Disciple's Kilt",
+   "rarity": "Rare",
+   "slot": "Pants",
+   "slug": "jade-disciples-kilt"
+  },
+  {
+   "name": "Ember Sigil Trousers",
+   "rarity": "Rare",
+   "slot": "Pants",
+   "slug": "ember-sigil-trousers"
+  },
+  {
+   "name": "Greaves of the Arcane Edge",
+   "rarity": "Legendary",
+   "slot": "Pants",
+   "slug": "greaves-of-the-arcane-edge"
+  },
+  {
+   "name": "Greaves of the Stalwart Tonic",
+   "rarity": "Legendary",
+   "slot": "Pants",
+   "slug": "greaves-of-the-stalwart-tonic"
+  },
+  {
+   "name": "Manaflow Greaves",
+   "rarity": "Legendary",
+   "slot": "Pants",
+   "slug": "manaflow-greaves"
+  },
+  {
+   "name": "Worn Travel Boots",
+   "rarity": "Common",
+   "slot": "Boots",
+   "slug": "worn-travel-boots"
+  },
+  {
+   "name": "Peasant's Footwraps",
+   "rarity": "Common",
+   "slot": "Boots",
+   "slug": "peasants-footwraps"
+  },
+  {
+   "name": "Hide Riding Boots",
+   "rarity": "Common",
+   "slot": "Boots",
+   "slug": "hide-riding-boots"
+  },
+  {
+   "name": "Worn Leather Sandals",
+   "rarity": "Common",
+   "slot": "Boots",
+   "slug": "worn-leather-sandals"
+  },
+  {
+   "name": "Thornstep Boots",
+   "rarity": "Uncommon",
+   "slot": "Boots",
+   "slug": "thornstep-boots"
+  },
+  {
+   "name": "Fur-Lined Trekkers",
+   "rarity": "Uncommon",
+   "slot": "Boots",
+   "slug": "fur-lined-trekkers"
+  },
+  {
+   "name": "Wanderer's Boots",
+   "rarity": "Uncommon",
+   "slot": "Boots",
+   "slug": "wanderers-boots"
+  },
+  {
+   "name": "Buckled Travel Boots",
+   "rarity": "Uncommon",
+   "slot": "Boots",
+   "slug": "buckled-travel-boots"
+  },
+  {
+   "name": "Ironclad Warboots",
+   "rarity": "Rare",
+   "slot": "Boots",
+   "slug": "ironclad-warboots"
+  },
+  {
+   "name": "Sapphire Arcane Boots",
+   "rarity": "Rare",
+   "slot": "Boots",
+   "slug": "sapphire-arcane-boots"
+  },
+  {
+   "name": "Ruby-Gilded Boots",
+   "rarity": "Rare",
+   "slot": "Boots",
+   "slug": "ruby-gilded-boots"
+  },
+  {
+   "name": "Bronze-Cuffed Boots",
+   "rarity": "Rare",
+   "slot": "Boots",
+   "slug": "bronze-cuffed-boots"
+  },
+  {
+   "name": "Boots of the Windcaller",
+   "rarity": "Legendary",
+   "slot": "Boots",
+   "slug": "boots-of-the-windcaller"
+  },
+  {
+   "name": "Treads of the Falling Leaf",
+   "rarity": "Legendary",
+   "slot": "Boots",
+   "slug": "treads-of-the-falling-leaf"
+  },
+  {
+   "name": "Boots of the Mending Stride",
+   "rarity": "Legendary",
+   "slot": "Boots",
+   "slug": "boots-of-the-mending-stride"
+  },
+  {
+   "name": "Onyx Teardrop Pendant",
+   "rarity": "Common",
+   "slot": "Necklace",
+   "slug": "onyx-teardrop-pendant"
+  },
+  {
+   "name": "Iron Link Necklace",
+   "rarity": "Common",
+   "slot": "Necklace",
+   "slug": "iron-link-necklace"
+  },
+  {
+   "name": "Simple Silver Pendant",
+   "rarity": "Common",
+   "slot": "Necklace",
+   "slug": "simple-silver-pendant"
+  },
+  {
+   "name": "Pilgrim's Cross",
+   "rarity": "Common",
+   "slot": "Necklace",
+   "slug": "pilgrims-cross"
+  },
+  {
+   "name": "Ruby Drop Pendant",
+   "rarity": "Uncommon",
+   "slot": "Necklace",
+   "slug": "ruby-drop-pendant"
+  },
+  {
+   "name": "Prism Quartet Amulet",
+   "rarity": "Uncommon",
+   "slot": "Necklace",
+   "slug": "prism-quartet-amulet"
+  },
+  {
+   "name": "Obsidian Leaf Pendant",
+   "rarity": "Uncommon",
+   "slot": "Necklace",
+   "slug": "obsidian-leaf-pendant"
+  },
+  {
+   "name": "Fine Gold Chain",
+   "rarity": "Uncommon",
+   "slot": "Necklace",
+   "slug": "fine-gold-chain"
+  },
+  {
+   "name": "Amethyst Gold Amulet",
+   "rarity": "Rare",
+   "slot": "Necklace",
+   "slug": "amethyst-gold-amulet"
+  },
+  {
+   "name": "Turquoise Eye Amulet",
+   "rarity": "Rare",
+   "slot": "Necklace",
+   "slug": "turquoise-eye-amulet"
+  },
+  {
+   "name": "Sapphire Shard Amulet",
+   "rarity": "Rare",
+   "slot": "Necklace",
+   "slug": "sapphire-shard-amulet"
+  },
+  {
+   "name": "Amberleaf Talisman",
+   "rarity": "Rare",
+   "slot": "Necklace",
+   "slug": "amberleaf-talisman"
+  },
+  {
+   "name": "Pendant of the Surging Mind",
+   "rarity": "Legendary",
+   "slot": "Necklace",
+   "slug": "pendant-of-the-surging-mind"
+  },
+  {
+   "name": "Bellow of the Open Wound",
+   "rarity": "Legendary",
+   "slot": "Necklace",
+   "slug": "bellow-of-the-open-wound"
+  },
+  {
+   "name": "Fire Lord's Necklace",
+   "rarity": "Legendary",
+   "slot": "Necklace",
+   "slug": "fire-lords-necklace"
+  },
+  {
+   "name": "Stormguard Necklace",
+   "rarity": "Legendary",
+   "slot": "Necklace",
+   "slug": "stormguard-necklace"
+  },
+  {
+   "name": "Pendant of Vigor",
+   "rarity": "Legendary",
+   "slot": "Necklace",
+   "slug": "pendant-of-vigor"
+  },
+  {
+   "name": "Plain Iron Band",
+   "rarity": "Common",
+   "slot": "Ring",
+   "slug": "plain-iron-band"
+  },
+  {
+   "name": "Copper Band",
+   "rarity": "Common",
+   "slot": "Ring",
+   "slug": "copper-band"
+  },
+  {
+   "name": "Hammered Silver Ring",
+   "rarity": "Common",
+   "slot": "Ring",
+   "slug": "hammered-silver-ring"
+  },
+  {
+   "name": "Bronze Band",
+   "rarity": "Common",
+   "slot": "Ring",
+   "slug": "bronze-band"
+  },
+  {
+   "name": "Drakespine Ring",
+   "rarity": "Uncommon",
+   "slot": "Ring",
+   "slug": "drakespine-ring"
+  },
+  {
+   "name": "Garnet Band",
+   "rarity": "Uncommon",
+   "slot": "Ring",
+   "slug": "garnet-band"
+  },
+  {
+   "name": "Spiked Iron Ring",
+   "rarity": "Uncommon",
+   "slot": "Ring",
+   "slug": "spiked-iron-ring"
+  },
+  {
+   "name": "Blackened Steel Band",
+   "rarity": "Uncommon",
+   "slot": "Ring",
+   "slug": "blackened-steel-band"
+  },
+  {
+   "name": "Sunstone Signet",
+   "rarity": "Rare",
+   "slot": "Ring",
+   "slug": "sunstone-signet"
+  },
+  {
+   "name": "Coven Talon Ring",
+   "rarity": "Rare",
+   "slot": "Ring",
+   "slug": "coven-talon-ring"
+  },
+  {
+   "name": "Emberflame Band",
+   "rarity": "Rare",
+   "slot": "Ring",
+   "slug": "emberflame-band"
+  },
+  {
+   "name": "Golden Talon Ring",
+   "rarity": "Rare",
+   "slot": "Ring",
+   "slug": "golden-talon-ring"
+  },
+  {
+   "name": "Bloodfang Signet of the Wyrm",
+   "rarity": "Legendary",
+   "slot": "Ring",
+   "slug": "bloodfang-signet-of-the-wyrm"
+  },
+  {
+   "name": "Ring of Revelation",
+   "rarity": "Legendary",
+   "slot": "Ring",
+   "slug": "ring-of-revelation"
+  },
+  {
+   "name": "Ring of the Third Eye",
+   "rarity": "Legendary",
+   "slot": "Ring",
+   "slug": "ring-of-the-third-eye"
+  },
+  {
+   "name": "Ring of the Fourth Flame",
+   "rarity": "Legendary",
+   "slot": "Ring",
+   "slug": "ring-of-the-fourth-flame"
+  },
+  {
+   "name": "Charged Ring",
+   "rarity": "Legendary",
+   "slot": "Ring",
+   "slug": "charged-ring"
+  },
+  {
+   "name": "Ring of Arcane Precision",
+   "rarity": "Legendary",
+   "slot": "Ring",
+   "slug": "ring-of-arcane-precision"
+  },
+  {
+   "name": "Ring of Dragonslayer",
+   "rarity": "Legendary",
+   "slot": "Ring",
+   "slug": "ring-of-dragonslayer"
+  },
+  {
+   "name": "Remnant of the Elder Sage",
+   "rarity": "Divine",
+   "slot": "Ring",
+   "slug": "remnant-of-the-elder-sage"
+  },
+  {
+   "name": "Brown Adventurer's Cape",
+   "rarity": "Rare",
+   "slot": "Back",
+   "slug": "brown-adventurers-cape"
+  },
+  {
+   "name": "Red Adventurer's Cape",
+   "rarity": "Rare",
+   "slot": "Back",
+   "slug": "red-adventurers-cape"
+  },
+  {
+   "name": "Grey Adventurer's Cape",
+   "rarity": "Rare",
+   "slot": "Back",
+   "slug": "grey-adventurers-cape"
+  },
+  {
+   "name": "Rimeshard Shroud",
+   "rarity": "Legendary",
+   "slot": "Back",
+   "slug": "rimeshard-shroud"
+  },
+  {
+   "name": "Emberdusk Mantle",
+   "rarity": "Legendary",
+   "slot": "Back",
+   "slug": "emberdusk-mantle"
+  },
+  {
+   "name": "Snowpelt Mantle",
+   "rarity": "Legendary",
+   "slot": "Back",
+   "slug": "snowpelt-mantle"
+  },
+  {
+   "name": "Duskfeather Wings",
+   "rarity": "Legendary",
+   "slot": "Back",
+   "slug": "duskfeather-wings"
+  },
+  {
+   "name": "Wings of the Light",
+   "rarity": "Divine",
+   "slot": "Back",
+   "slug": "wings-of-the-light"
+  },
+  {
+   "name": "Wings of the Cinderlord",
+   "rarity": "Divine",
+   "slot": "Back",
+   "slug": "wings-of-the-cinderlord"
+  }
+ ]
+}

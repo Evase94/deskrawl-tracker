@@ -1,0 +1,20 @@
+# personal data written by the tracker
+tracker_config.json
+*.csv
+stage_stats.json
+captures/
+tracker_errors.log
+
+# screenshots / recordings
+*.png
+*.jpg
+*.mp4
+!docs/*.png
+
+# python / build
+__pycache__/
+.venv/
+build/
+dist/
+*.spec.bak
+*.spec

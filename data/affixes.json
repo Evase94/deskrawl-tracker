@@ -1,0 +1,1001 @@
+{
+  "source": [
+    "https://wikily.gg/deskrawl/equipment/rarities",
+    "https://afkmeta.com/en/deskrawl/items",
+    "https://afkmeta.com/assets/deskrawl/data-items.js"
+  ],
+  "rarity_multiplier": {
+    "Common": 1.2,
+    "Uncommon": 1.4,
+    "Rare": 1.5,
+    "Legendary": 1.6
+  },
+  "roll_min": 0.85,
+  "roll_max": 1.15,
+  "ancient_roll": 1.15,
+  "formula": "Attribute = M x item level x per_level x roll, rounded to a whole number (at least 1), or for a percent attribute to 0.1% (at least 0.1%). Halves round to the even number. Each number rolls its own roll. Ancient: top roll 1.15 on every number except weapon speed, top of item level range, and (from ilvl 300) all sockets of its slot.",
+  "per_level_units": "percent affixes: per_level is in display percent points (e.g. 0.008 => 0.008% per item level); afkmeta stores them as fractions (/100)",
+  "affix_counts": {
+    "Common": {
+      "primary": 1,
+      "secondary": 0
+    },
+    "Uncommon": {
+      "primary": 2,
+      "secondary": 0
+    },
+    "Rare": {
+      "primary": 3,
+      "secondary": 1
+    },
+    "Legendary": {
+      "primary": 4,
+      "secondary": 1
+    },
+    "Divine": "fixed attributes",
+    "Back": "no attributes at any rarity"
+  },
+  "slots": {
+    "Weapon": {
+      "implicit": [
+        "Weapon Speed",
+        "Weapon Damage"
+      ],
+      "primary": [
+        "Strength",
+        "Dexterity",
+        "Intelligence",
+        "Damage",
+        "Critical Hit Damage",
+        "Attack Speed",
+        "Basic Attack Damage",
+        "Strong Attack Damage",
+        "Special Ability Bonus Damage",
+        "Physical Damage",
+        "Fire Damage",
+        "Cold Damage",
+        "Lightning Damage",
+        "Poison Damage",
+        "Arcane Damage",
+        "Damage vs Healthy",
+        "Damage vs Injured",
+        "Damage vs Slowed",
+        "Damage vs Immobilized",
+        "Damage vs Elite",
+        "Damage vs Bleeding",
+        "Damage vs Distant",
+        "Damage vs Poisoned",
+        "Damage Over Time",
+        "Damage vs Burned",
+        "Damage vs Vulnerable"
+      ],
+      "secondary": [
+        "Life on Hit",
+        "Life on Kill",
+        "Mana on Kill"
+      ]
+    },
+    "Helm": {
+      "implicit": [
+        "Armor"
+      ],
+      "primary": [
+        "Strength",
+        "Dexterity",
+        "Intelligence",
+        "Max Health",
+        "Max Mana",
+        "Cooldown Reduction",
+        "Magic Resist",
+        "Dodge Chance",
+        "Bonus Armor",
+        "Lightning Damage Reduction",
+        "Arcane Damage Reduction"
+      ],
+      "secondary": [
+        "Life Regeneration",
+        "Item Find",
+        "Gold Find",
+        "Health Potion Find",
+        "XP Gained"
+      ]
+    },
+    "Chest Armor": {
+      "implicit": [
+        "Armor"
+      ],
+      "primary": [
+        "Strength",
+        "Dexterity",
+        "Intelligence",
+        "Max Health",
+        "Magic Resist",
+        "Dodge Chance",
+        "Thorns",
+        "Bonus Armor",
+        "Bonus Health",
+        "Special Ability Bonus Damage",
+        "Damage vs Healthy",
+        "Damage vs Injured",
+        "Physical Damage Reduction",
+        "Cold Damage Reduction"
+      ],
+      "secondary": [
+        "Life Regeneration",
+        "Life on Hit",
+        "Gold Find",
+        "Item Find",
+        "XP Gained"
+      ]
+    },
+    "Pants": {
+      "implicit": [
+        "Armor"
+      ],
+      "primary": [
+        "Strength",
+        "Dexterity",
+        "Intelligence",
+        "Max Health",
+        "Magic Resist",
+        "Dodge Chance",
+        "Thorns",
+        "Bonus Armor",
+        "Bonus Health",
+        "Poison Damage Reduction",
+        "Physical Damage Reduction"
+      ],
+      "secondary": [
+        "Life Regeneration",
+        "Life on Hit",
+        "Gold Find",
+        "Item Find",
+        "XP Gained"
+      ]
+    },
+    "Boots": {
+      "implicit": [
+        "Armor"
+      ],
+      "primary": [
+        "Strength",
+        "Dexterity",
+        "Intelligence",
+        "Max Health",
+        "Magic Resist",
+        "Dodge Chance",
+        "Mana Cost Reduction",
+        "Cold Damage Reduction",
+        "Fire Damage Reduction",
+        "Critical Damage Reduction"
+      ],
+      "secondary": [
+        "Health Potion Find",
+        "Bonus Move Speed",
+        "Life on Hit",
+        "Item Find",
+        "Gold Find"
+      ]
+    },
+    "Belt": {
+      "implicit": [],
+      "primary": [
+        "Strength",
+        "Dexterity",
+        "Intelligence",
+        "Max Health",
+        "Dodge Chance",
+        "Magic Resist",
+        "Mana Cost Reduction",
+        "Bonus Potion Charges",
+        "Cooldown Reduction",
+        "Attack Speed",
+        "Thorns"
+      ],
+      "secondary": [
+        "Health Potion Find",
+        "Life Regeneration",
+        "Mana on Kill",
+        "XP Gained"
+      ]
+    },
+    "Ring": {
+      "implicit": [],
+      "primary": [
+        "Strength",
+        "Dexterity",
+        "Intelligence",
+        "Critical Hit Chance",
+        "Critical Hit Damage",
+        "Attack Speed",
+        "Max Mana",
+        "Magic Resist",
+        "Damage vs Vulnerable",
+        "Physical Damage",
+        "Fire Damage",
+        "Cold Damage",
+        "Lightning Damage",
+        "Poison Damage",
+        "Arcane Damage",
+        "Bonus All Damage"
+      ],
+      "secondary": [
+        "Life on Hit",
+        "Life on Kill",
+        "XP Gained",
+        "Item Find",
+        "Gold Find"
+      ]
+    },
+    "Necklace": {
+      "implicit": [],
+      "primary": [
+        "Strength",
+        "Dexterity",
+        "Intelligence",
+        "Critical Hit Chance",
+        "Critical Hit Damage",
+        "Attack Speed",
+        "Cooldown Reduction",
+        "Magic Resist",
+        "Basic Attack Damage",
+        "Strong Attack Damage",
+        "Physical Damage",
+        "Fire Damage",
+        "Cold Damage",
+        "Lightning Damage",
+        "Poison Damage",
+        "Arcane Damage",
+        "Damage vs Healthy",
+        "Damage vs Injured",
+        "Damage vs Slowed",
+        "Damage vs Elite",
+        "Damage vs Vulnerable",
+        "Bonus Armor",
+        "Bonus All Damage"
+      ],
+      "secondary": [
+        "Bonus Move Speed",
+        "Life on Hit",
+        "Item Find",
+        "XP Gained"
+      ]
+    },
+    "Gloves": {
+      "implicit": [
+        "Armor"
+      ],
+      "primary": [
+        "Strength",
+        "Dexterity",
+        "Intelligence",
+        "Cooldown Reduction",
+        "Mana Cost Reduction",
+        "Max Mana",
+        "Critical Hit Chance",
+        "Damage",
+        "Critical Hit Damage",
+        "Attack Speed",
+        "Critical Damage Reduction",
+        "Magic Resist"
+      ],
+      "secondary": [
+        "Gold Find",
+        "Item Find",
+        "Health Potion Find",
+        "Mana on Kill",
+        "XP Gained"
+      ]
+    },
+    "Shoulder": {
+      "implicit": [
+        "Armor"
+      ],
+      "primary": [
+        "Strength",
+        "Dexterity",
+        "Intelligence",
+        "Max Health",
+        "Magic Resist",
+        "Dodge Chance",
+        "Cooldown Reduction",
+        "Poison Damage Reduction",
+        "Fire Damage Reduction",
+        "Critical Damage Reduction",
+        "Thorns"
+      ],
+      "secondary": [
+        "Life Regeneration",
+        "Bonus Move Speed"
+      ]
+    }
+  },
+  "affixes": {
+    "Arcane Damage": {
+      "per_level": 0.08,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Ring",
+        "Necklace"
+      ],
+      "classes": [
+        "hunter"
+      ]
+    },
+    "Arcane Damage Reduction": {
+      "per_level": 0.01,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Helm"
+      ]
+    },
+    "Attack Speed": {
+      "per_level": 0.015,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Belt",
+        "Ring",
+        "Necklace",
+        "Gloves"
+      ]
+    },
+    "Basic Attack Damage": {
+      "per_level": 0.07,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Necklace"
+      ]
+    },
+    "Bonus All Damage": {
+      "per_level": 0.04,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Ring",
+        "Necklace"
+      ]
+    },
+    "Bonus Armor": {
+      "per_level": 0.02,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Helm",
+        "Chest Armor",
+        "Pants",
+        "Necklace"
+      ]
+    },
+    "Bonus Health": {
+      "per_level": 0.02,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Chest Armor",
+        "Pants"
+      ]
+    },
+    "Bonus Move Speed": {
+      "per_level": 0.01,
+      "percent": true,
+      "type": "secondary",
+      "slots": [
+        "Boots",
+        "Necklace",
+        "Shoulder"
+      ]
+    },
+    "Bonus Potion Charges": {
+      "per_level": null,
+      "percent": false,
+      "type": "primary",
+      "slots": [
+        "Belt"
+      ],
+      "fixed_value": 1
+    },
+    "Cold Damage": {
+      "per_level": 0.08,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Ring",
+        "Necklace"
+      ],
+      "classes": [
+        "sorcerer"
+      ]
+    },
+    "Cold Damage Reduction": {
+      "per_level": 0.01,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Chest Armor",
+        "Boots"
+      ]
+    },
+    "Cooldown Reduction": {
+      "per_level": 0.01,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Helm",
+        "Belt",
+        "Necklace",
+        "Gloves",
+        "Shoulder"
+      ]
+    },
+    "Critical Damage Reduction": {
+      "per_level": 0.02,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Boots",
+        "Gloves",
+        "Shoulder"
+      ]
+    },
+    "Critical Hit Chance": {
+      "per_level": 0.008,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Ring",
+        "Necklace",
+        "Gloves"
+      ]
+    },
+    "Critical Hit Damage": {
+      "per_level": 0.06,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Ring",
+        "Necklace",
+        "Gloves"
+      ]
+    },
+    "Damage": {
+      "per_level": 0.03,
+      "percent": false,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Gloves"
+      ]
+    },
+    "Damage Over Time": {
+      "per_level": 0.1,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon"
+      ],
+      "classes": [
+        "hunter",
+        "sorcerer",
+        "warrior"
+      ]
+    },
+    "Damage vs Bleeding": {
+      "per_level": 0.1,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon"
+      ],
+      "classes": [
+        "warrior"
+      ]
+    },
+    "Damage vs Burned": {
+      "per_level": 0.1,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon"
+      ],
+      "classes": [
+        "sorcerer"
+      ]
+    },
+    "Damage vs Distant": {
+      "per_level": 0.1,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon"
+      ],
+      "classes": [
+        "hunter",
+        "sorcerer"
+      ]
+    },
+    "Damage vs Elite": {
+      "per_level": 0.1,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Necklace"
+      ]
+    },
+    "Damage vs Healthy": {
+      "per_level": 0.1,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Chest Armor",
+        "Necklace"
+      ]
+    },
+    "Damage vs Immobilized": {
+      "per_level": 0.1,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon"
+      ]
+    },
+    "Damage vs Injured": {
+      "per_level": 0.1,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Chest Armor",
+        "Necklace"
+      ]
+    },
+    "Damage vs Poisoned": {
+      "per_level": 0.1,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon"
+      ],
+      "classes": [
+        "hunter"
+      ]
+    },
+    "Damage vs Slowed": {
+      "per_level": 0.1,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Necklace"
+      ]
+    },
+    "Damage vs Vulnerable": {
+      "per_level": 0.1,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Ring",
+        "Necklace"
+      ]
+    },
+    "Dexterity": {
+      "per_level": 0.05,
+      "percent": false,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Helm",
+        "Chest Armor",
+        "Pants",
+        "Boots",
+        "Belt",
+        "Ring",
+        "Necklace",
+        "Gloves",
+        "Shoulder"
+      ],
+      "classes": [
+        "hunter",
+        "monk"
+      ],
+      "main_stat_only": true
+    },
+    "Dodge Chance": {
+      "per_level": 0.005,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Helm",
+        "Chest Armor",
+        "Pants",
+        "Boots",
+        "Belt",
+        "Shoulder"
+      ]
+    },
+    "Fire Damage": {
+      "per_level": 0.08,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Ring",
+        "Necklace"
+      ],
+      "classes": [
+        "sorcerer",
+        "warrior"
+      ]
+    },
+    "Fire Damage Reduction": {
+      "per_level": 0.01,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Boots",
+        "Shoulder"
+      ]
+    },
+    "Gold Find": {
+      "per_level": 0.02,
+      "percent": true,
+      "type": "secondary",
+      "slots": [
+        "Helm",
+        "Chest Armor",
+        "Pants",
+        "Boots",
+        "Ring",
+        "Gloves"
+      ]
+    },
+    "Health Potion Find": {
+      "per_level": 0.02,
+      "percent": true,
+      "type": "secondary",
+      "slots": [
+        "Helm",
+        "Boots",
+        "Belt",
+        "Gloves"
+      ]
+    },
+    "Intelligence": {
+      "per_level": 0.05,
+      "percent": false,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Helm",
+        "Chest Armor",
+        "Pants",
+        "Boots",
+        "Belt",
+        "Ring",
+        "Necklace",
+        "Gloves",
+        "Shoulder"
+      ],
+      "classes": [
+        "sorcerer"
+      ],
+      "main_stat_only": true
+    },
+    "Item Find": {
+      "per_level": 0.02,
+      "percent": true,
+      "type": "secondary",
+      "slots": [
+        "Helm",
+        "Chest Armor",
+        "Pants",
+        "Boots",
+        "Ring",
+        "Necklace",
+        "Gloves"
+      ]
+    },
+    "Life on Hit": {
+      "per_level": 0.02,
+      "percent": false,
+      "type": "secondary",
+      "slots": [
+        "Weapon",
+        "Chest Armor",
+        "Pants",
+        "Boots",
+        "Ring",
+        "Necklace"
+      ]
+    },
+    "Life on Kill": {
+      "per_level": 0.06,
+      "percent": false,
+      "type": "secondary",
+      "slots": [
+        "Weapon",
+        "Ring"
+      ]
+    },
+    "Life Regeneration": {
+      "per_level": 0.02,
+      "percent": false,
+      "type": "secondary",
+      "slots": [
+        "Helm",
+        "Chest Armor",
+        "Pants",
+        "Belt",
+        "Shoulder"
+      ]
+    },
+    "Lightning Damage": {
+      "per_level": 0.08,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Ring",
+        "Necklace"
+      ],
+      "classes": [
+        "monk",
+        "sorcerer"
+      ]
+    },
+    "Lightning Damage Reduction": {
+      "per_level": 0.01,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Helm"
+      ]
+    },
+    "Magic Resist": {
+      "per_level": 0.5,
+      "percent": false,
+      "type": "primary",
+      "slots": [
+        "Helm",
+        "Chest Armor",
+        "Pants",
+        "Boots",
+        "Belt",
+        "Ring",
+        "Necklace",
+        "Gloves",
+        "Shoulder"
+      ]
+    },
+    "Mana Cost Reduction": {
+      "per_level": 0.01,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Boots",
+        "Belt",
+        "Gloves"
+      ]
+    },
+    "Mana on Kill": {
+      "per_level": 0.01,
+      "percent": false,
+      "type": "secondary",
+      "slots": [
+        "Weapon",
+        "Belt",
+        "Gloves"
+      ]
+    },
+    "Max Health": {
+      "per_level": 0.45,
+      "percent": false,
+      "type": "primary",
+      "slots": [
+        "Helm",
+        "Chest Armor",
+        "Pants",
+        "Boots",
+        "Belt",
+        "Shoulder"
+      ]
+    },
+    "Max Mana": {
+      "per_level": 0.05,
+      "percent": false,
+      "type": "primary",
+      "slots": [
+        "Helm",
+        "Ring",
+        "Gloves"
+      ]
+    },
+    "Physical Damage": {
+      "per_level": 0.08,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Ring",
+        "Necklace"
+      ],
+      "classes": [
+        "hunter",
+        "monk",
+        "warrior"
+      ]
+    },
+    "Physical Damage Reduction": {
+      "per_level": 0.01,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Chest Armor",
+        "Pants"
+      ]
+    },
+    "Poison Damage": {
+      "per_level": 0.08,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Ring",
+        "Necklace"
+      ],
+      "classes": [
+        "hunter"
+      ]
+    },
+    "Poison Damage Reduction": {
+      "per_level": 0.01,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Pants",
+        "Shoulder"
+      ]
+    },
+    "Special Ability Bonus Damage": {
+      "per_level": 0.08,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Chest Armor"
+      ]
+    },
+    "Strength": {
+      "per_level": 0.05,
+      "percent": false,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Helm",
+        "Chest Armor",
+        "Pants",
+        "Boots",
+        "Belt",
+        "Ring",
+        "Necklace",
+        "Gloves",
+        "Shoulder"
+      ],
+      "classes": [
+        "warrior"
+      ],
+      "main_stat_only": true
+    },
+    "Strong Attack Damage": {
+      "per_level": 0.07,
+      "percent": true,
+      "type": "primary",
+      "slots": [
+        "Weapon",
+        "Necklace"
+      ]
+    },
+    "Thorns": {
+      "per_level": 0.1,
+      "percent": false,
+      "type": "primary",
+      "slots": [
+        "Chest Armor",
+        "Pants",
+        "Belt",
+        "Shoulder"
+      ]
+    },
+    "XP Gained": {
+      "per_level": 0.02,
+      "percent": true,
+      "type": "secondary",
+      "slots": [
+        "Helm",
+        "Chest Armor",
+        "Pants",
+        "Belt",
+        "Ring",
+        "Necklace",
+        "Gloves"
+      ]
+    }
+  },
+  "implicit": {
+    "armor_per_level": 0.5,
+    "armor_formula": "Armor (Helm, Chest Armor, Pants, Boots, Gloves, Shoulder) = M x 0.5 x item level x roll(0.85-1.15), rounded, at least 1. Belts, Rings, Necklaces have no base stat.",
+    "weapon_damage": "Weapon damage = M x (0.2 x item level + 5) x roll(0.85-1.15) / speed, rounded, at least 1. DPS = damage x speed (independent of speed).",
+    "weapon_damage_per_level": 0.2,
+    "weapon_damage_base": 5,
+    "weapon_speed_range": [
+      0.8,
+      1.2
+    ],
+    "weapon_speed_decimals": 2,
+    "weapon_speed_ancient": "not maxed (rolls normally)",
+    "dps_table": {
+      "100": {
+        "Common": "25.0-35.0",
+        "Uncommon": "29.2-40.8",
+        "Rare": "31.3-43.7",
+        "Legendary": "33.5-46.5"
+      },
+      "500": {
+        "Common": "106.6-145.4",
+        "Uncommon": "124.6-169.6",
+        "Rare": "133.3-181.7",
+        "Legendary": "142.3-193.7"
+      },
+      "850": {
+        "Common": "178.1-242.0",
+        "Uncommon": "207.7-282.2",
+        "Rare": "222.5-302.4",
+        "Legendary": "237.4-322.6"
+      }
+    },
+    "armor_table": {
+      "100": {
+        "Common": "51-69",
+        "Uncommon": "60-80",
+        "Rare": "64-86",
+        "Legendary": "68-92"
+      },
+      "500": {
+        "Common": "255-345",
+        "Uncommon": "298-402",
+        "Rare": "319-431",
+        "Legendary": "340-460"
+      },
+      "850": {
+        "Common": "434-586",
+        "Uncommon": "506-684",
+        "Rare": "542-733",
+        "Legendary": "578-782"
+      }
+    }
+  },
+  "item_level": {
+    "normal": "enemy level E drops item level 10x(E-1) to 10xE+9 (min 10)",
+    "nightmare_inferno": "B-5..B+5, min 700, B = 700 + stage's lowest Normal enemy level (x2 on Inferno)",
+    "mythic_rift": "+10 on Normal roll; Nightmare +70, Inferno +140",
+    "required_level": "item level / 10, 1..70; Back 1; Divine & Black Mist 70",
+    "black_mist_item_level": 850,
+    "sockets_from_ilvl": 300
+  },
+  "sell_price": "item level x 0.25, x1.3 Weapon/Ring/Necklace, x(1+0.3 x rarity step: Common 0..Divine 4), x2 Ancient, rounded, min 1",
+  "missing": [
+    "Divine items' fixed attributes (per item) not extracted",
+    "Black Mist hidden attribute values not extracted"
+  ]
+}
