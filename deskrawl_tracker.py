@@ -334,6 +334,11 @@ class GameState:
                     if self.current is r:
                         self.current = None
                     self._check_death(r)
+                    ps = getattr(self, "pending_stage", None)
+                    if ps and now - ps[0] < 30 and not r.stage_name:
+                        r.stage_name = ps[1]
+                        self.stage_key = (r.difficulty, r.waves)
+                        self.pending_stage = None
                     if self.stage_name and self.stage_key == (r.difficulty, r.waves):
                         r.stage_guess = self.stage_name  # same settings as the last known stage
                     self.run_committed.set()
@@ -361,6 +366,21 @@ class GameState:
     # screen during the run (DeathWatcher) confirms it.
     DEATH_XP_RATIO = 0.6
     DEATH_DUR_RATIO = 0.75
+
+    def apply_stage_end(self, info: dict, t: float):
+        """Stage end screen: name the run that just ended (or remember it until the commit arrives)."""
+        name = f"{info['stage']}: {info['n']}"
+        with self.lock:
+            r = next((o for o in reversed(self.runs) if o.end and t - o.end < 120), None)
+            self.stage_name = name
+            if r is None:
+                self.pending_stage = (t, name, info)
+                return
+            if not r.stage_name:
+                r.stage_name = name
+                if info.get("seconds"):
+                    r.game_seconds = info["seconds"]
+            self.stage_key = (r.difficulty, r.waves)
 
     def log_needed(self, r) -> bool:
         """Does the in-game log panel have to be opened after run r? Only it names the stage and the
@@ -960,6 +980,9 @@ class GoldWatcher(threading.Thread):
                 gold = item_ocr.find_gold(lines)
                 if gold is not None:
                     self.state.observe_gold(time.time(), gold)
+                end = item_ocr.find_stage_end(lines)
+                if end:
+                    self.state.apply_stage_end(end, time.time())
                 death = item_ocr.find_death_text(lines, (frame.shape[1], frame.shape[0]))
                 if death:
                     self.state.mark_death_seen(time.time(), death)
@@ -993,12 +1016,28 @@ class PanelReader(threading.Thread):
         while True:
             self.state.run_committed.wait()
             self.state.run_committed.clear()
-            time.sleep(1.5)  # let the game write its log entry
             try:
+                if self.watch_stage_end():
+                    continue  # the end screen named the stage: no log panel needed
                 with self.lock:
                     self.read_once()
             except Exception as e:
                 self.status = f"Panel error: {e}"
+
+    def watch_stage_end(self, seconds=6.0) -> bool:
+        """Right after a run: the stage end screen shows for a few seconds and names the stage."""
+        until = time.time() + seconds
+        while time.time() < until:
+            frame = self.capture.grab()
+            if frame is not None:
+                end = item_ocr.find_stage_end(item_ocr.ocr_windows(frame))
+                if end:
+                    self.state.apply_stage_end(end, time.time())
+                    self.status = f"Stage from the end screen: {end['stage']}: {end['n']} " \
+                                  f"({datetime.now().strftime('%H:%M:%S')}) – log panel not needed"
+                    return True
+            time.sleep(0.4)
+        return False
 
     def _look(self):
         frame = self.capture.grab()
@@ -3884,7 +3923,7 @@ class App:
         self.dots["dps"].set("ok" if ocr_on and "fps" in self.ocr.status else ("warn" if ocr_on else None),
                              self.ocr.status)
         ps = self.panels.status or "not read yet"
-        self.dots["panels"].set("ok" if " read" in ps or "not needed" in ps else ("warn" if ps != "not read yet" else None), ps)
+        self.dots["panels"].set("ok" if " read" in ps or "not needed" in ps or "end screen" in ps else ("warn" if ps != "not read yet" else None), ps)
         self.dots["keys"].set("bad" if self.hotkeys.failed else "ok",
                               ("In use by another program: " + ", ".join(self.hotkeys.failed)) if self.hotkeys.failed
                               else "F8 check item · F9 read character · F10 hide/show Deskrawl")

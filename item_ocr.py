@@ -97,6 +97,9 @@ class Line:
     def cy(self):
         return self.y + self.h / 2
 
+    def cx_center(self):
+        return self.x + self.w / 2
+
 
 def ocr_windows(img) -> list[Line]:
     import winocr
@@ -1018,6 +1021,80 @@ DEATH_PATTERNS = [r"y[o0]ud[i1l]ed", r"auto-?rev[i1l]ve", r"rev[i1l]veafter\d*",
 _RE_DEATH = re.compile("|".join(DEATH_PATTERNS), re.I)
 
 
+# ----------------------------------------------------------------------------- stage end screen
+# Shown after every run (with "Auto Rerun 2s"): "THE CINDER CROWN: 6", CLEARS 36, TOTAL XP GAINED,
+# RUN DURATION 01:34, TOTAL TIME SPENT, drops by rarity, and the buttons TOWN / NEXT STAGE / RERUN.
+_REGIONS = None
+_END_MARKERS = ("clears", "runduration", "totalxpgained", "totaltimespent", "autorerun", "nextstage", "rerun")
+
+
+def _regions() -> list:
+    global _REGIONS
+    if _REGIONS is None:
+        import json
+        try:
+            with open(paths.res("data", "enemies.json"), encoding="utf-8") as f:
+                _REGIONS = sorted({s.get("region") for s in json.load(f).get("stages", []) if s.get("region")})
+        except Exception:
+            _REGIONS = []
+    return _REGIONS
+
+
+def _compact(text):
+    return re.sub(r"[^a-z0-9]", "", text.lower())
+
+
+def is_stage_end(lines: list[Line]) -> bool:
+    found = {m for l in lines for m in _END_MARKERS if m in _compact(l.text)}
+    return len(found) >= 2
+
+
+def find_stage_end(lines: list[Line]) -> dict | None:
+    """{"stage": "The Cinder Crown", "n": 6, "seconds": 94, "clears": 36} from the stage end screen."""
+    if not is_stage_end(lines):
+        return None
+    rows = []
+    for l in sorted(lines, key=lambda l: (l.y, l.x)):
+        row = next((r for r in rows if abs(r[0].cy - l.cy) < max(r[0].h, l.h) * 0.6), None)
+        if row is None:
+            rows.append([l])
+        else:
+            row.append(l)
+    stage = None
+    for row in rows:
+        text = " ".join(x.text for x in sorted(row, key=lambda x: x.x))
+        m = re.search(r"([A-Za-z' ]{4,}?)\s*[:;.]\s*(\d{1,2})\s*$", text)
+        if not m:
+            continue
+        raw = m.group(1).strip()
+        best = difflib.get_close_matches(_compact(raw), [_compact(r) for r in _regions()], n=1, cutoff=0.6)
+        if best:
+            name = next(r for r in _regions() if _compact(r) == best[0])
+            stage = (name, int(m.group(2)), min(row, key=lambda x: x.y))
+            break
+    if stage is None:
+        return None
+    out = {"stage": stage[0], "n": stage[1]}
+
+    def value_below(marker, pattern):
+        mk = next((l for l in lines if marker in _compact(l.text)), None)
+        if mk is None:
+            return None
+        cands = [l for l in lines if mk.y < l.y < mk.y + mk.h * 3 and abs(l.cx_center() - mk.cx_center()) < mk.w]
+        for l in sorted(cands, key=lambda l: l.y):
+            m = re.search(pattern, l.text)
+            if m:
+                return m
+        return None
+    m = value_below("runduration", r"(\d{1,2}):(\d{2})")
+    if m:
+        out["seconds"] = int(m.group(1)) * 60 + int(m.group(2))
+    m = value_below("clears", r"(\d+)")
+    if m:
+        out["clears"] = int(m.group(1))
+    return out
+
+
 def find_death_text(lines: list[Line], size=None) -> str | None:
     """The on-screen line that announces a death, if any. size=(W, H) of the frame: then a lone
     "TOWN" (the death screen's button) in the middle of the picture counts too."""
@@ -1025,7 +1102,7 @@ def find_death_text(lines: list[Line], size=None) -> str | None:
         compact = re.sub(r"[^a-z0-9-]", "", l.text.lower())
         if len(l.text.split()) <= 8 and "cooldown" not in compact and _RE_DEATH.search(compact):
             return l.text
-    if size:
+    if size and not is_stage_end(lines):  # the stage end screen has a TOWN button too
         W, H = size
         for l in lines:
             if re.fullmatch(r"\W*T\s*[O0]\s*W\s*N\W*", l.text) and abs(l.x + l.w / 2 - W / 2) < W * 0.2 \
