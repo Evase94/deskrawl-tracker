@@ -54,6 +54,9 @@ A setup window checks:
 
 You can open this window again later via **Controls → Change log file**.
 
+### Updates
+The tracker checks GitHub for a new release at every start (and via **Controls → Check for updates**). **Update now** downloads it, replaces the program files and restarts – your settings, character data and histories stay.
+
 ## Usage
 
 | Key | Action |

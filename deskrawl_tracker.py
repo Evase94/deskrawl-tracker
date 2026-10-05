@@ -27,6 +27,8 @@ import setup_dialog
 import bis
 import talents
 import skills
+import updater
+from version import VERSION
 import item_ocr  # first: loads onnxruntime before WinRT/winocr (avoids a crash)
 import item_eval
 import stages
@@ -1366,8 +1368,12 @@ class App:
         self.btn_top = ctl("", self.toggle_topmost, "Keep the tracker window on top of other windows.")
         ctl("Change log file", self.open_setup, "Choose the path to Deskrawl's Game.log and check that "
                                                  "Windows' English text recognition is installed.")
+        ctl("Check for updates", lambda: self.check_updates(manual=True),
+            f"Version {VERSION}. Looks for a newer release on GitHub and installs it; your settings and "
+            f"histories stay. The tracker also checks once at every start.")
         ctl("Reset session", self.reset, "Clear the rates and run list of the current session. "
                                                 "Stage statistics and histories are kept.")
+        self.root.after(5000, lambda: self.check_updates(manual=False))
         if setup_dialog.needs_setup(self.cfg):
             self.root.after(400, lambda: self.open_setup(first_run=True))
         self._update_panels_btn()
@@ -2956,7 +2962,9 @@ class App:
         try:
             while True:
                 ev = self.events.get_nowait()
-                if ev[0] == "icon_ready":
+                if ev[0] == "update":
+                    self._update_result(*ev[1:])
+                elif ev[0] == "icon_ready":
                     if not getattr(self, "_icon_refill", False):  # several pictures arrive at once
                         self._icon_refill = True
 
@@ -3199,6 +3207,84 @@ class App:
             pass
 
     # -- actions -------------------------------------------------------------
+    # -- updates ---------------------------------------------------------------
+    def check_updates(self, manual=False):
+        if not manual and self.cfg.get("update_check") is False:
+            return
+        if manual:
+            self.lbl_status.configure(text="checking for updates…")
+        threading.Thread(target=lambda: self.events.put(("update", updater.latest(), manual)), daemon=True).start()
+
+    def _update_result(self, info, manual):
+        if info is None:
+            if manual:
+                self.lbl_status.configure(text="update check failed – no connection to GitHub")
+            return
+        if not updater.is_newer(info):
+            if manual:
+                self.lbl_status.configure(text=f"Deskrawl Tracker {VERSION} is the latest version")
+            return
+        if not manual and self.cfg.get("skip_version") == info["version"]:
+            return
+        self.lbl_status.configure(text="")
+        self._update_dialog(info)
+
+    def _update_dialog(self, info):
+        d = tk.Toplevel(self.root, bg=BG)
+        d.title("Update available")
+        d.transient(self.root)
+        d.resizable(False, False)
+        tk.Label(d, text=f"Version {info['version']} is available", bg=BG, fg=FG, font=ui.F_HEAD, anchor="w").pack(
+            fill="x", padx=18, pady=(16, 0))
+        tk.Label(d, text=f"You have {VERSION}. Settings, character data and histories are kept.", bg=BG, fg=MUTED,
+                 font=ui.F_SMALL, anchor="w").pack(fill="x", padx=18)
+        notes = tk.Text(d, height=10, width=64, bg=PANEL, fg=FG, relief="flat", wrap="word", font=ui.F_SMALL,
+                        padx=10, pady=8)
+        notes.insert("1.0", info.get("notes") or "No release notes.")
+        notes.configure(state="disabled")
+        notes.pack(fill="both", padx=18, pady=10)
+        lbl = tk.Label(d, text="", bg=BG, fg=C_MEH, font=ui.F_SMALL, anchor="w")
+        lbl.pack(fill="x", padx=18)
+        bar = tk.Frame(d, bg=BG)
+        bar.pack(fill="x", padx=18, pady=(6, 16))
+
+        def progress(done, total):
+            txt = f"downloading… {done / 1e6:.0f} MB" + (f" of {total / 1e6:.0f} MB" if total else "")
+            self.root.after(0, lambda: lbl.configure(text=txt))
+
+        def run():
+            try:
+                r = updater.install(info, progress)
+            except Exception as e:
+                r = f"Update failed: {e}"
+            self.root.after(0, lambda: done(r))
+
+        def done(r):
+            if r == "restart":
+                lbl.configure(text="Installing – the tracker restarts in a few seconds…")
+                self.root.after(800, self.close)
+            else:
+                lbl.configure(text=r, fg=C_BAD)
+                b_now.configure(text="Update now")
+
+        def now():
+            if b_now.cget("text") != "Update now":
+                return
+            b_now.configure(text="Updating…")
+            threading.Thread(target=run, daemon=True).start()
+
+        def skip():
+            self._set_cfg("skip_version", info["version"])
+            d.destroy()
+
+        b_now = ui.button(bar, "Update now", now, accent=True)
+        b_now.pack(side="right")
+        ui.button(bar, "Later", d.destroy).pack(side="right", padx=6)
+        ui.button(bar, "Skip this version", skip).pack(side="left")
+        d.update_idletasks()
+        d.geometry(f"+{self.root.winfo_rootx() + 40}+{self.root.winfo_rooty() + 80}")
+        d.focus_force()
+
     def toggle_skills(self, on=None):
         on = (not self.skills.enabled.is_set()) if on is None else on
         if on:
