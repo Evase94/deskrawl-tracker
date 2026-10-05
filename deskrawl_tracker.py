@@ -31,7 +31,6 @@ import copy
 import item_quality
 import ui_theme as ui
 import numpy as np
-import cv2
 import game_input
 from game_capture import GameCapture
 
@@ -912,41 +911,17 @@ class OCRWorker(threading.Thread):
 
 class GoldWatcher(threading.Thread):
     """Every few seconds, OCRs the whole game window: reads the gold balance when the inventory
-    footer is visible, looks for a death screen text, and reads the character attributes whenever
-    the "Attributes" tab is open (faster while it is open, so scrolling through it is caught)."""
+    footer is visible, and looks for a death screen text."""
 
     INTERVAL_S = 5.0
-    ATTR_INTERVAL_S = 1.5
 
-    def __init__(self, state: GameState, capture: GameCapture, on_attributes=None):
+    def __init__(self, state: GameState, capture: GameCapture):
         super().__init__(daemon=True)
-        self.state, self.capture, self.on_attributes = state, capture, on_attributes
-        self._attr_sig = None
-        self.attr_open = False
-
-    def _attributes(self, frame, lines):
-        """Attributes tab visible: read it with RapidOCR unless the list looks the same as last time."""
-        labels = [l for l in lines if item_ocr.canon(l.text) in item_ocr.KNOWN_STATS]
-        tab = any(re.fullmatch(r"\W*attributes\W*", l.text, re.I) for l in lines)
-        self.attr_open = tab and len(labels) >= 6
-        if not self.attr_open or self.on_attributes is None:
-            return
-        H, W = frame.shape[:2]
-        x0 = int(max(min(l.x for l in labels) - 10, 0))
-        x1 = int(min(max(l.x + l.w for l in labels) * 1.6, W))
-        y0, y1 = int(max(min(l.y for l in labels) - 10, 0)), int(min(max(l.y + l.h for l in labels) + 10, H))
-        small = cv2.resize(cv2.cvtColor(frame[y0:y1, x0:x1], cv2.COLOR_BGR2GRAY), (48, 96))
-        if self._attr_sig is not None and self._attr_sig.shape == small.shape \
-                and float(np.abs(small.astype(int) - self._attr_sig).mean()) < 3:
-            return  # same view as last read
-        self._attr_sig = small.astype(int)
-        stats = item_ocr.parse_attributes(frame)
-        if stats:
-            self.on_attributes(stats)
+        self.state, self.capture = state, capture
 
     def run(self):
         while True:
-            time.sleep(self.ATTR_INTERVAL_S if self.attr_open else self.INTERVAL_S)
+            time.sleep(self.INTERVAL_S)
             try:
                 frame = self.capture.grab()
                 if frame is None:
@@ -961,7 +936,6 @@ class GoldWatcher(threading.Thread):
                 hdr = item_ocr.find_log_header(lines)
                 if hdr is not None:
                     self.state.ingest_log(item_ocr.read_log_panel(frame, hdr), time.time())
-                self._attributes(frame, lines)
             except Exception:
                 pass
 
@@ -1240,7 +1214,7 @@ class App:
         self.region = tuple(self.cfg.get("game_region") or DEFAULT_REGION)
         self.ocr = OCRWorker(self.state, self.capture, lambda: self.region)
         self.ocr.start()
-        GoldWatcher(self.state, self.capture, lambda st: self.events.put(("attrs_auto", st))).start()
+        GoldWatcher(self.state, self.capture).start()
         self.panels = PanelReader(self.state, self.capture, self.ocr, self.cfg)
         self.panels.start()
         ClickThroughGuard(self.capture, self.cfg).start()
@@ -1652,10 +1626,9 @@ class App:
 
     def _build_char(self, p):
         key = self.hk.get("attributes", "F9")
-        hdr = ui.page_header(p, "Charakter", "Im Spiel das Charakterfenster mit dem Tab „Attributes“ öffnen und einmal "
-                                             "bis ganz nach unten scrollen – der Tracker liest dabei automatisch mit "
-                                             "(auch wenn Deskrawl im Hintergrund ist). Die Werte gehören zum gerade "
-                                             f"eingeloggten Charakter. {key} liest sofort von Hand.")
+        hdr = ui.page_header(p, "Charakter", f"Im Spiel das Charakterfenster mit dem Tab „Attributes“ öffnen und {key} "
+                                             f"drücken. Dann nach unten scrollen und nochmal {key} drücken – die Werte "
+                                             f"werden zusammengeführt. Nach jedem Ausrüstungswechsel neu einlesen.")
         self._btn(hdr, "Leeren", self.clear_char, side="right")
         b = ui.button(hdr, f"Einlesen ({key})", self.scan_attributes, accent=True)
         b.pack(side="right", padx=3)
@@ -2185,8 +2158,6 @@ class App:
                 if ev[0] == "hotkey":
                     {"item": self.scan_item, "attributes": self.scan_attributes,
                      "hide": self.toggle_hide}.get(ev[1], lambda: None)()
-                elif ev[0] == "attrs_auto":
-                    self._auto_attributes(ev[1])
                 elif ev[0] == "done":
                     self.busy = False
                     if ev[1] == "item":
@@ -2200,36 +2171,6 @@ class App:
         except queue.Empty:
             pass
         self.root.after(100, self.poll_events)
-
-    # first and last line of the in-game attribute list: seeing both means the whole list was read
-    ATTR_FIRST = ("Intelligence", "Strength", "Dexterity")
-    ATTR_LAST = "XP Gained"
-
-    def _auto_attributes(self, stats: dict):
-        """Attributes read while the player looks at them in the game (no hotkey)."""
-        now = time.time()
-        if now - getattr(self, "_auto_t", 0) > 120:  # panel closed for a while: new reading session
-            self._auto_seen = {}
-        self._auto_t = now
-        self._auto_seen.update(stats)
-        complete = any(k in self._auto_seen for k in self.ATTR_FIRST) and self.ATTR_LAST in self._auto_seen
-        if complete:
-            # a full list replaces the old values, so stats that are gone (gear changed) do not linger
-            self.char_stats = dict(self._auto_seen)
-        else:
-            self.char_stats.update(stats)
-        self.char_stats_time = datetime.now().strftime("%d.%m. %H:%M")
-        self._save_char()
-        self._fill_char()
-        self._fill_gems()
-        self._fill_eval_tab()
-        if complete:
-            msg = f"Automatisch gelesen: {len(self._auto_seen)} Werte, vollständig · Stand {self.char_stats_time}"
-        elif self.ATTR_LAST in self._auto_seen:
-            msg = f"Automatisch gelesen: {len(self._auto_seen)} Werte · im Spiel nach oben scrollen für den Rest"
-        else:
-            msg = f"Automatisch gelesen: {len(self._auto_seen)} Werte · im Spiel nach unten scrollen für den Rest"
-        self.lbl_char.configure(text=msg)
 
     def _merge_attributes(self, stats: dict):
         if not stats:

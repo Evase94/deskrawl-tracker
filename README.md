@@ -18,7 +18,7 @@ Er liest **keinen Spielspeicher**, verändert keine Spieldateien und schickt nic
 | Items | Item-Vergleich mit F8: Werte wie im Spiel, Unterschiede, Effekte, Urteil |
 | Drops | Drops nach Seltenheit, Edelsteine nach Stufe, Runen, Schlüssel |
 | Tode | Wer dich womit getötet hat |
-| Charakter | Deine Werte, pro Charakter getrennt |
+| Charakter | Deine Werte (F9) |
 | Edelsteine | Welcher Edelstein bringt dir am meisten |
 | Bewertung | Eigene Werte für Effekte, die sich nicht berechnen lassen |
 
@@ -55,14 +55,14 @@ Später erreichst du das Fenster über **Steuerung → Log-Datei ändern**.
 | Taste | Funktion |
 |---|---|
 | **F8** | Maus über ein Item halten (Tooltip offen) → Item wird gelesen und bewertet |
-| **F9** | Charakterwerte sofort von Hand lesen (meist nicht nötig, siehe unten) |
+| **F9** | Charakterfenster offen → deine Werte werden gelesen |
 | **F10** | Deskrawl unsichtbar weiterlaufen lassen bzw. wieder zeigen |
 
 Wichtig: Deskrawl **nicht minimieren** – ein minimiertes Fenster kann nicht gelesen werden.
 Dafür gibt es F10: Das Spiel läuft unsichtbar weiter, Klicks gehen durch.
 
 Erste Schritte nach der Einrichtung:
-1. Charakterfenster mit dem Tab „Attributes“ öffnen und einmal ganz nach unten scrollen – der Tracker liest automatisch mit. Für jeden deiner Charaktere einmal.
+1. Charakterfenster öffnen, **F9** drücken.
 2. Maus über deine angelegte Waffe, **F8** drücken (der Tracker merkt sich den Waffenschaden).
 
 ## Grenzen
