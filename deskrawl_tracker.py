@@ -1544,8 +1544,10 @@ class App:
         self.lbl_quality.pack(fill="x", padx=14, pady=(2, 10))
 
         # 6. history
-        self._section(p, "Recently checked", "Click a row to show the item again above. Click a column header "
-                                            "to sort.")
+        hist_head = self._section(p, "Recently checked", "Click a row to show the item again above. Click a column "
+                                                         "header to sort. “Clear list” empties this list; "
+                                                         "items_history.csv keeps every check.")
+        ui.button(hist_head, "Clear list", self.clear_item_history, small=True).pack(side="right")
         cols = [("name", "Item", 210, "w"), ("dps", "Damage", 92, "e"), ("surv", "Survival", 100, "e"),
                 ("v", "Verdict", 120, "w")]
         f, self.hist_tree = self._tree(p, cols, 6, icons=True)
@@ -3166,6 +3168,11 @@ class App:
     def _mode_formula(mode):
         w = item_eval.MODES[mode]
         return " + ".join(f"{v:g}×{n}" for n, v in (("Damage", w["dps"]), ("Survival", w["surv"]), ("Income", w["farm"])))
+
+    def clear_item_history(self):
+        self.item_history.clear()
+        self._hist_icons = []
+        self.hist_tree.delete(*self.hist_tree.get_children())
 
     def _hist_select(self, _):
         sel = self.hist_tree.selection()
