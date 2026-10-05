@@ -1462,9 +1462,9 @@ class App:
         self.lbl_totals.pack(fill="x", padx=16, pady=(8, 0))
         self._section(p, "Recent runs", "“≈” before the stage: taken from the previous run because the log panel "
                                          "could not be read for this run.")
-        cols = [("t", "End", 68, "e"), ("stage", "Stage", 170, "w"), ("diff", "Diff", 74, "w"),
-                ("dur", "Time", 48, "e"), ("xp", "EXP", 64, "e"), ("gold", "Gold", 56, "e"), ("it", "Items", 44, "e"),
-                ("dps", "Avg DPS", 62, "e")]
+        cols = [("t", "End", 64, "e"), ("stage", "Stage", 150, "w"), ("diff", "Diff", 66, "w"),
+                ("dur", "Time", 46, "e"), ("xp", "EXP", 62, "e"), ("gold", "Gold", 54, "e"), ("it", "Items", 42, "e"),
+                ("dps", "Avg DPS", 62, "e"), ("peak", "Peak DPS", 66, "e")]
         f, self.tree = self._tree(p, cols, 8)
         f.pack(fill="both", expand=True, padx=14, pady=(0, 12))
 
@@ -3640,7 +3640,7 @@ class App:
                     datetime.fromtimestamp(r.end).strftime("%H:%M:%S"),
                     r.stage_name or (f"≈ {r.stage_guess}" if r.stage_guess else "-"), r.difficulty,
                     fmt_dur(r.duration), fmt(r.xp), fmt(r.gold), r.items,
-                    fmt(r.avg_dps) if r.damage else "-"))
+                    fmt(r.avg_dps) if r.damage else "-", fmt(r.peak_dps) if r.peak_dps else "-"))
 
 
 # --------------------------------------------------------------------------- offline OCR test
