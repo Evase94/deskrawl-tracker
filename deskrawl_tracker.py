@@ -2172,30 +2172,31 @@ class App:
                          highlightbackground=T["btn_line"] if strong else T["ring"])
             l.bind("<Button-1>", lambda _e: cmd())
             return l
-        btn(btns, "Best build", self._tal_best, True).grid(row=0, column=0, sticky="ew", padx=(0, 4), pady=2)
-        btn(btns, "Start over", self._tal_clear).grid(row=0, column=1, sticky="ew", pady=2)
-        btn(btns, "Save as my build", self._tal_save_mine).grid(row=1, column=0, sticky="ew", padx=(0, 4), pady=2)
-        btn(btns, "Load my build", self._tal_load_mine).grid(row=1, column=1, sticky="ew", pady=2)
+        b_cur = btn(btns, "Load current build", self._tal_load_current, True)
+        b_cur.grid(row=0, column=0, columnspan=2, sticky="ew", pady=2)
+        ui.Tooltip(b_cur, "Reads your talents from the game (talent window open) into the planner and keeps them "
+                          "as “my build” – the build everything is compared with.")
+        btn(btns, "Save build", self._tal_save_dialog).grid(row=1, column=0, sticky="ew", padx=(0, 4), pady=2)
+        btn(btns, "Reset", self._tal_clear).grid(row=1, column=1, sticky="ew", pady=2)
         btn(btns, "Share build", self._tal_share).grid(row=2, column=0, sticky="ew", padx=(0, 4), pady=2)
         btn(btns, "Load build…", self._tal_load_dialog).grid(row=2, column=1, sticky="ew", pady=2)
+        mine_link = tk.Label(b, text="Use planner as my build", bg=T["panel"], fg=MUTED, font=ui.F_SMALL,
+                             cursor="hand2", anchor="w")
+        mine_link.pack(fill="x", padx=12)
+        mine_link.bind("<Button-1>", lambda _e: self._tal_save_mine())
+        ui.Tooltip(mine_link, "Makes the build in the planner your reference build, e.g. after correcting the read "
+                              "build by hand.")
         self.lbl_tal_share = tk.Label(b, text="", bg=T["panel"], fg=T["green"], font=ui.F_SMALL, anchor="w",
                                       justify="left", wraplength=220)
         self.lbl_tal_share.pack(fill="x", padx=12)
         # saved builds to compare
         tk.Label(b, text="Saved builds", bg=T["panel"], fg=T["title"], font=("Georgia", 10), anchor="w").pack(
             fill="x", padx=12, pady=(10, 2))
-        sv = tk.Frame(b, bg=T["panel"])
-        sv.pack(fill="x", padx=12)
         self.var_tal_name = tk.StringVar()
-        en = tk.Entry(sv, textvariable=self.var_tal_name, bg=ui.RAISED, fg=FG, insertbackground=FG, relief="flat",
-                      font=ui.F_SMALL, width=18)
-        en.pack(side="left", fill="x", expand=True, ipady=3)
-        en.bind("<Return>", lambda _e: self._tal_save_named())
-        btn(sv, "Save", self._tal_save_named).pack(side="left", padx=(4, 0))
-        ui.Tooltip(en, "Name for the planned build, e.g. “Lightning crit”. Saved builds are compared with your "
-                       "build in the current mode; click a name to load it.")
         self.tal_saved = tk.Frame(b, bg=T["panel"])
         self.tal_saved.pack(fill="x", padx=12, pady=(4, 0))
+        self.btn_tal_builds = btn(b, "All saved builds…", self._tal_builds_window)
+        self.btn_tal_builds.pack(fill="x", padx=12, pady=(4, 0))
         btns.columnconfigure(0, weight=1)
         btns.columnconfigure(1, weight=1)
         # abilities in use
@@ -2325,7 +2326,7 @@ class App:
         self.root.clipboard_clear()
         self.root.clipboard_append(link)
         self.lbl_tal_share.configure(text="Link copied – it opens this build on afkmeta.com and can be loaded "
-                                          "here with “Load build…”.")
+                                          "here with “Load build…”.", fg=self.TC["green"])
 
     def _tal_load_dialog(self):
         hero = self._tal_hero()
@@ -2364,7 +2365,7 @@ class App:
             self._tal_fill()
             used = sum(build.values())
             note = "" if talents.valid(build, hero) else " (rows are not open for every point)"
-            self.lbl_tal_share.configure(text=f"Build loaded: {used} points{note}.")
+            self.lbl_tal_share.configure(text=f"Build loaded: {used} points{note}.", fg=self.TC["green"])
             d.destroy()
 
         bar = tk.Frame(d, bg=BG)
@@ -2375,6 +2376,133 @@ class App:
         d.update_idletasks()
         d.geometry(f"+{self.root.winfo_rootx() + 60}+{self.root.winfo_rooty() + 120}")
         e.focus_set()
+
+    def _tal_save_dialog(self):
+        """Ask for a name and save the planned build to the list of saved builds."""
+        if not self.tal_build:
+            self.lbl_tal_share.configure(text="Plan a build first.")
+            return
+        d = tk.Toplevel(self.root, bg=BG)
+        d.title("Save build")
+        d.transient(self.root)
+        d.resizable(False, False)
+        tk.Label(d, text="Name of the build:", bg=BG, fg=FG, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=14, pady=(12, 4))
+        n = len(self.cfg.get("talent_builds") or {}) + 1
+        self.var_tal_name.set(f"Build {n}")
+        e = tk.Entry(d, textvariable=self.var_tal_name, width=34, bg=ui.RAISED, fg=FG, insertbackground=FG,
+                     relief="flat", font=ui.F_SMALL)
+        e.pack(fill="x", padx=14, ipady=4)
+        e.select_range(0, "end")
+
+        def ok():
+            self._tal_save_named()
+            d.destroy()
+
+        bar = tk.Frame(d, bg=BG)
+        bar.pack(fill="x", padx=14, pady=12)
+        ui.button(bar, "Save", ok, accent=True).pack(side="right")
+        ui.button(bar, "Cancel", d.destroy).pack(side="right", padx=6)
+        e.bind("<Return>", lambda _e: ok())
+        d.update_idletasks()
+        d.geometry(f"+{self.root.winfo_rootx() + 60}+{self.root.winfo_rooty() + 120}")
+        e.focus_set()
+
+    def _tal_load_current(self):
+        """Read the talent build from the game picture (talent window open)."""
+        hero = self._tal_hero()
+        if not hero:
+            return
+        self.lbl_tal_share.configure(text="Reading the talent window…", fg=MUTED)
+
+        def work():
+            try:
+                frame = self.capture.grab()
+                if frame is None:
+                    raise RuntimeError(self.capture.status)
+                import talent_ocr
+                r = talent_ocr.read_build(frame, hero)
+            except Exception as e:
+                r = str(e)
+            self.root.after(0, lambda: self._tal_current_done(r))
+        threading.Thread(target=work, daemon=True).start()
+
+    def _tal_current_done(self, r):
+        if isinstance(r, str) or r is None:
+            self.lbl_tal_share.configure(text=r or "Talent window not found – open it in the game and try again.",
+                                         fg=C_BAD)
+            return
+        build, unsure = r
+        self.tal_build = dict(build)
+        self.cfg["talents_mine"] = dict(build)
+        self._tal_store()
+        self._tal_fill()
+        msg = f"Current build read: {sum(build.values())} points, saved as my build."
+        if unsure:
+            msg += f" Check: {', '.join(unsure)}."
+        self.lbl_tal_share.configure(text=msg, fg=self.TC["green"] if not unsure else C_MEH)
+
+    def _tal_builds_window(self):
+        """Window with every saved build: values against my build, load, delete."""
+        hero = self._tal_hero()
+        if not hero:
+            return
+        old = getattr(self, "_tal_win", None)
+        if old is not None and old.winfo_exists():
+            old.destroy()
+        w = tk.Toplevel(self.root, bg=BG)
+        self._tal_win = w
+        w.title("Saved builds")
+        w.transient(self.root)
+        mode = self.var_tal_mode.get() if self.var_tal_mode.get() in item_eval.MODES else "Damage"
+        tk.Label(w, text=f"Saved builds · {hero} · compared with my build in {mode} mode", bg=BG, fg=FG,
+                 font=("Bahnschrift SemiBold", 12), anchor="w").pack(fill="x", padx=14, pady=(12, 6))
+        body = tk.Frame(w, bg=PANEL)
+        body.pack(fill="both", expand=True, padx=14, pady=(0, 6))
+
+        def fill():
+            for c in body.winfo_children():
+                c.destroy()
+            builds = self.cfg.get("talent_builds") or {}
+            if not builds:
+                tk.Label(body, text="No saved builds yet – plan a build and click “Save build”.", bg=PANEL,
+                         fg=MUTED, font=ui.F_SMALL).grid(row=0, column=0, padx=12, pady=12)
+                return
+            ctx = self._eval_context()
+            mine = self.cfg.get("talents_mine") or {}
+            shares = self._tal_shares()
+            heads = ("Build", "Points", "Damage", "Survival", "Income", "", "")
+            for c, h in enumerate(heads):
+                tk.Label(body, text=h, bg=PANEL, fg=MUTED, font=ui.F_SMALL,
+                         anchor="w" if c == 0 else "e").grid(row=0, column=c, sticky="ew", padx=8, pady=(8, 2))
+            rows = []
+            for name, b in builds.items():
+                b = talents.normalize(b, hero)
+                v = talents.evaluate(b, mine, hero, ctx, mode, shares) if ctx.char else (0, 0, 0, 0)
+                rows.append((v[3], name, b, v))
+            best = max(r[0] for r in rows)
+            for i, (score, name, b, (dps, surv, farm, _)) in enumerate(sorted(rows, key=lambda r: -r[0]), start=1):
+                cur = b == self.tal_build
+                tk.Label(body, text=("● " if cur else "") + name, bg=PANEL,
+                         fg=ui.ACCENT if score == best and ctx.char else FG, font=ui.F_SMALL, anchor="w").grid(
+                    row=i, column=0, sticky="ew", padx=8, pady=2)
+                tk.Label(body, text=str(sum(b.values())), bg=PANEL, fg=FG, font=ui.F_SMALL, anchor="e").grid(
+                    row=i, column=1, sticky="ew", padx=8)
+                for c, val in ((2, dps), (3, surv), (4, farm)):
+                    tk.Label(body, text=f"{val:+.1f} %", bg=PANEL, font=ui.F_SMALL, anchor="e",
+                             fg=C_GOOD if val > 0.05 else (C_BAD if val < -0.05 else MUTED)).grid(
+                        row=i, column=c, sticky="ew", padx=8)
+                ui.button(body, "Load", lambda n=name: (self._tal_load_named(n), fill()), small=True).grid(
+                    row=i, column=5, padx=(8, 2), pady=2)
+                ui.button(body, "Delete", lambda n=name: (self._tal_delete_named(n), fill()), small=True).grid(
+                    row=i, column=6, padx=(2, 8), pady=2)
+            body.columnconfigure(0, weight=1)
+
+        fill()
+        bar = tk.Frame(w, bg=BG)
+        bar.pack(fill="x", padx=14, pady=(4, 12))
+        ui.button(bar, "Close", w.destroy).pack(side="right")
+        w.update_idletasks()
+        w.geometry(f"+{self.root.winfo_rootx() + 80}+{self.root.winfo_rooty() + 100}")
 
     def _tal_save_named(self):
         name = self.var_tal_name.get().strip()
@@ -2419,7 +2547,8 @@ class App:
             vals = talents.evaluate(b, mine, hero, ctx, mode, shares) if ctx.char else (0, 0, 0, 0)
             rows.append((vals[3], name, b, vals))
         best = max(r[0] for r in rows)
-        for score, name, b, (dps, surv, farm, _) in sorted(rows, key=lambda r: -r[0]):
+        self.btn_tal_builds.configure(text=f"All saved builds ({len(rows)})…")
+        for score, name, b, (dps, surv, farm, _) in sorted(rows, key=lambda r: -r[0])[:3]:
             r = tk.Frame(self.tal_saved, bg=T["panel"])
             r.pack(fill="x", pady=1)
             cur = b == self.tal_build
@@ -2525,7 +2654,8 @@ class App:
         if not self.char_stats:
             notes.append("Read your character with F9 – talent values depend on your stats.")
         if hero and not mine:
-            notes.append("Set your current build and click “Save as my build”.")
+            notes.append("No reference build yet: click “Load current build” (talent window open in the game) "
+                         "or plan it and click “Use planner as my build”.")
         if hero and not shares:
             notes.append("Choose your abilities below, or ability talents count as nothing.")
         self.lbl_tal_note.configure(text="\n".join(notes))
