@@ -1392,3 +1392,31 @@ def read_toasts(frame) -> list:
 def read_toast(frame) -> dict | None:
     t = read_toasts(frame)
     return t[-1] if t else None
+
+
+# ----------------------------------------------------------------------------- level / Paragon HUD
+
+_LEVEL_HUD = re.compile(r"(?:l[vu]\W{0,2}\s*)?(\d{1,2})\s*[\(\[{]\s*(\d{1,4})\s*[\)\]}]", re.I)
+
+
+def find_paragon(lines: list[Line], frame) -> dict | None:
+    """{"level": Paragon level} from the HUD label "Lv. 70 (3)" at the bottom left of the game window.
+    (The bar next to it is the character's level bar, empty at level 70 - it shows no Paragon XP.)"""
+    H, W = frame.shape[:2]
+    for ln in lines:
+        if ln.y < H * 0.85 or ln.x > W * 0.45:
+            continue
+        m = _LEVEL_HUD.search(ln.text)
+        if m and m.group(1) == "70":
+            return {"level": int(m.group(2))}
+    return None
+
+
+def read_paragon(frame) -> dict | None:
+    """find_paragon on an enlarged crop of the bottom left corner (the label is small; OCR of the
+    whole window often misses it)."""
+    H, W = frame.shape[:2]
+    y0, x1 = int(H * 0.88), int(W * 0.45)
+    crop = cv2.resize(frame[y0:H, 0:x1], None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+    lines = [Line(l.text, l.x / 2, l.y / 2 + y0, l.w / 2, l.h / 2) for l in ocr_windows(crop)]
+    return find_paragon(lines, frame)

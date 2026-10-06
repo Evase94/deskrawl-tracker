@@ -30,6 +30,7 @@ import bis
 import talents
 import skills
 import updater
+import paragon
 from version import VERSION
 import item_ocr  # first: loads onnxruntime before WinRT/winocr (avoids a crash)
 import item_eval
@@ -276,6 +277,7 @@ class GameState:
         self.window_rect = None  # (x, y, w, h) of the game window from the log
         self.backlog = {"runs": 0, "xp": 0, "gold": 0, "items": 0}
         self.xpm = XpModel(load_config().get("xp_learned"))
+        self.paragon = paragon.Paragon(load_config().get("paragon"))  # account-wide: sum of level-70 run XP
         self.gold_audit = GoldAudit()
         self.committed_gold = 0  # run gold of all live commits (for GoldAudit)
         self.log_seen = None     # entries of the in-game log panel at the last read
@@ -317,6 +319,7 @@ class GameState:
             if m:
                 xp, gold, items, lvl = int(m["xp"]), int(m["gold"]), int(m["collected"]), int(m["level"])
                 with self.lock:
+                    self._paragon_commit(m["id"], xp, lvl)
                     self.level = lvl
                     self.xpm.run(xp, lvl)
                     if not live:
@@ -564,6 +567,39 @@ class GameState:
             return {"by_rarity": out, "recent": recent}
 
     # ---- OCR events --------------------------------------------------------
+    def _paragon_commit(self, run_id: str, xp: int, lvl: int):
+        """Past level 70 all run XP goes to Paragon (self.level = level before this run)."""
+        if lvl < 70:
+            return
+        if self.level >= 70:
+            self.paragon.add(run_id, xp)
+        elif self.level:
+            self.paragon.reached_70()  # the run that reached 70: Paragon XP counts from here
+
+    def scan_paragon(self, path: str):
+        """Count the level-70 runs of an older log (Game-prev.log) once; no other effect."""
+        level = 0
+        try:
+            with open(path, encoding="utf-8", errors="replace") as f:
+                for line in f:
+                    m = RE_COMMIT.search(line)
+                    if m:
+                        with self.lock:
+                            saved, self.level = self.level, level
+                            self._paragon_commit(m["id"], int(m["xp"]), int(m["level"]))
+                            self.level = saved
+                        level = int(m["level"])
+                        continue
+                    m = RE_LOGIN.search(line)
+                    if m:
+                        level = int(m["lvl"])
+        except FileNotFoundError:
+            pass
+
+    def observe_paragon(self, t: float, hud: dict):
+        with self.lock:
+            self.paragon.observe_hud(hud["level"])
+
     def observe_gold(self, t: float, balance: int):
         with self.lock:
             self.gold_audit.observe(t, balance, self.committed_gold)
@@ -592,14 +628,24 @@ class GameState:
         """Time to next level, from the XP rate of recent runs on the current stage."""
         with self.lock:
             xm = self.xpm
-            if xm.xp is None or not xm.level:
-                return None
-            need = xm.required(xm.level)
-            left = max(need - xm.xp, 0)
+            if self.level >= 70 or xm.level >= 70:
+                pg = self.paragon
+                if not pg.known():
+                    return {"paragon": True, "unknown": True, "level": pg.level}
+                level, xp = pg.level, pg.xp
+                need = paragon.xp_to_next(level)
+                out = {"paragon": True, "level": level, "xp": xp, "need": need, "left": max(need - xp, 0),
+                       "exact": pg.exact(), "complete": pg.complete, "total": pg.total}
+            else:
+                if xm.xp is None or not xm.level:
+                    return None
+                need = xm.required(xm.level)
+                out = {"level": xm.level, "xp": xm.xp, "need": need, "left": max(need - xm.xp, 0),
+                       "exact": xm.exact}
+            left = out["left"]
             known = [r for r in self.runs if r.difficulty != "?"]  # runs seen from their start
             ref = self.current or (known[-1] if known else None)
-            out = {"level": xm.level, "xp": xm.xp, "need": need, "left": left, "exact": xm.exact,
-                   "stage": None, "runs_left": None, "eta_stage": None}
+            out.update({"stage": None, "runs_left": None, "eta_stage": None})
             if ref is None:
                 return out
             same = [r for r in self.runs if r.difficulty == ref.difficulty and r.waves == ref.waves
@@ -713,6 +759,8 @@ class LogTailer(threading.Thread):
         self.path, self.pos, self.buf, self.first = path, 0, "", True
 
     def run(self):
+        # Paragon XP is the sum of all level-70 runs: count the previous session's log too
+        self.state.scan_paragon(os.path.join(os.path.dirname(self.path), "Game-prev.log"))
         while True:
             try:
                 size = os.path.getsize(self.path)
@@ -1008,6 +1056,10 @@ class GoldWatcher(threading.Thread):
                 death = item_ocr.find_death_text(lines, (frame.shape[1], frame.shape[0]))
                 if death:
                     self.state.mark_death_seen(time.time(), death)
+                if self.state.level >= 70:  # Paragon level + XP bar at the bottom left
+                    hud = item_ocr.read_paragon(frame)
+                    if hud:
+                        self.state.observe_paragon(time.time(), hud)
                 hdr = item_ocr.find_log_header(lines)
                 if hdr is not None:
                     self.state.ingest_log(item_ocr.read_log_panel(frame, hdr), time.time())
@@ -4216,13 +4268,29 @@ class App:
             st.xpm.changed = False
             self.cfg["xp_learned"] = st.xpm.learned
             save_config(self.cfg)
+        if st.paragon.changed:  # Paragon is shared by all characters: top level of the config
+            st.paragon.changed = False
+            self.cfg["paragon"] = st.paragon.to_dict()
+            save_config(self.cfg)
         e = st.level_eta()
+        if e and e.get("unknown"):
+            self.lbl_lvl_eta.configure(text="-")
+            self.lbl_lvl_title.configure(text="to the next Paragon level")
+            self.lbl_lvl_runs.configure(text="")
+            self.lvl_bar.delete("all")
+            self.lbl_lvl_sub.configure(
+                text="Paragon: no level-70 run in the log yet. After the first run (or once “Lv. 70 (N)” at "
+                     "the bottom left of the game has been read) the Paragon progress shows here.")
+            return
         if not e:
             self.lbl_lvl_eta.configure(text="-")
             self.lbl_lvl_runs.configure(text="")
             self.lbl_lvl_sub.configure(text="Waiting for the login line in the log – restart the game once.")
             return
-        self.lbl_lvl_title.configure(text=f"to level {e['level'] + 1}")
+        if e.get("paragon"):
+            self.lbl_lvl_title.configure(text=f"to Paragon {e['level'] + 1}")
+        else:
+            self.lbl_lvl_title.configure(text=f"to level {e['level'] + 1}")
         approx = "" if e["exact"] else "≈ "
         frac = min(e["xp"] / e["need"], 1.0) if e["need"] else 0
         w = max(self.lvl_bar.winfo_width(), 1)
@@ -4244,9 +4312,16 @@ class App:
                 text=f"{approx}{e['runs_left']:.0f} runs on {e['stage']}\navg {fmt(e['xp_run'])} EXP per run")
         else:
             self.lbl_lvl_runs.configure(text="no run measured on this stage yet")
+        head = f"Paragon {e['level']}: " if e.get("paragon") else ""
+        tail = ""
+        if e.get("paragon"):
+            tail = (f"   ·   total {fmt(e['total'])} Paragon EXP from the log" if e["complete"] else
+                    "   ·   estimate: the log starts after level 70, counted from the start of the Paragon "
+                    "level shown in the game")
         self.lbl_lvl_sub.configure(
-            text=f"{approx}{fmt(e['xp'])} of {fmt(e['need'])} EXP ({frac * 100:.1f} %), {approx}{fmt(e['left'])} to go"
-                 f"   ·   by EXP per hour: {fmt_dur(eta_rate) if eta_rate else '-'}")
+            text=f"{head}{approx}{fmt(e['xp'])} of {fmt(e['need'])} EXP ({frac * 100:.1f} %), "
+                 f"{approx}{fmt(e['left'])} to go   ·   by EXP per hour: {fmt_dur(eta_rate) if eta_rate else '-'}"
+                 + tail)
 
     def tick(self):
         if self.state.ui_busy():  # window is being moved or resized: keep the UI thread free
@@ -4340,7 +4415,9 @@ class App:
             runs = list(st.runs)
 
         self.lbl_hero.configure(text=st.char_name)
-        self.lbl_hero_sub.configure(text=f"{st.hero}, Level {st.level}" + (f", {st.stage_name}" if st.stage_name else ""))
+        pg = f" · Paragon {st.paragon.level}" if st.level >= 70 and st.paragon.level else ""
+        self.lbl_hero_sub.configure(text=f"{st.hero}, Level {st.level}{pg}"
+                                    + (f", {st.stage_name}" if st.stage_name else ""))
         ok = lambda cond, warn=False: "ok" if cond else ("warn" if warn else "bad")
         self.dots["log"].set(ok(self.tailer.status == "log ok"), self.tailer.status)
         cap = self.capture.status
