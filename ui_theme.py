@@ -249,14 +249,24 @@ class ZTree(ttk.Treeview):
         if not self._sort:
             return
         col, desc = self._sort
-        rows = list(self.get_children(""))
+
         def key(i):
             k = sort_key(self.set(i, col))
             return (k[0], -k[1], k[2]) if desc and k[0] == 0 else k
-        for idx, iid in enumerate(sorted(rows, key=key)):
-            self.move(iid, "", idx)
-            tags = tuple(t for t in self.item(iid, "tags") if t != "odd")
-            self.item(iid, tags=tags + (("odd",) if idx % 2 else ()))
+
+        def sort_level(parent):  # rows of a grouped table are sorted inside their group
+            rows = list(self.get_children(parent))
+            if parent == "" and any(self.get_children(r) for r in rows):
+                order = rows  # keep the order of the groups themselves
+            else:
+                order = sorted(rows, key=key)
+            for idx, iid in enumerate(order):
+                self.move(iid, parent, idx)
+                tags = tuple(t for t in self.item(iid, "tags") if t != "odd")
+                self.item(iid, tags=tags + (("odd",) if idx % 2 else ()))
+                if self.get_children(iid):
+                    sort_level(iid)
+        sort_level("")
         for c, title in self._titles.items():
             arrow = ("▼ " if desc else "▲ ") if c == col else ""
             super().heading(c, text=arrow + title)

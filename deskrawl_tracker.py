@@ -2914,7 +2914,9 @@ class App:
 
     def _build_stages(self, p):
         hdr = ui.page_header(p, "Stages", "All stages: every run per stage and difficulty of this character, across "
-                                          "restarts. Gold includes sales. ★ = best stage for EXP or gold (from 3 runs)."
+                                          "restarts, grouped by region in map order (incl. the Dream realms). Stages without runs "
+                                          "are grey with “no data”. Gold includes sales. ★ = best stage for EXP or "
+                                          "gold (from 3 runs)."
                                           "\n\nBoss farming: the Silver bosses (stage 4 of a region, drop the skulls) "
                                           "and Gold bosses (last stage, more legendaries) you have farmed, ranked by "
                                           "kills per hour or by efficiency (kill speed and EXP together)."
@@ -2932,7 +2934,7 @@ class App:
         # all stages
         v_all = tk.Frame(body, bg=BG)
         self._build_stage_filters(v_all)
-        cols = [("stage", "Stage", 180, "w"), ("boss", "Boss", 52, "w"), ("diff", "Diff", 60, "w"),
+        cols = [("stage", "Stage", 190, "w"), ("boss", "Boss", 66, "w"), ("diff", "Diff", 56, "w"),
                 ("runs", "Runs", 50, "e"), ("t", "Time", 56, "e"), ("xp", "EXP/h", 75, "e"),
                 ("gold", "Gold/h", 72, "e"), ("it", "Items/h", 66, "e"), ("dead", "Deaths", 60, "e"),
                 ("dps", "DPS", 66, "e")]
@@ -2940,6 +2942,10 @@ class App:
         f.pack(fill="both", expand=True, padx=14, pady=(0, 6))
         self.stage_tree.tag_configure("best", foreground=C_GOOD)
         self.stage_tree.tag_configure("unknown", foreground=MUTED)
+        self.stage_tree.tag_configure("nodata", foreground="#6f6b64", font=("Segoe UI", 9, "italic"))
+        self.stage_tree.tag_configure("region", foreground=ui.ACCENT, background=ui.RAISED, font=ui.F_LABEL)
+        self.stage_tree.configure(show="tree headings")
+        self.stage_tree.column("#0", width=22, minwidth=22, stretch=False)
         self.stage_tree.bind("<<TreeviewSelect>>", self._stage_select)
         self.lbl_stage_count = tk.Label(v_all, text="", bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w")
         self.lbl_stage_count.pack(fill="x", padx=14, pady=(0, 6))
@@ -2996,7 +3002,8 @@ class App:
         self.var_st_type = tk.StringVar(value=c.get("stage_type", "All"))
         self.var_st_diff = tk.StringVar(value=c.get("stage_diff", "All"))
         sorts = list(self.STAGE_SORTS) + ["Map order"]
-        self.var_st_sort = tk.StringVar(value=c.get("stage_sort") if c.get("stage_sort") in sorts else "EXP/h")
+        self.var_st_sort = tk.StringVar(value=c.get("stage_sort") if c.get("stage_sort") in sorts else "Map order")
+        self.var_st_empty = tk.BooleanVar(value=c.get("stage_show_empty", True))
 
         tk.Label(bar, text="Search", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
         e = tk.Entry(bar, textvariable=self.var_st_search, width=18, bg=PANEL, fg=FG, insertbackground=FG,
@@ -3015,6 +3022,16 @@ class App:
               "stage_type", 13)
         combo("Difficulty", self.var_st_diff, ["All", "Normal", "Nightmare", "Inferno"], "stage_diff", 10)
         combo("Sort by", self.var_st_sort, sorts, "stage_sort", 17)
+        bar2 = tk.Frame(p, bg=BG)
+        bar2.pack(fill="x", padx=14, pady=(0, 6))
+        cb = tk.Checkbutton(bar2, text="Show stages without runs (map order)", variable=self.var_st_empty, bg=BG, fg=FG,
+                            selectcolor=PANEL, activebackground=BG, activeforeground=FG, font=ui.F_SMALL,
+                            highlightthickness=0, bd=0,
+                            command=lambda: (self._set_cfg("stage_show_empty", self.var_st_empty.get()),
+                                             self._fill_stages()))
+        cb.pack(side="left")
+        ui.Tooltip(cb, "In map order: also list the stages you have not played yet (on the chosen difficulty), "
+                       "marked grey with “no data”.")
 
     def _stage_order(self) -> dict:
         """Map position of every known stage: lower-case name -> (region number, stage number)."""
@@ -3030,51 +3047,113 @@ class App:
         typ = self.var_st_type.get()
         diff = self.var_st_diff.get()
         pos = self._stage_order()
-        rows = []
-        for x in self._stage_rows:
-            name = x["stage"].lower()
-            b = self.boss_info.get(name)
-            known = name in pos
-            kind = b["kind"] if b else ""
-            if typ == "Normal stages" and (b or not known) or typ == "Silver bosses" and kind != "Silver" \
-                    or typ == "Gold bosses" and kind != "Gold" or typ == "Unknown" and known:
-                continue
-            if diff != "All" and stages.base_difficulty(x["difficulty"]) != diff:
-                continue
-            if q and q not in f"{x['stage']} {b['boss'] if b else ''} {b['region'] if b else ''}".lower():
-                continue
-            rows.append(x)
-        sort = self.var_st_sort.get()
-        if sort == "Map order":
-            order = ["Normal", "Nightmare", "Inferno"]
-            base = lambda x: stages.base_difficulty(x["difficulty"])
-            rows.sort(key=lambda x: (pos.get(x["stage"].lower(), (99, 99)),
-                                     order.index(base(x)) if base(x) in order else 9, x["difficulty"]))
-        else:
-            key, desc = self.STAGE_SORTS.get(sort, self.STAGE_SORTS["EXP/h"])
-            rows.sort(key=key, reverse=desc)
-        self._stage_shown = rows
-        best_xp = max((x["xp_h"] for x in rows if x["runs"] >= 3), default=None)
-        best_gold = max((x["gold_h"] for x in rows if x["runs"] >= 3), default=None)
+        grouped = self.var_st_sort.get() == "Map order"
+        show_empty = self.var_st_empty.get()
+        diff_order = ["Normal", "Nightmare", "Inferno"]
+
+        def diff_key(x):
+            base = stages.base_difficulty(x["difficulty"])
+            return (diff_order.index(base) if base in diff_order else 9, x["difficulty"])
+
+        def type_ok(kind, known):
+            return (typ == "All" or typ == "Normal stages" and known and not kind
+                    or typ == "Silver bosses" and kind == "Silver" or typ == "Gold bosses" and kind == "Gold"
+                    or typ == "Unknown" and not known)
+
+        rows = [x for x in self._stage_rows
+                if diff == "All" or stages.base_difficulty(x["difficulty"]) == diff]
         t = self.stage_tree
         t._sort = None  # the "Sort by" choice decides; a click on a header still sorts by that column
         for col, title in t._titles.items():
             ttk.Treeview.heading(t, col, text=title)
         t.delete(*t.get_children())
-        for i, x in enumerate(rows):
-            b = self.boss_info.get(x["stage"].lower())
-            star_x = " ★" if best_xp and x["xp_h"] == best_xp else ""
-            star_g = " ★" if best_gold and x["gold_h"] == best_gold else ""
-            tags = ("best",) if star_x or star_g else ("unknown",) if x["stage"].lower() not in pos else ()
-            t.insert("", "end", iid=str(i), tags=tags, values=(
-                x["stage"], b["kind"] if b else "", stages.short_difficulty(x["difficulty"]), x["runs"],
-                fmt_dur(x.get("run_s") or x["avg_s"]), fmt(x["xp_h"]) + star_x,
-                fmt(x["gold_h"]) + star_g, f"{x['items_h']:.1f}", f"{x['death_rate'] * 100:.0f} %",
-                fmt(x["dps"]) if x["dps"] else "-"))
-        total = len(self._stage_rows)
-        self.lbl_stage_count.configure(
-            text=(f"{len(rows)} of {total} stages shown. ★ = best EXP/h or gold/h in this list (from 3 runs)."
-                  if total else "No runs yet. Every finished run is counted here per stage and difficulty."))
+        shown = []        # (parent iid, row) in display order
+        groups = []       # (iid, region label, kind label, [rows])
+        if grouped:
+            if not hasattr(self, "_catalog"):
+                self._catalog = stages.stage_catalog(self.enemy_data)
+            used = set()
+            for g in self._catalog:
+                children = []
+                for st in g["stages"]:
+                    name = st["stage"].lower()
+                    if not type_ok(st["kind"] if st["kind"] != "Treasure" else "Treasure", True):
+                        continue
+                    if q and q not in f"{st['stage']} {st['boss']} {g['region']}".lower():
+                        continue
+                    data = [x for x in rows if x["stage"].lower() == name
+                            or g["dream"] and x["stage"].lower().startswith(name)]
+                    used.update(id(x) for x in data)
+                    if data:
+                        children += sorted(data, key=diff_key)
+                    elif show_empty:
+                        children.append(self._empty_stage(st["stage"], diff))
+                if children:
+                    groups.append((g["region"], (g["region"], f"Lv {g['levels']}"), children))
+            rest = [x for x in rows if id(x) not in used and type_ok("", x["stage"].lower() in pos)
+                    and (not q or q in x["stage"].lower())]
+            if rest:
+                groups.append(("unrecognised", ("Stage name not read", ""),
+                               sorted(rest, key=lambda x: (x["stage"], diff_key(x)))))
+        else:
+            flat = []
+            for x in rows:
+                name = x["stage"].lower()
+                b = self.boss_info.get(name)
+                if not type_ok(b["kind"] if b else "", name in pos):
+                    continue
+                if q and q not in f"{x['stage']} {b['boss'] if b else ''} {b['region'] if b else ''}".lower():
+                    continue
+                flat.append(x)
+            key, desc = self.STAGE_SORTS.get(self.var_st_sort.get(), self.STAGE_SORTS["EXP/h"])
+            flat.sort(key=key, reverse=desc)
+            groups.append((None, None, flat))
+
+        data_rows = [x for _, _, ch in groups for x in ch if not x.get("nodata")]
+        best_xp = max((x["xp_h"] for x in data_rows if x["runs"] >= 3), default=None)
+        best_gold = max((x["gold_h"] for x in data_rows if x["runs"] >= 3), default=None)
+        self._stage_shown = []
+        n_empty = 0
+        for gi, (gid, label, children) in enumerate(groups):
+            parent = ""
+            if gid is not None:
+                parent = f"g{gi}"
+                runs = sum(x["runs"] for x in children)
+                t.insert("", "end", iid=parent, open=True, tags=("region",),
+                         values=(label[0], label[1], "", runs or "", "", "", "", "", "", ""))
+            for x in children:
+                iid = str(len(self._stage_shown))
+                self._stage_shown.append(x)
+                b = self.boss_info.get(x["stage"].lower())
+                kind = b["kind"] if b else ("Treasure" if x["stage"].lower().startswith("dreamy") else "")
+                if x.get("nodata"):
+                    n_empty += 1
+                    t.insert(parent, "end", iid=iid, tags=("nodata",), values=(
+                        x["stage"], kind, stages.short_difficulty(x["difficulty"]), "0", "no data",
+                        "", "", "", "", ""))
+                    continue
+                star_x = " ★" if best_xp and x["xp_h"] == best_xp else ""
+                star_g = " ★" if best_gold and x["gold_h"] == best_gold else ""
+                tags = ("best",) if star_x or star_g else ("unknown",) if x["stage"].lower() not in pos else ()
+                t.insert(parent, "end", iid=iid, tags=tags, values=(
+                    x["stage"], kind, stages.short_difficulty(x["difficulty"]), x["runs"],
+                    fmt_dur(x.get("run_s") or x["avg_s"]), fmt(x["xp_h"]) + star_x,
+                    fmt(x["gold_h"]) + star_g, f"{x['items_h']:.1f}", f"{x['death_rate'] * 100:.0f} %",
+                    fmt(x["dps"]) if x["dps"] else "-"))
+        n_data = len(self._stage_shown) - n_empty
+        text = f"{n_data} rows with runs"
+        if grouped and show_empty:
+            text += f", {n_empty} stages without runs (grey, “no data”)"
+        text += ". ★ = best EXP/h or gold/h in this list (from 3 runs)."
+        if not grouped:
+            text += " Choose “Map order” to see every stage of every region."
+        self.lbl_stage_count.configure(text=text)
+
+    def _empty_stage(self, stage, diff):
+        """Row for a stage without runs (on the chosen difficulty)."""
+        return {"stage": stage, "difficulty": diff if diff != "All" else "–", "runs": 0, "nodata": True,
+                "xp_run": 0, "kills_h": 0, "leg_h": None, "avg_s": None, "run_s": None, "xp_h": 0, "gold_h": 0,
+                "items_h": 0, "death_rate": 0, "dps": None, "casts": {}, "cast_runs": 0}
 
     def _build_boss_view(self, p):
         bar = tk.Frame(p, bg=BG)
@@ -3248,14 +3327,28 @@ class App:
 
     def _stage_select(self, _=None):
         sel = self.stage_tree.selection()
-        if sel:
+        if sel and not sel[0].startswith("g"):
             self._stage_detail(self._stage_shown[int(sel[0])])
 
     def _stage_detail(self, x):
         info = stages.stage_info(x["stage"], self.enemy_data)
-        parts = [f"{x['stage']} · {x['difficulty']} · {x['runs']} runs · avg {fmt(x['xp_run'])} EXP/run"]
+        dream = next((d for d in stages.DREAM_REALMS if x["stage"].lower().startswith(d["region"].lower())), None)
+        if x.get("nodata"):
+            parts = [f"{x['stage']} · no runs recorded yet"
+                     + ("" if x["difficulty"] == "–" else f" on {x['difficulty']}")]
+        else:
+            parts = [f"{x['stage']} · {x['difficulty']} · {x['runs']} runs · avg {fmt(x['xp_run'])} EXP/run"]
         b = self.boss_info.get(x["stage"].lower())
-        if b:
+        if dream:
+            info = None
+            parts.append(f"Treasure map (needs a Treasure Key) · boss: {dream['boss']}, level {dream['level']} on "
+                         f"Normal · opened by clearing {dream['after']}: 7. Its drake drops treasure chests and "
+                         f"gems.")
+        elif b and x.get("nodata"):
+            parts.append(f"{b['kind']} boss: {b['boss']}"
+                         + (" · drops the skulls for the region's Gold boss" if b["kind"] == "Silver"
+                            else " · needs one skull of the difficulty per run"))
+        elif b:
             parts.append(f"{b['kind']} boss: {b['boss']} · {x['kills_h']:.1f} kills/h"
                          + (f" · {x['leg_h']:.1f} legendaries/h" if x.get("leg_h") is not None else "")
                          + (" · drops the skulls for the region's Gold boss" if b["kind"] == "Silver"
@@ -3284,7 +3377,7 @@ class App:
                 per_h = shards * 3600 / x["avg_s"] if x.get("avg_s") else 0
                 loot.append(f"Boss {info['boss']}: {shards} Soul Shards per boss kill (≈ {per_h:.0f}/h)")
             parts.append(" · ".join(loot))
-        else:
+        elif not dream:
             parts.append("Enemy data: this stage is not in data/enemies.json.")
         level = info.get("level_max") if info else None
         fc = stages.forecast(x, level)

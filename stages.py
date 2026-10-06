@@ -128,8 +128,15 @@ def stage_info(stage_label: str, enemies: dict) -> dict | None:
     """Find the stage in data/enemies.json by its log name ("The Cinder Crown: 6")."""
     if not enemies or not stage_label:
         return None
+    label = stage_label.strip().lower()
+    for st in enemies.get("stages", []):  # exact name first: "Kings Woods: 4" is not "Kings Woods South: 4"
+        if str(st.get("stage") or "").lower() == label:
+            return st
     name, _, num = stage_label.partition(":")
     name, num = name.strip().lower(), num.strip()
+    for st in enemies.get("stages", []):
+        if (st.get("region") or "").lower() == name and num and str(st.get("stage_no")) == num:
+            return st
     best = None
     for st in enemies.get("stages", []):
         region = (st.get("region") or "").lower()
@@ -160,6 +167,40 @@ def boss_stages(enemies: dict) -> dict:
             out[str(st["stage"]).lower()] = {"kind": kind, "boss": boss, "region": st["region"],
                                              "region_no": st.get("region_no") or 0, "stage_no": st["stage_no"],
                                              "level": st.get("level_max") or st.get("level_min")}
+    return out
+
+
+# treasure maps (need a Treasure Key), each opened by clearing the last stage of a region
+DREAM_REALMS = [
+    {"region": "Dreamy Kings Woods", "after": "Kings Woods South", "boss": "Dreamwood Treasure Drake", "level": 30},
+    {"region": "Dreamy Barrens", "after": "The Barrens", "boss": "Dreamsand Treasure Drake", "level": 46},
+    {"region": "Dreamy Keep", "after": "The Defiled Keep", "boss": "Dreamvault Treasure Drake", "level": 65},
+]
+
+
+def stage_catalog(enemies: dict) -> list:
+    """All regions in the order they open, each with its stages in order:
+    [{"region", "levels", "dream", "stages": [{"stage", "kind", "boss", "level"}]}]. Dream realms follow the
+    region whose last stage opens them; their stage names in the game log are matched by prefix."""
+    bosses = boss_stages(enemies)
+    by_region = {}
+    for st in (enemies or {}).get("stages", []):
+        by_region.setdefault(st["region"], []).append(st)
+    regions = sorted((enemies or {}).get("regions", []), key=lambda r: r.get("region_no") or 0)
+    out = []
+    for r in regions:
+        stages_ = []
+        for st in sorted(by_region.get(r["region"], []), key=lambda s: s.get("stage_no") or 0):
+            b = bosses.get(str(st["stage"]).lower())
+            stages_.append({"stage": st["stage"], "kind": b["kind"] if b else "", "boss": b["boss"] if b else "",
+                            "level": st.get("level_max") or st.get("level_min")})
+        out.append({"region": r["region"], "levels": f"{r.get('level_min')}–{r.get('level_max')}", "dream": False,
+                    "stages": stages_})
+        for d in DREAM_REALMS:
+            if d["after"] == r["region"]:
+                out.append({"region": d["region"], "levels": str(d["level"]), "dream": True,
+                            "stages": [{"stage": d["region"], "kind": "Treasure", "boss": d["boss"],
+                                        "level": d["level"]}]})
     return out
 
 
