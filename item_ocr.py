@@ -344,7 +344,7 @@ RE_SECONDARY = re.compile(r"^\W*s[ec]c[o0]nd[ae]ry\W*$", re.I)
 RE_LOST_HDR = re.compile(r"stats?\s*lost", re.I)
 RE_EQUIPPED = re.compile(r"^\W*equ[il1]pped\W*$", re.I)
 RE_LINE = re.compile(rf"^[^\w+\-−–]*\+?\s*(?P<val>{_NUM})\s*(?P<p>%?)\s*(?P<name>[A-Za-z][A-Za-z' ]*?)\s*"
-                     rf"(?:[(\[{{]\s*(?P<d>{_NUM})\s*(?P<p2>%?)\s*[)\]}}]?)?\W*$")
+                     rf"(?:(?P<o>[(\[{{])\s*(?P<d>{_NUM})\s*(?P<p2>%?)\s*[)\]}}]?)?\W*$")
 RE_LOST_LINE = re.compile(rf"^\W*(?P<name>[A-Za-z][A-Za-z' ]*?)\s*[(\[{{]\s*(?P<d>{_NUM})\s*(?P<p>%?)\s*[)\]}}]?\W*$")
 BASE_NAMES = {"armor": "Armor", "damage": "Weapon Damage", "speed": "Weapon Speed", "dps": "Weapon DPS",
               "attackspeed": "Weapon Speed", "attacksspersecond": "Weapon Speed"}
@@ -513,7 +513,9 @@ def _parse_stat(text: str, names: list, base: bool = False):
     pct = bool(m["p"] or m["p2"])
     if not base:
         pct = pct or bool((_affix_data().get("affixes", {}).get(name) or {}).get("percent"))
-    d = parse_number(m["d"]) if m["d"] else None
+    # "(+5)" is the game's comparison with the equipped item; "[+5]" is what upgrades added to an
+    # upgraded item (shown on the equipped one too) - not a comparison
+    d = parse_number(m["d"]) if m["d"] and m["o"] != "[" else None
     return StatLine(name, abs(v), pct, d, True, text)
 
 
@@ -807,7 +809,14 @@ def parse_tooltip(img, lines: list[Line] | None = None) -> ItemResult:
     if not items:
         return res
     with_diff = [(c, it) for c, it in items if any(s.diff is not None for s in it.all_stats()) or it.lost]
-    if with_diff:
+    labelled = [it for c, it in items if c["equipped"]]
+    if len(items) >= 2 and len(labelled) == 1:
+        # the game writes "Equipped" above the worn item: the most reliable sign which one is new
+        old = labelled[0]
+        others = [it for c, it in items if it is not old]
+        new = next((it for c, it in with_diff if it is not old), others[0])
+        olds = [old]
+    elif with_diff:
         new = with_diff[0][1]
         olds = [it for c, it in items if it is not new]
     elif len(items) >= 2:

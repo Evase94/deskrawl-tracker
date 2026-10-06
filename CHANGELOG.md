@@ -2,6 +2,16 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.11 – 2026-10-06
+
+### Fixed
+- **Item Comparer swapped the items** when your equipped item was upgraded (e.g. "+1"). The game shows the upgrade bonus of the worn item in square brackets ("579 Armor [+28]"), and the tracker took those for comparison numbers. Now:
+  - the tooltip under "Equipped" is always the worn item,
+  - values in square brackets count as upgrade bonus, and only round brackets "(+173)" count as comparison.
+- Entries in "Recently checked" from before this fix may be the wrong way round. Remove them with **Clear list**.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.10 – 2026-10-06
 
 ### New
