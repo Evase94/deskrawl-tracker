@@ -78,9 +78,11 @@ class Paragon:
         return split(self.total)[1] if self.total is not None else None
 
     def reached_70(self):
-        """The log shows the run that reached level 70: everything after it is Paragon XP."""
-        if not self.complete and not self.seen:
+        """The log shows the run that reached level 70: everything after it is Paragon XP.
+        An estimated total (started from the HUD level) is counted again from here."""
+        if not self.complete:
             self.total, self.complete, self.changed = 0, True, True
+            self.seen, self.seen_list = set(), []
 
     def add(self, run_id: str, xp: int) -> bool:
         """XP of a run committed at level 70 (by a character that was 70 before the run)."""
@@ -101,8 +103,12 @@ class Paragon:
             return
         self.hud_level = level
         if self.total is None or split(self.total)[0] < level:
+            short = level_start(level) - (self.total or 0)
+            # the HUD can show the new level a moment before its run commit is in the log: a counted
+            # history that is only a little behind stays complete
+            if not (self.complete and self.total is not None and short <= 0.05 * xp_to_next(level - 1)):
+                self.complete = False
             self.total = level_start(level)
-            self.complete = False
         self.changed = True
 
     def exact(self) -> bool:

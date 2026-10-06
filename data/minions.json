@@ -1,0 +1,2126 @@
+{
+ "source": "wikily.gg/deskrawl/minions",
+ "minions": [
+  {
+   "slug": "armored-horse",
+   "name": "Armored Horse",
+   "rarity": "Legendary",
+   "species": "Beast",
+   "capacity": 35,
+   "obtained": "Support Pack",
+   "rein_chance": "",
+   "summary": "It comes with the Support Pack DLC. Passives: Fast Travel III (+15% Move Speed) and Thick Skin I (+5% Armor).",
+   "passives": [
+    {
+     "name": "Fast Travel III",
+     "text": "+15% Move Speed."
+    },
+    {
+     "name": "Thick Skin I",
+     "text": "+5% Armor."
+    }
+   ],
+   "abilities": [],
+   "sources": [],
+   "rein_tradable": ""
+  },
+  {
+   "slug": "tidewrath-crab-king",
+   "name": "Tidewrath Crab King",
+   "rarity": "Legendary",
+   "species": "Beast",
+   "capacity": 32,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.04%",
+   "summary": "Its Rein drops from the Tidewrath Crab King (0.04% per cleared encounter with it). Passives: Massive Crab Claws (+40% Critical Hit Damage) and Thicker Shell (Reduces Cold damage taken by 20%).",
+   "passives": [
+    {
+     "name": "Massive Crab Claws",
+     "text": "+40% Critical Hit Damage."
+    },
+    {
+     "name": "Thicker Shell",
+     "text": "Reduces Cold damage taken by 20%."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Tidewrath Crab King",
+    "Rein: 0.04% per cleared encounter with it · all difficulties",
+    "Tazan Isles: 7",
+    "Boss · level 40",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "ancient-shellwarden",
+   "name": "Ancient Shellwarden",
+   "rarity": "Legendary",
+   "species": "Beast",
+   "capacity": 35,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.06%",
+   "summary": "Its Rein drops from the Ancient Shellwarden (0.06% per cleared encounter with it). Passives: Thick Skin III (+15% Armor) and Turtle Speed (-10% Move Speed (the game shows \"+-10%\")).",
+   "passives": [
+    {
+     "name": "Thick Skin III",
+     "text": "+15% Armor."
+    },
+    {
+     "name": "Turtle Speed",
+     "text": "-10% Move Speed (the game shows \"+-10%\")."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Brine Spit",
+     "text": "Spit chilling brine in a cone, applying Chill to all enemies hit. Cooldown 12s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Ancient Shellwarden",
+    "Rein: 0.06% per cleared encounter with it · all difficulties",
+    "Tazan Isles: 4",
+    "Mini-boss · level 38",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "ancient-oak-treant",
+   "name": "Ancient Oak Treant",
+   "rarity": "Legendary",
+   "species": "Humanoid",
+   "capacity": 30,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.04%",
+   "summary": "Its Rein drops from the Ancient Oak Treant (0.04% per cleared encounter with it). Passive: Health Increase (+10% Max Health).",
+   "passives": [
+    {
+     "name": "Health Increase",
+     "text": "+10% Max Health"
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Healing Spirit",
+     "text": "Heal player 20% Max Health. Cooldown 12s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Ancient Oak Treant",
+    "Rein: 0.04% per cleared encounter with it · all difficulties",
+    "Kings Woods South: 7",
+    "Boss · level 28",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "blue-mammoth",
+   "name": "Blue Mammoth",
+   "rarity": "Legendary",
+   "species": "Beast",
+   "capacity": 35,
+   "obtained": "Merchant",
+   "rein_chance": "",
+   "summary": "Its Rein is sold for 500,000 gold by Ingrid, The Merchant in the City of Veldak. Passives: Thick Skin III (+15% Armor) and Fast Travel I (+5% Move Speed).",
+   "passives": [
+    {
+     "name": "Thick Skin III",
+     "text": "+15% Armor."
+    },
+    {
+     "name": "Fast Travel I",
+     "text": "+5% Move Speed."
+    }
+   ],
+   "abilities": [],
+   "sources": [],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "dark-elf-mage",
+   "name": "Dark Elf Mage",
+   "rarity": "Legendary",
+   "species": "Humanoid",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.06%",
+   "summary": "Its Rein drops from the Dark Elf Mage (0.06% per cleared encounter with it). Passives: Mana Increase (+50% Mana) and Fire Damage III (+30% Fire Damage).",
+   "passives": [
+    {
+     "name": "Mana Increase",
+     "text": "+50% Mana."
+    },
+    {
+     "name": "Fire Damage III",
+     "text": "+30% Fire Damage."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Dark Elf Mage",
+    "Rein: 0.06% per cleared encounter with it · all difficulties",
+    "Spire Hill Crypt: 4",
+    "Mini-boss · level 16",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "defiled-wyrm",
+   "name": "Defiled Wyrm",
+   "rarity": "Legendary",
+   "species": "Dragon",
+   "capacity": 34,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.04%",
+   "summary": "Its Rein drops from the Defiled Wyrm (0.04% per cleared encounter with it). Passives: Everliving Blood (Life Regeneration +100%) and Sepulchral Scales (+50% Magic Resist).",
+   "passives": [
+    {
+     "name": "Everliving Blood",
+     "text": "Life Regeneration +100%."
+    },
+    {
+     "name": "Sepulchral Scales",
+     "text": "+50% Magic Resist"
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Defiled Wyrm",
+    "Rein: 0.04% per cleared encounter with it · all difficulties",
+    "The Defiled Keep: 7",
+    "Boss · level 64",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "bone-reaper",
+   "name": "Bone Reaper",
+   "rarity": "Legendary",
+   "species": "Undead",
+   "capacity": 30,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.06%",
+   "summary": "Its Rein drops from the Bone Reaper (0.06% per cleared encounter with it). Passive: Storm of Souls (+30% Lightning Damage).",
+   "passives": [
+    {
+     "name": "Storm of Souls",
+     "text": "+30% Lightning Damage."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Soul Arc",
+     "text": "Calls down soul-lightning on up to 3 nearby enemies, dealing Lightning damage. Cooldown 8s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Bone Reaper",
+    "Rein: 0.06% per cleared encounter with it · all difficulties",
+    "The Defiled Keep: 4",
+    "Mini-boss · level 62",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "oakback-pack-bull",
+   "name": "Oakback Pack Bull",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 25,
+   "obtained": "No source",
+   "rein_chance": "",
+   "summary": "The Minions window lists it, but no enemy drop, shop, fishing catch, pack or quest in the game gives it or its Rein.",
+   "passives": [
+    {
+     "name": "Fast Travel I",
+     "text": "+5% Move Speed."
+    },
+    {
+     "name": "Rein",
+     "text": "Use to permanently unlock the Oakback Pack Bull as a minion."
+    },
+    {
+     "name": "All minions",
+     "text": "Enemies"
+    },
+    {
+     "name": "Towns",
+     "text": "Mythic Rift"
+    }
+   ],
+   "abilities": [],
+   "sources": [],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "skeleton-warrior",
+   "name": "Skeleton Warrior",
+   "rarity": "Uncommon",
+   "species": "Undead",
+   "capacity": 30,
+   "obtained": "No source",
+   "rein_chance": "",
+   "summary": "The Minions window lists it, but no enemy drop, shop, fishing catch, pack or quest in the game gives it or its Rein.",
+   "passives": [
+    {
+     "name": "Physical Damage I",
+     "text": "+10% Physical Damage"
+    },
+    {
+     "name": "Rein",
+     "text": "Use to permanently unlock the Skeleton Warrior as a minion."
+    },
+    {
+     "name": "All minions",
+     "text": "Enemies"
+    },
+    {
+     "name": "Towns",
+     "text": "Mythic Rift"
+    }
+   ],
+   "abilities": [],
+   "sources": [],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "sandstorm-harpy-queen",
+   "name": "Sandstorm Harpy Queen",
+   "rarity": "Legendary",
+   "species": "Demon",
+   "capacity": 27,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.06%",
+   "summary": "Its Rein drops from the Sandstorm Harpy Queen (0.06% per cleared encounter with it). Passive: Damage to Slowed II (+30% Damage to Slowed enemies).",
+   "passives": [
+    {
+     "name": "Damage to Slowed II",
+     "text": "+30% Damage to Slowed enemies."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Tailwind",
+     "text": "+30% Move Speed, lasting 5 seconds (the game shows \"5s seconds\"). Cooldown 12s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Sandstorm Harpy Queen",
+    "Rein: 0.06% per cleared encounter with it · all difficulties",
+    "Tazan Wastes: 4",
+    "Mini-boss · level 32",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "dread-sand-manticore",
+   "name": "Dread Sand Manticore",
+   "rarity": "Legendary",
+   "species": "Demon",
+   "capacity": 35,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.04%",
+   "summary": "Its Rein drops from the Dread Sand Manticore (0.04% per cleared encounter with it). Passive: Poison Damage III (+30% Poison Damage).",
+   "passives": [
+    {
+     "name": "Poison Damage III",
+     "text": "+30% Poison Damage."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Manticora Sting",
+     "text": "Deal Poison Damage to one enemy and inflict Poisoned status. Cooldown 3s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Dread Sand Manticore",
+    "Rein: 0.04% per cleared encounter with it · all difficulties",
+    "Tazan Wastes: 7",
+    "Boss · level 34",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "flying-fish-king",
+   "name": "Flying Fish King",
+   "rarity": "Legendary",
+   "species": "Dragon",
+   "capacity": 30,
+   "obtained": "Fishing",
+   "rein_chance": "",
+   "summary": "Its Rein is caught by fishing at Tazan Fishing Beach, Veldak Sky Lake and Cinder Lake. Passive: Ocean's Providence (+10% Mana Cost Reduction).",
+   "passives": [
+    {
+     "name": "Ocean's Providence",
+     "text": "+10% Mana Cost Reduction."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Mana Monsoon",
+     "text": "Gain +25 Mana Regen for 5s. Cooldown 20s."
+    }
+   ],
+   "sources": [],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "venom-queen",
+   "name": "Venom Queen",
+   "rarity": "Legendary",
+   "species": "Beast",
+   "capacity": 27,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.06%",
+   "summary": "Its Rein drops from the Venom Queen (0.06% per cleared encounter with it). Passive: Venom Ward (Reduces Poison damage taken by 30%).",
+   "passives": [
+    {
+     "name": "Venom Ward",
+     "text": "Reduces Poison damage taken by 30%."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Mana Injection",
+     "text": "Restores 15% of the player's Max Mana. Cooldown 10s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Venom Queen",
+    "Rein: 0.06% per cleared encounter with it · all difficulties",
+    "Kings Woods South: 4",
+    "Mini-boss · level 25",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "ogre",
+   "name": "Ogre",
+   "rarity": "Legendary",
+   "species": "Humanoid",
+   "capacity": 30,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.04%",
+   "summary": "Its Rein drops from the Ogre (0.04% per cleared encounter with it). Passives: Damage to Stunned III (+30% Damage to Stunned enemies) and Iron Hide (Reduces Physical damage taken by 20%).",
+   "passives": [
+    {
+     "name": "Damage to Stunned III",
+     "text": "+30% Damage to Stunned enemies."
+    },
+    {
+     "name": "Iron Hide",
+     "text": "Reduces Physical damage taken by 20%."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Ogre",
+    "Rein: 0.04% per cleared encounter with it · all difficulties",
+    "Spire Hill Crypt Lower: 3",
+    "Boss · level 19",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "raptor",
+   "name": "Raptor",
+   "rarity": "Legendary",
+   "species": "Beast",
+   "capacity": 35,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.06%",
+   "summary": "Its Rein drops from the Raptor (0.06% per cleared encounter with it). Passives: Serrated Talons (+30% Damage Over Time), Keen Instinct (+3% Critical Hit Chance) and Killing Precision (+25% Critical Hit Damage).",
+   "passives": [
+    {
+     "name": "Serrated Talons",
+     "text": "+30% Damage Over Time."
+    },
+    {
+     "name": "Keen Instinct",
+     "text": "+3% Critical Hit Chance"
+    },
+    {
+     "name": "Killing Precision",
+     "text": "+25% Critical Hit Damage."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Raptor",
+    "Rein: 0.06% per cleared encounter with it · all difficulties",
+    "Kings Woods: 4",
+    "Mini-boss · level 7",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "redrock-lord",
+   "name": "Redrock Lord",
+   "rarity": "Legendary",
+   "species": "Elemental",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.04%",
+   "summary": "Its Rein drops from the Redrock Lord (0.04% per cleared encounter with it). Passive: Strong Attack Damage III (+30% Strong Attack Damage).",
+   "passives": [
+    {
+     "name": "Strong Attack Damage III",
+     "text": "+30% Strong Attack Damage"
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Power of Redrock Lord",
+     "text": "+10% Physical Damage, lasting 6 seconds (the game shows \"6s seconds\"). Cooldown 12s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Redrock Lord",
+    "Rein: 0.04% per cleared encounter with it · all difficulties",
+    "The Barrens: 7",
+    "Boss · level 46",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "serparmat-the-devourer",
+   "name": "Serparmat the Devourer",
+   "rarity": "Legendary",
+   "species": "Beast",
+   "capacity": 30,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.06%",
+   "summary": "Its Rein drops from Serparmat the Devourer (0.06% per cleared encounter with it). Passives: Damage to Bleeding III (+30% Damage to Bleeding enemies) and Devourer's Feast (Restores 30 Health per kill).",
+   "passives": [
+    {
+     "name": "Damage to Bleeding III",
+     "text": "+30% Damage to Bleeding enemies."
+    },
+    {
+     "name": "Devourer's Feast",
+     "text": "Restores 30 Health per kill."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Serparmat the Devourer",
+    "Rein: 0.06% per cleared encounter with it · all difficulties",
+    "The Barrens: 4",
+    "Mini-boss · level 44",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "lord-of-the-crimson-vale",
+   "name": "Lord of the Crimson Vale",
+   "rarity": "Legendary",
+   "species": "Dragon",
+   "capacity": 30,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.04%",
+   "summary": "Its Rein drops from the Lord of the Crimson Vale (0.04% per cleared encounter with it). Passive: Crimson Dominion (+30% Damage to Vulnerable enemies).",
+   "passives": [
+    {
+     "name": "Crimson Dominion",
+     "text": "+30% Damage to Vulnerable enemies."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Earth Spikes",
+     "text": "Erupt spikes beneath an enemy, damaging everything caught in the field and making them Vulnerable. Cooldown 12s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Lord of the Crimson Vale",
+    "Rein: 0.04% per cleared encounter with it · all difficulties",
+    "The Crimson Vale: 7",
+    "Boss · level 52",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "goblin-giant",
+   "name": "Goblin Giant",
+   "rarity": "Legendary",
+   "species": "Humanoid",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.06%",
+   "summary": "Its Rein drops from the Goblin Giant (0.06% per cleared encounter with it). Passive: Goblin Hoard (+40% Gold gained from enemies).",
+   "passives": [
+    {
+     "name": "Goblin Hoard",
+     "text": "+40% Gold gained from enemies."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Club Smash",
+     "text": "Slam the ground, damaging nearby enemies, briefly stunning and knocking them back. Cooldown 8s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Goblin Giant",
+    "Rein: 0.06% per cleared encounter with it · all difficulties",
+    "The Crimson Vale: 4",
+    "Mini-boss · level 50",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "frost-dragon",
+   "name": "Frost Dragon",
+   "rarity": "Legendary",
+   "species": "Dragon",
+   "capacity": 35,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.04%",
+   "summary": "Its Rein drops from the Frost Dragon (0.04% per cleared encounter with it). Passive: Frozen Reach (+30% damage to enemies more than 6 units away from you).",
+   "passives": [
+    {
+     "name": "Frozen Reach",
+     "text": "+30% damage to enemies more than 6 units away from you."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Glacial Shard",
+     "text": "Fires a homing ice shard at a random enemy, dealing 200% Frost damage. Cooldown 6s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Frost Dragon",
+    "Rein: 0.04% per cleared encounter with it · all difficulties",
+    "Veldak Highlands: 7",
+    "Boss · level 58",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "ice-hound",
+   "name": "Ice Hound",
+   "rarity": "Legendary",
+   "species": "Beast",
+   "capacity": 35,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.06%",
+   "summary": "Its Rein drops from the Ice Hound (0.06% per cleared encounter with it). Passive: Thunderfang (+30% Lightning Damage).",
+   "passives": [
+    {
+     "name": "Thunderfang",
+     "text": "+30% Lightning Damage."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Capacitor Shell",
+     "text": "Shields you for 15% maximum health. When its 5s duration expires, it stuns nearby enemies for 1s. Cooldown 24s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Ice Hound",
+    "Rein: 0.06% per cleared encounter with it · all difficulties",
+    "Veldak Highlands: 4",
+    "Mini-boss · level 56",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "lord-of-the-cinder",
+   "name": "Lord of the Cinder",
+   "rarity": "Legendary",
+   "species": "Demon",
+   "capacity": 35,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.02%",
+   "summary": "Its Rein drops from the Lord of the Cinder (0.02% per cleared encounter with it). Passive: Cinder Sovereign (+12% Cooldown Reduction).",
+   "passives": [
+    {
+     "name": "Cinder Sovereign",
+     "text": "+12% Cooldown Reduction."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Ashen Wrath",
+     "text": "+100% Critical Hit Damage, lasting 5 seconds. Cooldown 12s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Lord of the Cinder",
+    "Rein: 0.02% per cleared encounter with it · all difficulties",
+    "The Cinder Crown: 7",
+    "Boss · level 70",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "emberfang",
+   "name": "Emberfang",
+   "rarity": "Legendary",
+   "species": "Dragon",
+   "capacity": 30,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.03%",
+   "summary": "Its Rein drops from Emberfang (0.03% per cleared encounter with it). Passive: Tyrant's Bane (+30% Damage to Elite and Boss enemies).",
+   "passives": [
+    {
+     "name": "Tyrant's Bane",
+     "text": "+30% Damage to Elite and Boss enemies."
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Ember Breath",
+     "text": "Spits a molten fireball at one enemy for 150% damage and sets it Burning. Cooldown 4s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Emberfang",
+    "Rein: 0.03% per cleared encounter with it · all difficulties",
+    "The Cinder Crown: 4",
+    "Mini-boss · level 68",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "bloodmoon-werewolf",
+   "name": "Bloodmoon Werewolf",
+   "rarity": "Legendary",
+   "species": "Demon",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.04%",
+   "summary": "Its Rein drops from the Bloodmoon Werewolf (0.04% per cleared encounter with it). Passive: Bloodthirst I (Life On Hit +10%).",
+   "passives": [
+    {
+     "name": "Bloodthirst I",
+     "text": "Life On Hit +10%"
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Bloodmoon Howl",
+     "text": "+30% Attack Speed, lasting 5 seconds. Cooldown 10s."
+    }
+   ],
+   "sources": [
+    "Where its enemy is met",
+    "Bloodmoon Werewolf",
+    "Rein: 0.04% per cleared encounter with it · all difficulties",
+    "Kings Woods: 7",
+    "Boss · level 10",
+    "Rein"
+   ],
+   "rein_tradable": "Yes"
+  },
+  {
+   "slug": "shoal-naga",
+   "name": "Shoal Naga",
+   "rarity": "Rare",
+   "species": "Humanoid",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Shoal Naga (0.2% per cleared encounter with it). Passive: Mana Regen (Restores 6 Mana per second).",
+   "passives": [
+    {
+     "name": "Mana Regen",
+     "text": "Restores 6 Mana per second."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Shoal Naga",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "Tazan Isles: 1",
+    "Groups of 2 in 50% of regular encounters · level 34-35",
+    "Tazan Isles: 2",
+    "Groups of 1-2 in 66.67% of regular encounters · level 36",
+    "Tazan Isles: 3",
+    "Groups of 2-3 in 66.67% of regular encounters · level 37",
+    "Tazan Isles: 4",
+    "Groups of 1-3 in 100% of regular encounters · level 38",
+    "Tazan Isles: 6",
+    "Groups of 4 in 33.33% of regular encounters · level 40",
+    "Tazan Isles: 7",
+    "Groups of 3 in 33.33% of regular encounters · level 40",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "brinescale-serpent",
+   "name": "Brinescale Serpent",
+   "rarity": "Rare",
+   "species": "Demon",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Brinescale Serpent (0.2% per cleared encounter with it). Passive: Frost Tongue (+20% Cold Damage).",
+   "passives": [
+    {
+     "name": "Frost Tongue",
+     "text": "+20% Cold Damage."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Brinescale Serpent",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "Tazan Isles: 5",
+    "Groups of 1 in 50% of regular encounters · level 39",
+    "Tazan Isles: 6",
+    "Groups of 2 in 33.33% of regular encounters · level 40",
+    "Tazan Isles: 7",
+    "Groups of 1-2 in 66.67% of regular encounters · level 40",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "dark-horse",
+   "name": "Dark Horse",
+   "rarity": "Rare",
+   "species": "Beast",
+   "capacity": 25,
+   "obtained": "Merchant",
+   "rein_chance": "",
+   "summary": "Its Rein is sold for 3,000 gold by Granny in the City of Aldenreach and Ingrid, The Merchant in the City of Veldak. Passive: Fast Travel III (+15% Move Speed).",
+   "passives": [
+    {
+     "name": "Fast Travel III",
+     "text": "+15% Move Speed."
+    }
+   ],
+   "abilities": [],
+   "sources": [],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "undead-axemaster",
+   "name": "Undead Axemaster",
+   "rarity": "Rare",
+   "species": "Undead",
+   "capacity": 27,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Undead Axemaster (0.2% per cleared encounter with it). Passive: Grave Cleaver (+20% Physical Damage).",
+   "passives": [
+    {
+     "name": "Grave Cleaver",
+     "text": "+20% Physical Damage"
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Undead Axemaster",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "The Defiled Keep: 2",
+    "Groups of 4 in 66.67% of regular encounters · level 60",
+    "The Defiled Keep: 3",
+    "Groups of 2 in 20% of regular encounters · level 61",
+    "The Defiled Keep: 4",
+    "3 with the mini-boss · groups of 2 in 20% of regular encounters · level 62",
+    "The Defiled Keep: 5",
+    "Groups of 2 in 66.67% of regular encounters · level 63",
+    "The Defiled Keep: 6",
+    "Groups of 2-4 in 100% of regular encounters · level 64",
+    "The Defiled Keep: 7",
+    "Groups of 2 in 33.33% of regular encounters · level 64",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "keep-succubus",
+   "name": "Keep Succubus",
+   "rarity": "Rare",
+   "species": "Demon",
+   "capacity": 27,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Keep Succubus (0.2% per cleared encounter with it). Passive: Beguiling Whisper (+20% damage to enemies more than 6 units away from you).",
+   "passives": [
+    {
+     "name": "Beguiling Whisper",
+     "text": "+20% damage to enemies more than 6 units away from you."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Keep Succubus",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "The Defiled Keep: 1",
+    "Groups of 2 in 33.33% of regular encounters · level 58-59",
+    "The Defiled Keep: 2",
+    "Groups of 3 in 66.67% of regular encounters · level 60",
+    "The Defiled Keep: 3",
+    "Groups of 3 in 40% of regular encounters · level 61",
+    "The Defiled Keep: 4",
+    "Groups of 3 in 40% of regular encounters · level 62",
+    "The Defiled Keep: 5",
+    "Groups of 3 in 33.33% of regular encounters · level 63",
+    "The Defiled Keep: 6",
+    "Groups of 3 in 33.33% of regular encounters · level 64",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "dune-eagle",
+   "name": "Dune Eagle",
+   "rarity": "Rare",
+   "species": "Beast",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Dune Eagle (0.2% per cleared encounter with it). Passive: Dodge II (+5% Dodge).",
+   "passives": [
+    {
+     "name": "Dodge II",
+     "text": "+5% Dodge."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Dune Eagle",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "Tazan Wastes: 1",
+    "Groups of 1 in 50% of regular encounters · level 28-29",
+    "Tazan Wastes: 2",
+    "Groups of 1 in 33.33% of regular encounters · level 30",
+    "Tazan Wastes: 3",
+    "Groups of 1 in 33.33% of regular encounters · level 31",
+    "Tazan Wastes: 4",
+    "2 with the mini-boss · groups of 2 in 33.33% of regular encounters · level 32",
+    "Tazan Wastes: 5",
+    "Groups of 2 in 33.33% of regular encounters · level 33",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "orc-fighter",
+   "name": "Orc Fighter",
+   "rarity": "Rare",
+   "species": "Humanoid",
+   "capacity": 30,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Orc Fighter (0.2% per cleared encounter with it). Passive: Strength I (+10% Strength).",
+   "passives": [
+    {
+     "name": "Strength I",
+     "text": "+10% Strength."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Orc Fighter",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "Spire Hill Crypt: 2",
+    "Groups of 2 in 33.33% of regular encounters · level 13-14",
+    "Spire Hill Crypt: 3",
+    "Groups of 2 in 33.33% of regular encounters · level 15",
+    "Spire Hill Crypt: 4",
+    "Groups of 2 in 33.33% of regular encounters · level 16",
+    "Spire Hill Crypt Lower: 1",
+    "Groups of 2-4 in 71.43% of regular encounters · level 17",
+    "Spire Hill Crypt Lower: 2",
+    "Groups of 2-5 in 71.43% of regular encounters · level 18",
+    "Spire Hill Crypt Lower: 3",
+    "3 with the boss · groups of 3-5 in 71.43% of regular encounters · level 19",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "fae-dragon",
+   "name": "Fae Dragon",
+   "rarity": "Rare",
+   "species": "Dragon",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Fae Dragon (0.2% per cleared encounter with it). Passive: Arcane Wing (+25% Arcane Damage).",
+   "passives": [
+    {
+     "name": "Arcane Wing",
+     "text": "+25% Arcane Damage."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Fae Dragon",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "The Crimson Vale: 5",
+    "Groups of 2 in 28.57% of regular encounters · level 51",
+    "The Crimson Vale: 6",
+    "Groups of 3 in 40% of regular encounters · level 52",
+    "The Crimson Vale: 7",
+    "Groups of 3-4 in 100% of regular encounters · level 52",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "ice-rock-elemental",
+   "name": "Ice Rock Elemental",
+   "rarity": "Rare",
+   "species": "Elemental",
+   "capacity": 30,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Ice Rock Elemental (0.2% per cleared encounter with it). Passive: Grounded Core (Take 20% less Lightning damage).",
+   "passives": [
+    {
+     "name": "Grounded Core",
+     "text": "Take 20% less Lightning damage."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Ice Rock Elemental",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "Veldak Highlands: 6",
+    "Groups of 2 in 35.71% of regular encounters · level 58",
+    "Veldak Highlands: 7",
+    "Groups of 3 in 50% of regular encounters · level 58",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "frost-whelp",
+   "name": "Frost Whelp",
+   "rarity": "Rare",
+   "species": "Dragon",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Frost Whelp (0.2% per cleared encounter with it). Passive: Budding Sorcery (+15% Special Ability damage).",
+   "passives": [
+    {
+     "name": "Budding Sorcery",
+     "text": "+15% Special Ability damage."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Frost Whelp",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "Veldak Highlands: 1",
+    "Groups of 1 in 50% of regular encounters · level 52-53",
+    "Veldak Highlands: 2",
+    "Groups of 2 in 58.82% of regular encounters · level 54",
+    "Veldak Highlands: 3",
+    "Groups of 2 in 45.45% of regular encounters · level 55",
+    "Veldak Highlands: 4",
+    "Groups of 2 in 40% of regular encounters · level 56",
+    "Veldak Highlands: 5",
+    "Groups of 1-3 in 69.23% of regular encounters · level 57",
+    "Veldak Highlands: 6",
+    "Groups of 1 in 35.71% of regular encounters · level 58",
+    "Veldak Highlands: 7",
+    "6 with the boss · level 58",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "tazan-camel",
+   "name": "Tazan Camel",
+   "rarity": "Rare",
+   "species": "Beast",
+   "capacity": 32,
+   "obtained": "Merchant",
+   "rein_chance": "",
+   "summary": "Its Rein is sold for 2,500 gold by Nadim, The Merchant in the City of Tazan. Passive: Caravan Bearer (+30% Material Find).",
+   "passives": [
+    {
+     "name": "Caravan Bearer",
+     "text": "+30% Material Find."
+    }
+   ],
+   "abilities": [],
+   "sources": [],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "cinderlash",
+   "name": "Cinderlash",
+   "rarity": "Rare",
+   "species": "Demon",
+   "capacity": 28,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Cinderlash (0.2% per cleared encounter with it). Passive: Lash of Cinders (+25% Fire Damage).",
+   "passives": [
+    {
+     "name": "Lash of Cinders",
+     "text": "+25% Fire Damage."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Cinderlash",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "The Cinder Crown: 1",
+    "Groups of 4 in 50% of regular encounters · level 65",
+    "The Cinder Crown: 2",
+    "Groups of 4 in 33.33% of regular encounters · level 66",
+    "The Cinder Crown: 3",
+    "Groups of 4 in 25% of regular encounters · level 67",
+    "The Cinder Crown: 4",
+    "Groups of 2-3 in 60% of regular encounters · level 68",
+    "The Cinder Crown: 5",
+    "Groups of 3 in 33.33% of regular encounters · level 69",
+    "The Cinder Crown: 6",
+    "Groups of 4 in 66.67% of regular encounters · level 70",
+    "The Cinder Crown: 7",
+    "4 with the boss · groups of 5 in 33.33% of regular encounters · level 70",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "hellguard",
+   "name": "Hellguard",
+   "rarity": "Rare",
+   "species": "Demon",
+   "capacity": 28,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Hellguard (0.2% per cleared encounter with it). Passive: Infernal Bulwark (+20% Armor).",
+   "passives": [
+    {
+     "name": "Infernal Bulwark",
+     "text": "+20% Armor."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Hellguard",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "The Cinder Crown: 1",
+    "Groups of 2 in 50% of regular encounters · level 65",
+    "The Cinder Crown: 2",
+    "Groups of 3 in 66.67% of regular encounters · level 66",
+    "The Cinder Crown: 3",
+    "Groups of 3 in 50% of regular encounters · level 67",
+    "The Cinder Crown: 4",
+    "Groups of 3 in 40% of regular encounters · level 68",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "magma-golem",
+   "name": "Magma Golem",
+   "rarity": "Rare",
+   "species": "Elemental",
+   "capacity": 28,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Magma Golem (0.2% per cleared encounter with it). Passive: Molten Core (+20% Maximum Health).",
+   "passives": [
+    {
+     "name": "Molten Core",
+     "text": "+20% Maximum Health."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Magma Golem",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "The Cinder Crown: 4",
+    "Groups of 1 in 20% of regular encounters · level 68",
+    "The Cinder Crown: 5",
+    "Groups of 2 in 66.67% of regular encounters · level 69",
+    "The Cinder Crown: 6",
+    "Groups of 2 in 100% of regular encounters · level 70",
+    "The Cinder Crown: 7",
+    "Groups of 2 in 100% of regular encounters · level 70",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "white-horse",
+   "name": "White Horse",
+   "rarity": "Rare",
+   "species": "Beast",
+   "capacity": 25,
+   "obtained": "Merchant",
+   "rein_chance": "",
+   "summary": "Its Rein is sold for 3,000 gold by Ingrid, The Merchant in the City of Veldak. Passive: Fast Travel III (+15% Move Speed).",
+   "passives": [
+    {
+     "name": "Fast Travel III",
+     "text": "+15% Move Speed."
+    }
+   ],
+   "abilities": [],
+   "sources": [],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "mutating-wolf",
+   "name": "Mutating Wolf",
+   "rarity": "Rare",
+   "species": "Beast",
+   "capacity": 20,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.2%",
+   "summary": "Its Rein drops from the Mutating Wolf (0.2% per cleared encounter with it). Passive: Life On Hit I (+15 Life On Hit).",
+   "passives": [
+    {
+     "name": "Life On Hit I",
+     "text": "+15 Life On Hit."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Mutating Wolf",
+    "Rein: 0.2% per cleared encounter with it · all difficulties",
+    "Kings Woods South: 1",
+    "Groups of 2 in 50% of regular encounters · level 20-21",
+    "Kings Woods South: 2",
+    "Groups of 2-3 in 66.67% of regular encounters · level 22-23",
+    "Kings Woods South: 3",
+    "Groups of 2-3 in 66.67% of regular encounters · level 24",
+    "Kings Woods South: 4",
+    "Groups of 3-4 in 66.67% of regular encounters · level 25",
+    "Kings Woods South: 5",
+    "Groups of 3-5 in 66.67% of regular encounters · level 26",
+    "Kings Woods South: 6",
+    "Groups of 2-4 in 66.67% of regular encounters · level 27",
+    "Kings Woods South: 7",
+    "Groups of 2-4 in 66.67% of regular encounters · level 28",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "driftshell-hermit-crab",
+   "name": "Driftshell Hermit Crab",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 20,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Driftshell Hermit Crab and the Tidewrath Hermit Crab (0.25% per cleared encounter with it). Passive: Thick Shell (Reduces Cold damage taken by 15%).",
+   "passives": [
+    {
+     "name": "Thick Shell",
+     "text": "Reduces Cold damage taken by 15%."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Driftshell Hermit Crab",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Tidewrath Hermit Crab",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Tazan Isles: 1",
+    "Groups of 5 in 50% of regular encounters · level 34-35",
+    "Tazan Isles: 2",
+    "Groups of 4-5 in 66.67% of regular encounters · level 36",
+    "Tazan Isles: 3",
+    "Groups of 4 in 33.33% of regular encounters · level 37",
+    "Tazan Isles: 7",
+    "4 with the boss · level 40",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "reef-squid",
+   "name": "Reef Squid",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 22,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Reef Squid (0.25% per cleared encounter with it). Passive: Ink Siphon (Restores 6 Mana per kill).",
+   "passives": [
+    {
+     "name": "Ink Siphon",
+     "text": "Restores 6 Mana per kill."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Reef Squid",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Tazan Isles: 3",
+    "Groups of 4 in 33.33% of regular encounters · level 37",
+    "Tazan Isles: 4",
+    "Groups of 5 in 50% of regular encounters · level 38",
+    "Tazan Isles: 5",
+    "Groups of 4 in 50% of regular encounters · level 39",
+    "Tazan Isles: 6",
+    "Groups of 5 in 33.33% of regular encounters · level 40",
+    "Tazan Isles: 7",
+    "Groups of 7 in 33.33% of regular encounters · level 40",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "boar",
+   "name": "Boar",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Boar (0.25% per cleared encounter with it). Passive: Vitality I (Increase 150 Max HP).",
+   "passives": [
+    {
+     "name": "Vitality I",
+     "text": "Increase 150 Max HP."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Boar",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Kings Woods: 3",
+    "Groups of 2 in 29.41% of regular encounters · level 5-6",
+    "Kings Woods: 4",
+    "Groups of 3 in 50% of regular encounters · level 7",
+    "Kings Woods: 5",
+    "Groups of 2 in 29.41% of regular encounters · level 8",
+    "Kings Woods: 6",
+    "Groups of 3 in 33.33% of regular encounters · level 9",
+    "Kings Woods: 7",
+    "Groups of 4 in 50% of regular encounters · level 10",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "chestnut-pony",
+   "name": "Chestnut Pony",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 22,
+   "obtained": "Merchant",
+   "rein_chance": "",
+   "summary": "Its Rein is sold for 300 gold by Granny in the City of Aldenreach and Ingrid, The Merchant in the City of Veldak. Passive: Fast Travel II (+10% Move Speed).",
+   "passives": [
+    {
+     "name": "Fast Travel II",
+     "text": "+10% Move Speed."
+    }
+   ],
+   "abilities": [],
+   "sources": [],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "defiled-ooze",
+   "name": "Defiled Ooze",
+   "rarity": "Uncommon",
+   "species": "Elemental",
+   "capacity": 22,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Defiled Ooze (0.25% per cleared encounter with it). Passive: Viscous Hide (Reduces Physical damage taken by 20%).",
+   "passives": [
+    {
+     "name": "Viscous Hide",
+     "text": "Reduces Physical damage taken by 20%."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Defiled Ooze",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "The Defiled Keep: 1",
+    "Groups of 3-5 in 100% of regular encounters · level 58-59",
+    "The Defiled Keep: 3",
+    "Groups of 3 in 40% of regular encounters · level 61",
+    "The Defiled Keep: 4",
+    "Groups of 3 in 40% of regular encounters · level 62",
+    "The Defiled Keep: 5",
+    "Groups of 3 in 33.33% of regular encounters · level 63",
+    "The Defiled Keep: 7",
+    "Groups of 5 in 33.33% of regular encounters · level 64",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "carrion-scarab",
+   "name": "Carrion Scarab",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Carrion Scarab (0.25% per cleared encounter with it). Passive: Gravedigger (+15% Item Find).",
+   "passives": [
+    {
+     "name": "Gravedigger",
+     "text": "+15% Item Find."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Carrion Scarab",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "The Defiled Keep: 2",
+    "Groups of 4 in 33.33% of regular encounters · level 60",
+    "The Defiled Keep: 3",
+    "Groups of 3 in 40% of regular encounters · level 61",
+    "The Defiled Keep: 4",
+    "Groups of 3 in 40% of regular encounters · level 62",
+    "The Defiled Keep: 5",
+    "Groups of 3 in 66.67% of regular encounters · level 63",
+    "The Defiled Keep: 6",
+    "Groups of 2 in 66.67% of regular encounters · level 64",
+    "The Defiled Keep: 7",
+    "Groups of 6 in 66.67% of regular encounters · level 64",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "sand-kobold-thief",
+   "name": "Sand Kobold Thief",
+   "rarity": "Uncommon",
+   "species": "Humanoid",
+   "capacity": 20,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Sand Kobold Thief (0.25% per cleared encounter with it). Passive: Damage to Bleeding II (+20% Damage to Bleeding enemies).",
+   "passives": [
+    {
+     "name": "Damage to Bleeding II",
+     "text": "+20% Damage to Bleeding enemies."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Sand Kobold Thief",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Tazan Wastes: 2",
+    "Groups of 3 in 33.33% of regular encounters · level 30",
+    "Tazan Wastes: 3",
+    "Groups of 3 in 33.33% of regular encounters · level 31",
+    "Tazan Wastes: 4",
+    "Groups of 4 in 33.33% of regular encounters · level 32",
+    "Tazan Wastes: 5",
+    "Groups of 2 in 33.33% of regular encounters · level 33",
+    "Tazan Wastes: 6",
+    "Groups of 2 in 66.67% of regular encounters · level 34",
+    "Tazan Wastes: 7",
+    "Groups of 2 in 66.67% of regular encounters · level 34",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "sand-kobold-warrior",
+   "name": "Sand Kobold Warrior",
+   "rarity": "Uncommon",
+   "species": "Humanoid",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Sand Kobold Warrior (0.25% per cleared encounter with it). Passive: Thick Skin II (+15% Armor).",
+   "passives": [
+    {
+     "name": "Thick Skin II",
+     "text": "+15% Armor."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Sand Kobold Warrior",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Tazan Wastes: 4",
+    "Groups of 3 in 33.33% of regular encounters · level 32",
+    "Tazan Wastes: 5",
+    "Groups of 2-3 in 66.67% of regular encounters · level 33",
+    "Tazan Wastes: 6",
+    "Groups of 2 in 33.33% of regular encounters · level 34",
+    "Tazan Wastes: 7",
+    "2 with the boss · groups of 2 in 33.33% of regular encounters · level 34",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "sand-wasp",
+   "name": "Sand Wasp",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 20,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Sand Wasp (0.25% per cleared encounter with it). Passive: Damage to Poisoned I (+15% Damage to Poisoned enemies).",
+   "passives": [
+    {
+     "name": "Damage to Poisoned I",
+     "text": "+15% Damage to Poisoned enemies."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Sand Wasp",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Tazan Wastes: 1",
+    "Groups of 3 in 50% of regular encounters · level 28-29",
+    "Tazan Wastes: 2",
+    "Groups of 3-4 in 66.67% of regular encounters · level 30",
+    "Tazan Wastes: 3",
+    "Groups of 3-4 in 66.67% of regular encounters · level 31",
+    "Tazan Wastes: 6",
+    "Groups of 3-4 in 66.67% of regular encounters · level 34",
+    "Tazan Wastes: 7",
+    "Groups of 3-4 in 66.67% of regular encounters · level 34",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "goblin-warrior",
+   "name": "Goblin Warrior",
+   "rarity": "Uncommon",
+   "species": "Humanoid",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Goblin Warrior (0.25% per cleared encounter with it). Passive: Gold Increase I (+15% Gold gained from enemies).",
+   "passives": [
+    {
+     "name": "Gold Increase I",
+     "text": "+15% Gold gained from enemies."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Goblin Warrior",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Spire Hill Crypt: 1",
+    "Groups of 2-6 in 66.67% of regular encounters · level 11-12",
+    "Spire Hill Crypt: 2",
+    "Groups of 3-7 in 44.44% of regular encounters · level 13-14",
+    "Spire Hill Crypt: 3",
+    "Groups of 3-7 in 44.44% of regular encounters · level 15",
+    "Spire Hill Crypt: 4",
+    "2 with the mini-boss · groups of 4-7 in 44.44% of regular encounters · level 16",
+    "Spire Hill Crypt Lower: 3",
+    "Groups of 11 in 28.57% of regular encounters · level 19",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "venomous-spider",
+   "name": "Venomous Spider",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 16,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Venomous Spider (0.25% per cleared encounter with it). Passive: Mana I (+25 Mana).",
+   "passives": [
+    {
+     "name": "Mana I",
+     "text": "+25 Mana."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Venomous Spider",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Kings Woods South: 1",
+    "Groups of 3 in 50% of regular encounters · level 20-21",
+    "Kings Woods South: 2",
+    "Groups of 2-4 in 66.67% of regular encounters · level 22-23",
+    "Kings Woods South: 3",
+    "Groups of 2-4 in 66.67% of regular encounters · level 24",
+    "Kings Woods South: 4",
+    "4 with the mini-boss · groups of 2 in 66.67% of regular encounters · level 25",
+    "Kings Woods South: 5",
+    "Groups of 2-3 in 66.67% of regular encounters · level 26",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "barrens-crocodile",
+   "name": "Barrens Crocodile",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Barrens Crocodile (0.25% per cleared encounter with it). Passive: Damage to Injured II (+20% Damage to Injured enemies).",
+   "passives": [
+    {
+     "name": "Damage to Injured II",
+     "text": "+20% Damage to Injured enemies."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Barrens Crocodile",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "The Barrens: 1",
+    "Groups of 1 in 50% of regular encounters · level 40-41",
+    "The Barrens: 2",
+    "Groups of 1-3 in 66.67% of regular encounters · level 42",
+    "The Barrens: 3",
+    "Groups of 2 in 33.33% of regular encounters · level 43",
+    "The Barrens: 4",
+    "7 with the mini-boss · groups of 3 in 33.33% of regular encounters · level 44",
+    "The Barrens: 5",
+    "Groups of 4 in 33.33% of regular encounters · level 45",
+    "The Barrens: 6",
+    "Groups of 3 in 33.33% of regular encounters · level 46",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "scorched-imp",
+   "name": "Scorched Imp",
+   "rarity": "Uncommon",
+   "species": "Demon",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Scorched Imp (0.25% per cleared encounter with it). Passive: Fire Damage II (+20% Fire Damage).",
+   "passives": [
+    {
+     "name": "Fire Damage II",
+     "text": "+20% Fire Damage"
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Scorched Imp",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "The Barrens: 2",
+    "Groups of 3 in 33.33% of regular encounters · level 42",
+    "The Barrens: 3",
+    "Groups of 2-4 in 66.67% of regular encounters · level 43",
+    "The Barrens: 4",
+    "Groups of 4 in 33.33% of regular encounters · level 44",
+    "The Barrens: 5",
+    "Groups of 2 in 33.33% of regular encounters · level 45",
+    "The Barrens: 6",
+    "Groups of 2-3 in 66.67% of regular encounters · level 46",
+    "The Barrens: 7",
+    "Groups of 3-4 in 66.67% of regular encounters · level 46",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "redrock-golem",
+   "name": "Redrock Golem",
+   "rarity": "Uncommon",
+   "species": "Elemental",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Redrock Golem (0.25% per cleared encounter with it). Passive: Critical Damage Reduction (+20% Critical Damage Reduction).",
+   "passives": [
+    {
+     "name": "Critical Damage Reduction",
+     "text": "+20% Critical Damage Reduction"
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Redrock Golem",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "The Barrens: 5",
+    "Groups of 1 in 33.33% of regular encounters · level 45",
+    "The Barrens: 6",
+    "Groups of 1-2 in 66.67% of regular encounters · level 46",
+    "The Barrens: 7",
+    "4 with the boss · groups of 1-2 in 66.67% of regular encounters · level 46",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "barrens-satyr",
+   "name": "Barrens Satyr",
+   "rarity": "Uncommon",
+   "species": "Demon",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Barrens Satyr (0.25% per cleared encounter with it). Passive: Basic Attack Damage II (+20% Basic Attack Damage).",
+   "passives": [
+    {
+     "name": "Basic Attack Damage II",
+     "text": "+20% Basic Attack Damage"
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Barrens Satyr",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "The Barrens: 1",
+    "Groups of 2 in 50% of regular encounters · level 40-41",
+    "The Barrens: 2",
+    "Groups of 2 in 33.33% of regular encounters · level 42",
+    "The Barrens: 3",
+    "Groups of 3 in 66.67% of regular encounters · level 43",
+    "The Barrens: 4",
+    "Groups of 4 in 33.33% of regular encounters · level 44",
+    "The Barrens: 5",
+    "Groups of 4 in 33.33% of regular encounters · level 45",
+    "The Barrens: 6",
+    "Groups of 6 in 33.33% of regular encounters · level 46",
+    "The Barrens: 7",
+    "Groups of 3-4 in 66.67% of regular encounters · level 46",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "grizzly-bear",
+   "name": "Grizzly Bear",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Grizzly Bear (0.25% per cleared encounter with it). Passive: Deep Slumber (Restores 8 Health per second).",
+   "passives": [
+    {
+     "name": "Deep Slumber",
+     "text": "Restores 8 Health per second."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Grizzly Bear",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "The Crimson Vale: 1",
+    "Groups of 1 in 50% of regular encounters · level 46-47",
+    "The Crimson Vale: 2",
+    "Groups of 2 in 66.67% of regular encounters · level 48",
+    "The Crimson Vale: 3",
+    "Groups of 2 in 50% of regular encounters · level 49",
+    "The Crimson Vale: 4",
+    "Groups of 2 in 50% of regular encounters · level 50",
+    "The Crimson Vale: 5",
+    "Groups of 2 in 28.57% of regular encounters · level 51",
+    "The Crimson Vale: 6",
+    "Groups of 1 in 40% of regular encounters · level 52",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "crimson-guardian",
+   "name": "Crimson Guardian",
+   "rarity": "Uncommon",
+   "species": "Elemental",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Crimson Guardian (0.25% per cleared encounter with it). Passive: Stoneheart (+1 Health Potion charges).",
+   "passives": [
+    {
+     "name": "Stoneheart",
+     "text": "+1 Health Potion charges."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Crimson Guardian",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "The Crimson Vale: 3",
+    "Groups of 2 in 25% of regular encounters · level 49",
+    "The Crimson Vale: 4",
+    "Groups of 3 in 25% of regular encounters · level 50",
+    "The Crimson Vale: 5",
+    "Groups of 3 in 28.57% of regular encounters · level 51",
+    "The Crimson Vale: 6",
+    "Groups of 3 in 20% of regular encounters · level 52",
+    "The Crimson Vale: 7",
+    "Groups of 2 in 33.33% of regular encounters · level 52",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "mountain-tiger",
+   "name": "Mountain Tiger",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Mountain Tiger (0.25% per cleared encounter with it). Passive: Ambush (+15% Damage to Healthy enemies).",
+   "passives": [
+    {
+     "name": "Ambush",
+     "text": "+15% Damage to Healthy enemies."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Mountain Tiger",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "The Crimson Vale: 1",
+    "Groups of 2 in 50% of regular encounters · level 46-47",
+    "The Crimson Vale: 2",
+    "Groups of 3 in 33.33% of regular encounters · level 48",
+    "The Crimson Vale: 3",
+    "Groups of 3 in 25% of regular encounters · level 49",
+    "The Crimson Vale: 4",
+    "3 with the mini-boss · groups of 3 in 25% of regular encounters · level 50",
+    "The Crimson Vale: 5",
+    "Groups of 3 in 14.29% of regular encounters · level 51",
+    "The Crimson Vale: 6",
+    "Groups of 2 in 40% of regular encounters · level 52",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "skeleton-archer",
+   "name": "Skeleton Archer",
+   "rarity": "Uncommon",
+   "species": "Undead",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Skeleton Archer (0.25% per cleared encounter with it). Passive: Critical Hit Chance I (+3% Critical Hit Chance).",
+   "passives": [
+    {
+     "name": "Critical Hit Chance I",
+     "text": "+3% Critical Hit Chance"
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Skeleton Archer",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Spire Hill Crypt: 1",
+    "Groups of 1-3 in 66.67% of regular encounters · level 11-12",
+    "Spire Hill Crypt: 2",
+    "Groups of 1-4 in 44.44% of regular encounters · level 13-14",
+    "Spire Hill Crypt: 3",
+    "Groups of 1-4 in 44.44% of regular encounters · level 15",
+    "Spire Hill Crypt: 4",
+    "Groups of 2-4 in 44.44% of regular encounters · level 16",
+    "Spire Hill Crypt Lower: 1",
+    "Groups of 4-6 in 57.14% of regular encounters · level 17",
+    "Spire Hill Crypt Lower: 2",
+    "Groups of 4-6 in 57.14% of regular encounters · level 18",
+    "Spire Hill Crypt Lower: 3",
+    "Groups of 5 in 28.57% of regular encounters · level 19",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "frost-slime",
+   "name": "Frost Slime",
+   "rarity": "Uncommon",
+   "species": "Elemental",
+   "capacity": 20,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Frost Slime (0.25% per cleared encounter with it). Passive: Reconstituting Gel (+10% healing received from all sources).",
+   "passives": [
+    {
+     "name": "Reconstituting Gel",
+     "text": "+10% healing received from all sources."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Frost Slime",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Veldak Highlands: 1",
+    "Groups of 3 in 50% of regular encounters · level 52-53",
+    "Veldak Highlands: 2",
+    "Groups of 4 in 41.18% of regular encounters · level 54",
+    "Veldak Highlands: 3",
+    "Groups of 5 in 22.73% of regular encounters · level 55",
+    "Veldak Highlands: 4",
+    "10 with the mini-boss · groups of 5 in 20% of regular encounters · level 56",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "frozen-zombie-warrior",
+   "name": "Frozen Zombie Warrior",
+   "rarity": "Uncommon",
+   "species": "Undead",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Frozen Zombie Warrior (0.25% per cleared encounter with it). Passive: Frozen Might (+3% All Damage).",
+   "passives": [
+    {
+     "name": "Frozen Might",
+     "text": "+3% All Damage."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Frozen Zombie Warrior",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Veldak Highlands: 3",
+    "Groups of 2 in 31.82% of regular encounters · level 55",
+    "Veldak Highlands: 4",
+    "Groups of 2 in 40% of regular encounters · level 56",
+    "Veldak Highlands: 5",
+    "Groups of 2-3 in 69.23% of regular encounters · level 57",
+    "Veldak Highlands: 6",
+    "Groups of 3 in 64.29% of regular encounters · level 58",
+    "Veldak Highlands: 7",
+    "Groups of 5 in 50% of regular encounters · level 58",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "black-spider",
+   "name": "Black Spider",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 15,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Black Spider (0.25% per cleared encounter with it). Passive: Poison Damage I (+15% Poison Damage).",
+   "passives": [
+    {
+     "name": "Poison Damage I",
+     "text": "+15% Poison Damage."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Black Spider",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Kings Woods: 1",
+    "Groups of 3 in 66.67% of regular encounters · level 1-2",
+    "Kings Woods: 2",
+    "Groups of 4 in 50% of regular encounters · level 3-4",
+    "Kings Woods: 3",
+    "Groups of 6 in 11.76% of regular encounters · level 5-6",
+    "Kings Woods: 4",
+    "Groups of 6 in 50% of regular encounters · level 7",
+    "Kings Woods: 5",
+    "Groups of 6 in 11.76% of regular encounters · level 8",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "stumplin",
+   "name": "Stumplin",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 16,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Stumplin (0.25% per cleared encounter with it). Passive: Thorn I (+10% Thorn).",
+   "passives": [
+    {
+     "name": "Thorn I",
+     "text": "+10% Thorn."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Stumplin",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Kings Woods South: 4",
+    "Groups of 4 in 33.33% of regular encounters · level 25",
+    "Kings Woods South: 5",
+    "Groups of 4 in 33.33% of regular encounters · level 26",
+    "Kings Woods South: 6",
+    "Groups of 3-9 in 100% of regular encounters · level 27",
+    "Kings Woods South: 7",
+    "5 with the boss · groups of 3-9 in 100% of regular encounters · level 28",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "ember-bat",
+   "name": "Ember Bat",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 25,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Ember Bat (0.25% per cleared encounter with it). Passive: Cinder Hide (Reduces Fire damage taken by 20%).",
+   "passives": [
+    {
+     "name": "Cinder Hide",
+     "text": "Reduces Fire damage taken by 20%."
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Ember Bat",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "The Cinder Crown: 3",
+    "Groups of 2 in 25% of regular encounters · level 67",
+    "The Cinder Crown: 4",
+    "3 with the mini-boss · groups of 3 in 40% of regular encounters · level 68",
+    "The Cinder Crown: 5",
+    "Groups of 3 in 33.33% of regular encounters · level 69",
+    "The Cinder Crown: 6",
+    "Groups of 4 in 33.33% of regular encounters · level 70",
+    "The Cinder Crown: 7",
+    "Groups of 4 in 66.67% of regular encounters · level 70",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "grey-forest-wolf",
+   "name": "Grey Forest Wolf",
+   "rarity": "Uncommon",
+   "species": "Beast",
+   "capacity": 15,
+   "obtained": "Enemy drop",
+   "rein_chance": "0.25%",
+   "summary": "Its Rein drops from the Grey Forest Wolf (0.25% per cleared encounter with it). Passive: Attack Speed I (+5% Attack Speed).",
+   "passives": [
+    {
+     "name": "Attack Speed I",
+     "text": "+5% Attack Speed"
+    }
+   ],
+   "abilities": [],
+   "sources": [
+    "Where its enemy is met",
+    "Grey Forest Wolf",
+    "Rein: 0.25% per cleared encounter with it · all difficulties",
+    "Kings Woods: 1",
+    "Groups of 2 in 33.33% of regular encounters · level 1-2",
+    "Kings Woods: 2",
+    "Groups of 3 in 50% of regular encounters · level 3-4",
+    "Kings Woods: 3",
+    "Groups of 4 in 58.82% of regular encounters · level 5-6",
+    "Kings Woods: 5",
+    "Groups of 4 in 58.82% of regular encounters · level 8",
+    "Kings Woods: 6",
+    "Groups of 5 in 66.67% of regular encounters · level 9",
+    "Kings Woods: 7",
+    "3 with the boss · groups of 6 in 50% of regular encounters · level 10",
+    "Rein"
+   ],
+   "rein_tradable": "No"
+  },
+  {
+   "slug": "brown-horse",
+   "name": "Brown Horse",
+   "rarity": "Common",
+   "species": "Beast",
+   "capacity": 20,
+   "obtained": "Starting minion",
+   "rein_chance": "",
+   "summary": "Every character starts with it. Passive: Fast Travel I (+5% Move Speed).",
+   "passives": [
+    {
+     "name": "Fast Travel I",
+     "text": "+5% Move Speed."
+    }
+   ],
+   "abilities": [],
+   "sources": [],
+   "rein_tradable": ""
+  }
+ ]
+}

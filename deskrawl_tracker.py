@@ -31,6 +31,7 @@ import talents
 import skills
 import updater
 import changelog
+import minions
 import paragon
 from version import VERSION
 import item_ocr  # first: loads onnxruntime before WinRT/winocr (avoids a crash)
@@ -1445,6 +1446,7 @@ class App:
         self.tab_bis = tk.Frame(self.nb, bg=BG)
         self.tab_tal = tk.Frame(self.nb, bg=BG)
         self.tab_db = tk.Frame(self.nb, bg=BG)
+        self.tab_mn = tk.Frame(self.nb, bg=BG)
         self.nb.add(self.tab_farm, text="Overview")
         self.nb.add(self.tab_char, text="Character Stats")
         self.nb.add(self.tab_stages, text="Stages")
@@ -1452,6 +1454,7 @@ class App:
         self.nb.add(self.tab_death, text="Deaths")
         self.nb.add(self.tab_items, text="Item Comparer")
         self.nb.add(self.tab_db, text="Item Database")
+        self.nb.add(self.tab_mn, text="Minions")
         # BiS Gear, Talents and Weights are hidden for now: still built (their settings keep feeding the
         # item rating), just not in the menu. Add them to the menu again to show them.
         self.nb.add(self.tab_gems, text="Gems")
@@ -1466,6 +1469,7 @@ class App:
         self._build_bis(self.tab_bis)
         self._build_talents(self.tab_tal)
         self._build_itemdb(self.tab_db)
+        self._build_minions(self.tab_mn)
 
         side = self.nb.bottom
         head = tk.Label(side, text="", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w", cursor="hand2")
@@ -3773,6 +3777,7 @@ class App:
 
     # -- characters / weights ------------------------------------------------
     def _fill_char(self):
+        self._fill_minions()  # minion values depend on the character sheet
         self.char_tree.delete(*self.char_tree.get_children())
         order = ["Level"] + item_ocr.KNOWN_STATS
         for k in sorted(self.char_stats, key=lambda s: order.index(s) if s in order else 999):
@@ -4455,6 +4460,170 @@ class App:
             messagebox.showinfo("Clear stage", "Choose a stage in the “Stage” list first.", parent=self._runs_win)
             return
         self._stage_clear(*flt)
+
+    # -- minions -----------------------------------------------------------------
+    MN_SORTS = {"Score (mode)": "score", "Damage": "dps", "Survival": "surv", "Farming": "farm"}
+
+    def _build_minions(self, p):
+        hdr = ui.page_header(p, "Minions", (
+            "What each minion's passives and buff abilities are worth for the logged-in character, worked out "
+            "with your character sheet (F9) and the same damage / survival model as the Item Comparer.\n\n"
+            "Damage % and Survival %: change against having no minion. Conditional bonuses (“+30% Damage to "
+            "Slowed enemies”) count for an estimated share of the time. Abilities that deal damage are listed "
+            "but not rated – how the game scales a minion's damage is not documented. Mana bonuses are not "
+            "rated either.\n\nOnly one minion is active at a time; minions are unlocked with their Rein."))
+        self.var_mn_mode = tk.StringVar(value=self.cfg.get("minion_mode") or self.cfg.get("item_mode", "Balanced"))
+        cb = ttk.Combobox(hdr, textvariable=self.var_mn_mode, values=list(item_eval.MODES), width=11,
+                          state="readonly")
+        cb.pack(side="right")
+        cb.bind("<<ComboboxSelected>>", lambda _: (self._set_cfg("minion_mode", self.var_mn_mode.get()),
+                                                   self._fill_minions()))
+        tk.Label(hdr, text="Mode", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="right", padx=(14, 6))
+        bar = tk.Frame(p, bg=BG)
+        bar.pack(fill="x", padx=14, pady=(0, 6))
+        self.var_mn_search = tk.StringVar(value="")
+        self.var_mn_rarity = tk.StringVar(value=self.cfg.get("minion_rarity", "All"))
+        self.var_mn_sort = tk.StringVar(value=self.cfg.get("minion_sort", "Score (mode)"))
+        tk.Label(bar, text="Search", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        e = tk.Entry(bar, textvariable=self.var_mn_search, width=16, bg=PANEL, fg=FG, insertbackground=FG,
+                     relief="flat", font=ui.F_SMALL)
+        e.pack(side="left", padx=(6, 12), ipady=3)
+        ui.Tooltip(e, "Name, passive or where it drops, e.g. “Lightning”, “Health”, “Frost Dragon”.")
+        self.var_mn_search.trace_add("write", lambda *_: self._fill_minions())
+
+        def combo(label, var, values, key, width):
+            tk.Label(bar, text=label, bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+            c = ttk.Combobox(bar, textvariable=var, values=values, width=width, state="readonly")
+            c.pack(side="left", padx=(6, 12))
+            c.bind("<<ComboboxSelected>>", lambda _: (self._set_cfg(key, var.get()), self._fill_minions()))
+
+        combo("Rarity", self.var_mn_rarity, ["All", "Legendary", "Rare", "Uncommon", "Common"], "minion_rarity", 10)
+        combo("Sort by", self.var_mn_sort, list(self.MN_SORTS), "minion_sort", 12)
+        self.lbl_mn_note = tk.Label(bar, text="", bg=BG, fg=C_MEH, font=ui.F_SMALL, anchor="w")
+        self.lbl_mn_note.pack(side="left", fill="x", expand=True)
+
+        cols = [("rank", "#", 30, "e"), ("name", "Minion", 160, "w"), ("rar", "Rarity", 86, "w"),
+                ("dps", "Damage", 74, "e"), ("surv", "Survival", 74, "e"), ("farm", "Farming", 74, "e"),
+                ("score", "Score", 54, "e"), ("pas", "Passives", 210, "w"), ("src", "Rein drops on", 170, "w")]
+        f, self.mn_tree = self._tree(p, cols, 9)
+        f.pack(fill="x", padx=14, pady=(0, 6))
+        for r in ("Legendary", "Rare", "Uncommon", "Common"):
+            self.mn_tree.tag_configure(r, foreground=ui.RARITY.get(r, FG))
+        self.mn_tree.tag_configure("zero", foreground=MUTED)
+        self.mn_tree.bind("<<TreeviewSelect>>", self._minion_select)
+        sf = ui.ScrollFrame(p)
+        sf.pack(fill="both", expand=True, pady=(0, 8))
+        self.mn_detail = ui.card(sf.inner, fill="x", padx=14, pady=(0, 6))
+        tk.Label(self.mn_detail, text="Click a minion for its passives, what they are worth and how to get it.",
+                 bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=14, pady=12)
+        self._mn_rows, self._mn_rates, self._mn_sel = [], {}, None
+        self._fill_minions()
+
+    @staticmethod
+    def _minion_where(m) -> list:
+        """Stages where the Rein's enemy is met ("Veldak Highlands: 4")."""
+        return [s for s in m["sources"] if re.match(r".+: \d+$", s)]
+
+    def _minion_source(self, m):
+        if m["obtained"] == "Enemy drop" and m["rein_chance"]:
+            where = self._minion_where(m)
+            place = where[0] + (f" (+{len(where) - 1})" if len(where) > 1 else "") if where else ""
+            return f"{place} · {m['rein_chance']}" if place else m["rein_chance"]
+        return m["obtained"] or "-"
+
+    def _fill_minions(self):
+        if not hasattr(self, "mn_tree"):
+            return
+        ctx = self._eval_context()
+        mode = self.var_mn_mode.get()
+        self._mn_rates = {m["slug"]: minions.rate(m, ctx, mode) for m in minions.MINIONS}
+        known = any(r["known"] for r in self._mn_rates.values())
+        self.lbl_mn_note.configure(text="" if known else "Read your character with F9 first – values need your stats.")
+        q = self.var_mn_search.get().strip().lower()
+        rar = self.var_mn_rarity.get()
+        key = self.MN_SORTS.get(self.var_mn_sort.get(), "score")
+        rows = []
+        for m in minions.MINIONS:
+            if rar != "All" and m["rarity"] != rar:
+                continue
+            if q and q not in " ".join([m["name"], m["species"], m["obtained"], " ".join(m["sources"]),
+                                        " ".join(p["text"] for p in m["passives"] + m["abilities"])]).lower():
+                continue
+            rows.append(m)
+        rows.sort(key=lambda m: (-self._mn_rates[m["slug"]][key], m["name"]))
+        self._mn_rows = rows
+        t = self.mn_tree
+        t._sort = None
+        for c, title in t._titles.items():
+            ttk.Treeview.heading(t, c, text=title)
+        t.delete(*t.get_children())
+        pc = lambda v: f"{v:+.1f} %" if abs(v) >= 0.05 else "–"
+        for i, m in enumerate(rows):
+            r = self._mn_rates[m["slug"]]
+            passives = " · ".join(p["text"].rstrip(".") for p in m["passives"])
+            if m["abilities"]:
+                passives += "  + " + m["abilities"][0]["name"]
+            tags = (m["rarity"],) if abs(r[key]) >= 0.05 else ("zero",)
+            t.insert("", "end", iid=str(i), tags=tags, values=(
+                i + 1, m["name"], m["rarity"], pc(r["dps"]), pc(r["surv"]), pc(r["farm"]),
+                f"{r['score']:.1f}" if abs(r["score"]) >= 0.05 else "–", passives, self._minion_source(m)))
+        if self._mn_sel:
+            k = next((i for i, m in enumerate(rows) if m["slug"] == self._mn_sel), None)
+            if k is not None:
+                t.selection_set(str(k))
+
+    def _minion_select(self, _=None):
+        sel = self.mn_tree.selection()
+        if not sel:
+            return
+        m = self._mn_rows[int(sel[0])]
+        self._mn_sel = m["slug"]
+        r = self._mn_rates[m["slug"]]
+        d = self.mn_detail
+        for w in d.winfo_children():
+            w.destroy()
+        top = tk.Frame(d, bg=PANEL)
+        top.pack(fill="x", padx=14, pady=(12, 4))
+        tk.Label(top, text=m["name"], bg=PANEL, fg=ui.RARITY.get(m["rarity"], FG), font=ui.F_HEAD,
+                 anchor="w").pack(side="left")
+        tk.Label(top, text=f"   {m['rarity']} {m['species']} minion · carriage capacity {m['capacity']}", bg=PANEL,
+                 fg=MUTED, font=ui.F_SMALL).pack(side="left", pady=(6, 0))
+        nums = tk.Frame(d, bg=PANEL)
+        nums.pack(fill="x", padx=14, pady=(2, 6))
+        for label, v in (("Damage", r["dps"]), ("Survival", r["surv"]), ("Farming", r["farm"])):
+            box = tk.Frame(nums, bg=PANEL)
+            box.pack(side="left", padx=(0, 28))
+            tk.Label(box, text=f"{v:+.1f} %", bg=PANEL, fg=C_GOOD if v > 0.05 else (C_BAD if v < -0.05 else MUTED),
+                     font=ui.F_NUM_M).pack(anchor="w")
+            tk.Label(box, text=label, bg=PANEL, fg=MUTED, font=ui.F_SMALL).pack(anchor="w")
+
+        def section(title):
+            tk.Label(d, text=title, bg=PANEL, fg=ui.ACCENT, font=ui.F_LABEL, anchor="w").pack(
+                fill="x", padx=14, pady=(8, 2))
+
+        def text(s, fg=FG, font=ui.F_SMALL):
+            ui.autowrap(tk.Label(d, text=s, bg=PANEL, fg=fg, font=font, anchor="w", justify="left"), 30).pack(
+                fill="x", padx=14)
+
+        parts = {k: v for k, v in (r.get("farm_parts") or {}).items() if abs(v) >= 0.05}
+        if parts:
+            text("Farming: " + " · ".join(f"{v:+.1f} % {k}" for k, v in parts.items()), MUTED)
+        section("Passives and ability")
+        for src, line, note, rated in r["lines"]:
+            text(f"{src} – {line}")
+            if note:
+                text(f"      {note}", C_GOOD if rated else MUTED)
+        if not r["known"]:
+            text("Read your character with F9 to see what it is worth for you.", C_MEH)
+        section("How to get it")
+        text(m["summary"], MUTED)
+        where = self._minion_where(m)
+        if where:
+            text("Rein drops on: " + ", ".join(where) + (f" – {m['rein_chance']} per cleared encounter, all "
+                                                         f"difficulties" if m["rein_chance"] else ""), MUTED)
+        if m.get("rein_tradable"):
+            text(f"Rein tradable: {m['rein_tradable']}", MUTED)
+        tk.Frame(d, bg=PANEL, height=10).pack()
 
     # -- release notes ---------------------------------------------------------
     def show_changelog(self):

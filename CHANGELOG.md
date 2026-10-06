@@ -2,6 +2,20 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.12 – 2026-10-06
+
+### New
+- **Minions** (new page): all 67 minions ranked by what their passives and buff abilities are worth for your character: damage, survival and farming, with a score for the chosen mode.
+  - It uses your character sheet (F9) and the same model as the Item Comparer.
+  - Conditional bonuses ("+30% Damage to Slowed enemies") count for an estimated share of the time. Timed buffs count for their uptime, and heals and shields count as regeneration.
+  - Abilities that deal damage, and mana bonuses, are shown but not rated.
+  - Each minion shows where its Rein drops and the drop chance.
+
+### Fixed
+- **Paragon:** when the game showed the next Paragon level a moment before its run reached the log, the tracker switched to an estimate ("≈"). It now stays exact. A total already marked as an estimate is counted again from the log if the run that reached level 70 is still in it.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.11 – 2026-10-06
 
 ### Fixed

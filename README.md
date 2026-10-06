@@ -22,6 +22,7 @@ It does **not** read game memory, does not change any game files and sends nothi
 
 **Skill tracking** (Controls): counts which abilities you cast per run from the skill bar and estimates their damage share – shown on the Stages page.
 | Item Database | Every Legendary and Divine item by slot: unique effect, base values and attribute ranges, attribute pool per class, Ancient / Black Mist variants and where it drops |
+| Minions | All 67 minions ranked by what their passives and buffs are worth for your character (damage, survival, farming), with where their Rein drops |
 | Gems | Which gem helps you most |
 
 ## Installation
