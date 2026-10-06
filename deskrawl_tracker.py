@@ -23,6 +23,8 @@ import tkinter as tk
 from tkinter import ttk
 
 import paths
+import errlog
+import storage
 import setup_dialog
 import bis
 import talents
@@ -87,10 +89,8 @@ OLD_MODES = {"Schaden": "Damage", "Überleben": "Survival", "Ausgewogen": "Balan
 
 
 def load_config() -> dict:
-    try:
-        with open(CONFIG_PATH, encoding="utf-8") as f:
-            cfg = json.load(f)
-    except Exception:
+    cfg = storage.read_json(CONFIG_PATH, {})
+    if not isinstance(cfg, dict):
         return {}
     for d in [cfg] + list((cfg.get("profiles") or {}).values()):
         if d.get("item_mode") in OLD_MODES:
@@ -99,11 +99,7 @@ def load_config() -> dict:
 
 
 def save_config(cfg: dict) -> None:
-    try:
-        with open(CONFIG_PATH, "w", encoding="utf-8") as f:
-            json.dump(cfg, f, indent=2)
-    except Exception:
-        pass
+    storage.write_json(CONFIG_PATH, cfg, indent=2)
 
 
 # --------------------------------------------------------------------------- log parsing
@@ -669,7 +665,7 @@ def append_death_csv(r: Run, char: str):
                         i.get("killer", ""), i.get("killer_level", ""), i.get("source", ""), i.get("damage", ""),
                         i.get("element", "")])
     except Exception:
-        pass
+        errlog.report("deaths_csv", f"cannot write {DEATHS_CSV}")
 
 
 def drop_category(e: dict) -> str:
@@ -681,6 +677,9 @@ def drop_category(e: dict) -> str:
         return {"set": "Set Rune", "ability": "Ability Rune", "attribute": "Attribute Rune"}.get(info.get("rune_type"), "Rune")
     return {"key": "Treasure Key", "shard": "Soul Shard", "boss_material": "Boss Material", "skull": "Skull",
             "ore": "Ore", "plant": "Plant"}.get(info["kind"], e.get("rarity", "?"))
+
+
+LEGENDARY = ("Legendary", "Divine")
 
 
 def append_run_csv(r: Run):
@@ -695,7 +694,7 @@ def append_run_csv(r: Run):
                         r.waves, round(r.duration, 1) if r.start else "", r.xp, r.gold, r.items, r.level,
                         r.mf, r.gf, r.xpm, int(r.damage), int(r.avg_dps or 0), int(r.peak_dps)])
     except Exception:
-        pass
+        errlog.report("runs_csv", f"cannot write {RUNS_CSV}")
 
 
 class LogTailer(threading.Thread):
@@ -735,6 +734,7 @@ class LogTailer(threading.Thread):
                 self.status = "Game.log not found"
             except Exception as e:  # keep tailing on transient errors (file locked etc.)
                 self.status = f"log error: {e}"
+                errlog.report("log_tailer", "reading Game.log failed")
             time.sleep(0.5)
 
 
@@ -931,6 +931,7 @@ class OCRWorker(threading.Thread):
             self.ocr = DamageOCR(on_hit=self.state.add_hit)
         except Exception as e:
             self.status = f"OCR not available: {e}"
+            errlog.log.error("OCR not available", exc_info=True)
             return
         last = time.time()
         while True:
@@ -973,6 +974,7 @@ class OCRWorker(threading.Thread):
                 self.status = f"DPS OCR on · {self.fps:.1f} fps"
             except Exception as e:
                 self.status = f"OCR error: {e}"
+                errlog.report("dps_ocr", "DPS OCR failed")
                 time.sleep(1.0)
             time.sleep(max(0.0, 0.15 - (time.time() - t)))
 
@@ -1010,7 +1012,7 @@ class GoldWatcher(threading.Thread):
                 if hdr is not None:
                     self.state.ingest_log(item_ocr.read_log_panel(frame, hdr), time.time())
             except Exception:
-                pass
+                errlog.report("gold_watcher", "gold / stage end / death reader failed")
 
 
 class PanelReader(threading.Thread):
@@ -1043,6 +1045,7 @@ class PanelReader(threading.Thread):
                     self.read_once()
             except Exception as e:
                 self.status = f"Panel error: {e}"
+                errlog.report("panel_reader", "log panel / stage end reader failed")
 
     def watch_stage_end(self, seconds=6.0) -> bool:
         """Right after a run: the stage end screen shows for a few seconds and names the stage."""
@@ -1188,7 +1191,7 @@ class ToastWatcher(threading.Thread):
                             self.state.add_toast_drop(time.time(), e)
                 self.history.append(now_counts)
             except Exception:
-                pass
+                errlog.report("toast_watcher", "drop / sale toast reader failed")
 
 
 class ClickThroughGuard(threading.Thread):
@@ -1440,6 +1443,11 @@ class App:
         ctl("Reset session", self.reset, "Clear the rates and run list of the current session. "
                                                 "Stage statistics and histories are kept.")
         self.root.after(5000, lambda: self.check_updates(manual=False))
+        failed = updater.pending_failure()
+        if failed:
+            errlog.log.error(failed)
+            self.root.after(500, lambda: self.lbl_status.configure(
+                text="Last update failed - see tracker_errors.log. Use \"Check for updates\" to try again."))
         if setup_dialog.needs_setup(self.cfg):
             self.root.after(400, lambda: self.open_setup(first_run=True))
         self._update_panels_btn()
@@ -1916,7 +1924,7 @@ class App:
                         f.write(data)
                     self.events.put(("icon_ready", url))
                 except Exception:
-                    pass
+                    errlog.report("icon_download", f"cannot download item icon {src}", exc_info=False)
             threading.Thread(target=load, daemon=True).start()
         return None
 
@@ -2505,6 +2513,7 @@ class App:
                 import talent_ocr
                 r = talent_ocr.read_build(frame, hero)
             except Exception as e:
+                errlog.log.error("Load current build failed", exc_info=True)
                 r = str(e)
             self.root.after(0, lambda: self._tal_current_done(r))
         threading.Thread(target=work, daemon=True).start()
@@ -2904,23 +2913,192 @@ class App:
             self._tal_tip = None
 
     def _build_stages(self, p):
-        ui.page_header(p, "Stages", "All runs per stage and difficulty of this character, across restarts. Gold "
-                                    "includes sales. ★ = best stage for EXP or gold (from 3 runs).\n\nClick a row: "
-                                    "enemies and their damage types, item level of drops and a forecast for the "
-                                    "next difficulty.")
+        hdr = ui.page_header(p, "Stages", "All stages: every run per stage and difficulty of this character, across "
+                                          "restarts. Gold includes sales. ★ = best stage for EXP or gold (from 3 runs)."
+                                          "\n\nBoss farming: the Silver bosses (stage 4 of a region, drop the skulls) "
+                                          "and Gold bosses (last stage, more legendaries) you have farmed, ranked by "
+                                          "kills per hour or by efficiency (kill speed and EXP together)."
+                                          "\n\nClick a row: enemies and their damage types, item level of drops and "
+                                          "a forecast for the next difficulty.")
+        self.boss_info = stages.boss_stages(self.enemy_data)
+        self._stage_views = {}
+        seg = tk.Frame(hdr, bg=BG)
+        seg.pack(side="right")
+        body = tk.Frame(p, bg=BG)
+        body.pack(fill="both", expand=True)
+        body.grid_columnconfigure(0, weight=1)
+        body.grid_rowconfigure(0, weight=1)
+
+        # all stages
+        v_all = tk.Frame(body, bg=BG)
         cols = [("stage", "Stage", 180, "w"), ("diff", "Diff", 64, "w"), ("runs", "Runs", 50, "e"),
                 ("t", "Time", 56, "e"), ("xp", "EXP/h", 75, "e"), ("gold", "Gold/h", 72, "e"),
                 ("it", "Items/h", 70, "e"), ("dead", "Deaths", 66, "e"), ("dps", "DPS", 66, "e")]
-        f, self.stage_tree = self._tree(p, cols, 9)
+        f, self.stage_tree = self._tree(v_all, cols, 9)
         f.pack(fill="both", expand=True, padx=14, pady=(0, 6))
         self.stage_tree.tag_configure("best", foreground=C_GOOD)
         self.stage_tree.bind("<<TreeviewSelect>>", self._stage_select)
+
+        # boss farming
+        v_boss = tk.Frame(body, bg=BG)
+        self._build_boss_view(v_boss)
+
+        for name, frame in (("All stages", v_all), ("Boss farming", v_boss)):
+            frame.grid(row=0, column=0, sticky="nsew")
+            frame.grid_remove()
+            b = ui.button(seg, name, lambda n=name: self._stage_view(n), small=True)
+            b.pack(side="left", padx=(6, 0))
+            self._stage_views[name] = (frame, b)
         det = ui.card(p, fill="x", padx=14, pady=(0, 12))
         self.lbl_stage_detail = ui.autowrap(tk.Label(det, bg=PANEL, fg=FG, font=ui.F_SMALL, anchor="w", justify="left",
                                                      text="Click a stage in the list for details."), 24)
         self.lbl_stage_detail.pack(fill="x", padx=12, pady=10)
         self._stage_rows = []
+        self._boss_rows = []
         self._stage_sig = None
+        self._stage_view(self.cfg.get("stage_view", "All stages"))
+
+    def _stage_view(self, name):
+        if name not in self._stage_views:
+            name = "All stages"
+        for n, (frame, b) in self._stage_views.items():
+            on = n == name
+            (frame.grid if on else frame.grid_remove)()
+            b.configure(bg=ui.ACCENT if on else ui.RAISED, fg=BG if on else FG)
+            # ui.button restores its own colours on mouse-leave: keep the active one highlighted
+            b.bind("<Leave>", lambda e, w=b, o=on: w.configure(bg=ui.ACCENT if o else ui.RAISED))
+        if self.cfg.get("stage_view") != name:
+            self._set_cfg("stage_view", name)
+
+    BOSS_RANKS = ("Time (kills/h)", "Efficiency (time + EXP)")
+
+    def _build_boss_view(self, p):
+        bar = tk.Frame(p, bg=BG)
+        bar.pack(fill="x", padx=14, pady=(0, 6))
+        c = self.cfg
+        self.var_boss_search = tk.StringVar(value="")
+        self.var_boss_kind = tk.StringVar(value=c.get("boss_kind", "All bosses"))
+        self.var_boss_diff = tk.StringVar(value=c.get("boss_diff", "All"))
+        self.var_boss_rank = tk.StringVar(value=c.get("boss_rank", self.BOSS_RANKS[1]))
+        self.var_boss_w = tk.IntVar(value=int(c.get("boss_weight", 50)))
+
+        tk.Label(bar, text="Search", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        e = tk.Entry(bar, textvariable=self.var_boss_search, width=18, bg=PANEL, fg=FG, insertbackground=FG,
+                     relief="flat", font=ui.F_SMALL)
+        e.pack(side="left", padx=(6, 12), ipady=3)
+        ui.Tooltip(e, "Region, boss or stage, e.g. “Cinder”, “Frost Dragon”, “Kings Woods South”.")
+        self.var_boss_search.trace_add("write", lambda *_: self._fill_bosses())
+
+        def combo(label, var, values, key, width):
+            tk.Label(bar, text=label, bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+            cb = ttk.Combobox(bar, textvariable=var, values=values, width=width, state="readonly")
+            cb.pack(side="left", padx=(6, 12))
+            cb.bind("<<ComboboxSelected>>", lambda _: (self._set_cfg(key, var.get()), self._fill_bosses()))
+
+        combo("Boss", self.var_boss_kind, ["All bosses", "Silver", "Gold"], "boss_kind", 10)
+        combo("Difficulty", self.var_boss_diff, ["All", "Normal", "Nightmare", "Inferno"], "boss_diff", 10)
+        combo("Rank by", self.var_boss_rank, list(self.BOSS_RANKS), "boss_rank", 21)
+
+        wrow = tk.Frame(p, bg=BG)
+        wrow.pack(fill="x", padx=14, pady=(0, 6))
+        tk.Label(wrow, text="Efficiency weighting:  kill speed", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        sc = tk.Scale(wrow, from_=0, to=100, orient="horizontal", variable=self.var_boss_w, showvalue=False,
+                      length=160, width=10, sliderlength=18, bg=ui.ACCENT, fg=FG, troughcolor=ui.RAISED,
+                      highlightthickness=0, bd=0, sliderrelief="flat", activebackground=ui.ACCENT, resolution=5)
+        self.boss_scale = sc
+        sc.pack(side="left", padx=8)
+        tk.Label(wrow, text="EXP", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        self.lbl_boss_w = tk.Label(wrow, text="", bg=BG, fg=FG, font=ui.F_SMALL)
+        self.lbl_boss_w.pack(side="left", padx=(10, 0))
+        ui.info(wrow, "Score 0–100: kills/h and EXP/h are each compared with the best boss in the list "
+                      "(best = 100) and mixed with this weighting. 50 = both count the same; 100 = EXP only."
+                ).pack(side="left", padx=(6, 0))
+        self._boss_w_job = None
+
+        def weight_moved(*_):
+            if self._boss_w_job:
+                self.root.after_cancel(self._boss_w_job)
+
+            def apply():
+                self._boss_w_job = None
+                self._set_cfg("boss_weight", self.var_boss_w.get())
+                self._fill_bosses()
+            self._boss_w_job = self.root.after(150, apply)
+        self.var_boss_w.trace_add("write", weight_moved)
+
+        cols = [("rank", "#", 34, "e"), ("boss", "Boss", 160, "w"), ("kind", "Type", 56, "w"),
+                ("stage", "Stage", 176, "w"), ("diff", "Diff", 66, "w"), ("runs", "Runs", 52, "e"),
+                ("t", "Run time", 74, "e"), ("kh", "Kills/h", 60, "e"), ("xp", "EXP/h", 72, "e"),
+                ("leg", "Leg./h", 56, "e"), ("score", "Score", 54, "e")]
+        f, self.boss_tree = self._tree(p, cols, 9)
+        f.pack(fill="both", expand=True, padx=14, pady=(0, 4))
+        self.boss_tree.tag_configure("Silver", foreground="#c9d1dc")
+        self.boss_tree.tag_configure("Gold", foreground="#f2c14e")
+        self.boss_tree.tag_configure("few", foreground=MUTED)
+        self.boss_tree.bind("<<TreeviewSelect>>", self._boss_select)
+        self.lbl_boss_note = ui.autowrap(tk.Label(p, text="", bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w",
+                                                  justify="left"), 24)
+        self.lbl_boss_note.pack(fill="x", padx=14, pady=(0, 6))
+
+    def _fill_bosses(self):
+        if not hasattr(self, "boss_tree"):
+            return
+        w = self.var_boss_w.get() / 100
+        efficiency = self.var_boss_rank.get() == self.BOSS_RANKS[1]
+        self.lbl_boss_w.configure(text=f"{100 - self.var_boss_w.get()} % kill speed · {self.var_boss_w.get()} % EXP",
+                                  fg=FG if efficiency else MUTED)
+        self.boss_scale.configure(state="normal" if efficiency else "disabled",
+                                  bg=ui.ACCENT if efficiency else ui.LINE)
+        q = self.var_boss_search.get().strip().lower()
+        kind = self.var_boss_kind.get()
+        diff = self.var_boss_diff.get()
+        rows = []
+        for x in self._stage_rows:
+            b = self.boss_info.get(x["stage"].lower())
+            if not b or not x["kills_h"] or x["difficulty"] not in stages.DIFFICULTY:
+                continue  # "?" = difficulty unknown (runs recorded by an older version)
+            if kind != "All bosses" and b["kind"] != kind:
+                continue
+            if diff != "All" and x["difficulty"] != diff:
+                continue
+            if q and q not in f"{b['boss']} {b['region']} {x['stage']}".lower():
+                continue
+            rows.append((x, b))
+        best_k = max((x["kills_h"] for x, _ in rows), default=0) or 1
+        best_x = max((x["xp_h"] for x, _ in rows), default=0) or 1
+        scored = []
+        for x, b in rows:
+            score = 100 * ((1 - w) * x["kills_h"] / best_k + w * x["xp_h"] / best_x)
+            scored.append((score if efficiency else x["kills_h"], score, x, b))
+        scored.sort(key=lambda s: -s[0])
+        self._boss_rows = [s[2] for s in scored]
+        t = self.boss_tree
+        t._sort = None  # the ranking decides the order; a click on a header still sorts by that column
+        for c, title in t._titles.items():
+            ttk.Treeview.heading(t, c, text=title)
+        t.delete(*t.get_children())
+        for i, (_, score, x, b) in enumerate(scored):
+            tags = (b["kind"],) if x["runs"] >= 3 else ("few",)
+            t.insert("", "end", iid=str(i), tags=tags, values=(
+                i + 1, b["boss"], b["kind"], x["stage"],
+                {"Nightmare": "NM", "Inferno": "Inf"}.get(x["difficulty"], x["difficulty"]), x["runs"],
+                fmt_dur(x.get("run_s") or x["avg_s"]), f"{x['kills_h']:.1f}", fmt(x["xp_h"]),
+                f"{x['leg_h']:.1f}" if x.get("leg_h") is not None else "–", f"{score:.0f}"))
+        farmed = len({x["stage"].lower() for x in self._stage_rows if x["stage"].lower() in self.boss_info})
+        if not scored:
+            note = ("No boss runs match the filter." if farmed else
+                    "No boss runs yet. Farm a Silver boss (stage 4 of a region) or a Gold boss (last stage) "
+                    "and it shows up here.")
+        else:
+            note = (f"Kills/h counts the full cycle incl. the time between runs. Grey rows: fewer than 3 runs. "
+                    f"Leg./h = legendary and divine drops, counted since this version; “–” = no runs recorded yet. "
+                    f"Gold bosses need one skull of the difficulty per run (not included).")
+        self.lbl_boss_note.configure(text=note)
+
+    def _boss_select(self, _=None):
+        sel = self.boss_tree.selection()
+        if sel:
+            self._stage_detail(self._boss_rows[int(sel[0])])
 
     def _aggregate_stages(self):
         """Count runs into the persistent stage statistics once their stage is known (or 2.5 min passed)."""
@@ -2930,6 +3108,7 @@ class App:
         with st.lock:
             runs = list(st.runs)
             sold = list(st.sold)
+            drops = list(st.drops)
         prev = None
         for r in runs:
             if r.aggregated or not r.start or not r.end:
@@ -2941,11 +3120,13 @@ class App:
             cycle = r.end - prev.end if prev and prev.end and 0 < r.end - prev.end < r.duration * 1.5 + 60 else r.duration
             t0 = prev.end if prev and prev.end else r.start
             sold_gold = sum(g for t, _, g, _ in sold if t0 < t <= r.end + 10)
+            legendaries = (sum(1 for t, _, cat, _ in drops if t0 < t <= r.end + 10 and cat in LEGENDARY)
+                           + sum(1 for t, _, _, rar in sold if t0 < t <= r.end + 10 and rar in LEGENDARY))
             self.stage_stats.add_run(r.char or self.state.char_name, stage, r.difficulty, cycle, r.xp, r.gold,
                                      sold_gold, r.items,
                                      r.death == "confirmed" or r.death == "suspected",
                                      r.damage, r.duration if r.damage else 0, r.casts or None,
-                                     run_s=r.game_seconds)
+                                     run_s=r.game_seconds, legendaries=legendaries)
             r.aggregated = True
             changed = True
             prev = r
@@ -2957,6 +3138,7 @@ class App:
             return
         self._stage_sig = sig
         self._stage_rows = sorted(rows, key=lambda x: -x["xp_h"])
+        self._fill_bosses()
         best_xp = max((x["xp_h"] for x in rows if x["runs"] >= 3), default=None)
         best_gold = max((x["gold_h"] for x in rows if x["runs"] >= 3), default=None)
         self.stage_tree.delete(*self.stage_tree.get_children())
@@ -2971,11 +3153,18 @@ class App:
 
     def _stage_select(self, _=None):
         sel = self.stage_tree.selection()
-        if not sel:
-            return
-        x = self._stage_rows[int(sel[0])]
+        if sel:
+            self._stage_detail(self._stage_rows[int(sel[0])])
+
+    def _stage_detail(self, x):
         info = stages.stage_info(x["stage"], self.enemy_data)
         parts = [f"{x['stage']} · {x['difficulty']} · {x['runs']} runs · avg {fmt(x['xp_run'])} EXP/run"]
+        b = self.boss_info.get(x["stage"].lower())
+        if b:
+            parts.append(f"{b['kind']} boss: {b['boss']} · {x['kills_h']:.1f} kills/h"
+                         + (f" · {x['leg_h']:.1f} legendaries/h" if x.get("leg_h") is not None else "")
+                         + (" · drops the skulls for the region's Gold boss" if b["kind"] == "Silver"
+                            else " · needs one skull of this difficulty per run"))
         if x.get("cast_runs"):
             n = x["cast_runs"]
             per = sorted(((v / n, k) for k, v in x["casts"].items()), reverse=True)
@@ -3210,8 +3399,10 @@ class App:
                     if row.get("element"):
                         out.append({"element": row["element"].capitalize(), "source": row.get("source", ""),
                                     "level": int(row["killer_level"]) if row.get("killer_level", "").isdigit() else 0})
-        except Exception:
+        except FileNotFoundError:
             pass
+        except Exception:
+            errlog.report("deaths_read", f"cannot read {DEATHS_CSV}")
         return out
 
     def _fill_eval_tab(self):
@@ -3340,6 +3531,7 @@ class App:
                     raise RuntimeError(self.capture.status)
                 self.events.put(("done", label, fn(frame)))
             except Exception as e:
+                errlog.log.error(f"{label} failed", exc_info=True)
                 self.events.put(("error", label, str(e)))
 
         threading.Thread(target=work, daemon=True).start()
@@ -3600,7 +3792,7 @@ class App:
                             ", ".join(f"{k} {d:+g}{'%' if p else ''}" for k, (d, p) in res.deltas.items()),
                             " | ".join(res.effects_new), " | ".join(res.effects_lost)])
         except Exception:
-            pass
+            errlog.report("items_csv", "cannot write the item history")
 
     # -- actions -------------------------------------------------------------
     # -- updates ---------------------------------------------------------------
@@ -3652,6 +3844,7 @@ class App:
             try:
                 r = updater.install(info, progress)
             except Exception as e:
+                errlog.log.error("update failed", exc_info=True)
                 r = f"Update failed: {e}"
             self.root.after(0, lambda: done(r))
 
@@ -4090,25 +4283,12 @@ def main():
     root = tk.Tk()
     root.minsize(720, 720)
     # no console when started via pythonw / the .exe: write crashes to a file people can send
-    root.report_callback_exception = lambda *exc: log_error(*exc)
+    root.report_callback_exception = lambda *exc: errlog.uncaught(*exc)
     App(root)
     root.mainloop()
 
 
-ERROR_LOG = os.path.join(APP_DIR, "tracker_errors.log")
-
-
-def log_error(exc_type, exc, tb):
-    import traceback
-    try:
-        with open(ERROR_LOG, "a", encoding="utf-8") as f:
-            f.write(f"--- {datetime.now():%Y-%m-%d %H:%M:%S}\n")
-            f.write("".join(traceback.format_exception(exc_type, exc, tb)))
-    except Exception:
-        pass
-
-
 if __name__ == "__main__":
-    sys.excepthook = log_error
-    threading.excepthook = lambda a: log_error(a.exc_type, a.exc_value, a.exc_traceback)
+    errlog.setup()
+    errlog.log.info(f"Deskrawl Tracker {VERSION} started")
     main()

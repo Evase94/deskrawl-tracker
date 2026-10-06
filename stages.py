@@ -9,6 +9,9 @@ Difficulty rules:
 import paths
 import json
 import os
+import re
+
+import storage
 
 STATS_PATH = paths.user("stage_stats.json")
 ENEMIES_PATH = paths.res("data", "enemies.json")
@@ -28,14 +31,10 @@ def level_factor(level_from: int, level_to: int, per_level: float) -> float:
 
 class StageStats:
     FIELDS = ("runs", "seconds", "xp", "gold", "sold_gold", "items", "deaths", "damage", "dmg_seconds")
+    # legendaries / leg_seconds: legendary + divine drops, counted since the tracker records them per run
 
     def __init__(self):
-        self.data = {}
-        try:
-            with open(STATS_PATH, encoding="utf-8") as f:
-                self.data = json.load(f)
-        except Exception:
-            pass
+        self.data = storage.read_json(STATS_PATH, {}) or {}
         # stage names of the earlier German version ("Unbekannt (6 Waves)")
         for k in [k for k in self.data if "Unbekannt (" in k]:
             new = k.replace("Unbekannt (", "Unknown (").replace(" Waves)", " waves)")
@@ -47,11 +46,7 @@ class StageStats:
                 self.data[new] = old
 
     def save(self):
-        try:
-            with open(STATS_PATH, "w", encoding="utf-8") as f:
-                json.dump(self.data, f, indent=1, ensure_ascii=False)
-        except Exception:
-            pass
+        storage.write_json(STATS_PATH, self.data, indent=1, ensure_ascii=False)
 
     @staticmethod
     def key(char: str, stage: str, difficulty: str) -> str:
@@ -64,11 +59,14 @@ class StageStats:
 
     def add_run(self, char: str, stage: str, difficulty: str, cycle_s: float, xp: int, gold: int, sold_gold: int,
                 items: int, died: bool, damage: float, dmg_seconds: float, casts: dict | None = None,
-                run_s: float | None = None):
+                run_s: float | None = None, legendaries: int | None = None):
         d = self.data.setdefault(self.key(char, stage, difficulty), {f: 0 for f in self.FIELDS})
         for f, v in (("runs", 1), ("seconds", cycle_s), ("xp", xp), ("gold", gold), ("sold_gold", sold_gold),
                      ("items", items), ("deaths", int(died)), ("damage", damage), ("dmg_seconds", dmg_seconds)):
             d[f] = d.get(f, 0) + v
+        if legendaries is not None:
+            d["legendaries"] = d.get("legendaries", 0) + legendaries
+            d["leg_seconds"] = d.get("leg_seconds", 0) + cycle_s
         if run_s:  # run time shown on the stage end screen (without the time between runs)
             d["run_seconds"] = d.get("run_seconds", 0) + run_s
             d["timed_runs"] = d.get("timed_runs", 0) + 1
@@ -96,6 +94,8 @@ class StageStats:
                 "dps": d["damage"] / d["dmg_seconds"] if d.get("dmg_seconds") else None,
                 "casts": dict(d.get("casts", {})), "cast_runs": d.get("cast_runs", 0),
                 "run_s": d["run_seconds"] / d["timed_runs"] if d.get("timed_runs") else None,
+                "kills_h": d["runs"] / h if h else 0,  # one boss per run on a boss stage
+                "leg_h": d["legendaries"] * 3600 / d["leg_seconds"] if d.get("leg_seconds") else None,
             })
         return out
 
@@ -125,6 +125,28 @@ def stage_info(stage_label: str, enemies: dict) -> dict | None:
                 return st
             best = best or st
     return best
+
+
+def boss_stages(enemies: dict) -> dict:
+    """Boss stages by lower-case stage name: {"kind": "Silver"|"Gold", "boss", "region", "region_no", "stage_no",
+    "level"}. Silver = the region's mini-boss (stage 4, drops the skulls), Gold = the region's boss (last stage,
+    more legendaries; entering costs a skull of the difficulty)."""
+    names = {}
+    for r in (enemies or {}).get("regions", []):
+        summary = r.get("summary") or ""
+        for kind, pat in (("Silver", r"Mini-boss: (.+?) \(stage (\d+)\)"), ("Gold", r"(?<!Mini-)Boss: (.+?) \(stage (\d+)\)")):
+            m = re.search(pat, summary)
+            if m:
+                names[(r["region"], int(m.group(2)))] = (kind, m.group(1))
+    out = {}
+    for st in (enemies or {}).get("stages", []):
+        key = (st.get("region"), st.get("stage_no"))
+        if key in names:
+            kind, boss = names[key]
+            out[str(st["stage"]).lower()] = {"kind": kind, "boss": boss, "region": st["region"],
+                                             "region_no": st.get("region_no") or 0, "stage_no": st["stage_no"],
+                                             "level": st.get("level_max") or st.get("level_min")}
+    return out
 
 
 def damage_profile(stage: dict | None) -> dict:

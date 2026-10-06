@@ -15,7 +15,7 @@ It does **not** read game memory, does not change any game files and sends nothi
 |---|---|
 | Overview | EXP/h, gold/h (incl. sold items), runs/h, DPS per run, time to the next level |
 | Character Stats | Your character sheet, kept separately for each of your characters |
-| Stages | Your stages compared: time, EXP/h, gold/h, enemy damage types |
+| Stages | Your stages compared: time, EXP/h, gold/h, enemy damage types. **Boss farming**: Silver and Gold bosses ranked by kills/h or efficiency (kill speed + EXP, adjustable weighting), with legendaries/h |
 | Drops | Drops by rarity, gems by tier, runes, keys |
 | Deaths | Who killed you and with what |
 | Item Comparer | Item comparison with F8: values like in the game, differences, effects, verdict |
@@ -56,6 +56,7 @@ You can open this window again later via **Controls → Change log file**.
 
 ### Updates
 The tracker checks GitHub for a new release at every start (and via **Controls → Check for updates**). **Update now** downloads it, replaces the program files and restarts – your settings, character data and histories stay.
+Before anything is replaced the download is checked against the size and SHA-256 checksum GitHub lists for the release; a damaged or incomplete download is discarded and nothing changes.
 
 ## Usage
 
@@ -83,9 +84,11 @@ When you log in with another character, the tracker switches to that character's
 ## Reporting problems
 Please open an [issue](../../issues) and attach:
 - for misread items: the matching files from the `captures/` folder (image + `.json`),
-- for crashes: `tracker_errors.log`.
+- for crashes and other errors: `tracker_errors.log` (it also notes errors the tracker recovered from).
 
 Both are in the tracker's folder.
+
+Settings and stage statistics are saved crash-safe. If a file is ever damaged, the tracker starts with the backup it keeps next to it (`tracker_config.json.bak`, `stage_stats.json.bak`) and keeps the damaged file as `.broken-<date>`.
 
 ---
 Unofficial fan tool, not affiliated with First Day Games.

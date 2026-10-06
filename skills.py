@@ -20,6 +20,7 @@ import urllib.request
 import cv2
 import numpy as np
 
+import errlog
 import paths
 
 FLASH_S, FLASH_V = 0.35, 0.55   # mean saturation below / brightness above = white flash
@@ -219,4 +220,5 @@ class SkillWatcher(threading.Thread):
                         else "skill bar not found"
             except Exception as e:
                 self.status = f"skill tracking error: {e}"
+                errlog.report("skill_watcher", "skill tracking failed")
             time.sleep(max(0.0, 1 / self.FPS - (time.time() - t0)))

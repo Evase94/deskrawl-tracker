@@ -3,7 +3,12 @@ tracker_config.json
 *.csv
 stage_stats.json
 captures/
-tracker_errors.log
+tracker_errors.log*
+*.json.bak
+*.json.tmp
+*.json.broken-*
+update_failed.txt
+selftest.txt
 
 # screenshots / recordings
 *.png
