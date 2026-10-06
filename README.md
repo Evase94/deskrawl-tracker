@@ -19,12 +19,10 @@ It does **not** read game memory, does not change any game files and sends nothi
 | Drops | Drops by rarity, gems by tier, runes, keys |
 | Deaths | Who killed you and with what |
 | Item Comparer | Item comparison with F8: values like in the game, differences, effects, verdict |
-| BiS Gear | Best theoretical item per slot for your class and mode, compared with what you wear, and where it drops |
-| Talents | Talent planner (afkmeta style): build your tree, compare it with your current build, let it find the best build for a mode |
 
-**Skill tracking** (Controls): counts which abilities you cast per run from the skill bar and estimates their damage share – shown on the Stages page and usable on the Talents page.
+**Skill tracking** (Controls): counts which abilities you cast per run from the skill bar and estimates their damage share – shown on the Stages page.
+| Item Database | Every Legendary and Divine item by slot: unique effect, base values and attribute ranges, attribute pool per class, Ancient / Black Mist variants and where it drops |
 | Gems | Which gem helps you most |
-| Weights | Your own values for effects that cannot be calculated |
 
 ## Installation
 
@@ -56,6 +54,7 @@ You can open this window again later via **Controls → Change log file**.
 
 ### Updates
 The tracker checks GitHub for a new release at every start (and via **Controls → Check for updates**). **Update now** downloads it, replaces the program files and restarts – your settings, character data and histories stay.
+**Controls → What's new** lists every version and its changes (also in [CHANGELOG.md](CHANGELOG.md)); after an update it opens once by itself. The Controls at the bottom of the sidebar are folded by default – click **▸ Controls** to open them.
 Before anything is replaced the download is checked against the size and SHA-256 checksum GitHub lists for the release; a damaged or incomplete download is discarded and nothing changes.
 
 ## Usage
@@ -77,7 +76,7 @@ When you log in with another character, the tracker switches to that character's
 
 ## Limits
 - Attack speed counts fully towards damage; abilities with a cooldown gain less in reality.
-- Some legendary effects cannot be calculated – enter your own value on the **Weights** page.
+- Some legendary effects cannot be calculated – they are shown but not rated.
 - Empty sockets are rated with the best gem of the tier chosen on the **Gems** page.
 - Text recognition can misread. Implausible values are marked yellow with "?".
 

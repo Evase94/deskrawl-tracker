@@ -271,7 +271,7 @@ def _legendary_deltas(L: dict, ocr_effect: str, sign: int, ctx: Context, base: d
         if auto:
             dps, surv, txt = auto
             return {}, txt, True, (sign * dps, sign * surv)
-        return {}, f"cannot be calculated ({L['manual']}) – set your own value in the Weights tab", False, (0, 0)
+        return {}, f"cannot be calculated ({L['manual']})", False, (0, 0)
     if "elements" in L and ctx.elem not in L["elements"]:
         return {}, f"does not affect {ctx.elem} damage", True, (0, 0)
     if "special" in L:

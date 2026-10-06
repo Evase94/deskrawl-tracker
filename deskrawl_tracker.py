@@ -30,6 +30,7 @@ import bis
 import talents
 import skills
 import updater
+import changelog
 import paragon
 from version import VERSION
 import item_ocr  # first: loads onnxruntime before WinRT/winocr (avoids a crash)
@@ -1443,16 +1444,17 @@ class App:
         self.tab_gems = tk.Frame(self.nb, bg=BG)
         self.tab_bis = tk.Frame(self.nb, bg=BG)
         self.tab_tal = tk.Frame(self.nb, bg=BG)
+        self.tab_db = tk.Frame(self.nb, bg=BG)
         self.nb.add(self.tab_farm, text="Overview")
         self.nb.add(self.tab_char, text="Character Stats")
         self.nb.add(self.tab_stages, text="Stages")
         self.nb.add(self.tab_drops, text="Drops")
         self.nb.add(self.tab_death, text="Deaths")
         self.nb.add(self.tab_items, text="Item Comparer")
-        self.nb.add(self.tab_bis, text="BiS Gear")
-        self.nb.add(self.tab_tal, text="Talents")
+        self.nb.add(self.tab_db, text="Item Database")
+        # BiS Gear, Talents and Weights are hidden for now: still built (their settings keep feeding the
+        # item rating), just not in the menu. Add them to the menu again to show them.
         self.nb.add(self.tab_gems, text="Gems")
-        self.nb.add(self.tab_w, text="Weights")
         self._build_farm(self.tab_farm)
         self._build_items(self.tab_items)
         self._build_char(self.tab_char)
@@ -1463,12 +1465,31 @@ class App:
         self._build_gems(self.tab_gems)
         self._build_bis(self.tab_bis)
         self._build_talents(self.tab_tal)
+        self._build_itemdb(self.tab_db)
 
         side = self.nb.bottom
-        tk.Label(side, text="Controls", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=14, pady=(0, 4))
+        head = tk.Label(side, text="", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w", cursor="hand2")
+        head.pack(fill="x", padx=14, pady=(0, 4))
+        body = tk.Frame(side, bg=PANEL)
+
+        def show_controls(open_):
+            head.configure(text=("▾  Controls" if open_ else "▸  Controls"))
+            if open_:
+                body.pack(fill="x")
+            else:
+                body.pack_forget()
+
+        def toggle_controls(_e=None):
+            open_ = not self.cfg.get("controls_open", False)
+            self._set_cfg("controls_open", open_)
+            show_controls(open_)
+        head.bind("<Button-1>", toggle_controls)
+        head.bind("<Enter>", lambda e: head.configure(fg=FG))
+        head.bind("<Leave>", lambda e: head.configure(fg=MUTED))
+        ui.Tooltip(head, "Show or hide the controls.")
 
         def ctl(text, cmd, tip):
-            b = ui.button(side, text, cmd, small=True)
+            b = ui.button(body, text, cmd, small=True)
             b.configure(anchor="w", bg=PANEL)
             b.bind("<Leave>", lambda e: b.configure(bg=PANEL))
             b.pack(fill="x", padx=6, pady=1)
@@ -1485,15 +1506,22 @@ class App:
                                                      "“with focus switch” briefly brings Deskrawl to the front for that.")
         self.btn_skills = ctl("", self.toggle_skills, "Count which abilities you use per run from the skill bar "
                                                        "(about 15 pictures a second – costs some CPU). Results: Stages "
-                                                       "page and the ability shares on the Talents page.")
+                                                       "page.")
         self.btn_top = ctl("", self.toggle_topmost, "Keep the tracker window on top of other windows.")
         ctl("Change log file", self.open_setup, "Choose the path to Deskrawl's Game.log and check that "
                                                  "Windows' English text recognition is installed.")
         ctl("Check for updates", lambda: self.check_updates(manual=True),
             f"Version {VERSION}. Looks for a newer release on GitHub and installs it; your settings and "
             f"histories stay. The tracker also checks once at every start.")
+        ctl("What's new", self.show_changelog, "All versions and their changes, newest first.")
         ctl("Reset session", self.reset, "Clear the rates and run list of the current session. "
                                                 "Stage statistics and histories are kept.")
+        show_controls(self.cfg.get("controls_open", False))
+        last = self.cfg.get("last_version")
+        if last != VERSION:  # first start after an update: show what changed
+            self._set_cfg("last_version", VERSION)
+            if last:
+                self.root.after(1500, self.show_changelog)
         self.root.after(5000, lambda: self.check_updates(manual=False))
         failed = updater.pending_failure()
         if failed:
@@ -3662,7 +3690,8 @@ class App:
         ov = self.cfg.get("legendary_values", {})
         for L in item_eval.LEGENDARIES:
             _, txt, known, _ = item_eval._legendary_deltas(L, L["effect"], 1, ctx, {})
-            txt = txt.replace(" – set your own value in the Weights tab", " – set your own value →")
+            if txt.startswith("cannot be calculated"):
+                txt += " – set your own value →"
             own = ov.get(L["name"])
             own_txt = f"{own.get('dps', 0):g}/{own.get('surv', 0):g}" if own else ""
             self.leg_tree.insert("", "end", iid=L["name"], values=(L["name"], L["slot"], txt, own_txt),
@@ -3801,6 +3830,9 @@ class App:
                             self._icon_refill = False
                             self._fill_bis()
                             self._tal_draw()
+                            self._fill_itemdb()
+                            if self._db_sel:
+                                self._itemdb_select()
                         self.root.after(300, refill)
                 elif ev[0] == "hotkey":
                     {"item": self.scan_item, "attributes": self.scan_attributes,
@@ -4036,6 +4068,319 @@ class App:
             errlog.report("items_csv", "cannot write the item history")
 
     # -- actions -------------------------------------------------------------
+    # -- item database -------------------------------------------------------
+    DB_SLOTS = ["All slots", "Weapon", "Helm", "Chest Armor", "Shoulder", "Gloves", "Belt", "Pants", "Boots",
+                "Necklace", "Ring", "Back"]
+    DB_RARITIES = ["Legendary + Divine", "Legendary", "Divine", "Black Mist possible"]
+    DB_CLASSES = ["All classes", "Warrior", "Sorcerer", "Hunter", "Monk"]
+
+    def _load_item_db(self):
+        try:
+            with open(paths.res("data", "item_db.json"), encoding="utf-8") as f:
+                return json.load(f)["items"]
+        except Exception:
+            errlog.log.error("cannot read data/item_db.json", exc_info=True)
+            return []
+
+    def _build_itemdb(self, p):
+        self.item_db = self._load_item_db()
+        hdr = ui.page_header(p, "Item Database", (
+            "Every Legendary and Divine item of the game by slot: its unique effect, the numbers it can roll, "
+            "the attributes it can get for each class and where it drops.\n\nBlack Mist is not an item of its "
+            "own: any Legendary item (not Back) dropped by a level-70 enemy or chest on Nightmare or Inferno has a "
+            "0.2 % chance to be Black Mist – item level 850, top base value, no sockets, and 5 attributes that "
+            "Lady “Shadow” reveals (each a pick between 2, at the top roll). Ancient (10 %) takes the top roll of "
+            "every number.\n\nData from wikily.gg; pictures are loaded once and kept."))
+        self.lbl_db_count = tk.Label(hdr, text="", bg=BG, fg=MUTED, font=ui.F_SMALL)
+        self.lbl_db_count.pack(side="right")
+        bar = tk.Frame(p, bg=BG)
+        bar.pack(fill="x", padx=14, pady=(0, 6))
+        c = self.cfg
+        self.var_db_search = tk.StringVar(value="")
+        self.var_db_slot = tk.StringVar(value=c.get("db_slot", "All slots"))
+        self.var_db_rarity = tk.StringVar(value=c.get("db_rarity", self.DB_RARITIES[0]))
+        self.var_db_class = tk.StringVar(value=c.get("db_class", "All classes"))
+        tk.Label(bar, text="Search", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        e = tk.Entry(bar, textvariable=self.var_db_search, width=16, bg=PANEL, fg=FG, insertbackground=FG,
+                     relief="flat", font=ui.F_SMALL)
+        e.pack(side="left", padx=(6, 12), ipady=3)
+        ui.Tooltip(e, "Name, effect, attribute or boss, e.g. “Crown”, “Critical”, “Frost Dragon”.")
+        self.var_db_search.trace_add("write", lambda *_: self._fill_itemdb())
+
+        def combo(label, var, values, key, width):
+            tk.Label(bar, text=label, bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+            cb = ttk.Combobox(bar, textvariable=var, values=values, width=width, state="readonly")
+            cb.pack(side="left", padx=(6, 12))
+            cb.bind("<<ComboboxSelected>>", lambda _: (self._set_cfg(key, var.get()), self._fill_itemdb()))
+
+        combo("Slot", self.var_db_slot, self.DB_SLOTS, "db_slot", 11)
+        combo("Rarity", self.var_db_rarity, self.DB_RARITIES, "db_rarity", 17)
+        combo("Class", self.var_db_class, self.DB_CLASSES, "db_class", 10)
+
+        cols = [("name", "Item", 200, "w"), ("slot", "Slot", 80, "w"), ("rar", "Rarity", 70, "w"),
+                ("cls", "Classes", 150, "w"), ("lvl", "Min lvl", 56, "e"), ("src", "Source", 220, "w")]
+        f, self.db_tree = self._tree(p, cols, 7, icons=True)
+        f.pack(fill="x", padx=14, pady=(0, 6))
+        for r in ("Legendary", "Divine"):
+            self.db_tree.tag_configure(r, foreground=ui.RARITY[r])
+        self.db_tree.bind("<<TreeviewSelect>>", self._itemdb_select)
+        sf = ui.ScrollFrame(p)
+        sf.pack(fill="both", expand=True, padx=0, pady=(0, 8))
+        self.db_detail = ui.card(sf.inner, fill="x", padx=14, pady=(0, 6))
+        tk.Label(self.db_detail, text="Click an item in the list for its numbers and where it drops.", bg=PANEL,
+                 fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x", padx=14, pady=12)
+        self._db_rows = []
+        self._db_sel = None
+        self._fill_itemdb()
+
+    @staticmethod
+    def _db_source(it):
+        """Short "where" for the table."""
+        w = [t for t, _ in it["where"]]
+        if it["rarity"] == "Divine":
+            first = next((t for t in w if t not in ("Elites and bosses", "Treasure chests") and
+                          not t.startswith("Mystery")), None)
+            return (f"{first}; " if first else "") + "Inferno lvl 70 elites/bosses, chests"
+        boss = next((t for t in w if t not in ("Legendary drops",) and not t.startswith("Mystery")), None)
+        parts = []
+        if boss:
+            pct = re.search(r"([\d.]+%)", dict(it["where"]).get(boss, ""))
+            parts.append(f"{boss} ({pct.group(1)})" if pct else boss)
+        if "Legendary drops" in w:
+            parts.append("all enemies")
+        if any(t.startswith("Mystery") for t in w):
+            parts.append("Mystery vendor")
+        return ", ".join(parts) or "-"
+
+    def _fill_itemdb(self):
+        if not hasattr(self, "db_tree"):
+            return
+        q = self.var_db_search.get().strip().lower()
+        slot, rar, cls = self.var_db_slot.get(), self.var_db_rarity.get(), self.var_db_class.get()
+        order = {s: i for i, s in enumerate(self.DB_SLOTS)}
+        rows = []
+        for it in self.item_db:
+            if slot != "All slots" and it["slot"] != slot:
+                continue
+            if rar == "Legendary" and it["rarity"] != "Legendary" or rar == "Divine" and it["rarity"] != "Divine":
+                continue
+            if rar == "Black Mist possible" and not it["info"].get("Can be Black Mist", "").startswith("Yes"):
+                continue
+            if cls != "All classes" and cls not in it["classes"]:
+                continue
+            if q:
+                hay = " ".join([it["name"], it["effect"], it["ability_levels"], it["slot"],
+                                " ".join(t + " " + s for t, s in it["where"]),
+                                " ".join(a for a, *_ in it["attributes"]), " ".join(a for a, _ in it["fixed"])])
+                if q not in hay.lower():
+                    continue
+            rows.append(it)
+        rows.sort(key=lambda it: (order.get(it["slot"], 99), it["rarity"] != "Divine", it["name"]))
+        self._db_rows = rows
+        t = self.db_tree
+        t.delete(*t.get_children())
+        for i, it in enumerate(rows):
+            classes = "all" if len(it["classes"]) == 4 else ", ".join(it["classes"])
+            lvl = it["info"].get("Minimum drop level") or "-"
+            t.insert("", "end", iid=str(i), image=self._item_photo(it.get("icon_url"), 30) or "",
+                     tags=(it["rarity"],), values=(it["name"], it["slot"], it["rarity"], classes,
+                                                   f"lvl {lvl}" if lvl != "-" else "-", self._db_source(it)))
+        n_leg = sum(1 for it in rows if it["rarity"] == "Legendary")
+        self.lbl_db_count.configure(text=f"{len(rows)} items · {n_leg} Legendary · {len(rows) - n_leg} Divine")
+        if self._db_sel and any(it["slug"] == self._db_sel for it in rows):
+            k = next(i for i, it in enumerate(rows) if it["slug"] == self._db_sel)
+            t.selection_set(str(k))
+            t.see(str(k))
+
+    def _itemdb_select(self, _=None):
+        sel = self.db_tree.selection()
+        if sel:
+            it = self._db_rows[int(sel[0])]
+            self._db_sel = it["slug"]
+            self._itemdb_detail(it)
+
+    def _itemdb_detail(self, it):
+        d = self.db_detail
+        for w in d.winfo_children():
+            w.destroy()
+        rcol = ui.RARITY.get(it["rarity"], FG)
+        top = tk.Frame(d, bg=PANEL)
+        top.pack(fill="x", padx=14, pady=(12, 6))
+        self._icon_box(top, self._item_photo(it.get("icon_url"), 64), it["rarity"], 64,
+                       fallback=it["slot"][:4]).pack(side="left", padx=(0, 12))
+        head = tk.Frame(top, bg=PANEL)
+        head.pack(side="left", fill="x", expand=True)
+        tk.Label(head, text=it["name"], bg=PANEL, fg=rcol, font=ui.F_HEAD, anchor="w").pack(fill="x")
+        classes = "all classes" if len(it["classes"]) == 4 else ", ".join(it["classes"])
+        tk.Label(head, text=f"{it['rarity']} {it['slot']} · {classes}", bg=PANEL, fg=MUTED, font=ui.F_SMALL,
+                 anchor="w").pack(fill="x")
+        if it["flavor"]:
+            ui.autowrap(tk.Label(head, text=it["flavor"], bg=PANEL, fg=MUTED, font=("Segoe UI", 9, "italic"),
+                                 anchor="w", justify="left")).pack(fill="x", pady=(2, 0))
+
+        def section(title):
+            tk.Label(d, text=title, bg=PANEL, fg=ui.ACCENT, font=ui.F_LABEL, anchor="w").pack(
+                fill="x", padx=14, pady=(10, 2))
+
+        def text(s, fg=FG, pad=(0, 0)):
+            ui.autowrap(tk.Label(d, text=s, bg=PANEL, fg=fg, font=ui.F_SMALL, anchor="w", justify="left"),
+                        30).pack(fill="x", padx=14, pady=pad)
+
+        def table(cols, rows, widths):
+            g = tk.Frame(d, bg=PANEL)
+            g.pack(fill="x", padx=14, pady=(2, 2))
+            for j, (c, w) in enumerate(zip(cols, widths)):
+                g.columnconfigure(j, weight=w)
+                tk.Label(g, text=c, bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w" if j == 0 else "e",
+                         padx=6).grid(row=0, column=j, sticky="ew")
+            for i, r in enumerate(rows, 1):
+                bg = "#272a32" if i % 2 else PANEL  # zebra rows like the tables
+                for j, v in enumerate(r):
+                    tk.Label(g, text=v, bg=bg, fg=FG, font=ui.F_SMALL, anchor="w" if j == 0 else "e", padx=6,
+                             wraplength=420 if j == 0 else 0, justify="left").grid(
+                        row=i, column=j, sticky="nsew", ipady=1)
+
+        if it["effect"] or it["ability_levels"]:
+            section("Unique effect")
+            if it["effect"]:
+                text(it["effect"])
+            if it["ability_levels"]:
+                text(it["ability_levels"])
+        if it["rarity"] == "Divine":
+            section("Fixed numbers (Divine items do not roll)")
+            if it["weapon"]:
+                w = it["weapon"]
+                text(f"Weapon damage {w.get('damage', '-')} · speed {w.get('speed', '-')} · DPS {w.get('dps', '-')}")
+            if it["fixed"]:
+                table(["Attribute", "Value"], it["fixed"], (3, 1))
+            if not it["weapon"] and not it["fixed"]:
+                text("No numbers – a Back item carries no base stat and no attributes.", MUTED)
+        else:
+            if it["base"]:
+                section("Base value by item level (roll 0.85–1.15)")
+                table(it["base"]["columns"], it["base"]["rows"], (1,) * len(it["base"]["columns"]))
+            if it["attributes"]:
+                cols = it.get("attribute_columns") or ["Attribute", "", ""]
+                section("Attribute ranges")
+                table(cols, it["attributes"], (3, 1, 1))
+            pool = it["pool"]
+            if pool["primary"] or pool["secondary"]:
+                section("Attribute pool – 4 primary + 1 secondary")
+                mine = self.var_db_class.get()
+                if mine == "All classes" and self.state.hero in it["classes"]:
+                    mine = self.state.hero
+                text("Primary: " + ", ".join(pool["primary"]))
+                for cl, extra in pool["classes"].items():
+                    text(f"{cl}: also " + ", ".join(extra), FG if cl == mine else MUTED)
+                if pool["secondary"]:
+                    text("Secondary: " + ", ".join(pool["secondary"]))
+            elif pool["note"]:
+                section("Attributes")
+                text(pool["note"], MUTED)
+            bm = it["info"].get("Can be Black Mist", "")
+            anc = it["info"].get("Can be Ancient", "")
+            if bm.startswith("Yes") or anc.startswith("Yes"):
+                section("Ancient and Black Mist")
+                if anc.startswith("Yes"):
+                    text(f"Ancient: {anc.split(',', 1)[-1].strip()} of drops from level-70 enemies and chests – "
+                         f"top roll on every number except weapon speed; twice the upgrade gold and sell price.")
+                if bm.startswith("Yes"):
+                    text(f"Black Mist: {bm.split(',', 1)[-1].strip()} on Nightmare and Inferno. "
+                         + (it["black_mist"] or "Item level 850 at the top base value.")
+                         + " No sockets; Lady “Shadow” reveals the attributes, each a pick between 2 at the top "
+                           "roll. Tradable until its first reveal.")
+        section("Where it drops")
+        for title, body in it["where"]:
+            tk.Label(d, text=title, bg=PANEL, fg=FG, font=ui.F_LABEL, anchor="w").pack(fill="x", padx=14,
+                                                                                      pady=(4, 0))
+            if body:
+                text(body, MUTED)
+        info = it["info"]
+        facts = [f"{k}: {info[k]}" for k in ("Required level", "Sockets", "Upgradable", "Tradable") if k in info]
+        if facts:
+            section("Item")
+            text(" · ".join(facts), MUTED, pad=(0, 12))
+
+    # -- release notes ---------------------------------------------------------
+    def show_changelog(self):
+        if getattr(self, "_changelog_win", None) is not None and self._changelog_win.winfo_exists():
+            self._changelog_win.lift()
+            return
+        d = tk.Toplevel(self.root, bg=BG)
+        self._changelog_win = d
+        d.title("What's new – Deskrawl Tracker")
+        d.transient(self.root)
+        d.geometry("660x640")
+        d.minsize(420, 300)
+        hdr = tk.Frame(d, bg=BG)
+        hdr.pack(fill="x", padx=18, pady=(14, 4))
+        tk.Label(hdr, text="What's new", bg=BG, fg=FG, font=ui.F_HEAD).pack(side="left")
+        src = tk.Label(hdr, text="", bg=BG, fg=MUTED, font=ui.F_SMALL)
+        src.pack(side="right")
+        box = tk.Frame(d, bg=PANEL)
+        box.pack(fill="both", expand=True, padx=18, pady=(4, 8))
+        txt = tk.Text(box, bg=PANEL, fg=FG, relief="flat", wrap="word", font=ui.F_BODY, padx=14, pady=10,
+                      highlightthickness=0, cursor="arrow", spacing1=1, spacing3=1)
+        sb = ttk.Scrollbar(box, orient="vertical", command=txt.yview)
+        txt.configure(yscrollcommand=sb.set)
+        sb.pack(side="right", fill="y")
+        txt.pack(side="left", fill="both", expand=True)
+        txt.tag_configure("ver", font=("Bahnschrift SemiBold", 14), foreground=ui.ACCENT, spacing1=14)
+        txt.tag_configure("date", font=ui.F_SMALL, foreground=MUTED)
+        txt.tag_configure("cur", font=ui.F_LABEL, foreground=C_GOOD)
+        txt.tag_configure("new", font=ui.F_LABEL, foreground=ui.ACCENT)
+        txt.tag_configure("sec", font=ui.F_LABEL, foreground=FG, spacing1=8)
+        txt.tag_configure("item", lmargin1=8, lmargin2=26)
+        txt.tag_configure("sub", lmargin1=28, lmargin2=44)
+        txt.tag_configure("para", foreground=MUTED, spacing1=6)
+        bar = tk.Frame(d, bg=BG)
+        bar.pack(fill="x", padx=18, pady=(0, 14))
+        ui.button(bar, "Close", d.destroy).pack(side="right")
+        ui.button(bar, "Open on GitHub", lambda: __import__("webbrowser").open(
+            f"https://github.com/{updater.REPO}/releases")).pack(side="right", padx=(0, 8))
+
+        def clean(s):
+            return re.sub(r"[*`]", "", s).strip()
+
+        def render(releases, where):
+            if not d.winfo_exists():
+                return
+            txt.configure(state="normal")
+            txt.delete("1.0", "end")
+            if not releases:
+                txt.insert("end", "No release notes found.", "para")
+            for i, r in enumerate(releases):
+                v = updater.parse(r["tag"])
+                txt.insert("end", ("\n" if i else "") + r["tag"], "ver")
+                if r["date"]:
+                    txt.insert("end", f"   {r['date']}", "date")
+                if v == updater.parse(VERSION):
+                    txt.insert("end", "   installed", "cur")
+                elif v > updater.parse(VERSION):
+                    txt.insert("end", "   not installed yet – Check for updates", "new")
+                txt.insert("end", "\n")
+                for line in r["notes"].splitlines():
+                    if not line.strip():
+                        continue
+                    if line.startswith("#"):
+                        txt.insert("end", clean(line.lstrip("#")) + "\n", "sec")
+                    elif re.match(r"\s{2,}[-*] ", line):
+                        txt.insert("end", "◦  " + clean(line.strip()[2:]) + "\n", "sub")
+                    elif re.match(r"[-*] ", line):
+                        txt.insert("end", "•  " + clean(line[2:]) + "\n", "item")
+                    else:
+                        txt.insert("end", clean(line) + "\n", "para")
+            txt.configure(state="disabled")
+            src.configure(text=where)
+
+        render(changelog.local(), "notes shipped with this version · loading from GitHub…")
+
+        def fetch():
+            rel = changelog.online()
+            self.root.after(0, lambda: render(rel, "from GitHub") if rel
+                            else src.configure(text="GitHub not reachable – notes shipped with this version"))
+        threading.Thread(target=fetch, daemon=True).start()
+
     # -- updates ---------------------------------------------------------------
     def check_updates(self, manual=False):
         if not manual and self.cfg.get("update_check") is False:
