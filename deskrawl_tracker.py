@@ -4678,6 +4678,10 @@ class App:
             "Chilled, Vulnerable … – the Minions page and the item rating use these instead of fixed guesses."))
         self.btn_sk_toggle = ui.button(hdr, "", lambda: (self.toggle_skills(), self._skills_header()), accent=True)
         self.btn_sk_toggle.pack(side="right")
+        b_read = ui.button(hdr, "Read skill bar", self._sk_read_bar)
+        b_read.pack(side="right", padx=(0, 8))
+        ui.Tooltip(b_read, "Look at the skill bar in the game now and take the abilities that are on it. The "
+                           "tracker also does this at the start of every run, so swapped skills are picked up.")
         sf = ui.ScrollFrame(p)
         sf.pack(fill="both", expand=True)
         body = sf.inner
@@ -4718,21 +4722,78 @@ class App:
         self._skills_header()
         self._fill_skills()
 
+    def _sk_read_bar(self):
+        self.lbl_sk_status.configure(text="reading the skill bar…")
+
+        def work():
+            msg = self.skills.read_bar()
+            self.root.after(0, lambda: self._sk_read_done(msg))
+        threading.Thread(target=work, daemon=True).start()
+
+    def _sk_read_done(self, msg):
+        self.lbl_sk_status.configure(text=msg)
+        self._sk_slot_sig = None
+        self._skills_live(force=True)
+        bar = self.skills.bar
+        if bar is None or not bar.slots or not getattr(bar, "crops", None):
+            return
+        # show what was read: the game's own icons, each with the ability it was taken for
+        from PIL import Image, ImageTk
+        d = tk.Toplevel(self.root, bg=BG)
+        d.title("Skill bar")
+        d.transient(self.root)
+        d.resizable(False, False)
+        tk.Label(d, text="Your skill bar", bg=BG, fg=FG, font=ui.F_HEAD).pack(anchor="w", padx=18, pady=(14, 2))
+        ui.autowrap(tk.Label(d, text="These are the icons in the game and the abilities the tracker took them for. "
+                                     "Correct a wrong name and press “Use these skills” – the tracker keeps the "
+                                     "game's icon and recognises the ability by it from now on.",
+                             bg=BG, fg=MUTED, font=ui.F_SMALL, justify="left", anchor="w"), 20).pack(fill="x", padx=18)
+        row = tk.Frame(d, bg=BG)
+        row.pack(padx=18, pady=10)
+        hero_ab = [a["name"] for a in skills.ABILITIES if a.get("hero") == self.state.hero] or             [a["name"] for a in skills.ABILITIES]
+        vars_, photos = [], []
+        for i, (name, *_rest) in enumerate(bar.slots):
+            col = tk.Frame(row, bg=PANEL)
+            col.pack(side="left", padx=6)
+            crop = bar.crops[i] if i < len(bar.crops) else None
+            if crop is not None and crop.size:
+                img = Image.fromarray(crop[:, :, ::-1]).resize((64, 64), Image.LANCZOS)
+                ph = ImageTk.PhotoImage(img)
+                photos.append(ph)
+                tk.Label(col, image=ph, bg=PANEL).pack(padx=10, pady=(10, 4))
+            v = tk.StringVar(value=name)
+            vars_.append(v)
+            ttk.Combobox(col, textvariable=v, values=hero_ab, width=16, state="readonly").pack(padx=8, pady=(0, 10))
+        d._photos = photos  # keep the pictures alive
+        bar_btn = tk.Frame(d, bg=BG)
+        bar_btn.pack(fill="x", padx=18, pady=(0, 14))
+
+        def use():
+            names = [v.get() for v in vars_]
+            self.skills.confirm(names)
+            self.lbl_sk_status.configure(text="Skill bar: " + ", ".join(names) + " – icons remembered.")
+            self._sk_slot_sig = None
+            self._skills_live(force=True)
+            d.destroy()
+        ui.button(bar_btn, "Cancel", d.destroy).pack(side="right")
+        ui.button(bar_btn, "Use these skills", use, accent=True).pack(side="right", padx=(0, 8))
+
     def _skills_header(self):
         on = self.skills.enabled.is_set()
         self.btn_sk_toggle.configure(text="Skill tracking: on" if on else "Skill tracking: off – turn on")
 
-    def _skills_live(self):
+    def _skills_live(self, force=False):
         """Live part (status, skill bar, casts of the running run); called by the refresh loop."""
-        if self.nb.current is not self.tab_sk:
+        if self.nb.current is not self.tab_sk and not force:
             return
         on = self.skills.enabled.is_set()
-        self.lbl_sk_status.configure(text=(self.skills.status if on else "Skill tracking is off.")
-                                     + ("" if on else "  Turn it on above – then play a few runs."))
+        if not force:
+            self.lbl_sk_status.configure(text=(self.skills.status if on else "Skill tracking is off.")
+                                         + ("" if on else "  Turn it on above – then play a few runs."))
         with self.state.lock:
             cur = dict(self.state.current.casts) if self.state.current else {}
         bar = self.skills.bar
-        slots = [s[0] for s in bar.slots] if bar and on else []
+        slots = [s[0] for s in bar.slots] if bar else []
         sig = (tuple(slots), tuple(sorted(cur.items())))
         if sig == self._sk_slot_sig:
             return

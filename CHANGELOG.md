@@ -2,6 +2,19 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.14 – 2026-10-07
+
+### New
+- **Read skill bar** (Skill Tracking page): reads the abilities on your skill bar now and shows them as the game draws them, each with the ability the tracker took it for.
+  - If a name is wrong, correct it and press **Use these skills**. The tracker keeps the game's icon and recognises that ability by it from then on, including icons the wiki does not have.
+
+### Fixed
+- **Skill tracking kept old skills** after you swapped abilities. The skill bar is now read again at the start of every run.
+- **Wrong abilities on the skill bar.** The bar is read from several pictures and each slot is voted on, so a cast flash, a cooldown sweep or an effect no longer misleads it. The slot spacing is found reliably, and the potion and scroll slots are left out.
+- Finding the skill bar is about 3× faster.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.13 – 2026-10-06
 
 ### New

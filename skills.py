@@ -62,6 +62,53 @@ def load_icon(url):
     return img
 
 
+LEARNED_DIR = paths.user("cache", "skill_icons")  # icons taken from the game's own skill bar
+MAX_LEARNED = 6
+
+
+def _slug(name):
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+
+def templates(ability) -> list:
+    """Pictures an ability is recognised by: icons the player confirmed from the game first (the wiki's
+    pictures do not always match what the game shows), then the wiki icon."""
+    out = []
+    slug = _slug(ability["name"])
+    if os.path.isdir(LEARNED_DIR):
+        for fn in sorted(os.listdir(LEARNED_DIR)):
+            if fn.startswith(slug + "-") and fn.endswith(".png"):
+                img = cv2.imread(os.path.join(LEARNED_DIR, fn))
+                if img is not None:
+                    out.append(img)
+    try:
+        icon = load_icon(ability["icon_url"]) if ability.get("icon_url") else None
+    except Exception:
+        icon = None
+    if icon is not None:
+        out.append(icon)
+    return out
+
+
+def learn(name: str, crop) -> None:
+    """Keep a picture of the game's own icon of this ability (the newest MAX_LEARNED)."""
+    if crop is None or crop.size == 0:
+        return
+    os.makedirs(LEARNED_DIR, exist_ok=True)
+    slug = _slug(name)
+    have = sorted(fn for fn in os.listdir(LEARNED_DIR) if fn.startswith(slug + "-"))
+    for fn in have[:max(len(have) - MAX_LEARNED + 1, 0)]:
+        os.remove(os.path.join(LEARNED_DIR, fn))
+    cv2.imwrite(os.path.join(LEARNED_DIR, f"{slug}-{int(time.time() * 1000)}.png"), crop)
+
+
+def forget(name: str) -> None:
+    if os.path.isdir(LEARNED_DIR):
+        for fn in os.listdir(LEARNED_DIR):
+            if fn.startswith(_slug(name) + "-"):
+                os.remove(os.path.join(LEARNED_DIR, fn))
+
+
 def targets(ability) -> int:
     m = re.search(r"strikes (\d+)", ability.get("description", ""))
     return int(m.group(1)) if m else 1
@@ -84,31 +131,33 @@ class SkillBar:
     def __init__(self, hero):
         self.hero = hero
         self.slots = []        # [(name, x0, y0, size)]
+        self.crops = []        # picture of each slot when the bar was found
         self.state = {}        # name -> (in_flash, last_event_t)
         self.located_for = None
 
     def locate(self, frame) -> bool:
         """Find the four ability icons in the lower part of the frame."""
         H, W = frame.shape[:2]
-        y0 = int(H * 0.75)
-        roi = frame[y0:, :]
+        y0 = int(H * 0.8)
+        roi = frame[y0:, :int(W * 0.7)]  # the bar sits at the bottom left of the game window
         found = []
+        lo, hi = max(16, int(H * 0.022)), int(H * 0.036)
+
+        def match(icon, size):
+            t = cv2.resize(icon, (size, size), interpolation=cv2.INTER_AREA)
+            _, mx, _, loc = cv2.minMaxLoc(cv2.matchTemplate(roi, t, cv2.TM_CCOEFF_NORMED))
+            return mx, loc
+
         for a in ABILITIES:
-            if a.get("hero") != self.hero or not a.get("icon_url"):
-                continue
-            try:
-                icon = load_icon(a["icon_url"])
-            except Exception:
-                icon = None
-            if icon is None:
+            if a.get("hero") != self.hero:
                 continue
             best = (0, None, None)
-            for size in range(max(16, int(H * 0.022)), int(H * 0.036) + 1):
-                t = cv2.resize(icon, (size, size), interpolation=cv2.INTER_AREA)
-                r = cv2.matchTemplate(roi, t, cv2.TM_CCOEFF_NORMED)
-                _, mx, _, loc = cv2.minMaxLoc(r)
-                if mx > best[0]:
-                    best = (mx, loc, size)
+            for icon in templates(a):
+                coarse = max(((match(icon, sz), sz) for sz in range(lo, hi + 1, 3)), key=lambda r: r[0][0])
+                for size in range(max(lo, coarse[1] - 2), min(hi, coarse[1] + 2) + 1):  # refine around it
+                    mx, loc = match(icon, size)
+                    if mx > best[0]:
+                        best = (mx, loc, size)
             if best[0] > 0.55:
                 found.append((best[0], a["name"], best[1][0], best[1][1] + y0, best[2]))
         found.sort(reverse=True)
@@ -128,40 +177,67 @@ class SkillBar:
                 best_group = group
         slots = sorted(best_group, key=lambda s: s[1])
         if len(slots) >= 2:
-            pitch = min(b[1] - a[1] for a, b in zip(slots, slots[1:]))
             size = int(np.median([s[3] for s in slots]))
+            # slot spacing: neighbours are about 1.2 icon widths apart; a stray match must not set it
+            steps = [(b[1] - a[1]) / max(round((b[1] - a[1]) / (size * 1.22)), 1) for a, b in zip(slots, slots[1:])]
+            steps = [d for d in steps if size * 1.05 <= d <= size * 1.45]
+            pitch = float(np.median(steps)) if steps else size * 1.22
+            # anchor on the best match and drop found icons that are off the slot grid
+            anchor = max(slots, key=lambda s: scores[s[0]])
+            slots = [s for s in slots if abs((s[1] - anchor[1]) / pitch - round((s[1] - anchor[1]) / pitch)) < 0.2]
+            slots.sort(key=lambda s: s[1])
             y = int(np.median([s[2] for s in slots]))
             # positions of the four slots from the leftmost found one; a slot whose icon was dark
             # (cooldown) when the bar was searched is identified with a lower threshold
-            left = slots[0][1] - pitch * round((slots[0][1] - min(s[1] for s in slots)) / max(pitch, 1))
+            left = anchor[1] - pitch * round((anchor[1] - slots[0][1]) / pitch)
             known = {round((s[1] - left) / pitch): s for s in slots}
-            first = min(known)
-            for k in range(first, first + 4):
+            # every slot position around the found icons; the four ability slots are the four neighbours that
+            # look most like abilities (the potion and scroll slots on the left do not)
+            cand = {}
+            for k in range(min(known) - 3, max(known) + 4):
                 if k in known:
+                    cand[k] = (scores[known[k][0]], known[k][0])
                     continue
                 x = int(left + k * pitch)
-                cell = frame[y:y + size, x:x + size]
-                if cell.shape[:2] != (size, size):
+                cell = frame[max(y - 3, 0):y + size + 3, max(x - 3, 0):x + size + 3]
+                cand[k] = self.classify(cell) if cell.shape[:2] == (size + 6, size + 6) else (0.0, None)
+            best_win, best_sum = None, -1.0
+            for k0 in range(min(cand), max(cand) - 2):
+                win = list(range(k0, k0 + 4))
+                if not set(known) <= set(win) and len(known) <= 4:
                     continue
-                best = (0.25, None)
-                for a in ABILITIES:
-                    if a.get("hero") != self.hero or a["name"] in [s[0] for s in known.values()]:
-                        continue
-                    try:
-                        icon = load_icon(a["icon_url"])
-                    except Exception:
-                        continue
-                    t = cv2.resize(icon, (size, size), interpolation=cv2.INTER_AREA)
-                    sc = float(cv2.matchTemplate(cell, t, cv2.TM_CCOEFF_NORMED)[0][0])
-                    if sc > best[0]:
-                        best = (sc, a["name"])
-                if best[1]:
-                    known[k] = (best[1], x, y, size)
-            slots = [known[k] for k in sorted(known)][:4]
+                total = sum(cand[k][0] for k in win if k in cand and cand[k][1])
+                if total > best_sum:
+                    best_win, best_sum = win, total
+            out, used = [], set()
+            for k in best_win or sorted(known):
+                sc, name = cand.get(k, (0.0, None))
+                if not name or sc < 0.25 or (name in used and k not in known):
+                    continue
+                used.add(name)
+                out.append((name, int(left + k * pitch), y, size))
+            slots = out[:4]
         self.slots = slots
         self.located_for = (H, W)
+        self.crops = [frame[y:y + size, x:x + size].copy() for _, x, y, size in slots]
         self.state = {s[0]: (False, 0.0) for s in self.slots}
         return bool(self.slots)
+
+    def classify(self, cell) -> tuple:
+        """(best score, ability) for one slot picture of the size the bar was found with."""
+        best = (0.0, None)
+        if cell is None or cell.size == 0:
+            return best
+        h = cell.shape[0]
+        for a in ABILITIES:
+            if a.get("hero") != self.hero:
+                continue
+            for icon in templates(a):
+                t = cv2.resize(icon, (h - 6, h - 6), interpolation=cv2.INTER_AREA) if h > 12 else icon
+                sc = float(cv2.matchTemplate(cell, t, cv2.TM_CCOEFF_NORMED).max())
+                if sc > best[0]:
+                    best = (sc, a["name"])
+        return best
 
     def update(self, frame, t) -> list:
         """Cast events [(t, ability name)] seen in this frame."""
@@ -186,6 +262,39 @@ class SkillBar:
         return out
 
 
+def locate_stable(grab, hero: str, tries: int = 3):
+    """Find the bar in several pictures and keep the layout most of them agree on, with the ability per
+    slot that most pictures saw (a cast flash, a cooldown sweep or an effect can mislead one picture)."""
+    reads = []
+    for i in range(tries):
+        frame = grab()
+        if frame is None:
+            break
+        bar = SkillBar(hero)
+        if bar.locate(frame) and bar.slots:
+            reads.append(bar)
+        if i + 1 < tries:
+            time.sleep(0.25)
+    if not reads:
+        return None
+    key = lambda b: (round(b.slots[0][1] / 6), len(b.slots))
+    groups = {}
+    for b in reads:
+        groups.setdefault(key(b), []).append(b)
+    same = max(groups.values(), key=len)
+    best = same[0]
+    slots, used = [], set()
+    for i, (name, x, y, size) in enumerate(best.slots):
+        votes = [b.slots[i][0] for b in same if i < len(b.slots)]
+        ranked = sorted(set(votes), key=lambda n: -votes.count(n))
+        pick = next((n for n in ranked if n not in used), name)
+        used.add(pick)
+        slots.append((pick, x, y, size))
+    best.slots = slots
+    best.state = {s[0]: (False, 0.0) for s in slots}
+    return best
+
+
 class SkillWatcher(threading.Thread):
     """Grabs the game window ~15 times a second while switched on and counts casts per run."""
 
@@ -197,6 +306,31 @@ class SkillWatcher(threading.Thread):
         self.enabled = threading.Event()
         self.bar = None
         self.status = "skill tracking off"
+        self._run_id = None   # the skill bar is searched again at the start of every run (skills may change)
+
+    def read_bar(self) -> str:
+        """Search the skill bar now (button "Read skill bar"); works while tracking is off too."""
+        if self.capture.grab() is None:
+            return f"Game picture not available ({self.capture.status})."
+        best = locate_stable(self.capture.grab, getattr(self.state, "hero", ""), tries=4)
+        if best is None:
+            return "No skill bar found – is the game showing a stage or town (not a full-screen menu)?"
+        self.bar = best
+        return "Skill bar read: " + ", ".join(s[0] for s in best.slots)
+
+    def confirm(self, names: list) -> None:
+        """The player named the abilities on the bar (read-bar window): use them and remember the game's
+        icons, so these abilities are recognised from now on."""
+        bar = self.bar
+        if bar is None:
+            return
+        for i, name in enumerate(names):
+            if i < len(bar.slots) and name:
+                _, x, y, size = bar.slots[i]
+                bar.slots[i] = (name, x, y, size)
+                if i < len(bar.crops):
+                    learn(name, bar.crops[i])
+        bar.state = {s[0]: (False, 0.0) for s in bar.slots}
 
     def run(self):
         while True:
@@ -209,6 +343,13 @@ class SkillWatcher(threading.Thread):
                 hero = self.state.hero
                 if self.bar is None or self.bar.hero != hero:
                     self.bar = SkillBar(hero)
+                cur = getattr(self.state, "current", None)
+                run_id = cur.run_id if cur is not None else None
+                if run_id and run_id != self._run_id:  # new run: abilities may have been swapped in town
+                    self._run_id = run_id
+                    bar = locate_stable(self.capture.grab, hero)
+                    if bar is not None:
+                        self.bar = bar
                 if not self.bar.slots:
                     self.status = "searching the skill bar…"
                 frame = self.capture.grab()
