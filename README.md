@@ -15,7 +15,7 @@ It does **not** read game memory, does not change any game files and sends nothi
 |---|---|
 | Overview | EXP/h, gold/h (incl. sold items), runs/h, DPS per run, time to the next level |
 | Character Stats | Your character sheet, kept separately for each of your characters |
-| Stages | Your stages compared: time, EXP/h, gold/h, enemy damage types. **Boss farming**: Silver and Gold bosses ranked by kills/h or efficiency (kill speed + EXP, adjustable weighting), with legendaries/h |
+| Stages | Your stages compared: time, EXP/h, gold/h, enemy damage types, with search, type and difficulty filters and sorting (incl. map order). **Boss farming**: Silver and Gold bosses ranked by kills/h or efficiency (kill speed + EXP, adjustable weighting), with legendaries/h |
 | Drops | Drops by rarity, gems by tier, runes, keys |
 | Deaths | Who killed you and with what |
 | Item Comparer | Item comparison with F8: values like in the game, differences, effects, verdict |

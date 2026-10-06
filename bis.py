@@ -10,6 +10,7 @@ import json
 import item_eval
 import item_quality
 import paths
+import stages
 
 MAX_ILVL = 850   # highest item level that drops (Inferno, level 70 enemies)
 TOP_ROLL = 1.15  # Ancient: every number at the top of its range
@@ -159,7 +160,7 @@ def farm_text(it, stage_rows=None, stage_level=None) -> list:
         lo = it.get("min_drop_level") or 1
         lines.append(f"Any enemy of level {lo}+ and their chests (item level 850 only on Inferno)")
         if stage_rows and stage_level:
-            ok = [r for r in stage_rows if r["difficulty"] in ("Nightmare", "Inferno")
+            ok = [r for r in stage_rows if stages.base_difficulty(r["difficulty"]) in ("Nightmare", "Inferno")
                   or (stage_level(r["stage"]) or 0) >= lo]
             ok = [r for r in ok if r["runs"] >= 3]
             if ok:

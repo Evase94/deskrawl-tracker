@@ -22,6 +22,20 @@ DIFFICULTY = {
     "Inferno": {"hp": 6.0, "dmg": 1.8, "xp": 2.0, "find_per_lvl": 1.0},
 }
 NEXT = {"Normal": "Nightmare", "Nightmare": "Inferno"}
+
+
+def base_difficulty(d: str) -> str:
+    """"Inferno1" (the game's log names Inferno with its tier) -> "Inferno"; unknown values stay as they are."""
+    m = re.match(r"\s*(normal|nightmare|inferno)", d or "", re.I)
+    return m.group(1).capitalize() if m else (d or "")
+
+
+def short_difficulty(d: str) -> str:
+    """Short label for tables: "NM", "Inf 1", "Normal"."""
+    base = base_difficulty(d)
+    tier = (d or "")[len(base):].strip() if (d or "").lower().startswith(base.lower()) else ""
+    label = {"Nightmare": "NM", "Inferno": "Inf"}.get(base, base)
+    return f"{label} {tier}" if tier else label
 FIGHT_SHARE = 0.7  # share of a run spent killing (rest: walking, waiting for waves) - estimate
 
 
@@ -162,7 +176,7 @@ def damage_profile(stage: dict | None) -> dict:
 
 def forecast(row: dict, stage_level: int | None) -> dict | None:
     """What the same stage would give on the next difficulty, at today's gear."""
-    cur = row["difficulty"]
+    cur = base_difficulty(row["difficulty"])
     nxt = NEXT.get(cur)
     if not nxt or not row.get("avg_s") or not row["runs"]:
         return None
