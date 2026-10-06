@@ -795,7 +795,7 @@
     "Monk"
    ],
    "min_drop_level": 70,
-   "effect": "",
+   "effect": "All ability levels +10",
    "max_sockets": 1,
    "summary": "Divine Ring for all classes. A Divine drop from elites and bosses of level 70 on Inferno, from treasure chests and from Mystery items.",
    "base": {},
@@ -1052,7 +1052,7 @@
     "Sorcerer"
    ],
    "min_drop_level": 70,
-   "effect": "Every hit has a 25% chance to gain a stack of Harvest of Souls. Consumes 25 stacks to release Soul Impact, dealing 800% Weapon Damage as Physical Damage to all nearby enemies and applying Dazed to them.",
+   "effect": "Every hit grants a stack of Harvest of Souls. Consumes 25 stacks to release Soul Impact, dealing 800% Weapon Damage as Physical Damage to all nearby enemies and applying Dazed to them.",
    "max_sockets": 3,
    "summary": "Divine Weapon for the Warrior and Sorcerer. A Divine drop from elites and bosses of level 70 on Inferno, from treasure chests and from Mystery items.",
    "base": {

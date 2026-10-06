@@ -167,6 +167,53 @@ def parse(slug, L):
             "pool": pool}
 
 
+def update_items_json(db, path):
+    """Bring data/items.json (used by the item rating) up to date with the scraped pages; returns changes."""
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    by_slug = {d["slug"]: d for d in db}
+    changes = []
+    for it in data["items"]:
+        d = by_slug.get(it["slug"])
+        if not d:
+            continue
+        where = dict(d["where"])
+        drops = []
+        for title, text in d["where"]:
+            m = re.search(r"([\d.]+%) per cleared encounter.*?Met in (.+?) stage (\d+) \(level (\d+)", text)
+            if m:
+                drops.append({"enemy": title, "chance": m.group(1), "stage": m.group(2), "stage_no": int(m.group(3)),
+                              "level_normal": int(m.group(4))})
+        m = re.search(r"Up to (\d+)", d["info"].get("Sockets", ""))
+        m_cls = re.search(r" for (all classes|the [^.]+)\.", d["summary"])
+        classes = it["classes"]
+        if m_cls and m_cls.group(1) != "all classes":
+            classes = [c for c in ("Warrior", "Sorcerer", "Hunter", "Monk") if c in m_cls.group(1)]
+        elif m_cls:
+            classes = ["Warrior", "Sorcerer", "Hunter", "Monk"]
+        new = {
+            "effect": d["effect"] or (d["ability_levels"] if d["ability_levels"] else it.get("effect", "")),
+            "summary": d["summary"],
+            "classes": classes,
+            "min_drop_level": int(d["info"]["Minimum drop level"]) if d["info"].get("Minimum drop level", "").isdigit()
+            else it.get("min_drop_level"),
+            "max_sockets": int(m.group(1)) if m else 0,
+            "enemy_drops": drops,
+            "world_drop": "Legendary drops" in where,
+            "divine_drop": "Elites and bosses" in where,
+            "mystery_vendor": any(t.startswith("Mystery") for t in where),
+        }
+        if not d["effect"] and not d["ability_levels"]:
+            new["effect"] = it.get("effect", "")
+        for k, v in new.items():
+            if it.get(k) != v:
+                changes.append((it["name"], k, it.get(k), v))
+                it[k] = v
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=1)
+    return changes
+
+
 def main():
     with open(os.path.join(ROOT, "data", "items.json"), encoding="utf-8") as f:
         known = json.load(f)["items"]
@@ -184,6 +231,8 @@ def main():
     with open(os.path.join(ROOT, "data", "item_db.json"), "w", encoding="utf-8") as f:
         json.dump({"source": "wikily.gg/deskrawl/equipment", "items": out}, f, ensure_ascii=False, indent=1)
     print(len(out), "items written")
+    for name, key, old, new in update_items_json(out, os.path.join(ROOT, "data", "items.json")):
+        print(f"items.json  {name}: {key}\n    was: {old}\n    now: {new}")
 
 
 if __name__ == "__main__":

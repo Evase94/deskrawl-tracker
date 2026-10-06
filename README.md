@@ -15,7 +15,7 @@ It does **not** read game memory, does not change any game files and sends nothi
 |---|---|
 | Overview | EXP/h, gold/h (incl. sold items), runs/h, DPS per run, time to the next level – at level 70 to the next Paragon level (Paragon EXP added up from the level-70 runs in the game log) |
 | Character Stats | Your character sheet, kept separately for each of your characters |
-| Stages | Every region and stage in map order (incl. Dream realms), stages without runs marked; time, EXP/h, gold/h, enemy damage types, with search, type and difficulty filters and sorting (incl. map order). **Boss farming**: Silver and Gold bosses ranked by kills/h or efficiency (kill speed + EXP, adjustable weighting), with legendaries/h |
+| Stages | Every region and stage in map order (incl. Dream realms), stages without runs marked; **Runs…** lists single runs to delete them, **Clear this stage** starts a stage over; time, EXP/h, gold/h, enemy damage types, with search, type and difficulty filters and sorting (incl. map order). **Boss farming**: Silver and Gold bosses ranked by kills/h or efficiency (kill speed + EXP, adjustable weighting), with legendaries/h |
 | Drops | Drops by rarity, gems by tier, runes, keys |
 | Deaths | Who killed you and with what |
 | Item Comparer | Item comparison with F8: values like in the game, differences, effects, verdict |

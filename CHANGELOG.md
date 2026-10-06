@@ -2,6 +2,20 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.10 – 2026-10-06
+
+### New
+- **Look at and delete single runs.** **Stages → Runs…** lists every run of the character, newest first, with its stage, difficulty, run time, EXP, gold, items, legendaries, death and DPS.
+  - Filter by stage.
+  - Select one or more runs and click **Delete selected runs** (or press Del). They are taken out of the stage statistics.
+- **Start a stage over.** Click a stage on the Stages page, then **Clear this stage…**. All data of that stage on that difficulty is deleted, and new runs are counted from scratch. **Clear stage…** is also in the Runs window.
+- Runs are now stored one by one. Runs recorded before this version stay in the totals and can only be removed with **Clear stage**.
+
+### Changed
+- Item data updated from the wiki: Soulrender's new effect (every hit grants a stack), and the "All ability levels +10" of Remnant of the Elder Sage now counts in the item rating.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.9 – 2026-10-06
 
 ### New

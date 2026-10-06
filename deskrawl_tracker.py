@@ -20,7 +20,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 import tkinter as tk
-from tkinter import ttk
+from tkinter import messagebox, ttk
 
 import paths
 import errlog
@@ -3006,6 +3006,9 @@ class App:
         self._stage_views = {}
         seg = tk.Frame(hdr, bg=BG)
         seg.pack(side="right")
+        b_runs = ui.button(hdr, "Runs…", lambda: self.show_runs(), small=True)
+        b_runs.pack(side="right", padx=(0, 12))
+        ui.Tooltip(b_runs, "Look at single runs and delete them, or clear the data of a stage.")
         body = tk.Frame(p, bg=BG)
         body.pack(fill="both", expand=True)
         body.grid_columnconfigure(0, weight=1)
@@ -3044,6 +3047,12 @@ class App:
         self.lbl_stage_detail = ui.autowrap(tk.Label(det, bg=PANEL, fg=FG, font=ui.F_SMALL, anchor="w", justify="left",
                                                      text="Click a stage in the list for details."), 24)
         self.lbl_stage_detail.pack(fill="x", padx=12, pady=10)
+        self.stage_btns = tk.Frame(det, bg=PANEL)  # shown for a stage with data
+        self._stage_btn_row = None
+        ui.button(self.stage_btns, "Runs of this stage", lambda: self.show_runs(*self._stage_btn_row),
+                  small=True).pack(side="left", padx=(0, 8))
+        ui.button(self.stage_btns, "Clear this stage…", lambda: self._stage_clear(*self._stage_btn_row),
+                  small=True).pack(side="left")
         self._stage_rows = []
         self._stage_shown = []
         self._boss_rows = []
@@ -3390,7 +3399,7 @@ class App:
                                      sold_gold, r.items,
                                      r.death == "confirmed" or r.death == "suspected",
                                      r.damage, r.duration if r.damage else 0, r.casts or None,
-                                     run_s=r.game_seconds, legendaries=legendaries)
+                                     run_s=r.game_seconds, legendaries=legendaries, run_id=r.run_id, t=r.end)
             r.aggregated = True
             changed = True
             prev = r
@@ -3473,6 +3482,11 @@ class App:
                 + (f" · now {x['death_rate'] * 100:.0f} % deaths" if x["runs"] else "") + "."
                 + ("" if fc["stage_level_known"] else " Stage level unknown: the rise to level 70 is not included."))
         self.lbl_stage_detail.configure(text="\n".join(parts))
+        if x.get("nodata"):
+            self.stage_btns.pack_forget()
+        else:
+            self._stage_btn_row = (x["stage"], x["difficulty"])
+            self.stage_btns.pack(fill="x", padx=12, pady=(0, 10))
 
     def _toughness(self):
         c = {k: v[0] for k, v in self.char_stats.items()}
@@ -4300,6 +4314,147 @@ class App:
         if facts:
             section("Item")
             text(" · ".join(facts), MUTED, pad=(0, 12))
+
+    # -- single runs: view, delete, clear a stage ---------------------------------
+    def _stage_char(self):
+        return self.cfg.get("profile") or self.state.char_name
+
+    def _stages_changed(self):
+        """Stage statistics were edited: save and redraw the Stages page (and an open runs window)."""
+        self.stage_stats.save()
+        self._stage_sig = None
+        self._aggregate_stages()
+        if getattr(self, "_runs_win", None) is not None and self._runs_win.winfo_exists():
+            self._runs_fill()
+
+    def _stage_clear(self, stage, diff):
+        n = self.stage_stats.data.get(self.stage_stats.key(self._stage_char(), stage, diff), {}).get("runs", 0)
+        if not messagebox.askyesno(
+                "Clear stage data",
+                f"Delete all {n} recorded runs of {stage} on {diff} for {self._stage_char()}?\n\n"
+                f"The stage starts again with no data; new runs are counted as usual. This cannot be undone.",
+                icon="warning", parent=self.root):
+            return
+        self.stage_stats.clear(self._stage_char(), stage, diff)
+        self.lbl_stage_detail.configure(text=f"{stage} · {diff}: data cleared.")
+        self.stage_btns.pack_forget()
+        self._stages_changed()
+
+    def show_runs(self, stage=None, diff=None):
+        """Window with every recorded run (one by one), to look at them and delete single runs."""
+        if getattr(self, "_runs_win", None) is not None and self._runs_win.winfo_exists():
+            w = self._runs_win
+            w.lift()
+        else:
+            w = tk.Toplevel(self.root, bg=BG)
+            self._runs_win = w
+            w.title("Runs – Deskrawl Tracker")
+            w.transient(self.root)
+            w.geometry("980x600")
+            w.minsize(640, 360)
+            hdr = tk.Frame(w, bg=BG)
+            hdr.pack(fill="x", padx=16, pady=(12, 6))
+            tk.Label(hdr, text="Runs", bg=BG, fg=FG, font=ui.F_HEAD).pack(side="left")
+            ui.info(hdr, "Every run counted in the stage statistics of this character, newest first. Select one "
+                         "or more runs (Ctrl/Shift + click) and delete them: they are taken out of the stage "
+                         "statistics. “Clear stage” removes all data of one stage and difficulty.\n\nRuns "
+                         "recorded before version 1.0.10 are only in the totals – they cannot be listed one by "
+                         "one and go only with “Clear stage”.").pack(side="left", padx=(6, 0))
+            bar = tk.Frame(w, bg=BG)
+            bar.pack(fill="x", padx=16, pady=(0, 6))
+            tk.Label(bar, text="Stage", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+            self.var_runs_stage = tk.StringVar(value="All stages")
+            self.cb_runs_stage = ttk.Combobox(bar, textvariable=self.var_runs_stage, width=38, state="readonly")
+            self.cb_runs_stage.pack(side="left", padx=(6, 12))
+            self.cb_runs_stage.bind("<<ComboboxSelected>>", lambda _: self._runs_fill())
+            self.lbl_runs_info = tk.Label(bar, text="", bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w")
+            self.lbl_runs_info.pack(side="left", fill="x", expand=True)
+            cols = [("t", "Finished", 120, "w"), ("stage", "Stage", 170, "w"), ("diff", "Diff", 54, "w"),
+                    ("run", "Run time", 62, "e"), ("cyc", "Cycle", 56, "e"), ("xp", "EXP", 70, "e"),
+                    ("gold", "Gold", 60, "e"), ("it", "Items", 46, "e"), ("leg", "Leg.", 40, "e"),
+                    ("dead", "Died", 40, "center"), ("dps", "DPS", 64, "e")]
+            f, self.runs_tree = self._tree(w, cols, 14)
+            self.runs_tree.configure(selectmode="extended")
+            self.runs_tree.tag_configure("died", foreground=C_BAD)
+            f.pack(fill="both", expand=True, padx=16, pady=(0, 8))
+            self.runs_tree.bind("<<TreeviewSelect>>", lambda _e: self._runs_buttons())
+            self.runs_tree.bind("<Delete>", lambda _e: self._runs_delete())
+            btns = tk.Frame(w, bg=BG)
+            btns.pack(fill="x", padx=16, pady=(0, 14))
+            ui.button(btns, "Close", w.destroy).pack(side="right")
+            self.btn_runs_clear = ui.button(btns, "Clear stage…", self._runs_clear)
+            self.btn_runs_clear.pack(side="right", padx=(0, 8))
+            self.btn_runs_del = ui.button(btns, "Delete selected runs", self._runs_delete)
+            self.btn_runs_del.pack(side="right", padx=(0, 8))
+            self.lbl_runs_sel = tk.Label(btns, text="", bg=BG, fg=MUTED, font=ui.F_SMALL)
+            self.lbl_runs_sel.pack(side="left")
+        if stage:
+            self.var_runs_stage.set(f"{stage} · {diff}")
+        self._runs_fill()
+
+    def _runs_filter(self):
+        v = self.var_runs_stage.get()
+        if v == "All stages" or " · " not in v:
+            return None
+        stage, diff = v.rsplit(" · ", 1)
+        return stage, diff
+
+    def _runs_fill(self):
+        char = self._stage_char()
+        keys = sorted({(st, df) for st, df, _ in self.stage_stats.runs(char)}
+                      | {tuple(k.split("|", 2)[1:]) for k in self.stage_stats.data
+                         if k.count("|") == 2 and k.split("|", 1)[0] == char})
+        self.cb_runs_stage.configure(values=["All stages"] + [f"{s} · {d}" for s, d in keys])
+        flt = self._runs_filter()
+        if flt and flt not in keys:
+            self.var_runs_stage.set("All stages")
+            flt = None
+        t = self.runs_tree
+        t.delete(*t.get_children())
+        self._runs_rows = {}
+        rows = [r for r in self.stage_stats.runs(char) if not flt or (r[0], r[1]) == flt]
+        for i, (stage, diff, e) in enumerate(rows):
+            iid = str(i)
+            self._runs_rows[iid] = (stage, diff, e)
+            when = datetime.fromtimestamp(e["t"]).strftime("%d.%m. %H:%M:%S") if e.get("t") else "-"
+            dps = e["damage"] / e["dmg_seconds"] if e.get("dmg_seconds") else None
+            t.insert("", "end", iid=iid, tags=("died",) if e.get("died") else (), values=(
+                when, stage, stages.short_difficulty(diff), fmt_dur(e["run_s"]) if e.get("run_s") else "-",
+                fmt_dur(e["cycle_s"]), fmt(e["xp"]), fmt(e["gold"] + e.get("sold_gold", 0)), e["items"],
+                "-" if e.get("legendaries") is None else e["legendaries"], "✕" if e.get("died") else "",
+                fmt(dps) if dps else "-"))
+        older = sum(self.stage_stats.untracked(char, s, d) for s, d in ([flt] if flt else keys))
+        self.lbl_runs_info.configure(text=f"{len(rows)} runs" + (
+            f" · {older} older runs only in the totals" if older else ""))
+        self._runs_buttons()
+
+    def _runs_buttons(self):
+        n = len(self.runs_tree.selection())
+        self.lbl_runs_sel.configure(text=f"{n} selected – Del deletes them" if n else
+                                    "Select runs to delete them (Ctrl/Shift + click for several).")
+        self.btn_runs_clear.configure(fg=FG if self._runs_filter() else MUTED)
+
+    def _runs_delete(self):
+        sel = self.runs_tree.selection()
+        if not sel:
+            return
+        if not messagebox.askyesno("Delete runs", f"Delete {len(sel)} run(s) from the stage statistics?\n\n"
+                                                  f"This cannot be undone.", icon="warning", parent=self._runs_win):
+            return
+        by_stage = {}
+        for iid in sel:
+            stage, diff, e = self._runs_rows[iid]
+            by_stage.setdefault((stage, diff), set()).add(e["id"])
+        for (stage, diff), ids in by_stage.items():
+            self.stage_stats.remove_runs(self._stage_char(), stage, diff, ids)
+        self._stages_changed()
+
+    def _runs_clear(self):
+        flt = self._runs_filter()
+        if not flt:
+            messagebox.showinfo("Clear stage", "Choose a stage in the “Stage” list first.", parent=self._runs_win)
+            return
+        self._stage_clear(*flt)
 
     # -- release notes ---------------------------------------------------------
     def show_changelog(self):

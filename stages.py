@@ -73,22 +73,67 @@ class StageStats:
 
     def add_run(self, char: str, stage: str, difficulty: str, cycle_s: float, xp: int, gold: int, sold_gold: int,
                 items: int, died: bool, damage: float, dmg_seconds: float, casts: dict | None = None,
-                run_s: float | None = None, legendaries: int | None = None):
+                run_s: float | None = None, legendaries: int | None = None, run_id: str = "", t: float = 0.0):
         d = self.data.setdefault(self.key(char, stage, difficulty), {f: 0 for f in self.FIELDS})
-        for f, v in (("runs", 1), ("seconds", cycle_s), ("xp", xp), ("gold", gold), ("sold_gold", sold_gold),
-                     ("items", items), ("deaths", int(died)), ("damage", damage), ("dmg_seconds", dmg_seconds)):
-            d[f] = d.get(f, 0) + v
-        if legendaries is not None:
-            d["legendaries"] = d.get("legendaries", 0) + legendaries
-            d["leg_seconds"] = d.get("leg_seconds", 0) + cycle_s
-        if run_s:  # run time shown on the stage end screen (without the time between runs)
-            d["run_seconds"] = d.get("run_seconds", 0) + run_s
-            d["timed_runs"] = d.get("timed_runs", 0) + 1
-        if casts:  # ability casts counted from the skill bar; cast_runs = runs that were watched
+        e = {"id": run_id or f"t{round(t)}:{d.get('runs', 0)}", "t": round(t), "cycle_s": round(cycle_s, 1), "xp": xp, "gold": gold,
+             "sold_gold": sold_gold, "items": items, "died": bool(died), "damage": damage,
+             "dmg_seconds": round(dmg_seconds, 1), "run_s": run_s, "legendaries": legendaries,
+             "casts": dict(casts) if casts else None}
+        self._apply(d, e, 1)
+        d.setdefault("log", []).append(e)  # every run on its own, so single runs can be removed again
+
+    @staticmethod
+    def _apply(d: dict, e: dict, sign: int):
+        """Add (sign 1) or take back (sign -1) one run's numbers in the totals of a stage."""
+        for f, v in (("runs", 1), ("seconds", e["cycle_s"]), ("xp", e["xp"]), ("gold", e["gold"]),
+                     ("sold_gold", e["sold_gold"]), ("items", e["items"]), ("deaths", int(e["died"])),
+                     ("damage", e["damage"]), ("dmg_seconds", e["dmg_seconds"])):
+            d[f] = max(d.get(f, 0) + sign * v, 0)
+        if e.get("legendaries") is not None:  # legendary + divine drops; leg_seconds = time they were counted
+            d["legendaries"] = max(d.get("legendaries", 0) + sign * e["legendaries"], 0)
+            d["leg_seconds"] = max(d.get("leg_seconds", 0) + sign * e["cycle_s"], 0)
+        if e.get("run_s"):  # run time shown on the stage end screen (without the time between runs)
+            d["run_seconds"] = max(d.get("run_seconds", 0) + sign * e["run_s"], 0)
+            d["timed_runs"] = max(d.get("timed_runs", 0) + sign, 0)
+        if e.get("casts"):  # ability casts counted from the skill bar; cast_runs = runs that were watched
             c = d.setdefault("casts", {})
-            for k, v in casts.items():
-                c[k] = c.get(k, 0) + v
-            d["cast_runs"] = d.get("cast_runs", 0) + 1
+            for k, v in e["casts"].items():
+                c[k] = max(c.get(k, 0) + sign * v, 0)
+            d["cast_runs"] = max(d.get("cast_runs", 0) + sign, 0)
+
+    def runs(self, char: str) -> list:
+        """[(stage, difficulty, run entry)] of every run recorded one by one, newest first."""
+        out = []
+        for k, d in self.data.items():
+            if k.count("|") == 2 and k.split("|", 1)[0] == char:
+                _, stage, diff = k.split("|", 2)
+                out += [(stage, diff, e) for e in d.get("log", [])]
+        return sorted(out, key=lambda x: -x[2].get("t", 0))
+
+    def untracked(self, char: str, stage: str, difficulty: str) -> int:
+        """Runs in the totals that were recorded before runs were kept one by one."""
+        d = self.data.get(self.key(char, stage, difficulty), {})
+        return max(d.get("runs", 0) - len(d.get("log", [])), 0)
+
+    def remove_runs(self, char: str, stage: str, difficulty: str, ids: set) -> int:
+        k = self.key(char, stage, difficulty)
+        d = self.data.get(k)
+        if not d:
+            return 0
+        keep, n = [], 0
+        for e in d.get("log", []):
+            if e.get("id") in ids:
+                self._apply(d, e, -1)
+                n += 1
+            else:
+                keep.append(e)
+        d["log"] = keep
+        if d.get("runs", 0) <= 0:
+            del self.data[k]
+        return n
+
+    def clear(self, char: str, stage: str, difficulty: str) -> bool:
+        return self.data.pop(self.key(char, stage, difficulty), None) is not None
 
     def rows(self, char: str) -> list:
         out = []
