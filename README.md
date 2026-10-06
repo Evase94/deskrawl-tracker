@@ -20,9 +20,10 @@ It does **not** read game memory, does not change any game files and sends nothi
 | Deaths | Who killed you and with what |
 | Item Comparer | Item comparison with F8: values like in the game, differences, effects, verdict |
 
-**Skill tracking** (Controls): counts which abilities you cast per run from the skill bar and estimates their damage share – shown on the Stages page.
+**Skill tracking** (own page): counts which abilities you cast per run from the skill bar and works out your damage shares and status uptimes; the Minions page and the item rating use them.
 | Item Database | Every Legendary and Divine item by slot: unique effect, base values and attribute ranges, attribute pool per class, Ancient / Black Mist variants and where it drops |
-| Minions | All 67 minions ranked by what their passives and buffs are worth for your character (damage, survival, farming), with where their Rein drops |
+| Minions | All 67 minions with pictures, ranked by what their passives and abilities are worth for your character (damage, survival, farming) – measured from your build when skill tracking is on – with where their Rein drops |
+| Skill Tracking | Skill tracking on/off, the detected skill bar with live casts, your build measured per stage (casts, damage shares by ability, slot and element, status uptimes) and every counted run |
 | Gems | Which gem helps you most |
 
 ## Installation

@@ -32,6 +32,7 @@ import skills
 import updater
 import changelog
 import minions
+import build_profile
 import paragon
 from version import VERSION
 import item_ocr  # first: loads onnxruntime before WinRT/winocr (avoids a crash)
@@ -1447,6 +1448,7 @@ class App:
         self.tab_tal = tk.Frame(self.nb, bg=BG)
         self.tab_db = tk.Frame(self.nb, bg=BG)
         self.tab_mn = tk.Frame(self.nb, bg=BG)
+        self.tab_sk = tk.Frame(self.nb, bg=BG)
         self.nb.add(self.tab_farm, text="Overview")
         self.nb.add(self.tab_char, text="Character Stats")
         self.nb.add(self.tab_stages, text="Stages")
@@ -1455,6 +1457,7 @@ class App:
         self.nb.add(self.tab_items, text="Item Comparer")
         self.nb.add(self.tab_db, text="Item Database")
         self.nb.add(self.tab_mn, text="Minions")
+        self.nb.add(self.tab_sk, text="Skill Tracking")
         # BiS Gear, Talents and Weights are hidden for now: still built (their settings keep feeding the
         # item rating), just not in the menu. Add them to the menu again to show them.
         self.nb.add(self.tab_gems, text="Gems")
@@ -1470,6 +1473,7 @@ class App:
         self._build_talents(self.tab_tal)
         self._build_itemdb(self.tab_db)
         self._build_minions(self.tab_mn)
+        self._build_skills(self.tab_sk)
 
         side = self.nb.bottom
         head = tk.Label(side, text="", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w", cursor="hand2")
@@ -3417,6 +3421,8 @@ class App:
         self._stage_rows = sorted(rows, key=lambda x: -x["xp_h"])
         self._fill_bosses()
         self._fill_stages()
+        self._fill_skills()
+        self._fill_minions()
 
     def _stage_select(self, _=None):
         sel = self.stage_tree.selection()
@@ -3852,6 +3858,9 @@ class App:
                             self._fill_itemdb()
                             if self._db_sel:
                                 self._itemdb_select()
+                            self._fill_minions()
+                            self._fill_skills()
+                            self._sk_slot_sig = None
                         self.root.after(300, refill)
                 elif ev[0] == "hotkey":
                     {"item": self.scan_item, "attributes": self.scan_attributes,
@@ -4505,7 +4514,7 @@ class App:
         cols = [("rank", "#", 30, "e"), ("name", "Minion", 160, "w"), ("rar", "Rarity", 86, "w"),
                 ("dps", "Damage", 74, "e"), ("surv", "Survival", 74, "e"), ("farm", "Farming", 74, "e"),
                 ("score", "Score", 54, "e"), ("pas", "Passives", 210, "w"), ("src", "Rein drops on", 170, "w")]
-        f, self.mn_tree = self._tree(p, cols, 9)
+        f, self.mn_tree = self._tree(p, cols, 8, icons=True)
         f.pack(fill="x", padx=14, pady=(0, 6))
         for r in ("Legendary", "Rare", "Uncommon", "Common"):
             self.mn_tree.tag_configure(r, foreground=ui.RARITY.get(r, FG))
@@ -4536,9 +4545,16 @@ class App:
             return
         ctx = self._eval_context()
         mode = self.var_mn_mode.get()
-        self._mn_rates = {m["slug"]: minions.rate(m, ctx, mode) for m in minions.MINIONS}
+        prof = self._profile()
+        self._mn_prof = prof
+        self._mn_rates = {m["slug"]: minions.rate(m, ctx, mode, prof) for m in minions.MINIONS}
         known = any(r["known"] for r in self._mn_rates.values())
-        self.lbl_mn_note.configure(text="" if known else "Read your character with F9 first – values need your stats.")
+        if not known:
+            self.lbl_mn_note.configure(text="Read your character with F9 first – values need your stats.", fg=C_MEH)
+        elif prof["ok"]:
+            self.lbl_mn_note.configure(text=f"Measured: {prof['runs']} runs of skill tracking", fg=C_GOOD)
+        else:
+            self.lbl_mn_note.configure(text="Estimates – turn on skill tracking for values from your build", fg=C_MEH)
         q = self.var_mn_search.get().strip().lower()
         rar = self.var_mn_rarity.get()
         key = self.MN_SORTS.get(self.var_mn_sort.get(), "score")
@@ -4564,8 +4580,8 @@ class App:
             if m["abilities"]:
                 passives += "  + " + m["abilities"][0]["name"]
             tags = (m["rarity"],) if abs(r[key]) >= 0.05 else ("zero",)
-            t.insert("", "end", iid=str(i), tags=tags, values=(
-                i + 1, m["name"], m["rarity"], pc(r["dps"]), pc(r["surv"]), pc(r["farm"]),
+            t.insert("", "end", iid=str(i), tags=tags, image=self._item_photo(m.get("icon_url"), 30) or "",
+                     values=(i + 1, m["name"], m["rarity"], pc(r["dps"]), pc(r["surv"]), pc(r["farm"]),
                 f"{r['score']:.1f}" if abs(r["score"]) >= 0.05 else "–", passives, self._minion_source(m)))
         if self._mn_sel:
             k = next((i for i, m in enumerate(rows) if m["slug"] == self._mn_sel), None)
@@ -4584,10 +4600,17 @@ class App:
             w.destroy()
         top = tk.Frame(d, bg=PANEL)
         top.pack(fill="x", padx=14, pady=(12, 4))
-        tk.Label(top, text=m["name"], bg=PANEL, fg=ui.RARITY.get(m["rarity"], FG), font=ui.F_HEAD,
-                 anchor="w").pack(side="left")
-        tk.Label(top, text=f"   {m['rarity']} {m['species']} minion · carriage capacity {m['capacity']}", bg=PANEL,
-                 fg=MUTED, font=ui.F_SMALL).pack(side="left", pady=(6, 0))
+        self._icon_box(top, self._item_photo(m.get("icon_url"), 72), m["rarity"], 72,
+                       fallback=m["name"][:4]).pack(side="left", padx=(0, 12))
+        head = tk.Frame(top, bg=PANEL)
+        head.pack(side="left", fill="x", expand=True)
+        tk.Label(head, text=m["name"], bg=PANEL, fg=ui.RARITY.get(m["rarity"], FG), font=ui.F_HEAD,
+                 anchor="w").pack(fill="x")
+        tk.Label(head, text=f"{m['rarity']} {m['species']} minion · carriage capacity {m['capacity']}", bg=PANEL,
+                 fg=MUTED, font=ui.F_SMALL, anchor="w").pack(fill="x")
+        tk.Label(head, text=("values from your measured build" if r.get("measured") else
+                             "values from estimates – skill tracking makes them exact"), bg=PANEL,
+                 fg=C_GOOD if r.get("measured") else C_MEH, font=ui.F_SMALL, anchor="w").pack(fill="x")
         nums = tk.Frame(d, bg=PANEL)
         nums.pack(fill="x", padx=14, pady=(2, 6))
         for label, v in (("Damage", r["dps"]), ("Survival", r["surv"]), ("Farming", r["farm"])):
@@ -4624,6 +4647,186 @@ class App:
         if m.get("rein_tradable"):
             text(f"Rein tradable: {m['rein_tradable']}", MUTED)
         tk.Frame(d, bg=PANEL, height=10).pack()
+
+    # -- skill tracking page -------------------------------------------------------
+    def _profile(self, stage=None) -> dict:
+        """What the build does, measured by skill tracking (see build_profile)."""
+        char = self._stage_char()
+        casts, sec, runs = build_profile.measure(self.stage_stats, char, stage)
+        slot_of = {a["name"]: a.get("slot") for a in skills.ABILITIES}
+        bar = self.skills.bar.slots if self.skills.bar else []
+        basic = next((s[0] for s in bar if slot_of.get(s[0]) == "Basic Attack"), None)  # on the skill bar now
+        if not basic:
+            basic = ((self.cfg.get("ability_setup") or {}).get("Basic Attack") or [None])[0]
+        if not basic or basic in ("–", "-"):  # the Basic Attack seen most on the skill bar so far
+            basic = None
+            allc, _ = self._measured_casts()
+            basics = [a for a in allc if slot_of.get(a) == "Basic Attack"]
+            basic = max(basics, key=allc.get) if basics else None
+        hero = self.state.hero
+        names = {talents.key(t): t["name"] for t in talents.tree(hero)} if hero in talents.HEROES else {}
+        mine = [names.get(k, k) for k, v in (self.cfg.get("talents_mine") or {}).items() if v]
+        aspd = (self.char_stats.get("Attack Speed") or (None,))[0]
+        return build_profile.profile(casts, sec, runs, mine, aspd, basic, hero)
+
+    def _build_skills(self, p):
+        hdr = ui.page_header(p, "Skill Tracking", (
+            "Counts which abilities you cast from the skill bar at the bottom of the game (about 15 pictures a "
+            "second, costs some CPU). Basic Attacks fire all the time and do not flash, so their number is "
+            "estimated from your attack speed.\n\nFrom the counted runs the tracker works out your damage "
+            "shares, damage per second (in % weapon damage) and how much of the time enemies are Burning, "
+            "Chilled, Vulnerable … – the Minions page and the item rating use these instead of fixed guesses."))
+        self.btn_sk_toggle = ui.button(hdr, "", lambda: (self.toggle_skills(), self._skills_header()), accent=True)
+        self.btn_sk_toggle.pack(side="right")
+        sf = ui.ScrollFrame(p)
+        sf.pack(fill="both", expand=True)
+        body = sf.inner
+        live = ui.card(body, fill="x", padx=14, pady=(0, 8))
+        self.lbl_sk_status = tk.Label(live, text="", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w")
+        self.lbl_sk_status.pack(fill="x", padx=14, pady=(10, 4))
+        self.sk_slots = tk.Frame(live, bg=PANEL)
+        self.sk_slots.pack(fill="x", padx=14, pady=(0, 12))
+        self._sk_slot_sig = None
+
+        bar = tk.Frame(body, bg=BG)
+        bar.pack(fill="x", padx=14, pady=(4, 6))
+        tk.Label(bar, text="Your build", bg=BG, fg=FG, font=("Bahnschrift", 12)).pack(side="left")
+        tk.Label(bar, text="   Stage", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        self.var_sk_stage = tk.StringVar(value="All stages")
+        self.cb_sk_stage = ttk.Combobox(bar, textvariable=self.var_sk_stage, width=30, state="readonly")
+        self.cb_sk_stage.pack(side="left", padx=(6, 12))
+        self.cb_sk_stage.bind("<<ComboboxSelected>>", lambda _: self._fill_skills())
+        b = ui.button(bar, "Use for ratings", self._sk_use_shares, small=True)
+        b.pack(side="right")
+        ui.Tooltip(b, "Take the measured damage shares as the ability setup the item rating uses (legendary "
+                      "effects of single abilities). The Minions page always uses the measurement.")
+        cols = [("ab", "Ability", 150, "w"), ("slot", "Slot", 90, "w"), ("el", "Element", 70, "w"),
+                ("run", "Casts / run", 76, "e"), ("min", "Casts / min", 76, "e"), ("wd", "% WD / s", 70, "e"),
+                ("share", "Damage share", 90, "e")]
+        f, self.sk_tree = self._tree(body, cols, 6, icons=True)
+        f.pack(fill="x", padx=14, pady=(0, 4))
+        self.sk_tree.tag_configure("est", foreground=MUTED)
+        self.lbl_sk_profile = ui.autowrap(tk.Label(body, text="", bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w",
+                                                   justify="left"), 24)
+        self.lbl_sk_profile.pack(fill="x", padx=14, pady=(0, 10))
+
+        tk.Label(body, text="Runs", bg=BG, fg=FG, font=("Bahnschrift", 12), anchor="w").pack(fill="x", padx=14)
+        cols = [("t", "Finished", 110, "w"), ("stage", "Stage", 160, "w"), ("diff", "Diff", 50, "w"),
+                ("dur", "Run time", 62, "e"), ("casts", "Casts", 420, "w")]
+        f, self.sk_runs = self._tree(body, cols, 10)
+        f.pack(fill="x", padx=14, pady=(0, 14))
+        self._skills_header()
+        self._fill_skills()
+
+    def _skills_header(self):
+        on = self.skills.enabled.is_set()
+        self.btn_sk_toggle.configure(text="Skill tracking: on" if on else "Skill tracking: off – turn on")
+
+    def _skills_live(self):
+        """Live part (status, skill bar, casts of the running run); called by the refresh loop."""
+        if self.nb.current is not self.tab_sk:
+            return
+        on = self.skills.enabled.is_set()
+        self.lbl_sk_status.configure(text=(self.skills.status if on else "Skill tracking is off.")
+                                     + ("" if on else "  Turn it on above – then play a few runs."))
+        with self.state.lock:
+            cur = dict(self.state.current.casts) if self.state.current else {}
+        bar = self.skills.bar
+        slots = [s[0] for s in bar.slots] if bar and on else []
+        sig = (tuple(slots), tuple(sorted(cur.items())))
+        if sig == self._sk_slot_sig:
+            return
+        self._sk_slot_sig = sig
+        for w in self.sk_slots.winfo_children():
+            w.destroy()
+        info = {a["name"]: a for a in skills.ABILITIES}
+        for name in slots or list(cur):
+            box = tk.Frame(self.sk_slots, bg=PANEL)
+            box.pack(side="left", padx=(0, 18))
+            a = info.get(name, {})
+            self._icon_box(box, self._item_photo(a.get("icon_url"), 44), "Rare", 44, fallback=name[:3]).pack()
+            tk.Label(box, text=name, bg=PANEL, fg=FG, font=ui.F_SMALL).pack()
+            tk.Label(box, text=f"{cur.get(name, 0)} casts this run", bg=PANEL, fg=MUTED, font=ui.F_SMALL).pack()
+        if not slots and not cur:
+            tk.Label(self.sk_slots, text="No skill bar found yet." if on else "", bg=PANEL, fg=MUTED,
+                     font=ui.F_SMALL).pack(anchor="w")
+
+    def _fill_skills(self):
+        if not hasattr(self, "sk_tree"):
+            return
+        char = self._stage_char()
+        stages_with = sorted({k.split("|", 2)[1] for k, d in self.stage_stats.data.items()
+                              if k.count("|") == 2 and k.split("|", 1)[0] == char and d.get("cast_runs")})
+        self.cb_sk_stage.configure(values=["All stages"] + stages_with)
+        stage = self.var_sk_stage.get()
+        stage = None if stage == "All stages" or stage not in stages_with else stage
+        prof = self._profile(stage)
+        info = {a["name"]: a for a in skills.ABILITIES}
+        t = self.sk_tree
+        t.delete(*t.get_children())
+        runs = max(prof["runs"], 1)
+        for i, (name, x) in enumerate(sorted(prof["abilities"].items(), key=lambda kv: -kv[1]["share"])):
+            est = name == prof.get("basic_estimated")
+            t.insert("", "end", iid=str(i), image=self._item_photo(info.get(name, {}).get("icon_url"), 30) or "",
+                     tags=("est",) if est else (), values=(
+                         name + (" (estimated)" if est else ""), x["slot"], x.get("element", ""),
+                         f"{x['casts'] / runs:.1f}", f"{x['cps'] * 60:.1f}", f"{x['wd_per_s']:.0f}",
+                         f"{x['share'] * 100:.0f} %"))
+        if not prof["abilities"]:
+            self.lbl_sk_profile.configure(text="No counted runs yet. Turn skill tracking on and play a few runs.")
+        else:
+            st = [(k, v) for k, v in prof["status"].items() if v["uptime"] >= 0.005]
+            parts = [f"{prof['runs']} runs · {fmt_dur(prof['seconds'])} fight time · {prof['wd_per_s']:.0f}% weapon "
+                     f"damage per second" + ("" if prof["ok"] else " · too little data yet – ratings still use "
+                                                                    "estimates"),
+                     "Damage by slot: " + " · ".join(f"{k} {v * 100:.0f}%" for k, v in
+                                                     sorted(prof["slot_share"].items(), key=lambda kv: -kv[1])),
+                     "Damage by element: " + " · ".join(f"{k} {v * 100:.0f}%" for k, v in
+                                                        sorted(prof["element_share"].items(), key=lambda kv: -kv[1])),
+                     f"Damage over time: {prof['dot_share'] * 100:.0f}%",
+                     "Enemies carry: " + (" · ".join(f"{k} {v['uptime'] * 100:.0f}% ({', '.join(v['sources'])})"
+                                                     for k, v in st) or "no status from your abilities")]
+            if prof.get("basic_estimated"):
+                parts.append(f"{prof['basic_estimated']}: Basic Attacks do not flash on the skill bar – estimated "
+                             f"from your attack speed ({(self.char_stats.get('Attack Speed') or ('?',))[0]}/s).")
+            setup = self.cfg.get("ability_setup") or {}
+            used = [f"{k}: {v[0]} {float(v[1]):g}%" for k, v in setup.items()
+                    if v and v[0] and v[0] not in ("–", "-") and len(v) > 1 and v[1]]
+            if used:
+                parts.append("Ability setup used by the item rating: " + " · ".join(used))
+            self.lbl_sk_profile.configure(text="\n".join(parts))
+        r = self.sk_runs
+        r.delete(*r.get_children())
+        rows = []
+        for k, d in self.stage_stats.data.items():
+            if k.count("|") == 2 and k.split("|", 1)[0] == char:
+                _, stg, diff = k.split("|", 2)
+                if stage and stg != stage:
+                    continue
+                rows += [(stg, diff, e) for e in d.get("log", []) if e.get("casts")]
+        rows.sort(key=lambda x: -x[2].get("t", 0))
+        for i, (stg, diff, e) in enumerate(rows[:300]):
+            when = datetime.fromtimestamp(e["t"]).strftime("%d.%m. %H:%M") if e.get("t") else "-"
+            casts = " · ".join(f"{a} {n}" for a, n in sorted(e["casts"].items(), key=lambda kv: -kv[1]))
+            r.insert("", "end", iid=str(i), values=(when, stg, stages.short_difficulty(diff),
+                                                    fmt_dur(e.get("run_s") or e.get("cycle_s")), casts))
+        if not rows:
+            r.insert("", "end", iid="none", values=("", "", "", "", "No runs with counted casts yet – runs are kept "
+                                                                  "one by one since version 1.0.10."))
+
+    def _sk_use_shares(self):
+        prof = self._profile()
+        if not prof["abilities"]:
+            return
+        setup, specials = {}, ["Special 1", "Special 2"]
+        for name, x in sorted(prof["abilities"].items(), key=lambda kv: -kv[1]["share"]):
+            label = x["slot"] if x["slot"] in ("Basic Attack", "Strong Attack") else (specials.pop(0) if specials else None)
+            if label and label not in setup:
+                setup[label] = [name, round(x["share"] * 100)]
+        self._set_cfg("ability_setup", setup)
+        self._fill_eval_tab()
+        self._fill_minions()
+        self._fill_skills()
 
     # -- release notes ---------------------------------------------------------
     def show_changelog(self):
@@ -4793,6 +4996,8 @@ class App:
         self.cfg["skills_on"] = on
         save_config(self.cfg)
         self.btn_skills.configure(text="Skill tracking: on" if on else "Skill tracking: off", fg=C_RUN if on else FG)
+        if hasattr(self, "btn_sk_toggle"):
+            self._skills_header()
 
     def toggle_ocr(self):
         if self.ocr.enabled.is_set():
@@ -5083,6 +5288,7 @@ class App:
             cur = st.current
             runs = list(st.runs)
 
+        self._skills_live()
         self.lbl_hero.configure(text=st.char_name)
         pg = f" · Paragon {st.paragon.level}" if st.level >= 70 and st.paragon.level else ""
         self.lbl_hero_sub.configure(text=f"{st.hero}, Level {st.level}{pg}"

@@ -1,2 +1,2 @@
-VERSION = "1.0.12"
+VERSION = "1.0.13"
 REPO = "Evase94/deskrawl-tracker"

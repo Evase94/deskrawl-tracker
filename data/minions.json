@@ -22,7 +22,8 @@
    ],
    "abilities": [],
    "sources": [],
-   "rein_tradable": ""
+   "rein_tradable": "",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/5d444b41-808b-4e8c-ab0c-ff429cda48cc-armoredhorseslave.png"
   },
   {
    "slug": "tidewrath-crab-king",
@@ -52,7 +53,8 @@
     "Boss · level 40",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/58481ec0-df2c-4362-9b07-6b7d232172e5-beachcrabbossslave.png"
   },
   {
    "slug": "ancient-shellwarden",
@@ -87,7 +89,8 @@
     "Mini-boss · level 38",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/ec9cef88-55e4-4e0f-9fd3-6f84a76daf7d-beachturtlebossslave.png"
   },
   {
    "slug": "ancient-oak-treant",
@@ -118,7 +121,8 @@
     "Boss · level 28",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/37d0060b-a75e-445f-87df-a1dbaf8637fa-bigtreantslave.png"
   },
   {
    "slug": "blue-mammoth",
@@ -141,7 +145,8 @@
    ],
    "abilities": [],
    "sources": [],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/5c5e5f99-8654-4dc6-8d13-36f8441ad52e-bluemammothslave.png"
   },
   {
    "slug": "dark-elf-mage",
@@ -171,7 +176,8 @@
     "Mini-boss · level 16",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/f980156c-2e2d-4ec1-ae01-7dab1b9b750d-darkelfmageslave.png"
   },
   {
    "slug": "defiled-wyrm",
@@ -201,7 +207,8 @@
     "Boss · level 64",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/eaa797c3-22fb-49f1-a54d-661e71af1e5b-defiledkeepdragonslave.png"
   },
   {
    "slug": "bone-reaper",
@@ -232,7 +239,8 @@
     "Mini-boss · level 62",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/6b5544b5-7b86-4140-9fbd-af2c9662cd5d-defiledkeepreaperslave.png"
   },
   {
    "slug": "oakback-pack-bull",
@@ -263,7 +271,8 @@
    ],
    "abilities": [],
    "sources": [],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/2d959c24-93e6-42f6-a9f6-2b7faa0992de-bullslave.png"
   },
   {
    "slug": "skeleton-warrior",
@@ -294,7 +303,8 @@
    ],
    "abilities": [],
    "sources": [],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/47dbd07e-3260-43bd-bf05-2a8173aea608-skeletonwarriorslave.png"
   },
   {
    "slug": "sandstorm-harpy-queen",
@@ -325,7 +335,8 @@
     "Mini-boss · level 32",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/d366a395-4ecf-4b5f-9dc9-294fc9372fc3-desertharpyslave.png"
   },
   {
    "slug": "dread-sand-manticore",
@@ -356,7 +367,8 @@
     "Boss · level 34",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/7e2236ec-00f2-4e36-a2a2-99e5ddcc2fce-desertmanticoraslave.png"
   },
   {
    "slug": "flying-fish-king",
@@ -380,7 +392,8 @@
     }
    ],
    "sources": [],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/45d173fa-9a68-422d-aae5-c05e5a43ce07-fishingwaterdragonslave.png"
   },
   {
    "slug": "venom-queen",
@@ -411,7 +424,8 @@
     "Mini-boss · level 25",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/f7340f28-dcd7-4dc1-b33d-142d16ce3f80-forestspiderkingslave.png"
   },
   {
    "slug": "ogre",
@@ -441,7 +455,8 @@
     "Boss · level 19",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/03c23e31-3fc2-432b-9799-2b7aed8403d9-ogreslave.png"
   },
   {
    "slug": "raptor",
@@ -475,7 +490,8 @@
     "Mini-boss · level 7",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/dbe57647-ee42-420f-aa7c-d001b0b04b8d-raptorslave.png"
   },
   {
    "slug": "redrock-lord",
@@ -506,7 +522,8 @@
     "Boss · level 46",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/6cbfee59-12da-4fb5-891a-52b44fbbfa90-reddesertairwarlordslave.png"
   },
   {
    "slug": "serparmat-the-devourer",
@@ -536,7 +553,8 @@
     "Mini-boss · level 44",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/75d07f06-291d-4ce8-85de-210f97fa5ade-reddesertserparmatslave.png"
   },
   {
    "slug": "lord-of-the-crimson-vale",
@@ -567,7 +585,8 @@
     "Boss · level 52",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/30b75a31-2de4-4de1-919a-d623ddc26178-redforestdragonslave.png"
   },
   {
    "slug": "goblin-giant",
@@ -598,7 +617,8 @@
     "Mini-boss · level 50",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/2e765989-1425-4f3d-8f6d-f99c81428e86-redforesthobgoblinslave.png"
   },
   {
    "slug": "frost-dragon",
@@ -629,7 +649,8 @@
     "Boss · level 58",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/53551881-f19b-48a7-a2be-33983584627a-snowhillfrostdragonslave.png"
   },
   {
    "slug": "ice-hound",
@@ -660,7 +681,8 @@
     "Mini-boss · level 56",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/b006fb23-7470-4c58-be56-606b36c12995-snowhillicehoundslave.png"
   },
   {
    "slug": "lord-of-the-cinder",
@@ -691,7 +713,8 @@
     "Boss · level 70",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/f0332a44-3c0d-4c74-9173-68a2b6e03c1a-volcanodemonlordslave.png"
   },
   {
    "slug": "emberfang",
@@ -722,7 +745,8 @@
     "Mini-boss · level 68",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/20a2ca33-f83c-46f2-986b-10c20923a08f-volcanodragonslave.png"
   },
   {
    "slug": "bloodmoon-werewolf",
@@ -753,7 +777,8 @@
     "Boss · level 10",
     "Rein"
    ],
-   "rein_tradable": "Yes"
+   "rein_tradable": "Yes",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/b1161147-6d1c-4dac-999f-527cebf5cfce-werewolfslave.png"
   },
   {
    "slug": "shoal-naga",
@@ -789,7 +814,8 @@
     "Groups of 3 in 33.33% of regular encounters · level 40",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/6362bbeb-774a-4f80-89c8-d131bc44d213-beachnagaslave.png"
   },
   {
    "slug": "brinescale-serpent",
@@ -819,7 +845,8 @@
     "Groups of 1-2 in 66.67% of regular encounters · level 40",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/5ec64407-8bc3-43c7-9935-9e0e8a71cb08-beachserpentslave.png"
   },
   {
    "slug": "dark-horse",
@@ -838,7 +865,8 @@
    ],
    "abilities": [],
    "sources": [],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/a118baf1-b817-4807-8a21-d5c58e61404f-blackhorseslave.png"
   },
   {
    "slug": "undead-axemaster",
@@ -874,7 +902,8 @@
     "Groups of 2 in 33.33% of regular encounters · level 64",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/7380f917-e1c5-4fed-b696-7e090067ba2e-defiledkeepaxemasterslave.png"
   },
   {
    "slug": "keep-succubus",
@@ -910,7 +939,8 @@
     "Groups of 3 in 33.33% of regular encounters · level 64",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/7ea7da4a-168e-4c9c-8d77-74cc5ac88ae2-defiledkeepsuccubusslave.png"
   },
   {
    "slug": "dune-eagle",
@@ -944,7 +974,8 @@
     "Groups of 2 in 33.33% of regular encounters · level 33",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/23067b39-3f49-42b6-b523-ce5ce3a2e00d-deserteagle.png"
   },
   {
    "slug": "orc-fighter",
@@ -980,7 +1011,8 @@
     "3 with the boss · groups of 3-5 in 71.43% of regular encounters · level 19",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/436db770-9add-4938-808f-5c6500228f08-orcslave.png"
   },
   {
    "slug": "fae-dragon",
@@ -1010,7 +1042,8 @@
     "Groups of 3-4 in 100% of regular encounters · level 52",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/fba98a03-bc31-480a-889c-37a98ed08d44-redforestfaedragonslave.png"
   },
   {
    "slug": "ice-rock-elemental",
@@ -1038,7 +1071,8 @@
     "Groups of 3 in 50% of regular encounters · level 58",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/e434c230-baec-4f87-bdf8-3e5d8a728ef2-snowhillrockelementalslave.png"
   },
   {
    "slug": "frost-whelp",
@@ -1076,7 +1110,8 @@
     "6 with the boss · level 58",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/ef932ce5-a7c4-4450-bcf2-f3c9c2476895-snowhillwhelpslave.png"
   },
   {
    "slug": "tazan-camel",
@@ -1095,7 +1130,8 @@
    ],
    "abilities": [],
    "sources": [],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/3717f894-ba2f-4d19-8a67-1f50fc9700d0-tazancamelslave.png"
   },
   {
    "slug": "cinderlash",
@@ -1133,7 +1169,8 @@
     "4 with the boss · groups of 5 in 33.33% of regular encounters · level 70",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/4b72906f-d3ee-4d9e-9bdc-d4772255e5f5-volcanocinderlashslave.png"
   },
   {
    "slug": "hellguard",
@@ -1165,7 +1202,8 @@
     "Groups of 3 in 40% of regular encounters · level 68",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/81ce0c3a-c56f-42a7-82e6-7630775af000-volcanohellguardslave.png"
   },
   {
    "slug": "magma-golem",
@@ -1197,7 +1235,8 @@
     "Groups of 2 in 100% of regular encounters · level 70",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/e408a9f1-d710-480f-a857-224a6493e094-volcanomagmagolemslave.png"
   },
   {
    "slug": "white-horse",
@@ -1216,7 +1255,8 @@
    ],
    "abilities": [],
    "sources": [],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/88c7eefb-b027-41bb-8e21-8e4741fef6e3-whitehorseslave.png"
   },
   {
    "slug": "mutating-wolf",
@@ -1254,7 +1294,8 @@
     "Groups of 2-4 in 66.67% of regular encounters · level 28",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/9087bfc0-9248-4528-a1e3-3d45a2759e8b-zombiewolfslave.png"
   },
   {
    "slug": "driftshell-hermit-crab",
@@ -1288,7 +1329,8 @@
     "4 with the boss · level 40",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/0919651b-3d5c-45b6-9722-8b4ad6702125-beachhermitcrabslave.png"
   },
   {
    "slug": "reef-squid",
@@ -1322,7 +1364,8 @@
     "Groups of 7 in 33.33% of regular encounters · level 40",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/cddb5986-8ffe-46ce-a94e-d08017fde703-beachsquidslave.png"
   },
   {
    "slug": "boar",
@@ -1356,7 +1399,8 @@
     "Groups of 4 in 50% of regular encounters · level 10",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/ec8ce320-a24c-4323-a9f2-88477fcb8418-boarslave.png"
   },
   {
    "slug": "chestnut-pony",
@@ -1375,7 +1419,8 @@
    ],
    "abilities": [],
    "sources": [],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/e851d58b-6afa-40a8-99e9-052d38f796e3-brownponyslave.png"
   },
   {
    "slug": "defiled-ooze",
@@ -1409,7 +1454,8 @@
     "Groups of 5 in 33.33% of regular encounters · level 64",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/42001069-36ca-4122-896a-703e4c901688-defiledkeepoozeslave.png"
   },
   {
    "slug": "carrion-scarab",
@@ -1445,7 +1491,8 @@
     "Groups of 6 in 66.67% of regular encounters · level 64",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/34288dd0-f39e-4dc7-8a93-fa331847d869-defiledkeepscarabslave.png"
   },
   {
    "slug": "sand-kobold-thief",
@@ -1481,7 +1528,8 @@
     "Groups of 2 in 66.67% of regular encounters · level 34",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/6912ac9f-ec0a-480f-a200-8fcfa236d09b-desertkoboldthiefslave.png"
   },
   {
    "slug": "sand-kobold-warrior",
@@ -1513,7 +1561,8 @@
     "2 with the boss · groups of 2 in 33.33% of regular encounters · level 34",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/4661a172-319a-41f3-83c8-c688f30cd65f-desertkoboldwarriorslave.png"
   },
   {
    "slug": "sand-wasp",
@@ -1547,7 +1596,8 @@
     "Groups of 3-4 in 66.67% of regular encounters · level 34",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/5b44587a-d4ee-4126-a1ce-a55192956c84-desertwaspslave.png"
   },
   {
    "slug": "goblin-warrior",
@@ -1581,7 +1631,8 @@
     "Groups of 11 in 28.57% of regular encounters · level 19",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/a87216d9-6c4a-4a0c-b334-e9f7c9a838c5-goblinwarriorslave.png"
   },
   {
    "slug": "venomous-spider",
@@ -1615,7 +1666,8 @@
     "Groups of 2-3 in 66.67% of regular encounters · level 26",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/6c0a63bf-0253-4b1e-9800-ff1e124d8f25-poisonspiderslave.png"
   },
   {
    "slug": "barrens-crocodile",
@@ -1651,7 +1703,8 @@
     "Groups of 3 in 33.33% of regular encounters · level 46",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/1b72f809-f2c8-46c3-afdf-287aafdef1da-reddesertcrocodileslave.png"
   },
   {
    "slug": "scorched-imp",
@@ -1687,7 +1740,8 @@
     "Groups of 3-4 in 66.67% of regular encounters · level 46",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/647f6a9b-650a-478c-a867-20c6e704cfa7-reddesertimpslave.png"
   },
   {
    "slug": "redrock-golem",
@@ -1717,7 +1771,8 @@
     "4 with the boss · groups of 1-2 in 66.67% of regular encounters · level 46",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/6b59df3a-6b4b-4d6d-84c8-b6d0dc9f6237-reddesertrockgolemslave.png"
   },
   {
    "slug": "barrens-satyr",
@@ -1755,7 +1810,8 @@
     "Groups of 3-4 in 66.67% of regular encounters · level 46",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/d90e043b-c18e-4ad7-b451-700f24f97077-reddesertsatyrslave.png"
   },
   {
    "slug": "grizzly-bear",
@@ -1791,7 +1847,8 @@
     "Groups of 1 in 40% of regular encounters · level 52",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/45669ad5-aaa7-4849-bd96-0923d615398d-redforestbearslave.png"
   },
   {
    "slug": "crimson-guardian",
@@ -1825,7 +1882,8 @@
     "Groups of 2 in 33.33% of regular encounters · level 52",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/bc9905e8-b75e-430c-901e-ee9f28581661-redforestgiantslave.png"
   },
   {
    "slug": "mountain-tiger",
@@ -1861,7 +1919,8 @@
     "Groups of 2 in 40% of regular encounters · level 52",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/778bdab3-1b64-4569-b876-418ecfd8e144-redforesttigerslave.png"
   },
   {
    "slug": "skeleton-archer",
@@ -1899,7 +1958,8 @@
     "Groups of 5 in 28.57% of regular encounters · level 19",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/01fd6cfa-2b48-459b-95dc-528946787e4c-skeletonarcherslave.png"
   },
   {
    "slug": "frost-slime",
@@ -1931,7 +1991,8 @@
     "10 with the mini-boss · groups of 5 in 20% of regular encounters · level 56",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/af99f058-b670-4789-aa5c-0c4a42d9ced8-snowhillslimeslave.png"
   },
   {
    "slug": "frozen-zombie-warrior",
@@ -1965,7 +2026,8 @@
     "Groups of 5 in 50% of regular encounters · level 58",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/df6d4926-0ed4-469d-8f73-0fb546c6e2e0-snowhillzombiewarriorslave.png"
   },
   {
    "slug": "black-spider",
@@ -1999,7 +2061,8 @@
     "Groups of 6 in 11.76% of regular encounters · level 8",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/f22b6b3a-adcc-423a-bb84-8dbd843760a4-spiderslave.png"
   },
   {
    "slug": "stumplin",
@@ -2031,7 +2094,8 @@
     "5 with the boss · groups of 3-9 in 100% of regular encounters · level 28",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/da0f09a3-5d8f-4e7d-bc6b-243b9210d83a-stumplinslave.png"
   },
   {
    "slug": "ember-bat",
@@ -2065,7 +2129,8 @@
     "Groups of 4 in 66.67% of regular encounters · level 70",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/b625db72-644b-429f-b2a2-4b8e099468a8-volcanoemberbatslave.png"
   },
   {
    "slug": "grey-forest-wolf",
@@ -2101,7 +2166,8 @@
     "3 with the boss · groups of 6 in 50% of regular encounters · level 10",
     "Rein"
    ],
-   "rein_tradable": "No"
+   "rein_tradable": "No",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/9849a005-899d-4ba5-879f-8c47a4ab0b04-wolfslave.png"
   },
   {
    "slug": "brown-horse",
@@ -2120,7 +2186,8 @@
    ],
    "abilities": [],
    "sources": [],
-   "rein_tradable": ""
+   "rein_tradable": "",
+   "icon_url": "https://media.wikily.gg/d3181c39-1139-4bd4-b92b-acc8742f1e71/2026-09-28/76ac78e1-fd9a-4361-befe-b9516ff174c0-horseslave.png"
   }
  ]
 }

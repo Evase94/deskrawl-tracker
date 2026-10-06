@@ -3,6 +3,7 @@ how to get it, from wikily.gg/deskrawl/minions.
 
 Run again after a game patch:  python tools/scrape_minions.py
 """
+import base64
 import json
 import os
 import re
@@ -29,10 +30,18 @@ brown-horse""".split()
 
 
 def lines(slug):
+    """(visible text lines, picture URL) of a minion page."""
     p = Lines()
     req = urllib.request.Request(BASE + slug, headers=UA)
-    p.feed(urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace"))
-    return p.out
+    html = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    p.feed(html)
+    main = html[html.find("<main"):html.find("</main>")]
+    icon = None
+    m = re.search(r'<img[^>]+src="https://img\.wikily\.gg/unsafe/[^/]+/([A-Za-z0-9_\-]+)"', main)
+    if m:  # the wiki's image proxy carries the original picture URL base64-encoded
+        b64 = m.group(1)
+        icon = base64.urlsafe_b64decode(b64 + "=" * (-len(b64) % 4)).decode("utf-8", "replace")
+    return p.out, icon
 
 
 def section(L, start, ends):
@@ -69,7 +78,9 @@ def main():
     out = []
     for slug in SLUGS:
         try:
-            d = parse(slug, lines(slug))
+            text, icon = lines(slug)
+            d = parse(slug, text)
+            d["icon_url"] = icon
         except Exception as e:
             print("failed:", slug, e, file=sys.stderr)
             continue

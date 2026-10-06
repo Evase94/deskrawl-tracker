@@ -1,0 +1,303 @@
+{
+ "source": "wikily.gg/deskrawl/status-effects",
+ "status_effects": [
+  {
+   "slug": "burn",
+   "name": "Burn",
+   "text": "Take Fire Damage every 0.5 second.",
+   "duration_s": 3.0,
+   "duration": "Lasts 3 s, ticks every 0.5 s",
+   "applied_by": [
+    {
+     "name": "Infernal Covenant",
+     "kind": "Rune set"
+    },
+    {
+     "name": "Emberfang",
+     "kind": "Minion"
+    },
+    {
+     "name": "Flame Breath",
+     "kind": "Sorcerer ability, Strong Attack"
+    },
+    {
+     "name": "Fire Meteor",
+     "kind": "Sorcerer ability, Special"
+    },
+    {
+     "name": "Ignite",
+     "kind": "Sorcerer talent"
+    },
+    {
+     "name": "Immolation",
+     "kind": "Sorcerer talent"
+    },
+    {
+     "name": "Lord of the Cinder",
+     "kind": "Enemy"
+    }
+   ]
+  },
+  {
+   "slug": "chill",
+   "name": "Chill",
+   "text": "Attack Speed is reduced by 25% and Movement Speed by 35%.",
+   "duration_s": 4.0,
+   "duration": "Lasts 4 s",
+   "applied_by": [
+    {
+     "name": "Frozen Barrage",
+     "kind": "Rune set"
+    },
+    {
+     "name": "Ancient Shellwarden",
+     "kind": "Minion"
+    },
+    {
+     "name": "Ice Meteor",
+     "kind": "Sorcerer ability, Strong Attack"
+    },
+    {
+     "name": "Frost Trap",
+     "kind": "Hunter ability, Special"
+    },
+    {
+     "name": "Cold Retribution",
+     "kind": "Sorcerer talent"
+    },
+    {
+     "name": "Frost Dragon",
+     "kind": "Enemy"
+    },
+    {
+     "name": "Ancient Shellwarden",
+     "kind": "Enemy"
+    }
+   ]
+  },
+  {
+   "slug": "poisoned",
+   "name": "Poisoned",
+   "text": "Take 50% weapon damage as Poison damage every 2 seconds. Stacks up to 100 times.",
+   "duration_s": 6.0,
+   "duration": "Lasts 6 s at level 1, +0.5 s per level, stacks up to 100 times, ticks every 2 s",
+   "applied_by": [
+    {
+     "name": "Venomfang",
+     "kind": "Rune set"
+    },
+    {
+     "name": "Poison Shot",
+     "kind": "Hunter ability, Basic Attack"
+    },
+    {
+     "name": "Venom Bolt",
+     "kind": "Hunter ability, Strong Attack"
+    },
+    {
+     "name": "Poison Trap",
+     "kind": "Hunter ability, Special"
+    },
+    {
+     "name": "Critical Injection",
+     "kind": "Hunter talent"
+    }
+   ]
+  },
+  {
+   "slug": "bleeding",
+   "name": "Bleeding",
+   "text": "Taken Physical Damage every second. Reapplying carries over remaining damage and restarts the duration.",
+   "duration_s": 5.0,
+   "duration": "Lasts 5 s, ticks every 1 s",
+   "applied_by": [
+    {
+     "name": "Kabuto of the Crimson Tempest",
+     "kind": "Legendary Helm"
+    },
+    {
+     "name": "Bloodblade",
+     "kind": "Warrior ability, Basic Attack"
+    },
+    {
+     "name": "Rending Onslaught",
+     "kind": "Warrior ability, Strong Attack"
+    }
+   ]
+  },
+  {
+   "slug": "vulnerable",
+   "name": "Vulnerable",
+   "text": "Take 30% more damage.",
+   "duration_s": 3.0,
+   "duration": "Lasts 3 s",
+   "applied_by": [
+    {
+     "name": "Serpent's Tongue",
+     "kind": "Rune set"
+    },
+    {
+     "name": "Lord of the Crimson Vale",
+     "kind": "Minion"
+    },
+    {
+     "name": "Valiant Strike",
+     "kind": "Warrior ability, Basic Attack"
+    },
+    {
+     "name": "Deadly Hook",
+     "kind": "Warrior ability, Special"
+    },
+    {
+     "name": "Flare",
+     "kind": "Hunter ability, Special"
+    },
+    {
+     "name": "Exposing Traps",
+     "kind": "Hunter talent"
+    },
+    {
+     "name": "Exposing Strikes",
+     "kind": "Monk talent"
+    },
+    {
+     "name": "Arcane Exposure",
+     "kind": "Sorcerer talent"
+    },
+    {
+     "name": "Heavy Blow",
+     "kind": "Warrior talent"
+    },
+    {
+     "name": "Lord of the Crimson Vale",
+     "kind": "Enemy"
+    }
+   ]
+  },
+  {
+   "slug": "frozen",
+   "name": "Frozen",
+   "text": "Cannot move or take action while Frozen.",
+   "duration_s": 3.5,
+   "duration": "Lasts 3.5 s",
+   "applied_by": [
+    {
+     "name": "Northern Giant's Great Axe",
+     "kind": "Legendary Weapon"
+    },
+    {
+     "name": "Ice Nova",
+     "kind": "Sorcerer ability, Special"
+    },
+    {
+     "name": "Flash Freeze",
+     "kind": "Sorcerer talent"
+    }
+   ]
+  },
+  {
+   "slug": "dazed",
+   "name": "Dazed",
+   "text": "Attack Speed is reduced by 40% and Movement Speed by 15%.",
+   "duration_s": 5.0,
+   "duration": "Lasts 5 s",
+   "applied_by": [
+    {
+     "name": "Soulrender",
+     "kind": "Divine Weapon"
+    },
+    {
+     "name": "Divine Thunder",
+     "kind": "Monk ability, Special"
+    },
+    {
+     "name": "Aftershock",
+     "kind": "Monk talent"
+    }
+   ]
+  },
+  {
+   "slug": "stunned",
+   "name": "Stunned",
+   "text": "Cannot move or take action while Stunned.",
+   "duration_s": 2.0,
+   "duration": "Lasts 2 s",
+   "applied_by": [
+    {
+     "name": "Earthstrike",
+     "kind": "Warrior ability, Special"
+    },
+    {
+     "name": "Charge",
+     "kind": "Monk ability, Special"
+    },
+    {
+     "name": "Cornered Beast",
+     "kind": "Hunter talent"
+    },
+    {
+     "name": "Thunderclap",
+     "kind": "Monk talent"
+    },
+    {
+     "name": "Concussive Strikes",
+     "kind": "Warrior talent"
+    },
+    {
+     "name": "Ice Hound",
+     "kind": "Enemy"
+    }
+   ]
+  },
+  {
+   "slug": "short-stun",
+   "name": "Short Stun",
+   "text": "Briefly cannot move or take action.",
+   "duration_s": 1.0,
+   "duration": "Lasts 1 s",
+   "applied_by": [
+    {
+     "name": "Goblin Giant",
+     "kind": "Minion"
+    },
+    {
+     "name": "Ice Hound",
+     "kind": "Minion"
+    },
+    {
+     "name": "Lightning Cloud",
+     "kind": "Sorcerer ability, Special"
+    },
+    {
+     "name": "Shockwave",
+     "kind": "Hunter ability, Special"
+    },
+    {
+     "name": "Thunderstruck",
+     "kind": "Sorcerer talent"
+    }
+   ]
+  },
+  {
+   "slug": "electrostatic",
+   "name": "Electrostatic",
+   "text": "Take increased Lightning damage. Stacks up to 5 times.",
+   "duration_s": 4.0,
+   "duration": "Lasts 4 s, stacks up to 5 times",
+   "applied_by": [
+    {
+     "name": "Charged Orb",
+     "kind": "Monk talent"
+    },
+    {
+     "name": "Static Charge",
+     "kind": "Sorcerer talent"
+    },
+    {
+     "name": "Current Transfer",
+     "kind": "Sorcerer talent"
+    }
+   ]
+  }
+ ]
+}

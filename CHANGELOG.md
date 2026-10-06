@@ -2,6 +2,29 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.13 – 2026-10-06
+
+### New
+- **Skill Tracking page**:
+  - Turn skill tracking on or off.
+  - See the detected skill bar with pictures and the casts of the running run.
+  - See your build per stage: casts per run and per minute, % weapon damage per second, and the damage share of each ability, slot and element.
+  - See how much of the time enemies are Burning, Chilled, Vulnerable and so on, and every counted run.
+  - **Use for ratings** takes the measured shares for the item rating.
+- **Minions** show their pictures.
+
+### Improved
+- **Minion values are measured from your build** once skill tracking has counted enough runs (it uses the newest 40):
+  - Element bonuses count with your share of damage in that element.
+  - Basic Attack, Strong Attack and special ability bonuses count with your measured damage shares.
+  - "Damage to Burning / Slowed / Vulnerable … enemies" counts with how often your abilities, and the minion itself, put enemies in that state. This uses the status durations from the wiki.
+  - Damage abilities with a number (e.g. 200% Frost damage every 6 s) are compared with your damage per second.
+  - Minions that apply Vulnerable count its +30% damage.
+  - The page says whether values are measured or estimated.
+- **Basic Attacks** hardly flash on the skill bar. Their count is now estimated from your attack speed.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.12 – 2026-10-06
 
 ### New
