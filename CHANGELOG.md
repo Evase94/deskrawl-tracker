@@ -2,6 +2,16 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.21 – 2026-10-07
+
+### Improved
+- **Space now takes a Legendary all the way into the inventory.**
+  - For a Legendary on the ground, the tracker presses Space once to move it into the carriage, and 1.5 seconds later once more to move it from the carriage into the inventory.
+  - If no "Obtained …" pop-up with its name follows within 4 seconds, Space is pressed one more time.
+  - When the Legendary was only seen on the stage end screen, it is already in the carriage, so Space is pressed once.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.20 – 2026-10-07
 
 ### New

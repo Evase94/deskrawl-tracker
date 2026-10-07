@@ -3612,7 +3612,7 @@ class App:
         row2 = tk.Frame(leg, bg=PANEL)
         row2.pack(fill="x", padx=12, pady=(0, 2))
         self.var_leg_space = tk.BooleanVar(value=self.cfg.get("legendary_space", True))
-        tk.Checkbutton(row2, text="Press Space in the game when a Legendary drops (puts it into the inventory)",
+        tk.Checkbutton(row2, text="Press Space in the game when a Legendary drops (ground → carriage → inventory)",
                        variable=self.var_leg_space,
                        command=lambda: (self._set_cfg("legendary_space", bool(self.var_leg_space.get())),
                                         self._loot_enabled()),
@@ -4064,23 +4064,48 @@ class App:
             self._play_legendary()
         if self.cfg.get("legendary_space", True) and time.time() - getattr(self, "_last_space", 0) > 2.0:
             self._last_space = time.time()
-            threading.Thread(target=self._press_space, daemon=True).start()
+            threading.Thread(target=self._press_space, args=(source, text), daemon=True).start()
 
-    def _press_space(self):
-        """Tap Space in the game once (puts the item into the inventory). Like the log panel: right away while
-        Deskrawl has focus, otherwise with a short focus switch if the panel mode allows it."""
+    SPACE_GAP_S = 1.5   # ground -> carriage, then carriage -> inventory
+    SPACE_CHECK_S = 4.0  # wait this long for the "Obtained [..]" pop-up before one more try
+
+    def _press_space(self, source: str, text: str):
+        """Space in the game: a Legendary on the ground goes into the carriage with one press, from the
+        carriage into the inventory with a second one. After the end screen it is in the carriage already, so
+        one press. With the name known, the "Obtained [name]" pop-up confirms it; without it one more press.
+        Like the log panel: right away while Deskrawl has focus, otherwise with a short focus switch if the
+        panel mode allows it."""
         try:
-            time.sleep(0.3)
-            hwnd = self.capture.find()
-            if not hwnd:
+            presses = 2 if source == "ground" else 1
+            t0 = time.time()
+            for i in range(presses):
+                time.sleep(0.3 if i == 0 else self.SPACE_GAP_S)
+                if not self._space_once():
+                    return
+            if not text:
                 return
-            switch = self.cfg.get("auto_panels", "always") == "always" and not self.cfg.get("game_hidden")
-            prev = game_input.press_keys(hwnd, ["SPACE"], allow_focus_switch=switch)
-            if prev is None:
-                self.events.put(("status", "Legendary: Space not pressed – Deskrawl not in the foreground"))
-            game_input.restore_focus(prev)
+            until = time.time() + self.SPACE_CHECK_S
+            while time.time() < until:
+                time.sleep(0.4)
+                with self.state.lock:
+                    if self.state._popup_named(text, t0):
+                        self.events.put(("status", f"Legendary in the inventory: {text}"))
+                        return
+            self._space_once()
         except Exception:
             errlog.report("space", "Space for a Legendary could not be pressed")
+
+    def _space_once(self) -> bool:
+        hwnd = self.capture.find()
+        if not hwnd:
+            return False
+        switch = self.cfg.get("auto_panels", "always") == "always" and not self.cfg.get("game_hidden")
+        prev = game_input.press_keys(hwnd, ["SPACE"], allow_focus_switch=switch)
+        if prev is None:
+            self.events.put(("status", "Legendary: Space not pressed – Deskrawl not in the foreground"))
+            return False
+        game_input.restore_focus(prev)
+        return True
 
     def _play_legendary(self):
         try:
