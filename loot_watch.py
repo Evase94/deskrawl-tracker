@@ -75,11 +75,45 @@ def label_text(frame, box) -> str:
     return " ".join(l.text for l in sorted(lines, key=lambda l: l.x)).strip()
 
 
+_NAMES = None
+
+
+def _names() -> list:
+    """Compact names of every Legendary and Divine item (data/item_db.json, legendaries.json)."""
+    global _NAMES
+    if _NAMES is None:
+        import json
+        import paths
+        names = set()
+        for path, key in ((paths.res("data", "item_db.json"), "items"), (paths.res("legendaries.json"), "items")):
+            try:
+                with open(path, encoding="utf-8") as f:
+                    d = json.load(f)
+                for it in d.get(key, []):
+                    names.add(_compact(it.get("name", "")))
+            except Exception:
+                pass
+        _NAMES = sorted(n for n in names if n)
+    return _NAMES
+
+
+def _compact(text: str) -> str:
+    return re.sub(r"[^a-z]", "", text.lower())
+
+
 def is_item_name(text: str) -> bool:
+    """A Legendary or Divine item of the game (orange UI text such as "CHARACTER" or "Toughness" is not)."""
     letters = sum(ch.isalpha() for ch in text)
     if letters < 4 or letters < len(text.replace(" ", "")) * 0.7:
         return False  # damage numbers ("848,237", "2.7M")
-    return re.sub(r"[^a-z]", "", text.lower()) not in NOT_NAMES
+    key = _compact(text)
+    if key in NOT_NAMES:
+        return False
+    names = _names()
+    if not names:
+        return True
+    import difflib
+    return any(n in key for n in names) or bool(difflib.get_close_matches(key, names, n=1, cutoff=0.8))
 
 
 class LootWatcher(threading.Thread):
@@ -121,7 +155,8 @@ class LootWatcher(threading.Thread):
         while True:
             time.sleep(self.INTERVAL_S)
             self.state.flush_ground(time.time())
-            if not self.enabled or self.state.ui_busy():
+            if not self.enabled or self.state.ui_busy() or not self.state.in_run(time.time()):
+                self.known = []  # town, menus: nothing drops
                 continue
             try:
                 frame = self.capture.grab()

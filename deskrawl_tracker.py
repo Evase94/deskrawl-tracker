@@ -436,6 +436,11 @@ class GameState:
         for _ in range(max(n - r.ground_legendaries, 0)):
             self.legendary_q.put(("end screen", ""))
 
+    def in_run(self, t: float) -> bool:
+        """A run is going on (or ended a few seconds ago: the boss loot lands right at the end)."""
+        with self.lock:
+            return self.current is not None or bool(self.runs and self.runs[-1].end and t - self.runs[-1].end < 8)
+
     GROUND_WAIT_S = 4.0  # an item the carriage unloads shows its name too, followed by an "Obtained" pop-up
 
     def ground_legendary(self, text: str, t: float):

@@ -2,6 +2,13 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.19 – 2026-10-07
+
+### Fixed
+- **The Legendary sound played over and over in town.** Orange headings of the game's panels (e.g. "CHARACTER", "Health", "Toughness") were taken for item names on the ground. The tracker now looks for drops only during a run and a few seconds after it, and only counts names of real Legendary and Divine items.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.18 – 2026-10-07
 
 ### Fixed
