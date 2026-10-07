@@ -16,15 +16,16 @@ It does **not** read game memory, does not change any game files and sends nothi
 | Overview | EXP/h, gold/h (incl. sold items), runs/h, DPS per run, time to the next level – at level 70 to the next Paragon level (Paragon EXP added up from the level-70 runs in the game log) |
 | Character Stats | Your character sheet, kept separately for each of your characters |
 | Stages | Every region and stage in map order (incl. Dream realms), stages without runs marked; **Runs…** lists single runs to delete them, **Clear this stage** starts a stage over; time, EXP/h, gold/h, enemy damage types, with search, type and difficulty filters and sorting (incl. map order). **Boss farming**: Silver and Gold bosses ranked by kills/h or efficiency (kill speed + EXP, adjustable weighting), with legendaries/h |
-| Drops | Drops by rarity, gems by tier, runes, keys |
+| Drops | Drops by rarity, gems by tier, runes, keys; sound and Space (into the inventory) when a Legendary drops |
 | Deaths | Who killed you and with what |
 | Item Comparer | Item comparison with F8: values like in the game, differences, effects, verdict |
-
-**Skill tracking** (own page): counts which abilities you cast per run from the skill bar and works out your damage shares and status uptimes; the Minions page and the item rating use them.
 | Item Database | Every Legendary and Divine item by slot: unique effect, base values and attribute ranges, attribute pool per class, Ancient / Black Mist variants and where it drops |
 | Minions | All 67 minions with pictures, ranked by what their passives and abilities are worth for your character (damage, survival, farming) – measured from your build when skill tracking is on – with where their Rein drops |
 | Skill Tracking | Skill tracking on/off, the detected skill bar with live casts, your build measured per stage (casts, damage shares by ability, slot and element, status uptimes) and every counted run |
+| Talents | **Best build for your class**: worked out from your character sheet, skill tracking, status uptimes and a combat simulation; shows which talents work together (e.g. Ignite → Burn → Conflagration), the role of each talent and the change against your build; talent planner with afkmeta.com links |
 | Gems | Which gem helps you most |
+
+**Skill tracking** (own page): counts which abilities you cast per run from the skill bar and works out your damage shares and status uptimes; the Minions page, the item rating and the talent calculator use them.
 
 ## Installation
 

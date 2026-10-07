@@ -28,6 +28,7 @@ import storage
 import setup_dialog
 import bis
 import talents
+import talent_model
 import skills
 import updater
 import changelog
@@ -1540,7 +1541,8 @@ class App:
         self.nb.add(self.tab_db, text="Item Database")
         self.nb.add(self.tab_mn, text="Minions")
         self.nb.add(self.tab_sk, text="Skill Tracking")
-        # BiS Gear, Talents and Weights are hidden for now: still built (their settings keep feeding the
+        self.nb.add(self.tab_tal, text="Talents")
+        # BiS Gear and Weights are hidden for now: still built (their settings keep feeding the
         # item rating), just not in the menu. Add them to the menu again to show them.
         self.nb.add(self.tab_gems, text="Gems")
         self._build_farm(self.tab_farm)
@@ -2327,6 +2329,7 @@ class App:
         sf = ui.ScrollFrame(p)
         sf.pack(fill="both", expand=True)
         body = sf.inner
+        self._tal_rec_card(body)
         wrap = tk.Frame(body, bg=BG)
         wrap.pack(fill="both", expand=True, padx=12, pady=(0, 12))
         wrap.columnconfigure(0, weight=1)
@@ -2384,7 +2387,7 @@ class App:
                                   state="readonly")
                 cb.pack(side="right")
                 cb.bind("<<ComboboxSelected>>", lambda _e: (self._set_cfg("talent_mode", self.var_tal_mode.get()),
-                                                             self._tal_fill()))
+                                                             self._tal_fill(), self._tal_rec_idle()))
             else:
                 v = tk.Label(r, text="-", bg=T["panel"], fg=FG, font=("Bahnschrift SemiBold", 11))
                 v.pack(side="right")
@@ -2476,6 +2479,236 @@ class App:
         self._tal_icons = {}
         self._tal_tip = None
         self._tal_load()
+
+    # -- best build ------------------------------------------------------------
+    def _tal_rec_card(self, body):
+        """Card above the tree: the best build for the class, worked out from everything the tracker knows."""
+        card = ui.card(body, fill="x", padx=12, pady=(0, 10))
+        top = tk.Frame(card, bg=PANEL)
+        top.pack(fill="x", padx=14, pady=(12, 2))
+        self.lbl_rec_title = tk.Label(top, text="Best build for your class", bg=PANEL, fg=FG, font=ui.F_HEAD,
+                                      anchor="w")
+        self.lbl_rec_title.pack(side="left")
+        self.btn_rec_copy = ui.button(top, "Copy link", self._tal_rec_copy, small=True)
+        self.btn_rec_copy.pack(side="right")
+        self.btn_rec_show = ui.button(top, "Show in planner", self._tal_rec_show, small=True)
+        self.btn_rec_show.pack(side="right", padx=(0, 8))
+        self.btn_rec_calc = ui.button(top, "Calculate best build", self._tal_rec_calc, accent=True)
+        self.btn_rec_calc.pack(side="right", padx=(0, 8))
+        ui.Tooltip(self.btn_rec_calc, "Tries every combination of capstones and spends your points one by one where "
+                                      "they add most in the mode chosen on the right (Damage, Survival, Balanced, "
+                                      "Farming). Takes a few seconds.")
+        self.lbl_rec_sum = tk.Label(card, text="", bg=PANEL, fg=FG, font=("Bahnschrift SemiBold", 12), anchor="w")
+        self.lbl_rec_sum.pack(fill="x", padx=14)
+        self.lbl_rec_why = ui.autowrap(tk.Label(card, text="", bg=PANEL, fg=FG, font=ui.F_SMALL, anchor="w",
+                                                justify="left"), 30)
+        self.lbl_rec_why.pack(fill="x", padx=14, pady=(4, 0))
+        cols = [("t", "Talent", 180, "w"), ("role", "Role", 120, "w"), ("best", "Best", 50, "e"), ("mine", "Yours", 50, "e"),
+                ("chg", "Change", 60, "e"), ("dps", "Damage", 70, "e"), ("surv", "Survival", 70, "e"),
+                ("why", "What it does for you", 330, "w")]
+        f, self.rec_tree = self._tree(card, cols, 8)
+        f.pack(fill="x", padx=14, pady=(6, 4))
+        self.rec_tree.tag_configure("up", foreground=C_GOOD)
+        self.rec_tree.tag_configure("down", foreground=C_BAD)
+        self.rec_tree.tag_configure("off", foreground=MUTED)
+        self.rec_tree.tag_configure("syn", foreground=ui.RARITY["Legendary"])
+        self.lbl_rec_facts = ui.autowrap(tk.Label(card, text="", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w",
+                                                  justify="left"), 30)
+        self.lbl_rec_facts.pack(fill="x", padx=14, pady=(2, 12))
+        self._rec = None
+        self._tal_rec_idle()
+
+    def _tal_rec_idle(self):
+        hero = self._tal_hero()
+        mode = self.var_tal_mode.get() if hasattr(self, "var_tal_mode") else "Damage"
+        self.lbl_rec_title.configure(text=f"Best build for your {hero or 'class'} – {mode}")
+        if self._rec is None:
+            self.lbl_rec_sum.configure(text="Click “Calculate best build”.", fg=MUTED)
+            self.lbl_rec_facts.configure(text=self._tal_rec_facts_text(self._talent_facts()))
+
+    def _tal_rec_facts_text(self, F) -> str:
+        """What the recommendation is based on, and what it assumes."""
+        if F is None:
+            return ("Needs your class (start the game once) and your character sheet (F9). Skill tracking makes it "
+                    "much more exact.")
+        lines = []
+        if F.measured:
+            lines.append("Your abilities, measured by skill tracking: " + ", ".join(
+                f"{n} {x['share'] * 100:.0f} % of the damage ({x['cps'] * 60:.0f}/min)"
+                for n, x in sorted(F.use.items(), key=lambda kv: -kv[1]["share"])) + ".")
+        elif F.use:
+            lines.append("Your abilities from the shares set on the right (switch on skill tracking to measure "
+                         "them): " + ", ".join(f"{n} {x['share'] * 100:.0f} %" for n, x in F.use.items()) + ".")
+        else:
+            lines.append("No abilities known – switch on skill tracking or set them on the right; ability talents "
+                         "count as nothing until then.")
+        if F.sim is not None:
+            lines.append(f"Cooldown, mana and free-cast talents: combat simulation of your skill bar "
+                         f"({F.kills:.2f} kills per second).")
+        c = F.char
+        lines.append(f"Character sheet: {c.get('Critical Hit Chance', 0):g} % crit chance, "
+                     f"{c.get('Critical Hit Damage', 0):g} % crit damage, {c.get('Max Mana', 0):g} Max Mana, "
+                     f"{c.get('Mana Regeneration', 0):g} Mana Regen, {c.get('Mana on Kill', 0):g} Mana on Kill.")
+        if not self.cfg.get("talents_mine"):
+            lines.append("⚠ Your current build is unknown: open the talent window in the game and click “Load "
+                         "current build” – your sheet already holds the talents you have, so without it they "
+                         "count twice.")
+        lines.append(f"Assumed (the game gives no numbers): Electrostatic +{talent_model.ELECTROSTATIC_PER_STACK:g} % "
+                     f"Lightning damage taken per stack; “while Healthy” {talent_model.HEALTHY_SHARE * 100:.0f} % of "
+                     f"the time; explosions hit {talent_model.PROC_TARGETS:g} enemies.")
+        hero = F.hero
+        nr = [f"{t['name']} ({talent_model.why_not(t, hero)})" for t in talents.tree(hero)
+              if not talent_model.rated(t, hero)]
+        if nr:
+            lines.append("Not rated: " + ", ".join(nr) + ".")
+        return "\n".join(lines)
+
+    def _tal_rec_calc(self):
+        F = self._talent_facts()
+        if F is None:
+            self.lbl_rec_sum.configure(text="Class or character sheet unknown – see below.", fg=C_BAD)
+            self.lbl_rec_facts.configure(text=self._tal_rec_facts_text(None))
+            return
+        mode = self.var_tal_mode.get() if self.var_tal_mode.get() in item_eval.MODES else "Damage"
+        mine = dict(self.cfg.get("talents_mine") or {})
+        points = self._tal_points()
+        self.lbl_rec_sum.configure(text="Calculating… 0 %", fg=MUTED)
+        self.lbl_rec_facts.configure(text=self._tal_rec_facts_text(F))
+
+        def progress(x):
+            self.root.after(0, lambda: self.lbl_rec_sum.configure(text=f"Calculating… {x * 100:.0f} %"))
+
+        def work():
+            try:
+                best = talent_model.best_build(F, points, mine, mode, progress)
+                res = talent_model.evaluate(F, best, mine, mode)
+                vals = talent_model.talent_values(F, best, mine, mode)
+                ex = talent_model.explain(F, best, mine, mode)
+                ex_mine = talent_model.explain(F, mine, mine, mode) if mine else None
+                out = (best, res, vals, mine, mode, F.hero, ex, ex_mine)
+            except Exception as e:
+                errlog.log.error("best talent build failed", exc_info=True)
+                out = str(e)
+            self.root.after(0, lambda: self._tal_rec_done(out))
+        threading.Thread(target=work, daemon=True).start()
+
+    def _tal_rec_done(self, out):
+        if isinstance(out, str):
+            self.lbl_rec_sum.configure(text=f"Failed: {out}", fg=C_BAD)
+            return
+        best, (dps, surv, farm, score, _m), vals, mine, mode, hero, ex, ex_mine = out
+        self._rec = (best, hero)
+        same = best == {k: v for k, v in mine.items() if v}
+        if same:
+            self.lbl_rec_sum.configure(text="Your build is already the best one for this mode.", fg=C_GOOD)
+        else:
+            self.lbl_rec_sum.configure(
+                text=f"Damage {dps:+.1f} %   ·   Survival {surv:+.1f} %   compared with your build "
+                     f"({sum(best.values())} points)", fg=C_GOOD if score > 0 else FG)
+        why = []
+        for p in ex["packages"]:
+            why.append("◆ " + p)
+        if not ex["packages"]:
+            why.append("◆ No status combination pays off with your abilities – the build stacks your main damage "
+                       "and mana directly.")
+        for w in ex["warnings"]:
+            why.append("⚠ " + w)
+        if ex_mine:
+            for w in ex_mine["warnings"]:
+                why.append("⚠ Your build: " + w)
+        n_fill = sum(1 for r in ex["roles"].values() if r == "filler")
+        if n_fill:
+            why.append(f"Filler: {n_fill} talent(s) only open the next rows – any point in that row does the same.")
+        self.lbl_rec_why.configure(text="\n".join(why))
+        t = self.rec_tree
+        t.delete(*t.get_children())
+        val = {talents.key(x[0]): x for x in vals}
+        roles = ex["roles"]
+        role_name = {"synergy": "Synergy", "core": "Damage", "survival": "Survival", "filler": "Filler (opens row)",
+                     "unused": "No effect"}
+        order = {"synergy": 0, "core": 1, "survival": 2, "filler": 3, "unused": 4}
+        rows = []
+        for tal in talents.tree(hero):
+            k = talents.key(tal)
+            b, m = best.get(k, 0), mine.get(k, 0)
+            if not b and not m:
+                continue
+            v = val.get(k)
+            rows.append((tal, b, m, v))
+        rows.sort(key=lambda r: (not r[1], order.get(roles.get(talents.key(r[0])), 5),
+                                 -(r[3][4] if r[3] else -1e9), -r[1]))
+        for tal, b, m, v in rows:
+            chg = b - m
+            why = self._tal_rec_why(tal, hero, ex.get("elements"))
+            tag = "up" if chg > 0 else ("down" if chg < 0 else "")
+            role = roles.get(talents.key(tal), "") if b else ""
+            if not b:
+                tag = "off"
+            elif role == "synergy" and not chg:
+                tag = "syn"
+            t.insert("", "end", tags=(tag,), values=(
+                tal["name"], role_name.get(role, "removed" if not b else ""), f"{b}/{tal['ranks']}", m or "–",
+                f"{chg:+d}" if chg else "",
+                f"{v[2]:+.1f} %" if v and abs(v[2]) >= 0.05 else "", f"{v[3]:+.1f} %" if v and abs(v[3]) >= 0.05 else "",
+                why))
+        t.configure(height=min(max(len(rows), 4), 16))
+
+    def _tal_rec_why(self, tal, hero, elements=None) -> str:
+        """Short text: what the talent's effects are in this model (parts without effect for you marked)."""
+        if not talent_model.rated(tal, hero):
+            return "not rated – " + talent_model.why_not(tal, hero)
+        names = {"stat": None, "dmg": "damage", "crit_chance": "crit chance", "crit_dmg": "crit damage",
+                 "cd": "cooldown", "mana_cost": "mana cost", "mana_cast": "mana per cast"}
+        parts = []
+        for e in talent_model.rank_effects(tal, hero):
+            k = e["k"]
+            if k == "stat":
+                el = e["stat"][:-7] if e["stat"].endswith(" Damage") else None
+                if elements and el in item_eval.ELEMENTS and el not in elements:
+                    parts.append(f"{e['stat']} (unused – no {el} skills)")
+                else:
+                    parts.append(e["stat"])
+            elif k == "mr_pct":
+                parts.append(f"+{e['v'] * tal['ranks']:g} % Magic Resist")
+            elif k in names:
+                tgt = e.get("target") or ""
+                cond = f" vs {e['cond']}" if e.get("cond") else (f" per {e['per_stack']} stack" if e.get("per_stack") else "")
+                parts.append(f"{tgt} {names[k]}{cond}".strip())
+            elif k == "apply":
+                parts.append(f"applies {e['status']}")
+            elif k == "free_cast":
+                parts.append(f"free {e['dst']}")
+            elif k == "buff":
+                parts.append(f"{e['give'].get('target') or e['give'].get('stat')} after {e['trigger']}")
+            elif k == "proc":
+                parts.append("extra hits")
+            elif k in ("mana_to_int",):
+                parts.append("Max Mana → Intelligence")
+            elif k in ("while", "heal_during", "heal_every", "heal_cast", "heal_per_mana", "shield_hit"):
+                parts.append("survival")
+            elif k == "status_dur":
+                parts.append(f"longer {e['status']}")
+        return ", ".join(dict.fromkeys(parts))
+
+    def _tal_rec_show(self):
+        if not self._rec:
+            return
+        best, hero = self._rec
+        if hero != self._tal_hero():
+            return
+        self.tal_build = dict(best)
+        self._tal_store()
+        self._tal_fill()
+        self.lbl_tal_share.configure(text="Best build loaded into the planner.", fg=self.TC["green"])
+
+    def _tal_rec_copy(self):
+        if not self._rec:
+            return
+        best, hero = self._rec
+        self.root.clipboard_clear()
+        self.root.clipboard_append(talents.share_link(best, hero))
+        self.lbl_rec_sum.configure(text=self.lbl_rec_sum.cget("text").split("   –")[0] +
+                                   "   – link copied (afkmeta.com planner)")
 
     def _tal_resized(self, e):
         """Redraw the tree once the width settled (not for every pixel while the window is dragged)."""
@@ -2770,7 +3003,7 @@ class App:
             rows = []
             for name, b in builds.items():
                 b = talents.normalize(b, hero)
-                v = talents.evaluate(b, mine, hero, ctx, mode, shares) if ctx.char else (0, 0, 0, 0)
+                v = self._tal_eval(b, mine, hero, ctx, mode, shares)
                 rows.append((v[3], name, b, v))
             best = max(r[0] for r in rows)
             for i, (score, name, b, (dps, surv, farm, _)) in enumerate(sorted(rows, key=lambda r: -r[0]), start=1):
@@ -2837,7 +3070,7 @@ class App:
         rows = []
         for name, b in builds.items():
             b = talents.normalize(b, hero)
-            vals = talents.evaluate(b, mine, hero, ctx, mode, shares) if ctx.char else (0, 0, 0, 0)
+            vals = self._tal_eval(b, mine, hero, ctx, mode, shares)
             rows.append((vals[3], name, b, vals))
         best = max(r[0] for r in rows)
         self.btn_tal_builds.configure(text=f"All saved builds ({len(rows)})…")
@@ -2876,6 +3109,28 @@ class App:
         self.cfg["talents_mine"] = dict(self.tal_build)
         self._tal_store()
         self._tal_fill()
+
+    def _tal_eval(self, build, mine, hero, ctx, mode, shares):
+        """(damage %, survival %, income %, score) of a build against mine: talent model, else the old rules."""
+        if not ctx.char:
+            return 0, 0, 0, 0
+        F = self._talent_facts()
+        if F is not None:
+            return talent_model.evaluate(F, build, mine, mode)[:4]
+        return talents.evaluate(build, mine, hero, ctx, mode, shares)
+
+    def _talent_facts(self):
+        """Everything the talent model needs about this character (talent_model.Facts) or None."""
+        hero = self._tal_hero()
+        if not hero or not self.char_stats:
+            return None
+        ctx = self._eval_context()
+        prof = self._profile_cached()
+        bar = [s[0] for s in (self.skills.bar.slots if self.skills.bar else [])]
+        slots = bar or list(prof.get("abilities", {}))
+        sim, kills = (ctx.sim, ctx.kills_per_s) if ctx.sim is not None else (None, 0.8)
+        shares = self._tal_shares() if hasattr(self, "tal_ab") else {}
+        return talent_model.Facts(hero, ctx, prof, shares, slots, sim, kills)
 
     def _tal_best(self):
         hero = self._tal_hero()
@@ -2960,7 +3215,19 @@ class App:
             self.lbl_tal_measured.configure(text="Switch on “Skill tracking” (Controls) to measure your ability "
                                                  "use instead of guessing.")
         self._tal_vals = {}
-        if hero and ctx.char:
+        F = self._talent_facts()
+        if hero and ctx.char and F is not None:
+            cur = talent_model.Model(F, mine).finish(None)
+            dps, surv, farm, score, _m = talent_model.evaluate(F, self.tal_build, mine, mode, cur)
+            for key, val in (("dps", dps), ("surv", surv), ("farm", farm)):
+                self.tal_m[key].configure(text=f"{val:+.1f} %", fg=C_GOOD if val > 0.05 else (C_BAD if val < -0.05 else FG))
+            for t in talents.tree(hero):
+                rank = self.tal_build.get(talents.key(t), 0)
+                if talent_model.rated(t, hero) and rank < t["ranks"] and talents.can_add(self.tal_build, t, hero):
+                    b2 = dict(self.tal_build)
+                    b2[talents.key(t)] = rank + 1
+                    self._tal_vals[talents.key(t)] = talent_model.evaluate(F, b2, mine, mode, cur)[3] - score
+        elif hero and ctx.char:
             dps, surv, farm, score = talents.evaluate(self.tal_build, mine, hero, ctx, mode, shares)
             for key, val in (("dps", dps), ("surv", surv), ("farm", farm)):
                 self.tal_m[key].configure(text=f"{val:+.1f} %", fg=C_GOOD if val > 0.05 else (C_BAD if val < -0.05 else FG))
@@ -2990,7 +3257,7 @@ class App:
                 elif kind == "mr_pct":
                     lines.append(f"+{v:g}% Magic Resist")
             for t in talents.tree(hero):
-                if self.tal_build.get(talents.key(t)) and not talents.rated(t, hero):
+                if self.tal_build.get(talents.key(t)) and not talent_model.rated(t, hero):
                     lines.append(f"{t['name']} {self.tal_build[talents.key(t)]}/{t['ranks']} (not rated)")
         self.lbl_tal_fx.configure(text="\n".join("• " + l for l in lines) if lines else "Pick talents to see their effects.")
         if hero:
@@ -3059,8 +3326,8 @@ class App:
         if t.get("rank1") and t["ranks"] > 1:
             lines.append(f"Rank 1: {t['rank1']}")
         lines.append(f"Rank {t['ranks']}: {t['rank_max']}" if t["ranks"] > 1 else t["rank_max"])
-        if not talents.rated(t, hero):
-            lines.append("Not rated – the effect cannot be calculated.")
+        if not talent_model.rated(t, hero):
+            lines.append(f"Not rated – {talent_model.why_not(t, hero)}.")
         elif talents.key(t) in self._tal_vals:
             lines.append(f"Next point: {self._tal_vals[talents.key(t)]:+.2f} % ({self.var_tal_mode.get()})")
         if self.cfg.get("talents_mine"):

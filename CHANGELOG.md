@@ -2,6 +2,23 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.22 – 2026-10-07
+
+### New
+- **The Talents page is back, with "Best build for your class".** Click **Calculate best build** and the tracker works out the best talent build for your class in the chosen mode (Damage, Survival, Balanced or Farming) and compares it with your current build. It is calculated from:
+  - your character sheet (F9), using the same damage formula and survival model as the Item Comparer,
+  - skill tracking: which abilities you use, how often, and their share of your damage,
+  - how often enemies carry Burn, Electrostatic, Vulnerable, Frozen and other statuses, including the ones your talents apply (e.g. Ignite on critical hits),
+  - a combat simulation for cooldown, mana cost, mana gain and free-cast talents.
+- **The build has to fit together.** For each status, the page shows what applies it, how often enemies carry it and which talents use it (e.g. "Burn: Ignite → on enemies 49 % of the time → used by Conflagration, Combustion").
+  - It warns when a talent needs a status that nothing in the build applies, or when only part of its bonus works.
+  - Each talent gets a role: Synergy, Damage, Survival, or Filler (only opens the next row).
+  - Effects that do nothing for you are marked, e.g. Fire Damage without Fire skills.
+- **Show in planner** loads the suggested build into the talent planner, and **Copy link** copies it as an afkmeta.com link.
+- The planner's numbers ("Compared with my build", value of the next point) use the same calculation.
+
+Load your current build once ("Load current build" with the talent window open), so that the talents you already have are not counted twice. Your settings, character data and histories are kept when you update.
+
 ## v1.0.21 – 2026-10-07
 
 ### Improved

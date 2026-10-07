@@ -52,11 +52,23 @@ class CombatSim:
     def ok(self) -> bool:
         return any(not s["basic"] for s in self.slots)
 
-    def run(self, stats: dict, kills_per_s: float) -> dict:
-        """Casts per second of every slotted ability."""
-        key = (tuple(round(float(stats.get(k, 0.0)), 3) for k in STATS), round(kills_per_s, 3))
+    def run(self, stats: dict, kills_per_s: float, mods: dict | None = None) -> dict:
+        """Casts per second of every slotted ability (plus abilities cast for free by talents).
+
+        mods (talents): {"cd": {ability: factor}, "mana": {ability: factor}, "gain": {ability: mana per cast},
+        "free": [(source, ability, chance)]} - cooldown and mana cost factors, mana restored per cast, and
+        abilities cast for free (no mana, no cooldown, no time) with a chance per cast of the source."""
+        mods = mods or {}
+        mkey = tuple((k, tuple(sorted((str(a), round(float(b), 4)) for a, b in mods[k].items())))
+                     for k in ("cd", "mana", "gain") if mods.get(k)) +             tuple(sorted((a, b, round(float(c), 4)) for a, b, c in mods.get("free", [])))
+        key = (tuple(round(float(stats.get(k, 0.0)), 3) for k in STATS), round(kills_per_s, 3), mkey)
         if key in self._cache:
             return self._cache[key]
+        cd_f = [float(mods.get("cd", {}).get(s["name"], 1.0)) for s in self.slots]
+        mana_f = [float(mods.get("mana", {}).get(s["name"], 1.0)) for s in self.slots]
+        gain = [float(mods.get("gain", {}).get(s["name"], 0.0)) for s in self.slots]
+        free = [[(dst, float(p)) for src, dst, p in mods.get("free", []) if src == s["name"]] for s in self.slots]
+        extra, acc = {}, {}
         aps = max(float(stats.get("Attack Speed", 1.0)), 0.05)
         cdr = min(max(float(stats.get("Cooldown Reduction", 0.0)), 0.0) / 100, CAP)
         mcr = min(max(float(stats.get("Mana Cost Reduction", 0.0)), 0.0) / 100, CAP)
@@ -84,22 +96,30 @@ class CombatSim:
                     if s["basic"]:
                         timers[i] = 1.0 / aps
                     else:
-                        cost = s["mana"] * (1 - mcr)
+                        cost = s["mana"] * (1 - mcr) * mana_f[i]
                         if mana < cost:
                             continue
                         mana -= cost
-                        timers[i] = s["cooldown"] * (1 - cdr)
+                        timers[i] = s["cooldown"] * cd_f[i] * (1 - cdr)
                         gcd = GCD * (1 - cdr)
                         busy = s["channel"]
                     casts[i] += 1
+                    mana = min(max_mana, mana + gain[i])
+                    for dst, p in free[i]:
+                        acc[dst] = acc.get(dst, 0.0) + p
+                        while acc[dst] >= 1.0:
+                            acc[dst] -= 1.0
+                            extra[dst] = extra.get(dst, 0) + 1
                     break
             t += DT
         out = {s["name"]: casts[i] / SECONDS for i, s in enumerate(self.slots)}
+        for dst, n in extra.items():
+            out[dst] = out.get(dst, 0.0) + n / SECONDS
         self._cache[key] = out
         return out
 
-    def wd_per_s(self, stats: dict, kills_per_s: float) -> float:
-        cps = self.run(stats, kills_per_s)
+    def wd_per_s(self, stats: dict, kills_per_s: float, mods: dict | None = None) -> float:
+        cps = self.run(stats, kills_per_s, mods)
         return sum(cps[s["name"]] * s["weight"] for s in self.slots)
 
     def calibrate(self, stats: dict, measured_cps: dict) -> float:
