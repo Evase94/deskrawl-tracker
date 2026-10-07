@@ -318,6 +318,19 @@ class SkillWatcher(threading.Thread):
         self.bar = best
         return "Skill bar read: " + ", ".join(s[0] for s in best.slots)
 
+    def _recheck(self, hero):
+        """Read the bar again (several pictures, takes some seconds) without pausing the counting."""
+        try:
+            bar = locate_stable(self.capture.grab, hero)
+        except Exception:
+            return
+        old = self.bar
+        if bar is None or old is None:
+            return
+        if [x[0] for x in bar.slots] != [x[0] for x in old.slots] or bar.located_for != old.located_for:
+            bar.state = {name: old.state.get(name, (False, 0.0)) for name, *_ in bar.slots}
+            self.bar = bar
+
     def confirm(self, names: list) -> None:
         """The player named the abilities on the bar (read-bar window): use them and remember the game's
         icons, so these abilities are recognised from now on."""
@@ -347,9 +360,10 @@ class SkillWatcher(threading.Thread):
                 run_id = cur.run_id if cur is not None else None
                 if run_id and run_id != self._run_id:  # new run: abilities may have been swapped in town
                     self._run_id = run_id
-                    bar = locate_stable(self.capture.grab, hero)
-                    if bar is not None:
-                        self.bar = bar
+                    if self.bar.slots:  # keep counting with the known bar; check it in the background
+                        threading.Thread(target=self._recheck, args=(hero,), daemon=True).start()
+                    else:
+                        self.bar.located_for = None  # nothing known yet: the next update searches at once
                 if not self.bar.slots:
                     self.status = "searching the skill bar…"
                 frame = self.capture.grab()

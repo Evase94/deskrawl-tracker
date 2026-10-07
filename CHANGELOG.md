@@ -2,6 +2,22 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.16 – 2026-10-07
+
+### New
+- **Counted casts** (Skill Tracking page) shows every ability's casts from the runs watched with skill tracking: how many runs, total, average per run, min, max and per minute.
+- **Edit rating values…** (Skill Tracking page) lets you set the values the Item Comparer, Minions and BiS use by hand. The measured value is shown next to each field, and an empty field keeps the measurement. **Reset to measured** removes your values. You can set:
+  - the damage share of each ability,
+  - damage over time,
+  - how often enemies are Burning, Slowed, Vulnerable, Poisoned, Bleeding, Stunned or Immobilized,
+  - kills per second for the combat simulation.
+
+### Fixed
+- **The first wave of a stage was not counted.** The skill bar is now checked in the background at the start of a run, and counting goes on meanwhile.
+- **Damage shares now use the counted casts.** Before, Basic Attacks were estimated from attack speed, which gave e.g. Flame Lightning 46% with only ~2 casts per run. The estimate is now an option in **Edit rating values…**.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.15 – 2026-10-07
 
 ### Improved

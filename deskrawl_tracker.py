@@ -3704,14 +3704,18 @@ class App:
         if not slots:
             return None
         key = (tuple(slots), self.state.hero, tuple(round(float(char.get(k, 0) or 0), 2) for k in combat_sim.STATS),
-               getattr(self, "_prof_key", None))
+               getattr(self, "_prof_key", None), str(self.cfg.get("rating_overrides")))
         if getattr(self, "_sim_key", None) != key:
             sim = combat_sim.CombatSim(slots, self.state.hero)
             if not sim.ok():
                 self._sim_key, self._sim_val = key, None
             else:
-                measured = {k: v["cps"] for k, v in prof.get("abilities", {}).items()} if prof.get("ok") else {}
+                measured = {k: v["cps"] for k, v in prof.get("abilities", {}).items()
+                            if v.get("cps")} if prof.get("ok") else {}
                 kr = sim.calibrate(char, measured) if measured else 1.0
+                own = (self.cfg.get("rating_overrides") or {}).get("kills_per_s")
+                if own:
+                    kr = float(own)
                 self._sim_key, self._sim_val = key, (sim, kr)
         return self._sim_val
 
@@ -4698,7 +4702,7 @@ class App:
         tk.Frame(d, bg=PANEL, height=10).pack()
 
     # -- skill tracking page -------------------------------------------------------
-    def _profile(self, stage=None) -> dict:
+    def _profile(self, stage=None, raw=False) -> dict:
         """What the build does, measured by skill tracking (see build_profile)."""
         char = self._stage_char()
         casts, sec, runs = build_profile.measure(self.stage_stats, char, stage)
@@ -4715,8 +4719,9 @@ class App:
         hero = self.state.hero
         names = {talents.key(t): t["name"] for t in talents.tree(hero)} if hero in talents.HEROES else {}
         mine = [names.get(k, k) for k, v in (self.cfg.get("talents_mine") or {}).items() if v]
-        aspd = (self.char_stats.get("Attack Speed") or (None,))[0]
-        return build_profile.profile(casts, sec, runs, mine, aspd, basic, hero)
+        aspd = (self.char_stats.get("Attack Speed") or (None,))[0] if self.cfg.get("estimate_basic") else None
+        prof = build_profile.profile(casts, sec, runs, mine, aspd, basic, hero)
+        return prof if raw else build_profile.apply_overrides(prof, self.cfg.get("rating_overrides") or {})
 
     def _build_skills(self, p):
         hdr = ui.page_header(p, "Skill Tracking", (
@@ -4751,6 +4756,10 @@ class App:
         self.cb_sk_stage.bind("<<ComboboxSelected>>", lambda _: self._fill_skills())
         b = ui.button(bar, "Use for ratings", self._sk_use_shares, small=True)
         b.pack(side="right")
+        b_ed = ui.button(bar, "Edit rating values…", self._sk_edit_values, small=True)
+        b_ed.pack(side="right", padx=(0, 8))
+        ui.Tooltip(b_ed, "Set damage shares, damage over time, status uptimes or kills per second by hand – they "
+                         "replace the measurement in all ratings.")
         ui.Tooltip(b, "Take the measured damage shares as the ability setup the item rating uses (legendary "
                       "effects of single abilities). The Minions page always uses the measurement.")
         cols = [("ab", "Ability", 150, "w"), ("slot", "Slot", 90, "w"), ("el", "Element", 70, "w"),
@@ -4762,6 +4771,15 @@ class App:
         self.lbl_sk_profile = ui.autowrap(tk.Label(body, text="", bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w",
                                                    justify="left"), 24)
         self.lbl_sk_profile.pack(fill="x", padx=14, pady=(0, 10))
+
+        tk.Label(body, text="Counted casts", bg=BG, fg=FG, font=("Bahnschrift", 12), anchor="w").pack(fill="x", padx=14)
+        cols = [("ab", "Ability", 150, "w"), ("slot", "Slot", 90, "w"), ("runs", "In runs", 70, "e"),
+                ("tot", "Total", 60, "e"), ("avg", "Ø / run", 60, "e"), ("min", "Min", 46, "e"), ("max", "Max", 46, "e"),
+                ("pm", "/ min", 56, "e")]
+        f, self.sk_counted = self._tree(body, cols, 6, icons=True)
+        f.pack(fill="x", padx=14, pady=(0, 4))
+        self.lbl_sk_counted = tk.Label(body, text="", bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="w")
+        self.lbl_sk_counted.pack(fill="x", padx=14, pady=(0, 10))
 
         tk.Label(body, text="Runs", bg=BG, fg=FG, font=("Bahnschrift", 12), anchor="w").pack(fill="x", padx=14)
         cols = [("t", "Finished", 110, "w"), ("stage", "Stage", 160, "w"), ("diff", "Diff", 50, "w"),
@@ -4871,6 +4889,7 @@ class App:
         stage = self.var_sk_stage.get()
         stage = None if stage == "All stages" or stage not in stages_with else stage
         prof = self._profile(stage)
+        self._sk_counted_fill(stage)
         info = {a["name"]: a for a in skills.ABILITIES}
         t = self.sk_tree
         t.delete(*t.get_children())
@@ -4886,7 +4905,9 @@ class App:
             self.lbl_sk_profile.configure(text="No counted runs yet. Turn skill tracking on and play a few runs.")
         else:
             st = [(k, v) for k, v in prof["status"].items() if v["uptime"] >= 0.005]
-            parts = [f"{prof['runs']} runs · {fmt_dur(prof['seconds'])} fight time · {prof['wd_per_s']:.0f}% weapon "
+            parts = (["Your own values are set (Edit rating values) – they replace the measurement."]
+                     if prof.get("overridden") else [])
+            parts += [f"{prof['runs']} runs · {fmt_dur(prof['seconds'])} fight time · {prof['wd_per_s']:.0f}% weapon "
                      f"damage per second" + ("" if prof["ok"] else " · too little data yet – ratings still use "
                                                                     "estimates"),
                      "Damage by slot: " + " · ".join(f"{k} {v * 100:.0f}%" for k, v in
@@ -4934,6 +4955,120 @@ class App:
         if not rows:
             r.insert("", "end", iid="none", values=("", "", "", "", "No runs with counted casts yet – runs are kept "
                                                                   "one by one since version 1.0.10."))
+
+    def _sk_counted_fill(self, stage):
+        """Table of the casts skill tracking counted, run by run."""
+        t = self.sk_counted
+        t.delete(*t.get_children())
+        cs = build_profile.counted_stats(self.stage_stats, self._stage_char(), stage)
+        info = {a["name"]: a for a in skills.ABILITIES}
+        rows = sorted(((k, v) for k, v in cs.items() if not k.startswith("_")), key=lambda kv: -kv[1]["avg"])
+        for i, (name, x) in enumerate(rows):
+            t.insert("", "end", iid=str(i), image=self._item_photo(info.get(name, {}).get("icon_url"), 30) or "",
+                     values=(name, info.get(name, {}).get("slot", ""), f"{x['runs']} / {cs['_runs']}", x["total"],
+                             f"{x['avg']:.1f}", x["min"], x["max"], f"{x['per_min']:.1f}"))
+        self.lbl_sk_counted.configure(
+            text=(f"{cs['_runs']} runs watched · {fmt_dur(cs['_seconds'])} run time. Only runs with skill tracking on, "
+                  f"counted one by one (since 1.0.10)." if cs["_runs"] else
+                  "No watched runs yet – turn skill tracking on and play a few runs."))
+
+    def _sk_edit_values(self):
+        """Dialog: set the values the ratings use by hand (damage shares, damage over time, status uptimes,
+        kills per second); empty fields keep the measurement."""
+        ov = dict(self.cfg.get("rating_overrides") or {})
+        raw = self._profile(raw=True)
+        d = tk.Toplevel(self.root, bg=BG)
+        d.title("Rating values")
+        d.transient(self.root)
+        d.resizable(False, False)
+        tk.Label(d, text="Values for the ratings", bg=BG, fg=FG, font=ui.F_HEAD).pack(anchor="w", padx=18, pady=(14, 2))
+        ui.autowrap(tk.Label(d, text="The Item Comparer, Minions and BiS use these. Grey numbers are what skill tracking "
+                                     "measured; type a value to use your own instead, leave a field empty to keep the "
+                                     "measurement.", bg=BG, fg=MUTED, font=ui.F_SMALL, justify="left", anchor="w"),
+                    20).pack(fill="x", padx=18)
+        grid = tk.Frame(d, bg=BG)
+        grid.pack(fill="x", padx=18, pady=10)
+        entries = {}
+        row = [0]
+
+        def line(label, key, measured, unit="%"):
+            tk.Label(grid, text=label, bg=BG, fg=FG, font=ui.F_SMALL, anchor="w").grid(row=row[0], column=0, sticky="w",
+                                                                                     pady=2)
+            v = tk.StringVar(value="" if key[1] is None else str(key[1]))
+            tk.Entry(grid, textvariable=v, width=8, bg=PANEL, fg=FG, insertbackground=FG, relief="flat",
+                     font=ui.F_SMALL, justify="right").grid(row=row[0], column=1, padx=8, ipady=2)
+            tk.Label(grid, text=f"{unit}   measured {measured}", bg=BG, fg=MUTED, font=ui.F_SMALL,
+                     anchor="w").grid(row=row[0], column=2, sticky="w")
+            entries[key[0]] = v
+            row[0] += 1
+
+        def head(text):
+            tk.Label(grid, text=text, bg=BG, fg=ui.ACCENT, font=ui.F_LABEL, anchor="w").grid(
+                row=row[0], column=0, columnspan=3, sticky="w", pady=(8, 2))
+            row[0] += 1
+
+        head("Damage share of each ability")
+        names = list(dict.fromkeys(list(raw["abilities"]) + [s[0] for s in (self.skills.bar.slots if self.skills.bar else [])]
+                                   + list((ov.get("shares") or {}).keys())))
+        for n in names:
+            m = raw["abilities"].get(n, {}).get("share")
+            line(n, (("share", n), (ov.get("shares") or {}).get(n)), f"{m * 100:.0f}%" if m is not None else "–")
+        head("Damage over time and how often enemies are …")
+        line("Damage over time", (("dot", None), ov.get("dot_share")), f"{raw['dot_share'] * 100:.0f}%")
+        for c in ("Burning", "Slowed", "Vulnerable", "Poisoned", "Bleeding", "Stunned", "Immobilized"):
+            line(c, (("cond", c), (ov.get("conditions") or {}).get(c)),
+                 f"{raw['condition'].get(c, 0) * 100:.0f}%")
+        head("Combat simulation")
+        sim = self._combat_sim([s[0] for s in (self.skills.bar.slots if self.skills.bar else [])],
+                               {k: v[0] for k, v in self.char_stats.items()}, raw)
+        line("Kills per second", (("kills", None), ov.get("kills_per_s")), f"{sim[1]:.2f}" if sim else "–", unit="")
+        est = tk.BooleanVar(value=bool(self.cfg.get("estimate_basic")))
+        tk.Checkbutton(d, text="Estimate Basic Attacks from attack speed instead of counting them", variable=est,
+                       bg=BG, fg=FG, selectcolor=PANEL, activebackground=BG, activeforeground=FG, font=ui.F_SMALL,
+                       highlightthickness=0, bd=0).pack(anchor="w", padx=18)
+        btn = tk.Frame(d, bg=BG)
+        btn.pack(fill="x", padx=18, pady=(10, 14))
+
+        def num(v):
+            try:
+                return float(v.get().replace(",", ".")) if v.get().strip() else None
+            except ValueError:
+                return None
+
+        def save():
+            new = {"shares": {}, "conditions": {}}
+            for (kind, key), v in entries.items():
+                x = num(v)
+                if x is None:
+                    continue
+                if kind == "share":
+                    new["shares"][key] = x
+                elif kind == "cond":
+                    new["conditions"][key] = x
+                elif kind == "dot":
+                    new["dot_share"] = x
+                elif kind == "kills":
+                    new["kills_per_s"] = x
+            new = {k: v for k, v in new.items() if v not in ({}, None)}
+            self._set_cfg("rating_overrides", new)
+            self._set_cfg("estimate_basic", bool(est.get()))
+            self._ratings_changed()
+            d.destroy()
+
+        def reset():
+            self._set_cfg("rating_overrides", {})
+            self._ratings_changed()
+            d.destroy()
+        ui.button(btn, "Cancel", d.destroy).pack(side="right")
+        ui.button(btn, "Save", save, accent=True).pack(side="right", padx=(0, 8))
+        ui.button(btn, "Reset to measured", reset).pack(side="left")
+
+    def _ratings_changed(self):
+        self._prof_key = None
+        self._sim_key = None
+        self._fill_skills()
+        self._fill_minions()
+        self._fill_eval_tab()
 
     def _sk_use_shares(self):
         prof = self._profile()

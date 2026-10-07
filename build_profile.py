@@ -176,3 +176,58 @@ def profile(casts: dict, seconds: float, runs: int = 0, talent_names=(), attack_
     for cond, sts in CONDITIONS.items():
         out["condition"][cond] = combine(out["status"].get(s, {}).get("uptime", 0.0) for s in sts)
     return out
+
+
+def counted_stats(stage_stats, char: str, stage: str | None = None) -> dict:
+    """Casts counted by skill tracking, run by run: {ability: {"runs", "total", "avg", "min", "max", "per_min"}}
+    plus "_runs" and "_seconds". Only runs that were watched (recorded one by one, with casts)."""
+    runs = []
+    for k, d in stage_stats.data.items():
+        if k.count("|") == 2:
+            who, st, _diff = k.split("|", 2)
+            if who == char and (not stage or st == stage):
+                runs += [e for e in d.get("log", []) if e.get("casts")]
+    names = sorted({a for e in runs for a in e["casts"]})
+    secs = sum(e.get("run_s") or e.get("cycle_s") or 0 for e in runs)
+    out = {"_runs": len(runs), "_seconds": secs}
+    for a in names:
+        per = [e["casts"].get(a, 0) for e in runs]
+        tot = sum(per)
+        out[a] = {"runs": sum(1 for n in per if n), "total": tot, "avg": tot / len(runs) if runs else 0,
+                  "min": min(per) if per else 0, "max": max(per) if per else 0,
+                  "per_min": tot / secs * 60 if secs else 0}
+    return out
+
+
+def apply_overrides(prof: dict, ov: dict) -> dict:
+    """Values the player set by hand (Skill Tracking page) replace the measured ones."""
+    if not ov:
+        return prof
+    prof = dict(prof)
+    shares = {k: float(v) for k, v in (ov.get("shares") or {}).items() if v not in (None, "")}
+    if shares:
+        tot = sum(shares.values()) or 1.0
+        info = {a["name"]: a for a in skills.ABILITIES}
+        abil, slot_share, el_share = {}, {}, {}
+        for name, v in shares.items():
+            a = info.get(name, {})
+            x = dict(prof["abilities"].get(name) or {"casts": 0, "cps": 0.0, "wd_per_s": 0.0,
+                                                    "slot": a.get("slot") or "Special",
+                                                    "description": a.get("description", "")})
+            x["share"] = v / tot
+            tags = [("Cold" if t == "Frost" else t) for t in a.get("tags", [])]
+            x["element"] = next((t for t in tags if t in ("Fire", "Cold", "Lightning", "Poison", "Arcane",
+                                                           "Physical")), x.get("element", "Physical"))
+            abil[name] = x
+            slot = x["slot"] if x["slot"] in ("Basic Attack", "Strong Attack") else "Special"
+            slot_share[slot] = slot_share.get(slot, 0.0) + x["share"]
+            el_share[x["element"]] = el_share.get(x["element"], 0.0) + x["share"]
+        prof.update(abilities=abil, slot_share=slot_share, element_share=el_share, ok=True)
+    if ov.get("dot_share") not in (None, ""):
+        prof["dot_share"] = float(ov["dot_share"]) / 100
+    cond = {k: float(v) / 100 for k, v in (ov.get("conditions") or {}).items() if v not in (None, "")}
+    if cond:
+        prof["condition"] = {**prof.get("condition", {}), **cond}
+        prof["ok"] = True
+    prof["overridden"] = True
+    return prof
