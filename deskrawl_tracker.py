@@ -2491,8 +2491,10 @@ class App:
         self.lbl_rec_title.pack(side="left")
         self.btn_rec_copy = ui.button(top, "Copy link", self._tal_rec_copy, small=True)
         self.btn_rec_copy.pack(side="right")
-        self.btn_rec_show = ui.button(top, "Show in planner", self._tal_rec_show, small=True)
+        self.btn_rec_show = ui.button(top, "My build in tree", self._tal_rec_mine, small=True)
         self.btn_rec_show.pack(side="right", padx=(0, 8))
+        ui.Tooltip(self.btn_rec_show, "The best build goes into the talent tree below by itself; this puts your own "
+                                      "build back.")
         self.btn_rec_calc = ui.button(top, "Calculate best build", self._tal_rec_calc, accent=True)
         self.btn_rec_calc.pack(side="right", padx=(0, 8))
         ui.Tooltip(self.btn_rec_calc, "Tries every combination of capstones and spends your points one by one where "
@@ -2598,6 +2600,7 @@ class App:
             return
         best, (dps, surv, farm, score, _m), vals, mine, mode, hero, ex, ex_mine = out
         self._rec = (best, hero)
+        self._tal_rec_show()  # straight into the talent tree below
         same = best == {k: v for k, v in mine.items() if v}
         if same:
             self.lbl_rec_sum.configure(text="Your build is already the best one for this mode.", fg=C_GOOD)
@@ -2699,7 +2702,15 @@ class App:
         self.tal_build = dict(best)
         self._tal_store()
         self._tal_fill()
-        self.lbl_tal_share.configure(text="Best build loaded into the planner.", fg=self.TC["green"])
+        self.lbl_tal_share.configure(text="Best build is in the talent tree – “My build in tree” puts yours back.",
+                                     fg=self.TC["green"])
+
+    def _tal_rec_mine(self):
+        if not self.cfg.get("talents_mine"):
+            self.lbl_tal_share.configure(text="Your build is not known yet – “Load current build”.", fg=C_MEH)
+            return
+        self._tal_load_mine()
+        self.lbl_tal_share.configure(text="Your build is in the talent tree again.", fg=self.TC["green"])
 
     def _tal_rec_copy(self):
         if not self._rec:
@@ -2927,28 +2938,37 @@ class App:
             self.lbl_tal_share.configure(text=r or "Talent window not found – open it in the game and try again.",
                                          fg=C_BAD)
             return
-        build, unsure, seen = r
+        build, unsure, seen, pts, conf = r
         hero = self._tal_hero()
+        if pts:  # "0/70" at the top of the window: free points / all points
+            self.var_tal_level.set(str(pts[1]))
+            self._tal_spent = pts[1] - pts[0]
         prev = getattr(self, "_tal_partial", None)
         if prev and time.time() - prev[3] < 300 and prev[4] == hero:
             pb, pu, ps = prev[0], prev[1], prev[2]
+            conf = {**{k: v for k, v in prev[5].items() if k not in seen}, **conf}
             keep = {k: v for k, v in pb.items() if k not in seen}
             build = {**keep, **build}
             names_now = {t["name"] for t in talents.tree(hero) if talents.key(t) in seen}
             unsure = [n for n in pu if n not in names_now] + list(unsure)
             seen = set(ps) | set(seen)
-        self._tal_partial = (dict(build), list(unsure), set(seen), time.time(), hero)
+        self._tal_partial = (dict(build), list(unsure), set(seen), time.time(), hero, dict(conf))
         tree = talents.tree(hero)
-        missing_rows = sorted({t["points"] for t in tree if talents.key(t) not in seen})
-        # all points must add up to the hero level: one unreadable number follows from the others
-        level = self._tal_points()
-        if not missing_rows and len(unsure) == 1 and level:
-            t = next((x for x in tree if x["name"] == unsure[0]), None)
-            if t is not None:
-                rest = sum(v for k, v in build.items() if k != talents.key(t))
-                if 1 <= level - rest <= t["ranks"]:
-                    build[talents.key(t)] = level - rest
-                    unsure = []
+        # rows nobody saw need another read; a single talent hidden in a seen row (the Reset button covers the
+        # bottom right corner) counts as 0 and goes into the check against the points spent
+        rows_seen = {t["points"] for t in tree if talents.key(t) in seen}
+        missing_rows = sorted({t["points"] for t in tree} - rows_seen)
+        hidden = [t for t in tree if t["points"] in rows_seen and talents.key(t) not in seen]
+        for t in hidden:
+            conf.setdefault(talents.key(t), 0.2)
+        unsure = list(dict.fromkeys(list(unsure) + [t["name"] for t in hidden]))
+        # all points must add up to the points spent (window) or the hero level: one unreadable number
+        # follows from the others
+        level = getattr(self, "_tal_spent", None) or self._tal_points()
+        if not missing_rows and unsure and level:
+            fixed = self._tal_fix_unsure(build, unsure, level, tree, conf)
+            if fixed is not None:
+                build, unsure = fixed, []
         self.tal_build = dict(build)
         if not missing_rows:
             self.cfg["talents_mine"] = dict(build)
@@ -2962,10 +2982,65 @@ class App:
         else:
             msg = f"Current build read: {used} points, saved as my build."
             col = self.TC["green"]
+            spent = getattr(self, "_tal_spent", None)
+            if spent and used != spent:
+                msg += f" The window says {spent} points are spent – please check the numbers."
+                col = C_MEH
         if unsure:
             msg += f" Please check: {', '.join(unsure)}."
             col = C_MEH
         self.lbl_tal_share.configure(text=msg, fg=col)
+
+    @staticmethod
+    def _tal_fix_unsure(build, unsure, spent, tree, conf=None):
+        """Set the talents read without certainty so all points add up to the points spent. Changing a number
+        costs as much as it was trusted (conf), so the least certain ones change; taken only when one answer is
+        clearly the cheapest."""
+        conf = conf or {}
+        # one capstone per capstone row: an unsure capstone next to a sure one stays at 0
+        sure_caps = {t["points"] for t in tree if t.get("capstone") and t["name"] not in unsure
+                     and build.get(talents.key(t))}
+        build = {k: v for k, v in build.items()
+                 if not any(talents.key(t) == k and t.get("capstone") and t["points"] in sure_caps
+                            and t["name"] in unsure for t in tree)}
+        ts = [t for t in tree if t["name"] in unsure and not (t.get("capstone") and t["points"] in sure_caps)]
+        if not ts:
+            return build if sum(build.values()) == spent else None
+        keys = {talents.key(t) for t in ts}
+        need = spent - sum(v for k, v in build.items() if k not in keys)
+        if need < 0:
+            return None
+        # dynamic programming over the sum: cheapest and second cheapest way to reach every total
+        states = {0: (0.0, [], float("inf"))}
+        for t in ts:
+            k = talents.key(t)
+            read_v = build.get(k, 0)
+            c = conf.get(k, 0.3)
+            nxt = {}
+            for tot, (cost, picks, second) in states.items():
+                for v in range(t["ranks"] + 1):
+                    if tot + v > need:
+                        break
+                    add = 0.0 if v == read_v else c + 0.05 * (v not in (0, t["ranks"])) + 0.01 * abs(v - read_v)
+                    nc, ns = cost + add, second + add
+                    cur = nxt.get(tot + v)
+                    if cur is None:
+                        nxt[tot + v] = (nc, picks + [v], ns)
+                    elif nc < cur[0]:
+                        nxt[tot + v] = (nc, picks + [v], min(cur[0], ns))
+                    else:
+                        nxt[tot + v] = (cur[0], cur[1], min(cur[2], nc))
+            states = nxt
+        if need not in states:
+            return None
+        cost, picks, second = states[need]
+        if second - cost < 0.05:
+            return None  # two answers about as likely
+        out = {k: v for k, v in build.items() if k not in keys}
+        for t, v in zip(ts, picks):
+            if v:
+                out[talents.key(t)] = v
+        return out
 
     def _tal_builds_window(self):
         """Window with every saved build: values against my build, load, delete."""

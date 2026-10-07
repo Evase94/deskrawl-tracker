@@ -2,6 +2,21 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.23 – 2026-10-07
+
+### Improved
+- **The best build goes straight into the talent tree** below the recommendation once it is calculated. **My build in tree** puts your own build back.
+
+### Fixed
+- **"Load current build" reads the talent window correctly.** Before, it matched talent pictures anywhere on the screen and even "found" a build with no talent window open. Now:
+  - It only reads when the talent window is open ("Combat Talents").
+  - It finds the rank badges, works out which rows of the tree are visible, and reads every number in the game's font ("Ø" = 0).
+  - It takes your total talent points from the window ("0/70").
+  - Numbers it is not sure of are checked against the points spent. This also covers the talent hidden under the Reset button, and keeps one capstone per row.
+  - Open the talent window, click **Load current build**, scroll to the bottom and click it again.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.22 – 2026-10-07
 
 ### New
