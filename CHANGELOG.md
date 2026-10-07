@@ -2,6 +2,14 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.18 – 2026-10-07
+
+### Fixed
+- **Legendaries on the stage end screen were sometimes missed.** The "Legendary 3 (+1)" row is now read reliably, so every Legendary counts in Legendaries/h and plays the sound.
+- **No more second sound when the carriage unloads.** When the carriage empties, the item's name shows above it like a new drop. The tracker now waits 4 seconds for the "Obtained …" pop-up and ignores those names, so the sound for a drop on the ground comes about 4 seconds later.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.17 – 2026-10-07
 
 ### New

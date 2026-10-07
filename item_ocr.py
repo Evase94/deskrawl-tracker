@@ -1136,24 +1136,27 @@ def read_end_rarities(frame, lines: list[Line], want=("Divine", "Legendary")) ->
     block = frame[y0:y1, x0:x1]
     if block.size == 0:
         return {}
+    def parse(toks):
+        text = re.sub(r"\s+", "", "".join(t.text for t in sorted(toks, key=lambda t: t.x)))
+        text = text.replace("）", ")").replace("（", "(").translate(str.maketrans("OoIl|", "00111"))
+        m = re.fullmatch(r"(\d{1,6})(?:\(?\+(\d{1,3})\)?)?", text)
+        return (int(m.group(1)), int(m.group(2)) if m.group(2) else None) if m else None
+
     out = {}
-    for l in ocr_scaled(block, 2, "rapid"):
+    found = ocr_scaled(block, 2, "rapid")
+    for l in found:
         name = difflib.get_close_matches(l.text.strip(), END_RARITIES, n=1, cutoff=0.75)
         if not name or name[0] in out or name[0] not in want:
             continue
+        # the value on the same row, from the block read; else that cell read on its own
+        val = parse([t for t in found if t is not l and t.x > l.x + l.w and abs(t.cy - l.cy) < l.h * 0.6
+                     and t.h < l.h * 1.6])  # not a token spanning several rows
         cy0, cy1 = int(max(l.cy - l.h * 0.8, 0)), int(l.cy + l.h * 0.8)
         cell = block[cy0:cy1, int(l.x + l.w + 4):]
-        if cell.size == 0:
-            continue
-        val = None
         for eng in ("rapid", "win"):
-            toks = sorted(ocr_scaled(cell, 3, eng), key=lambda t: t.x)
-            text = re.sub(r"\s+", "", "".join(t.text for t in toks)).replace("）", ")").replace("（", "(")
-            text = text.translate(str.maketrans("OoIl|", "00111"))
-            m = re.fullmatch(r"(\d{1,6})(?:\(?\+(\d{1,3})\)?)?", text)
-            if m:
-                val = (int(m.group(1)), int(m.group(2)) if m.group(2) else None)
+            if val or cell.size == 0:
                 break
+            val = parse(ocr_scaled(cell, 3, eng))
         if val:
             out[name[0]] = val
     return out

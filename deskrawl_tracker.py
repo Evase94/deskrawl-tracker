@@ -296,6 +296,7 @@ class GameState:
         self.run_committed = threading.Event()  # wakes the PanelReader
         self.legendary_q: queue.Queue = queue.Queue()  # (source, text) -> sound + status line in the UI
         self.last_rarity: dict = {}  # stage -> {"Legendary": total, ...} from the last end screen
+        self.ground_pending: list = []  # (t, name, run) orange names waiting for GROUND_WAIT_S
 
     def reset(self):
         with getattr(self, "lock", threading.RLock()):
@@ -435,13 +436,37 @@ class GameState:
         for _ in range(max(n - r.ground_legendaries, 0)):
             self.legendary_q.put(("end screen", ""))
 
+    GROUND_WAIT_S = 4.0  # an item the carriage unloads shows its name too, followed by an "Obtained" pop-up
+
     def ground_legendary(self, text: str, t: float):
-        """LootWatcher saw a new orange item name on the ground."""
+        """LootWatcher saw a new orange item name on the ground. It counts once no pop-up with that name
+        followed within GROUND_WAIT_S (or came just before): then it was a drop, not the carriage unloading."""
         with self.lock:
+            if self._popup_named(text, t - 6):
+                return
             r = self.current or next((o for o in reversed(self.runs) if o.end and t - o.end < 20), None)
-            if r is not None:
-                r.ground_legendaries += 1
-        self.legendary_q.put(("ground", text))
+            self.ground_pending.append((t, text, r))
+
+    def _popup_named(self, text: str, since: float) -> bool:
+        import difflib
+        key = re.sub(r"[^a-z]", "", text.lower())
+        names = [i for tt, i, *_ in self.drops + self.sold if tt >= since]
+        return any(difflib.SequenceMatcher(None, key, re.sub(r"[^a-z]", "", n.lower())).ratio() > 0.75
+                   for n in names)
+
+    def flush_ground(self, now: float):
+        with self.lock:
+            keep = []
+            for t, text, r in self.ground_pending:
+                if self._popup_named(text, t - 6):
+                    continue
+                if now - t < self.GROUND_WAIT_S:
+                    keep.append((t, text, r))
+                    continue
+                if r is not None:
+                    r.ground_legendaries += 1
+                self.legendary_q.put(("ground", text))
+            self.ground_pending = keep
 
     def log_needed(self, r) -> bool:
         """Does the in-game log panel have to be opened after run r? Only it names the stage and the

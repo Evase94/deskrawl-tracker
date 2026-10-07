@@ -120,6 +120,7 @@ class LootWatcher(threading.Thread):
     def run(self):
         while True:
             time.sleep(self.INTERVAL_S)
+            self.state.flush_ground(time.time())
             if not self.enabled or self.state.ui_busy():
                 continue
             try:
