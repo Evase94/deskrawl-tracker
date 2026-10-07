@@ -1115,6 +1115,50 @@ def find_stage_end(lines: list[Line]) -> dict | None:
     return out
 
 
+END_RARITIES = ("Rune Set", "Divine", "Legendary", "Rare", "Uncommon", "Common")
+
+
+def read_end_rarities(frame, lines: list[Line], want=("Divine", "Legendary")) -> dict:
+    """Drops by rarity from the stage end screen: {"Legendary": (total, this run or None), ...}.
+
+    The block sits under the gold line ("38,027 (+3,831)"): one row per rarity, the name on the left in its
+    colour, "17 (+2)" right-aligned; "(+N)" only when the run dropped some. The totals count all runs of the
+    stage, so they also show items that were sold right away. Windows OCR misses the coloured names, so the
+    block is read again with RapidOCR, each value cell on its own."""
+    # gold is the right column; TOTAL XP GAINED in the left column looks the same
+    g = max((l for l in lines if re.fullmatch(r"\s*[\d,.]+\s*\(\s*\+\s*[\d,.]+\s*\)\s*", l.text)),
+            key=lambda l: l.x, default=None)
+    if g is None or frame is None:
+        return {}
+    H, W = frame.shape[:2]
+    x0, x1 = int(max(g.x - g.h * 7, 0)), int(min(g.x + g.w + g.h, W))
+    y0, y1 = int(g.y + g.h * 0.9), int(min(g.y + g.h * 8.5, H))
+    block = frame[y0:y1, x0:x1]
+    if block.size == 0:
+        return {}
+    out = {}
+    for l in ocr_scaled(block, 2, "rapid"):
+        name = difflib.get_close_matches(l.text.strip(), END_RARITIES, n=1, cutoff=0.75)
+        if not name or name[0] in out or name[0] not in want:
+            continue
+        cy0, cy1 = int(max(l.cy - l.h * 0.8, 0)), int(l.cy + l.h * 0.8)
+        cell = block[cy0:cy1, int(l.x + l.w + 4):]
+        if cell.size == 0:
+            continue
+        val = None
+        for eng in ("rapid", "win"):
+            toks = sorted(ocr_scaled(cell, 3, eng), key=lambda t: t.x)
+            text = re.sub(r"\s+", "", "".join(t.text for t in toks)).replace("）", ")").replace("（", "(")
+            text = text.translate(str.maketrans("OoIl|", "00111"))
+            m = re.fullmatch(r"(\d{1,6})(?:\(?\+(\d{1,3})\)?)?", text)
+            if m:
+                val = (int(m.group(1)), int(m.group(2)) if m.group(2) else None)
+                break
+        if val:
+            out[name[0]] = val
+    return out
+
+
 def find_death_text(lines: list[Line], size=None) -> str | None:
     """The on-screen line that announces a death, if any. size=(W, H) of the frame: then a lone
     "TOWN" (the death screen's button) in the middle of the picture counts too."""

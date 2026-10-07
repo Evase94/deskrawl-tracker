@@ -35,6 +35,7 @@ import minions
 import build_profile
 import combat_sim
 import paragon
+import loot_watch
 from version import VERSION
 import item_ocr  # first: loads onnxruntime before WinRT/winocr (avoids a crash)
 import item_eval
@@ -157,6 +158,7 @@ class Run:
     game_seconds: int | None = None  # run time from the stage end screen (or the log panel)
     end_screen: dict = field(default_factory=dict)  # what the stage end screen showed for this run
     death_info: dict = field(default_factory=dict)
+    ground_legendaries: int = 0  # orange item names seen on the ground during this run (LootWatcher)
 
     @property
     def duration(self):
@@ -292,6 +294,8 @@ class GameState:
         self.stage_name = ""     # "The Cinder Crown: 6"
         self.stage_key = None    # (difficulty, waves) of the run that stage_name came from
         self.run_committed = threading.Event()  # wakes the PanelReader
+        self.legendary_q: queue.Queue = queue.Queue()  # (source, text) -> sound + status line in the UI
+        self.last_rarity: dict = {}  # stage -> {"Legendary": total, ...} from the last end screen
 
     def reset(self):
         with getattr(self, "lock", threading.RLock()):
@@ -342,6 +346,8 @@ class GameState:
                     ps = getattr(self, "pending_stage", None)
                     if ps and now - ps[0] < 30 and not r.stage_name:
                         r.stage_name = ps[1]
+                        if ps[2].get("rarities"):
+                            self._end_legendaries(r, ps[1], ps[2]["rarities"])
                         self.stage_key = (r.difficulty, r.waves)
                         self.pending_stage = None
                     if self.stage_name and self.stage_key == (r.difficulty, r.waves):
@@ -390,6 +396,8 @@ class GameState:
                 r.game_seconds = info["seconds"]
             self.stage_key = (r.difficulty, r.waves)
             first_clears = "clears" in info and "clears" not in r.end_screen
+            if info.get("rarities") and "legendaries" not in r.end_screen:
+                self._end_legendaries(r, name, info["rarities"])
             r.end_screen.update({k: v for k, v in info.items() if v is not None})
             if first_clears:
                 # CLEARS counts cleared runs of this stage: unchanged since the last run = not cleared (died)
@@ -402,6 +410,38 @@ class GameState:
                     r.death = "confirmed"
                     r.death_info["level"] = r.level
                     append_death_csv(r, self.char_name)
+
+    def wants_rarities(self, t: float) -> bool:
+        """Is the run that just ended still without its Legendary count from the end screen?"""
+        with self.lock:
+            r = next((o for o in reversed(self.runs) if o.end and t - o.end < 120), None)
+            return r is None or "legendaries" not in r.end_screen
+
+    def _end_legendaries(self, r, name: str, rar: dict):
+        """Legendary + Divine drops of run r from the end screen: "(+N)" when read, otherwise the change of
+        the total since the last run of this stage. More than the ground labels showed: sound for the rest."""
+        last = self.last_rarity.setdefault(name, {})
+        n = 0
+        for k in ("Legendary", "Divine"):
+            if k not in rar:
+                continue
+            total, plus = rar[k]
+            if plus is None:
+                prev = last.get(k)
+                plus = total - prev if prev is not None and 0 < total - prev <= 5 else 0
+            last[k] = total
+            n += plus
+        r.end_screen["legendaries"] = n
+        for _ in range(max(n - r.ground_legendaries, 0)):
+            self.legendary_q.put(("end screen", ""))
+
+    def ground_legendary(self, text: str, t: float):
+        """LootWatcher saw a new orange item name on the ground."""
+        with self.lock:
+            r = self.current or next((o for o in reversed(self.runs) if o.end and t - o.end < 20), None)
+            if r is not None:
+                r.ground_legendaries += 1
+        self.legendary_q.put(("ground", text))
 
     def log_needed(self, r) -> bool:
         """Does the in-game log panel have to be opened after run r? Only it names the stage and the
@@ -1056,6 +1096,8 @@ class GoldWatcher(threading.Thread):
                     self.state.observe_gold(time.time(), gold)
                 end = item_ocr.find_stage_end(lines)
                 if end:
+                    if self.state.wants_rarities(time.time()):
+                        end["rarities"] = item_ocr.read_end_rarities(frame, lines)
                     self.state.apply_stage_end(end, time.time())
                 death = item_ocr.find_death_text(lines, (frame.shape[1], frame.shape[0]))
                 if death:
@@ -1109,8 +1151,11 @@ class PanelReader(threading.Thread):
         while time.time() < until:
             frame = self.capture.grab()
             if frame is not None:
-                end = item_ocr.find_stage_end(item_ocr.ocr_windows(frame))
+                lines = item_ocr.ocr_windows(frame)
+                end = item_ocr.find_stage_end(lines)
                 if end:
+                    if self.state.wants_rarities(time.time()):
+                        end["rarities"] = item_ocr.read_end_rarities(frame, lines)
                     self.state.apply_stage_end(end, time.time())
                     self.status = f"Stage from the end screen: {end['stage']}: {end['n']} " \
                                   f"({datetime.now().strftime('%H:%M:%S')}) – log panel not needed"
@@ -1373,6 +1418,12 @@ class App:
         self.panels.start()
         ClickThroughGuard(self.capture, self.cfg).start()
         ToastWatcher(self.state, self.capture).start()
+        self.loot = loot_watch.LootWatcher(self.state, self.capture,
+                                           lambda text: self.state.ground_legendary(text, time.time()))
+        self.loot.enabled = self.cfg.get("legendary_sound", True)
+        self.loot.start()
+        self._leg_session = 0
+        self._last_beep = 0.0
         self.skills = skills.SkillWatcher(self.state, self.capture)
         self.skills.start()
         self._last_item = None
@@ -3373,7 +3424,8 @@ class App:
                     "and it shows up here.")
         else:
             note = (f"Kills/h counts the full cycle incl. the time between runs. Grey rows: fewer than 3 runs. "
-                    f"Leg./h = legendary and divine drops, counted since this version; “–” = no runs recorded yet. "
+                    f"Leg./h = legendary and divine drops from the stage end screen (also items sold right "
+                    f"away); “–” = no runs recorded yet. "
                     f"Gold bosses need one skull of the difficulty per run (not included).")
         self.lbl_boss_note.configure(text=note)
 
@@ -3402,8 +3454,13 @@ class App:
             cycle = r.end - prev.end if prev and prev.end and 0 < r.end - prev.end < r.duration * 1.5 + 60 else r.duration
             t0 = prev.end if prev and prev.end else r.start
             sold_gold = sum(g for t, _, g, _ in sold if t0 < t <= r.end + 10)
-            legendaries = (sum(1 for t, _, cat, _ in drops if t0 < t <= r.end + 10 and cat in LEGENDARY)
-                           + sum(1 for t, _, _, rar in sold if t0 < t <= r.end + 10 and rar in LEGENDARY))
+            # end screen "Legendary N (+x)": every drop, also items sold right away; without it the
+            # pop-ups (only what was picked up) or the orange names seen on the ground, whichever is more
+            legendaries = r.end_screen.get("legendaries")
+            if legendaries is None:
+                legendaries = max(sum(1 for t, _, cat, _ in drops if t0 < t <= r.end + 10 and cat in LEGENDARY)
+                                  + sum(1 for t, _, _, rar in sold if t0 < t <= r.end + 10 and rar in LEGENDARY),
+                                  r.ground_legendaries)
             self.stage_stats.add_run(r.char or self.state.char_name, stage, r.difficulty, cycle, r.xp, r.gold,
                                      sold_gold, r.items,
                                      r.death == "confirmed" or r.death == "suspected",
@@ -3513,6 +3570,24 @@ class App:
                                          "(Raw Sphere 1 to Radiant Octagon 6).")
         self.lbl_drops = tk.Label(hdr, bg=BG, fg=MUTED, font=ui.F_SMALL, anchor="e")
         self.lbl_drops.pack(side="right")
+        leg = ui.card(p, fill="x", padx=14, pady=(0, 8))
+        row = tk.Frame(leg, bg=PANEL)
+        row.pack(fill="x", padx=12, pady=(8, 2))
+        self.var_leg_sound = tk.BooleanVar(value=self.cfg.get("legendary_sound", True))
+        tk.Checkbutton(row, text="Sound when a Legendary drops", variable=self.var_leg_sound,
+                       command=self._toggle_leg_sound, bg=PANEL, fg=ui.RARITY["Legendary"], selectcolor=BG,
+                       activebackground=PANEL, activeforeground=FG, font=ui.F_LABEL, highlightthickness=0,
+                       bd=0).pack(side="left")
+        ui.button(row, "Play sound", self._play_legendary, small=True).pack(side="right")
+        self.lbl_leg = tk.Label(leg, text="No Legendary this session yet", bg=PANEL, fg=FG, font=ui.F_SMALL,
+                                anchor="w")
+        self.lbl_leg.pack(fill="x", padx=12)
+        ui.autowrap(tk.Label(leg, text="Plays when an orange item name appears on the ground. If one is missed "
+                                       "there (it dropped off screen, or straight into the carriage), the stage "
+                                       "end screen catches it: its “Legendary (+1)” is also what Legendaries/h "
+                                       "in Stages counts – every drop, also items sold right away.",
+                             bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w", justify="left"), 40).pack(
+            fill="x", padx=12, pady=(0, 8))
         cols = [("r", "Rarity", 120, "w"), ("n", "Count", 70, "e"), ("h", "per h", 70, "e"),
                 ("pct", "Share", 70, "e"), ("sold", "sold", 70, "e"), ("gold", "Sales gold", 100, "e")]
         f, self.drop_tree = self._tree(p, cols, 6)
@@ -3930,7 +4005,34 @@ class App:
                         self.lbl_char.configure(text=f"Error: {ev[2]}")
         except queue.Empty:
             pass
+        try:
+            while True:
+                self._legendary_dropped(*self.state.legendary_q.get_nowait())
+        except queue.Empty:
+            pass
         self.root.after(100, self.poll_events)
+
+    def _legendary_dropped(self, source: str, text: str):
+        self._leg_session += 1
+        what = f"Legendary dropped: {text}" if text else "Legendary dropped (end screen)"
+        self.lbl_status.configure(text=f"{what} – {datetime.now().strftime('%H:%M:%S')}")
+        self.lbl_leg.configure(text=f"{self._leg_session} this session · last: {text or 'from the end screen'} "
+                                    f"({datetime.now().strftime('%H:%M')})")
+        if self.cfg.get("legendary_sound", True) and time.time() - self._last_beep > 1.5:
+            self._last_beep = time.time()
+            self._play_legendary()
+
+    def _play_legendary(self):
+        try:
+            import winsound
+            winsound.PlaySound(paths.res("data", "legendary.wav"), winsound.SND_FILENAME | winsound.SND_ASYNC)
+        except Exception:
+            errlog.report("sound", "legendary sound could not be played")
+
+    def _toggle_leg_sound(self):
+        on = bool(self.var_leg_sound.get())
+        self._set_cfg("legendary_sound", on)
+        self.loot.enabled = on
 
     def _merge_attributes(self, stats: dict):
         if not stats:

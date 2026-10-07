@@ -2,6 +2,16 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.17 – 2026-10-07
+
+### New
+- **Sound when a Legendary drops.** It plays the moment an orange item name appears on the ground. If one is missed there (it dropped off screen or straight into the carriage), the stage end screen plays it. You can turn it off and try it with **Play sound** on the **Drops** page, which also shows how many Legendaries dropped this session and the last one.
+
+### Improved
+- **Legendaries/h now counts every drop.** The count comes from the stage end screen ("Legendary 2 (+1)"), so it also includes items that were sold right away or never picked up. Before, only picked-up items counted. Divine items count too.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.16 – 2026-10-07
 
 ### New
