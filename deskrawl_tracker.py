@@ -1450,7 +1450,7 @@ class App:
         ToastWatcher(self.state, self.capture).start()
         self.loot = loot_watch.LootWatcher(self.state, self.capture,
                                            lambda text: self.state.ground_legendary(text, time.time()))
-        self.loot.enabled = self.cfg.get("legendary_sound", True)
+        self.loot.enabled = bool(self.cfg.get("legendary_sound", True) or self.cfg.get("legendary_space", True))
         self.loot.start()
         self._leg_session = 0
         self._last_beep = 0.0
@@ -3609,6 +3609,15 @@ class App:
                        activebackground=PANEL, activeforeground=FG, font=ui.F_LABEL, highlightthickness=0,
                        bd=0).pack(side="left")
         ui.button(row, "Play sound", self._play_legendary, small=True).pack(side="right")
+        row2 = tk.Frame(leg, bg=PANEL)
+        row2.pack(fill="x", padx=12, pady=(0, 2))
+        self.var_leg_space = tk.BooleanVar(value=self.cfg.get("legendary_space", True))
+        tk.Checkbutton(row2, text="Press Space in the game when a Legendary drops (puts it into the inventory)",
+                       variable=self.var_leg_space,
+                       command=lambda: (self._set_cfg("legendary_space", bool(self.var_leg_space.get())),
+                                        self._loot_enabled()),
+                       bg=PANEL, fg=FG, selectcolor=BG, activebackground=PANEL, activeforeground=FG,
+                       font=ui.F_SMALL, highlightthickness=0, bd=0).pack(side="left")
         self.lbl_leg = tk.Label(leg, text="No Legendary this session yet", bg=PANEL, fg=FG, font=ui.F_SMALL,
                                 anchor="w")
         self.lbl_leg.pack(fill="x", padx=12)
@@ -4020,6 +4029,8 @@ class App:
                             self._fill_skills()
                             self._sk_slot_sig = None
                         self.root.after(300, refill)
+                elif ev[0] == "status":
+                    self.lbl_status.configure(text=ev[1])
                 elif ev[0] == "hotkey":
                     {"item": self.scan_item, "attributes": self.scan_attributes,
                      "hide": self.toggle_hide}.get(ev[1], lambda: None)()
@@ -4051,6 +4062,25 @@ class App:
         if self.cfg.get("legendary_sound", True) and time.time() - self._last_beep > 1.5:
             self._last_beep = time.time()
             self._play_legendary()
+        if self.cfg.get("legendary_space", True) and time.time() - getattr(self, "_last_space", 0) > 2.0:
+            self._last_space = time.time()
+            threading.Thread(target=self._press_space, daemon=True).start()
+
+    def _press_space(self):
+        """Tap Space in the game once (puts the item into the inventory). Like the log panel: right away while
+        Deskrawl has focus, otherwise with a short focus switch if the panel mode allows it."""
+        try:
+            time.sleep(0.3)
+            hwnd = self.capture.find()
+            if not hwnd:
+                return
+            switch = self.cfg.get("auto_panels", "always") == "always" and not self.cfg.get("game_hidden")
+            prev = game_input.press_keys(hwnd, ["SPACE"], allow_focus_switch=switch)
+            if prev is None:
+                self.events.put(("status", "Legendary: Space not pressed – Deskrawl not in the foreground"))
+            game_input.restore_focus(prev)
+        except Exception:
+            errlog.report("space", "Space for a Legendary could not be pressed")
 
     def _play_legendary(self):
         try:
@@ -4060,9 +4090,11 @@ class App:
             errlog.report("sound", "legendary sound could not be played")
 
     def _toggle_leg_sound(self):
-        on = bool(self.var_leg_sound.get())
-        self._set_cfg("legendary_sound", on)
-        self.loot.enabled = on
+        self._set_cfg("legendary_sound", bool(self.var_leg_sound.get()))
+        self._loot_enabled()
+
+    def _loot_enabled(self):
+        self.loot.enabled = bool(self.cfg.get("legendary_sound", True) or self.cfg.get("legendary_space", True))
 
     def _merge_attributes(self, stats: dict):
         if not stats:

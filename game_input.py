@@ -43,8 +43,11 @@ def _key(vk: int, up: bool, scancode: bool = True):
     user32.SendInput(1, ctypes.byref(inp), ctypes.sizeof(INPUT))
 
 
+NAMED_KEYS = {"SPACE": 0x20, "ENTER": 0x0D, "ESC": 0x1B, "TAB": 0x09}
+
+
 def tap(key: str):
-    vk = ord(key.upper())
+    vk = NAMED_KEYS.get(key.upper()) or ord(key.upper())
     _key(vk, False)
     time.sleep(0.04)
     _key(vk, True)

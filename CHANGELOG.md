@@ -2,6 +2,16 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.20 – 2026-10-07
+
+### New
+- **Space is pressed in the game when a Legendary drops**, so the item goes into your inventory. It is pressed once, at the same moment as the sound.
+  - If Deskrawl has focus, the key is pressed right away.
+  - Otherwise the tracker briefly brings the game to the front and gives focus back, the same way it opens the log panel.
+  - Turn it off on the **Drops** page with **Press Space in the game when a Legendary drops**.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.19 – 2026-10-07
 
 ### Fixed
