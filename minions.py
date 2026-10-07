@@ -142,6 +142,10 @@ class Rater:
             (r"\+([\d.]+)%\s+Gold gained from enemies", "Gold Find"),
             (r"\+([\d.]+)%\s+Item Find", "Item Find"),
             (r"\+?(-?[\d.]+)%\s+Move Speed", "Bonus Move Speed"),
+            (r"Restores ([\d.]+) Mana per second", "Mana Regeneration"),
+            (r"Restores ([\d.]+) Mana per kill", "Mana on Kill"),
+            (r"\+([\d.]+) Mana", "Max Mana"),
+            (r"\+([\d.]+)%\s+Mana Cost Reduction", "Mana Cost Reduction"),
         ]
         for pat, stat in simple:
             m = re.match(pat + "$", t, re.I)
@@ -160,6 +164,10 @@ class Rater:
                 return d, 0.0, f"no effect ({ctx.main} is your main stat)", False
             d["Main Stat %"] = float(m.group(1))
             return d, 0.0, "", True
+        m = re.match(r"\+([\d.]+)%\s+Mana$", t, re.I)
+        if m:
+            d["Max Mana"] = self.g("Max Mana") * float(m.group(1)) / 100
+            return d, 0.0, f"{m.group(1)}% of your Max Mana ({self.g('Max Mana'):g})", True
         for pat, stat in ((r"\+([\d.]+)%\s+Magic Resist", "Magic Resist"),
                           (r"Life Regeneration \+([\d.]+)%", "Life Regeneration"),
                           (r"Life On Hit \+([\d.]+)%", "Life on Hit")):
@@ -181,6 +189,15 @@ class Rater:
             d, extra, note, rated = self.passive(m.group(1))
             d = {k: v * share for k, v in d.items()}
             return d, extra * share, f"active {share * 100:.0f}% of the time" + (f" – {note}" if note else ""), rated
+        m = re.search(r"Gain \+([\d.]+) Mana Regen for ([\d.]+)s", t, re.I)
+        if m and cooldown:
+            share = min(float(m.group(2)) / cooldown, 1.0)
+            return ({"Mana Regeneration": float(m.group(1)) * share}, 0.0,
+                    f"≈ {float(m.group(1)) * share:.1f} mana per second", True)
+        m = re.search(r"Restores ([\d.]+)% of the player's Max Mana", t, re.I)
+        if m and cooldown:
+            per_s = self.g("Max Mana") * float(m.group(1)) / 100 / cooldown
+            return {"Mana Regeneration": per_s}, 0.0, f"≈ {per_s:.1f} mana per second", True
         m = re.search(r"(?:Heal player|Shields you for) ([\d.]+)% max(?:imum)? health", t, re.I)
         if m and cooldown:
             per_s = self.g("Max Health") * float(m.group(1)) / 100 / cooldown

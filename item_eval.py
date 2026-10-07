@@ -28,8 +28,19 @@ CAP = 85.0  # crit chance and dodge chance stop at 85 %
 # Share of time / hits a conditional bonus applies (estimates; the game does not tell).
 UPTIME = {"Damage vs Healthy": 0.5, "Damage vs Injured": 0.5, "Damage vs Distant": 0.5,
           "Damage vs Elite": 0.2}
-STRONG_SHARE = 0.3  # share of damage from Strong Attack abilities
-BASIC_SHARE = 0.7
+# statuses: replaced by what skill tracking measured (Context.conditions) when available
+COND_DEFAULTS = {"Damage vs Slowed": 0.3, "Damage vs Immobilized": 0.15, "Damage vs Bleeding": 0.25,
+                 "Damage vs Burned": 0.25, "Damage vs Poisoned": 0.25, "Damage vs Vulnerable": 0.25}
+STRONG_SHARE = 0.3  # share of damage from Strong Attack abilities (without skill tracking)
+BASIC_SHARE = 0.5
+SPECIAL_SHARE = 0.2
+OUT_DOT_SHARE = 0.1  # share of your damage dealt over time (without skill tracking)
+ATTACK_TYPE = {"Basic Attack": "Basic Attack Damage", "Strong Attack": "Strong Attack Damage",
+               "Special": "Special Ability Bonus Damage"}
+# names on items that the character sheet calls differently
+ALIASES = {"Bonus All Damage": "All Damage"}
+ENEMY_CRIT = (0.05, 150.0)  # enemies' crit chance and crit damage % (only Critical Damage Reduction uses it)
+RECOVERY_WINDOW_S = 5.0  # healing of this many seconds counts towards survival, next to effective health
 
 FARM_STATS = {"Gold Find": "Gold", "Item Find": "Items", "XP Gained": "EXP"}
 
@@ -37,8 +48,6 @@ FARM_STATS = {"Gold Find": "Gold", "Item Find": "Items", "XP Gained": "EXP"}
 OTHER_DEFAULTS = {
     "Damage": ("dps", 0.2),              # flat damage on top of the weapon (weapon value unknown)
     "Cooldown Reduction": ("dps", 0.3),
-    "Life Regeneration": ("surv", 0.05),
-    "Life on Hit": ("surv", 0.05),
     "Bonus Potion Charges": ("surv", 2.0),
     "Health Potion Find": ("surv", 0.02),
     "Bonus Move Speed": ("farm", 0.1),
@@ -107,6 +116,15 @@ class Context:
     weapon: tuple | None = None    # (damage, speed) of the equipped weapon, from its last read tooltip
     gem_tier: int = 3              # gems assumed for empty sockets
     ability_shares: dict = field(default_factory=dict)  # ability -> share of damage (Talents page / skill bar)
+    # measured by skill tracking (build_profile); empty = the estimates above
+    slot_shares: dict = field(default_factory=dict)      # "Basic Attack" / "Strong Attack" / "Special" -> share
+    conditions: dict = field(default_factory=dict)       # "Damage vs Burned" -> share of the time
+    out_dot: float | None = None                         # share of your damage dealt over time
+    attack_share: float = 1.0                            # share of your damage that attack speed speeds up
+    wd_per_s: float = 0.0                                # your damage per second in % weapon damage
+    sim: object = None                                   # combat_sim.CombatSim of the slotted abilities
+    kills_per_s: float = 1.0                             # calibrated for the simulation
+    used_abilities: tuple = ()                           # abilities on the skill bar / seen being cast
 
     @property
     def main(self) -> str:
@@ -124,14 +142,24 @@ class Context:
 
 
 def dps_factor(v: dict, ctx: Context) -> float:
+    """Damage per second relative to nothing, following the game's damage formula (wiki "Damage formula"):
+    primary attribute x element (+ All Damage) x critical hits x Damage vs (one sum) x attack type bonus,
+    damage-over-time ticks without the attack type bonus; attack speed for the damage tied to attacks."""
     g = lambda k: v.get(k, 0.0)
     main = g(ctx.main) * (1 + g("Main Stat %") / 100)
     f = 1 + main / 100
     f *= 1 + (g(f"{ctx.elem} Damage") + g("All Damage") + g("Element Damage")) / 100
     f *= 1 + min(max(g("Critical Hit Chance"), 0), CAP) / 100 * g("Critical Hit Damage") / 100
-    f *= 1 + g("Attack Speed Bonus") / 100
-    f *= 1 + (STRONG_SHARE * g("Strong Attack Damage") + BASIC_SHARE * g("Basic Attack Damage")) / 100
-    f *= 1 + sum(u * g(k) for k, u in UPTIME.items()) / 100
+    if ctx.sim is None:  # with the combat simulation attack speed works through more Basic Attacks
+        f *= 1 + ctx.attack_share * g("Attack Speed Bonus") / 100
+    ups = {**UPTIME, **COND_DEFAULTS, **ctx.conditions}
+    f *= 1 + sum(u * g(k) for k, u in ups.items()) / 100
+    shares = ctx.slot_shares or {"Basic Attack": BASIC_SHARE, "Strong Attack": STRONG_SHARE,
+                                 "Special": SPECIAL_SHARE}
+    tot = sum(shares.values()) or 1.0
+    typ = sum(sh / tot * (1 + g(ATTACK_TYPE.get(slot, "")) / 100) for slot, sh in shares.items())
+    dot = OUT_DOT_SHARE if ctx.out_dot is None else ctx.out_dot
+    f *= (1 - dot) * typ + dot * (1 + g("Damage Over Time") / 100)
     return f
 
 
@@ -145,8 +173,11 @@ def _final(v: dict, base: dict, flat: str, pct: str) -> float:
 def defense(v: dict, base: dict, ctx: Context) -> dict:
     lvl = ctx.enemy_level or ctx.level or int(base.get("Level", 60))
     hp = _final(v, base, "Max Health", "Bonus Health") * (1 + v.get("Max Health %", 0.0) / 100)
-    armor = _final(v, base, "Armor", "Bonus Armor")
-    mr = v.get("Magic Resist", 0.0)
+    # every hero: 1 Armor per Strength, 1 Magic Resist per Intelligence (the sheet values already hold
+    # the current points, so only the change counts)
+    dv = lambda k: v.get(k, 0.0) - base.get(k, 0.0)
+    armor = _final(v, base, "Armor", "Bonus Armor") + dv("Strength")
+    mr = v.get("Magic Resist", 0.0) + dv("Intelligence")
     cut = lambda r: r / (r + 50 * lvl) if r > 0 else 0.0
     dodge = min(max(v.get("Dodge Chance", 0.0), 0), CAP) / 100
     dr = min(v.get("Damage Reduction", 0.0), 100) / 100
@@ -159,11 +190,41 @@ def defense(v: dict, base: dict, ctx: Context) -> dict:
         mult[e] = hit * (1 - r_cut) * (1 - edr) * (1 - dr)
     w = ctx.damage_weights or {e: 1 / len(ELEMENTS) for e in ELEMENTS}
     incoming = sum(w.get(e, 0) * mult[e] for e in ELEMENTS) / max(sum(w.values()), 1e-9)
-    # the game's own Toughness (no damage reductions, hero level)
+    # enemy critical hits: Critical Damage Reduction = Dexterity / (Dexterity + 1500) + the stat itself
+    dex = v.get("Dexterity", 0.0)
+    cdr = min(dex / (dex + 1500) + v.get("Critical Damage Reduction", 0.0) / 100, 0.85)
+    incoming *= 1 + ENEMY_CRIT[0] * ENEMY_CRIT[1] / 100 * (1 - cdr)
+    # the game's own Toughness and Recovery (no damage reductions, hero level)
     hl = ctx.level or lvl
     hcut = lambda r: r / (r + 50 * hl) if r > 0 else 0.0
-    tough = hp / ((1 - dodge) * (1 - 0.5 * (hcut(armor) + hcut(mr))))
-    return {"hp": hp, "ehp": hp / incoming if incoming > 0 else hp, "toughness": tough}
+    m = 1 / ((1 - dodge) * (1 - 0.5 * (hcut(armor) + hcut(mr))))
+    tough = hp * m
+    aps = base.get("Attack Speed", 1.0) * (1 + v.get("Attack Speed Bonus", 0.0) / 100) / \
+        (1 + base.get("Attack Speed Bonus", 0.0) / 100)
+    heal = v.get("Life Regeneration", 0.0) + aps * v.get("Life on Hit", 0.0) + 0.25 * v.get("Life on Kill", 0.0)
+    ehp = hp / incoming if incoming > 0 else hp
+    rec_ehp = heal / incoming if incoming > 0 else heal  # healing counts like health against the same hits
+    return {"hp": hp, "ehp": ehp + RECOVERY_WINDOW_S * rec_ehp, "toughness": tough, "recovery": heal * m,
+            "ehp_only": ehp}
+
+
+SIM_STATS = ("Attack Speed Bonus", "Cooldown Reduction", "Mana Cost Reduction", "Max Mana", "Mana Regeneration",
+             "Mana on Kill")
+
+
+def cast_factor(base: dict, new: dict, ctx: "Context") -> float:
+    """More or fewer casts from attack speed, cooldowns and mana (combat simulation): damage factor."""
+    sim = ctx.sim
+    if sim is None or all(new.get(k, 0.0) == base.get(k, 0.0) for k in SIM_STATS):
+        return 1.0
+
+    def stats(v):
+        out = {k: v.get(k, 0.0) for k in SIM_STATS}
+        out["Max Mana"] = v.get("Max Mana", 100.0) or 100.0
+        out["Attack Speed"] = base.get("Attack Speed", 1.0) * (1 + v.get("Attack Speed Bonus", 0.0) / 100) /             (1 + base.get("Attack Speed Bonus", 0.0) / 100)
+        return out
+    w0 = sim.wd_per_s(stats(base), ctx.kills_per_s)
+    return sim.wd_per_s(stats(new), ctx.kills_per_s) / w0 if w0 > 0 else 1.0
 
 
 def weapon_factor(d: dict, base: dict, weapon) -> float:
@@ -256,6 +317,38 @@ def _ability_effect(text, ctx):
         return None
 
 
+def _auto_effect(text, ctx):
+    """Every rule that can value an effect: abilities used (effects.rate) and stat changes
+    (effects.stat_rate). -> (deltas, dps %, surv %, farm %, text) or None."""
+    try:
+        import effects
+    except Exception:
+        return None
+    parts, deltas, dps, surv, farm = [], {}, 0.0, 0.0, 0.0
+    a = _ability_effect(text, ctx)
+    if a:
+        dps += a[0]
+        surv += a[1]
+        parts.append(a[2])
+    st = effects.stat_rate(text, ctx)
+    if st:
+        for k, v in st["deltas"].items():
+            deltas[k] = deltas.get(k, 0.0) + v
+        dps += st["dps"]
+        surv += st["surv"]
+        farm += st["farm"]
+        parts.append(st["text"])
+    if not parts:
+        # an effect on an ability the build does not use is worth nothing right now
+        import skills
+        named = [x["name"] for x in skills.ABILITIES if x["name"].lower() in (text or "").lower()]
+        used = {n.lower() for n in ctx.used_abilities} | {n.lower() for n in (ctx.ability_shares or {})}
+        if named and used and not any(n.lower() in used for n in named):
+            return {}, 0.0, 0.0, 0.0, f"{' / '.join(dict.fromkeys(named))} is not in your build – no effect now"
+        return None
+    return deltas, dps, surv, farm, " · ".join(parts)
+
+
 def _legendary_deltas(L: dict, ocr_effect: str, sign: int, ctx: Context, base: dict):
     """Pseudo stat deltas of a legendary effect -> (deltas, valuation text, known?, fixed (dps%, surv%))."""
     ov = ctx.overrides.get(L["name"])
@@ -295,7 +388,8 @@ def evaluate(res, ctx: Context, mode: str = "Balanced") -> Evaluation:
         ev.reasons.append("Character not read yet (F9)")
     # items list "+3.9% Attack Speed"; the character sheet calls that "Attack Speed Bonus"
     # ("Attack Speed" there is attacks per second)
-    src = {("Attack Speed Bonus" if k == "Attack Speed" and p else k): (d, p) for k, (d, p) in res.deltas.items()}
+    src = {("Attack Speed Bonus" if k == "Attack Speed" and p else ALIASES.get(k, k)): (d, p)
+           for k, (d, p) in res.deltas.items()}
     deltas = {k: d for k, (d, _) in src.items()}
     pct_flags = {k: p for k, (_, p) in src.items()}
     weapon = ctx.weapon
@@ -308,7 +402,7 @@ def evaluate(res, ctx: Context, mode: str = "Balanced") -> Evaluation:
         ev.reasons.append("Weapon damage unknown – compare a weapon once (F8)")
 
     # legendary effects: add the new one, remove the old one
-    fixed_dps = fixed_surv = 0.0
+    fixed_dps = fixed_surv = fixed_farm = 0.0
     eff_deltas: dict = {}
     for sign, name, fx_list in ((+1, res.name, res.effects_new_all), (-1, res.old_name, res.effects_old_all)):
         if not fx_list and not name:
@@ -316,11 +410,14 @@ def evaluate(res, ctx: Context, mode: str = "Balanced") -> Evaluation:
         L = find_legendary(name, fx_list)
         if not L:
             for fx in fx_list:
-                auto = _ability_effect(fx, ctx)
+                auto = _auto_effect(fx, ctx)
                 if auto:
-                    fixed_dps += sign * auto[0]
-                    fixed_surv += sign * auto[1]
-                    ev.effects.append((sign, name, fx, auto[2], True))
+                    for k, v in auto[0].items():
+                        eff_deltas[k] = eff_deltas.get(k, 0.0) + sign * v
+                    fixed_dps += sign * auto[1]
+                    fixed_surv += sign * auto[2]
+                    fixed_farm += sign * auto[3]
+                    ev.effects.append((sign, name, fx, auto[4], True))
                     continue
                 ev.effects.append((sign, name, fx, "unknown effect – not rated", False))
                 ev.confident = False
@@ -330,6 +427,12 @@ def evaluate(res, ctx: Context, mode: str = "Balanced") -> Evaluation:
             continue  # same legendary on both sides: effect does not change
         ocr_fx = next(iter(fx_list), L["effect"])
         d, txt, known, (fd, fs) = _legendary_deltas(L, ocr_fx, sign, ctx, base)
+        if not known:  # the manual note could not value it: the rules may
+            auto = _auto_effect(ocr_fx, ctx) or _auto_effect(L["effect"], ctx)
+            if auto:
+                d = {k: sign * v for k, v in auto[0].items()}
+                fd, fs, known, txt = sign * auto[1], sign * auto[2], True, auto[4]
+                fixed_farm += sign * auto[3]
         for k, val in d.items():
             eff_deltas[k] = eff_deltas.get(k, 0.0) + val
         fixed_dps += fd
@@ -361,7 +464,7 @@ def evaluate(res, ctx: Context, mode: str = "Balanced") -> Evaluation:
     for k, v in gem_d.items():
         all_d[k] = all_d.get(k, 0.0) + v
     wf = weapon_factor(all_d, base, weapon)
-    f0, f1 = dps_factor(base, ctx), dps_factor(new, ctx) * wf
+    f0, f1 = dps_factor(base, ctx), dps_factor(new, ctx) * wf * cast_factor(base, new, ctx)
     d0, d1 = defense(base, base, ctx), defense(new, base, ctx)
     ev.tough_old, ev.tough_new = d0["toughness"], d1["toughness"]
     ev.dps_pct = (f1 / f0 - 1) * 100 + fixed_dps
@@ -371,11 +474,17 @@ def evaluate(res, ctx: Context, mode: str = "Balanced") -> Evaluation:
         ev.reasons.append("Max Health missing – read the full character sheet (F9 at the top and at the bottom)")
     ev.surv_pct = (d1["ehp"] / d0["ehp"] - 1) * 100 + fixed_surv
     for stat, label in FARM_STATS.items():
-        ev.farm[label] = ((1 + new.get(stat, 0) / 100) / (1 + base.get(stat, 0) / 100) - 1) * 100
+        ev.farm[label] = ((1 + new.get(stat, 0) / 100) / (1 + base.get(stat, 0) / 100) - 1) * 100 + fixed_farm
 
     # stats outside the models
-    other = {**OTHER_DEFAULTS, **ctx.other}
-    unused = (set(MAIN_STATS) - {ctx.main}) | {f"{e} Damage" for e in ELEMENTS if e != ctx.elem}
+    # healing is part of the survival model now (Recovery); old saved per-unit values for it are ignored
+    # cast-rate stats belong to the combat simulation when it runs
+    skip = ("Life Regeneration", "Life on Hit", "Life on Kill") + (SIM_STATS if ctx.sim is not None else ())
+    other = {k: v for k, v in {**OTHER_DEFAULTS, **ctx.other}.items() if k not in skip}
+    # other elements do nothing for this build; Strength / Dexterity / Intelligence always add a defence
+    unused = {f"{e} Damage" for e in ELEMENTS if e != ctx.elem}
+    side_note = {"Strength": "Armor only", "Intelligence": "Magic Resist only",
+                 "Dexterity": "Critical Damage Reduction only"}
     for k, d in deltas.items():
         if k == "Damage" and weapon:
             continue  # part of the weapon factor
@@ -412,9 +521,10 @@ def evaluate(res, ctx: Context, mode: str = "Balanced") -> Evaluation:
             one[k] = one.get(k, 0.0) + d
         parts = []
         if k in unused:
-            parts.append(f"no effect ({ctx.main if k in MAIN_STATS else ctx.elem + ' build'})")
+            parts.append(f"no effect ({ctx.elem} build)")
         else:
-            p_dps = (dps_factor(one, ctx) * weapon_factor({k: d}, base, weapon) / f0 - 1) * 100
+            p_dps = (dps_factor(one, ctx) * weapon_factor({k: d}, base, weapon) * cast_factor(base, one, ctx)
+                     / f0 - 1) * 100
             p_surv = (defense(one, base, ctx)["ehp"] / d0["ehp"] - 1) * 100 if d0["hp"] > 0 else 0.0
             if k == "Damage" and weapon:
                 pass
@@ -431,6 +541,8 @@ def evaluate(res, ctx: Context, mode: str = "Balanced") -> Evaluation:
             if k in FARM_STATS:
                 fp = ((1 + one.get(k, 0) / 100) / (1 + base.get(k, 0) / 100) - 1) * 100
                 parts.append(f"{fp:+.1f} % {FARM_STATS[k]}")
+            if k in MAIN_STATS and k != ctx.main and parts:
+                parts.append(f"{side_note[k]} – {ctx.main} is your main stat")
             if not parts:
                 parts.append("no effect" if k in WEAPON_STATS or note else "not rated")
         if note:

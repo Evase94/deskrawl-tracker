@@ -77,8 +77,10 @@ First steps after the setup, once for each of your characters:
 When you log in with another character, the tracker switches to that character's values automatically.
 
 ## Limits
-- Attack speed counts fully towards damage; abilities with a cooldown gain less in reality.
-- Some legendary effects cannot be calculated – they are shown but not rated.
+- Item values follow the game's damage formula (primary attribute, element + All Damage, critical hits, Damage vs …, attack type bonus) and its Toughness / Recovery. Strength, Intelligence and Dexterity also count as Armor, Magic Resist and Critical Damage Reduction for every hero.
+- With skill tracking on, attack type shares, damage over time, how often enemies carry a status and the attack speed share come from your build; without it they are estimates.
+- Mana on Kill, Mana Regeneration, Max Mana, Mana Cost Reduction, Cooldown Reduction and Attack Speed are rated with a small combat simulation of the game's auto-combat rules (cast order, global cooldown, mana), fitted to your counted casts.
+- Effects that depend on Thorns, being hit or on-kill triggers are shown but not rated.
 - Empty sockets are rated with the best gem of the tier chosen on the **Gems** page.
 - Text recognition can misread. Implausible values are marked yellow with "?".
 

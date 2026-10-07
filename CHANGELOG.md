@@ -2,6 +2,31 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.15 – 2026-10-07
+
+### Improved
+- **Item Comparer follows the game's damage formula** (from the wiki):
+  - Primary attribute, element plus All Damage, critical hits, Damage vs …, and the attack type bonus.
+  - Damage over time ticks get no attack type bonus.
+  - Survival uses the game's Toughness and Recovery (regeneration + attacks/s × Life on Hit + 0.25 × Life on Kill).
+- **Intelligence, Strength and Dexterity also defend every hero**: +1 Magic Resist per Intelligence, +1 Armor per Strength, and Critical Damage Reduction from Dexterity. 1 point of your primary attribute is still +1% damage.
+- **Now rated** (these counted 0 before):
+  - Bonus All Damage
+  - Special Ability Bonus Damage
+  - Damage vs Slowed, Immobilized, Bleeding, Burned, Poisoned and Vulnerable
+  - Damage Over Time
+  - Critical Damage Reduction
+  - Life on Kill
+- **Mana and cooldowns: a combat simulation** of the game's auto-combat rules counts how many casts more mana or less cooldown give. It covers cast order, the global cooldown, mana cost and Mana on Kill / Regeneration. It is fitted to the casts skill tracking counted. Mana on Kill, Mana Regeneration, Max Mana, Mana Cost Reduction, Cooldown Reduction and Attack Speed are now rated by the extra casts. This also applies to minions with mana bonuses.
+- **With skill tracking**, your measured shares of Basic / Strong / Special damage, damage over time and status uptimes replace the fixed estimates.
+- **More legendary effects are rated**:
+  - Damage over time bonus, potion charges, healing while moving, and move speed after kills.
+  - Bonuses "while <ability> is active", using the ability's uptime.
+  - Damage pulses, a proc every N hits, raining daggers, extra targets and pierce, and "every Nth cast".
+  - Effects for abilities you do not use now say so.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.14 – 2026-10-07
 
 ### New

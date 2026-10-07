@@ -33,6 +33,7 @@ import updater
 import changelog
 import minions
 import build_profile
+import combat_sim
 import paragon
 from version import VERSION
 import item_ocr  # first: loads onnxruntime before WinRT/winocr (avoids a crash)
@@ -3668,12 +3669,60 @@ class App:
             if enemy is None and info.get("level_max"):
                 enemy = info["level_max"]
         other = {k: tuple(v) for k, v in self.cfg.get("other_stats", {}).items()}
-        return item_eval.Context(char=char, hero=self.state.hero, level=self.state.level or int(char.get("Level", 0)),
-                                 element=self.cfg.get("element", "Auto"), enemy_level=enemy, damage_weights=weights,
-                                 dot_share=dot, other=other, overrides=self.cfg.get("legendary_values", {}),
-                                 weapon=tuple(self.cfg["weapon"]) if self.cfg.get("weapon") else None,
-                                 gem_tier=int(self.cfg.get("gem_tier", 3)),
-                                 ability_shares=self._ability_shares())
+        ctx = item_eval.Context(char=char, hero=self.state.hero, level=self.state.level or int(char.get("Level", 0)),
+                                element=self.cfg.get("element", "Auto"), enemy_level=enemy, damage_weights=weights,
+                                dot_share=dot, other=other, overrides=self.cfg.get("legendary_values", {}),
+                                weapon=tuple(self.cfg["weapon"]) if self.cfg.get("weapon") else None,
+                                gem_tier=int(self.cfg.get("gem_tier", 3)),
+                                ability_shares=self._ability_shares())
+        prof = self._profile_cached()
+        if prof.get("ok"):  # what skill tracking measured replaces the estimates
+            ctx.slot_shares = dict(prof["slot_share"])
+            ctx.out_dot = prof["dot_share"]
+            cond = prof["condition"]
+            ctx.conditions = {"Damage vs Burned": cond.get("Burning", 0.0), "Damage vs Slowed": cond.get("Slowed", 0.0),
+                              "Damage vs Immobilized": cond.get("Immobilized", 0.0),
+                              "Damage vs Bleeding": cond.get("Bleeding", 0.0),
+                              "Damage vs Poisoned": cond.get("Poisoned", 0.0),
+                              "Damage vs Vulnerable": cond.get("Vulnerable", 0.0)}
+            ctx.attack_share = sum(x["share"] for x in prof["abilities"].values()
+                                   if x["slot"] in ("Basic Attack", "Strong Attack")) or 1.0
+            ctx.wd_per_s = prof["wd_per_s"]
+        bar = [s[0] for s in (self.skills.bar.slots if self.skills.bar else [])]
+        ctx.used_abilities = tuple(bar or prof.get("abilities", {}).keys())
+        sim = self._combat_sim(bar, char, prof)
+        if sim is not None:
+            ctx.sim, ctx.kills_per_s = sim
+        return ctx
+
+    def _combat_sim(self, bar, char, prof):
+        """(CombatSim of the skill bar, kills per second calibrated on the measured casts) or None."""
+        slots = bar or [n for n, _ in sorted(prof.get("abilities", {}).items(),
+                                             key=lambda kv: ["Basic Attack", "Strong Attack", "Special"].index(
+                                                 kv[1]["slot"]) if kv[1]["slot"] in ("Basic Attack", "Strong Attack",
+                                                                                      "Special") else 3)][:4]
+        if not slots:
+            return None
+        key = (tuple(slots), self.state.hero, tuple(round(float(char.get(k, 0) or 0), 2) for k in combat_sim.STATS),
+               getattr(self, "_prof_key", None))
+        if getattr(self, "_sim_key", None) != key:
+            sim = combat_sim.CombatSim(slots, self.state.hero)
+            if not sim.ok():
+                self._sim_key, self._sim_val = key, None
+            else:
+                measured = {k: v["cps"] for k, v in prof.get("abilities", {}).items()} if prof.get("ok") else {}
+                kr = sim.calibrate(char, measured) if measured else 1.0
+                self._sim_key, self._sim_val = key, (sim, kr)
+        return self._sim_val
+
+    def _profile_cached(self) -> dict:
+        """Build profile, worked out again only when the stage statistics or the character changed."""
+        key = (self._stage_char(), id(self.stage_stats), getattr(self, "_stage_sig", None),
+               (self.char_stats.get("Attack Speed") or (None,))[0],
+               tuple(s[0] for s in (self.skills.bar.slots if getattr(self, "skills", None) and self.skills.bar else [])))
+        if getattr(self, "_prof_key", None) != key:
+            self._prof_key, self._prof_val = key, self._profile()
+        return self._prof_val
 
     def _ability_shares(self) -> dict:
         """Ability -> share of damage, as set on the Talents page (or taken from the skill bar there)."""
@@ -4851,6 +4900,17 @@ class App:
                 parts.append(f"{prof['basic_estimated']}: Basic Attacks do not flash on the skill bar – estimated "
                              f"from your attack speed ({(self.char_stats.get('Attack Speed') or ('?',))[0]}/s).")
             setup = self.cfg.get("ability_setup") or {}
+            ctx = self._eval_context()
+            if ctx.sim is not None and stage is None:
+                stats = {k: (self.char_stats.get(k) or (0,))[0] for k in combat_sim.STATS}
+                cps = ctx.sim.run(stats, ctx.kills_per_s)
+                meas = {k: v["cps"] for k, v in prof["abilities"].items()}
+                parts.append(f"Combat simulation (game's auto-combat rules, {ctx.kills_per_s:.2f} kills/s fitted to "
+                             f"your casts): " + " · ".join(
+                                 f"{k} {v * 60:.1f}/min" + (f" (counted {meas[k] * 60:.1f})" if k in meas else "")
+                                 for k, v in cps.items())
+                             + " – the Item Comparer and Minions use it for Mana on Kill, Mana Regeneration, Max "
+                               "Mana, Mana Cost Reduction, Cooldown Reduction and Attack Speed.")
             used = [f"{k}: {v[0]} {float(v[1]):g}%" for k, v in setup.items()
                     if v and v[0] and v[0] not in ("–", "-") and len(v) > 1 and v[1]]
             if used:
