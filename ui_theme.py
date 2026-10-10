@@ -418,3 +418,93 @@ class ScrollFrame(tk.Frame):
             w = w.master
         if w is self and self.sb.winfo_ismapped():
             self.canvas.yview_scroll(int(-e.delta / 120), "units")
+
+
+class Slider(tk.Frame):
+    """Slider in the tracker's look: thin track, gold fill up to the value, round knob, the value next to it.
+    Click or drag on the track, mouse wheel and arrow keys move it; it writes to `variable` (IntVar/DoubleVar)."""
+
+    def __init__(self, parent, variable, from_=0.0, to=10.0, resolution=1.0, length=130, bg=BG, fmt=None,
+                 label=None, show_value=True):
+        super().__init__(parent, bg=bg)
+        self.enabled = True
+        self.var, self.lo, self.hi, self.res = variable, float(from_), float(to), float(resolution)
+        self.fmt = fmt or (lambda v: f"{v:g}")
+        self.len, self.h, self.pad = length, 20, 8
+        if label:
+            tk.Label(self, text=label, bg=bg, fg=MUTED, font=F_SMALL).pack(side="left", padx=(0, 6))
+        self.cv = tk.Canvas(self, width=length, height=self.h, bg=bg, highlightthickness=0, bd=0, cursor="hand2",
+                            takefocus=1)
+        self.cv.pack(side="left")
+        self.lbl = tk.Label(self, text="", bg=bg, fg=FG, font=F_LABEL, width=4, anchor="w")
+        if show_value:
+            self.lbl.pack(side="left", padx=(6, 0))
+        for ev in ("<Button-1>", "<B1-Motion>"):
+            self.cv.bind(ev, self._at)
+        self.cv.bind("<MouseWheel>", lambda e: self._step(1 if e.delta > 0 else -1))
+        for key, d in (("<Left>", -1), ("<Down>", -1), ("<Right>", 1), ("<Up>", 1)):
+            self.cv.bind(key, lambda e, d=d: self._step(d))
+        self.cv.bind("<FocusIn>", lambda e: self._draw())
+        self.cv.bind("<FocusOut>", lambda e: self._draw())
+        self._trace = variable.trace_add("write", lambda *_: self._draw())
+        self.bind("<Destroy>", lambda e: self._untrace() if e.widget is self else None)
+        self._draw()
+
+    def _untrace(self):
+        try:
+            self.var.trace_remove("write", self._trace)
+        except Exception:
+            pass
+
+    def _value(self) -> float:
+        try:
+            return float(self.var.get())
+        except (tk.TclError, ValueError):
+            return self.lo
+
+    def _set(self, v: float):
+        v = min(max(round((v - self.lo) / self.res) * self.res + self.lo, self.lo), self.hi)
+        if isinstance(self.var, tk.IntVar):
+            v = int(round(v))
+        else:
+            v = round(v, 6)
+        if v != self._value():
+            self.var.set(v)
+
+    def set_enabled(self, on: bool):
+        self.enabled = bool(on)
+        self.cv.configure(cursor="hand2" if on else "arrow")
+        self._draw()
+
+    def _at(self, e):
+        if not self.enabled:
+            return
+        self.cv.focus_set()
+        x0, x1 = self.pad, self.len - self.pad
+        frac = min(max((e.x - x0) / (x1 - x0), 0.0), 1.0)
+        self._set(self.lo + frac * (self.hi - self.lo))
+
+    def _step(self, d):
+        if self.enabled:
+            self._set(self._value() + d * self.res)
+
+    def _draw(self):
+        cv = self.cv
+        cv.delete("all")
+        x0, x1, y = self.pad, self.len - self.pad, self.h / 2
+        v = self._value()
+        frac = (v - self.lo) / (self.hi - self.lo) if self.hi > self.lo else 0.0
+        xk = x0 + frac * (x1 - x0)
+        acc = ACCENT if self.enabled else LINE
+        cv.create_line(x0, y, x1, y, fill=LINE, width=4, capstyle="round")
+        if xk > x0:
+            cv.create_line(x0, y, xk, y, fill=acc, width=4, capstyle="round")
+        try:
+            focus = self.focus_get() is cv
+        except (KeyError, tk.TclError):
+            focus = False
+        r = 7
+        cv.create_oval(xk - r - 2, y - r - 2, xk + r + 2, y + r + 2, outline=acc if focus and self.enabled else "",
+                       width=1)
+        cv.create_oval(xk - r, y - r, xk + r, y + r, fill=FG if self.enabled else MUTED, outline=acc, width=2)
+        self.lbl.configure(text=self.fmt(v), fg=FG if self.enabled else MUTED)

@@ -3730,9 +3730,7 @@ class App:
         wrow = tk.Frame(p, bg=BG)
         wrow.pack(fill="x", padx=14, pady=(0, 6))
         tk.Label(wrow, text="Efficiency weighting:  kill speed", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
-        sc = tk.Scale(wrow, from_=0, to=100, orient="horizontal", variable=self.var_boss_w, showvalue=False,
-                      length=160, width=10, sliderlength=18, bg=ui.ACCENT, fg=FG, troughcolor=ui.RAISED,
-                      highlightthickness=0, bd=0, sliderrelief="flat", activebackground=ui.ACCENT, resolution=5)
+        sc = ui.Slider(wrow, self.var_boss_w, 0, 100, 5, length=160, show_value=False)
         self.boss_scale = sc
         sc.pack(side="left", padx=8)
         tk.Label(wrow, text="EXP", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
@@ -3775,8 +3773,7 @@ class App:
         efficiency = self.var_boss_rank.get() == self.BOSS_RANKS[1]
         self.lbl_boss_w.configure(text=f"{100 - self.var_boss_w.get()} % kill speed · {self.var_boss_w.get()} % EXP",
                                   fg=FG if efficiency else MUTED)
-        self.boss_scale.configure(state="normal" if efficiency else "disabled",
-                                  bg=ui.ACCENT if efficiency else ui.LINE)
+        self.boss_scale.set_enabled(efficiency)
         q = self.var_boss_search.get().strip().lower()
         kind = self.var_boss_kind.get()
         diff = self.var_boss_diff.get()
@@ -5120,12 +5117,8 @@ class App:
         self.adv_vars = {}
         for key, label, default in (("xp", "EXP", 10), ("gold", "Gold", 5), ("leg", "Legendaries", 5),
                                     ("safe", "Safety", 5)):
-            tk.Label(bar, text=label, bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
             v = tk.IntVar(value=int((self.cfg.get("advisor") or {}).get(key, default)))
-            sc = tk.Scale(bar, from_=0, to=10, orient="horizontal", variable=v, showvalue=True, length=110, width=10,
-                          sliderlength=16, bg=ui.ACCENT, fg=FG, troughcolor=ui.RAISED, highlightthickness=0, bd=0,
-                          sliderrelief="flat", activebackground=ui.ACCENT, font=ui.F_SMALL)
-            sc.pack(side="left", padx=(4, 14))
+            ui.Slider(bar, v, 0, 10, 1, length=110, label=label).pack(side="left", padx=(0, 14))
             self.adv_vars[key] = v
             v.trace_add("write", lambda *_: self._advisor_changed())
         tk.Label(bar, text="Min. runs", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
@@ -5213,11 +5206,8 @@ class App:
         cb.pack(side="left", padx=(6, 14))
         cb.bind("<<ComboboxSelected>>", lambda _e: self._rift_changed())
         tk.Label(bar, text="Enemies may hit up to", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
-        sc = tk.Scale(bar, from_=1.0, to=4.0, resolution=0.1, orient="horizontal", variable=self.var_rift_dmg,
-                      showvalue=True, length=120, width=10, sliderlength=16, bg=ui.ACCENT, fg=FG, troughcolor=ui.RAISED,
-                      highlightthickness=0, bd=0, sliderrelief="flat", activebackground=ui.ACCENT, font=ui.F_SMALL)
-        sc.pack(side="left", padx=4)
-        tk.Label(bar, text="× as hard as on your tier · run at most", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        ui.Slider(bar, self.var_rift_dmg, 1.0, 4.0, 0.1, length=120, fmt=lambda v: f"{v:.1f}×").pack(side="left", padx=4)
+        tk.Label(bar, text="as hard as on your tier · run at most", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
         cb2 = ttk.Combobox(bar, textvariable=self.var_rift_min, values=["3", "5", "8", "10", "15"], width=4,
                            state="readonly")
         cb2.pack(side="left", padx=6)

@@ -2,6 +2,15 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.27 – 2026-10-10
+
+### Improved
+- **New sliders in the tracker's look:** thin track, gold fill up to the value, round knob, value shown next to it. Click or drag on the track, or use the mouse wheel or arrow keys.
+  - Used on Farm advice (EXP, Gold, Legendaries, Safety), on Mythic Rift (how hard enemies may hit) and for the boss efficiency weighting on Stages.
+  - The boss slider is greyed out when the ranking does not use it.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.26 – 2026-10-10
 
 ### New
