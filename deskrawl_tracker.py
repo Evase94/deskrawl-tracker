@@ -165,6 +165,7 @@ class Run:
     death_info: dict = field(default_factory=dict)
     ground_legendaries: int = 0  # orange item names seen on the ground during this run (LootWatcher)
     leg_sounds: int = 0          # Legendary sounds played for this run (ground and end screen together)
+    leg_names: set = field(default_factory=set)  # Legendary names seen on the ground in this run
 
     @property
     def duration(self):
@@ -458,7 +459,7 @@ class GameState:
             return self.current is not None or bool(self.runs and self.runs[-1].end and t - self.runs[-1].end < 8)
 
     GROUND_WAIT_S = 4.0  # an item the carriage unloads shows its name too, followed by an "Obtained" pop-up
-    SAME_ITEM_S = 900.0  # a Legendary with the same name within this time is the same item
+    UNCLAIMED_S = 3600.0  # a Legendary not picked up after this long is forgotten
 
     def ground_legendary(self, text: str, t: float):
         """LootWatcher saw a new orange item name on the ground. It counts once no pop-up with that name
@@ -467,10 +468,14 @@ class GameState:
             if self._popup_named(text, t - 6):
                 return
             key = re.sub(r"[^a-z]", "", text.lower())
-            self.leg_names = {k: v for k, v in getattr(self, "leg_names", {}).items() if t - v < self.SAME_ITEM_S}
-            if key in self.leg_names or any(re.sub(r"[^a-z]", "", x.lower()) == key for _t, x, _r in self.ground_pending):
-                return  # the same item again: label hidden for a while, or the carriage unloading it later
             r = self.current or next((o for o in reversed(self.runs) if o.end and t - o.end < 20), None)
+            if any(re.sub(r"[^a-z]", "", x.lower()) == key for _t, x, _r in self.ground_pending):
+                return  # already waiting
+            if r is not None and key in r.leg_names:
+                return  # the same item in the same run: its label was hidden for a while
+            self.unclaimed = {k: v for k, v in getattr(self, "unclaimed", {}).items() if t - v[0] < self.UNCLAIMED_S}
+            if key in self.unclaimed and self.unclaimed[key][1] is not r:
+                return  # a Legendary of an earlier run not picked up yet: the carriage unloading it
             self.ground_pending.append((t, text, r))
 
     def _popup_named(self, text: str, since: float) -> bool:
@@ -489,9 +494,11 @@ class GameState:
                 if now - t < self.GROUND_WAIT_S:
                     keep.append((t, text, r))
                     continue
-                self.leg_names = getattr(self, "leg_names", {})
-                self.leg_names[re.sub(r"[^a-z]", "", text.lower())] = t
+                key = re.sub(r"[^a-z]", "", text.lower())
+                self.unclaimed = getattr(self, "unclaimed", {})
+                self.unclaimed[key] = (t, r)  # until its "Obtained" / "Sold" pop-up shows
                 if r is not None:
+                    r.leg_names.add(key)
                     r.ground_legendaries += 1
                     if r.ground_legendaries <= r.leg_sounds:
                         continue  # the end screen already sounded for this drop
@@ -624,6 +631,7 @@ class GameState:
                 return
         self._sale_keys.append((t, key, source))
         self.sold.append((t, e["item"], e["gold"], e.get("rarity", "?")))
+        self._claim(e["item"])
 
     def _add_drop(self, t: float, e: dict, source: str):
         """Non-sale item events (kept drops, gems, runes, keys...); same cross-source rule as sales."""
@@ -635,6 +643,19 @@ class GameState:
                 return
         self._sale_keys.append((t, key, source))
         self.drops.append((t, e["item"], drop_category(e), e.get("action", "")))
+        self._claim(e["item"])
+
+    def _claim(self, item: str):
+        """An "Obtained" / "Sold" pop-up: that Legendary is picked up, a new one with its name is a new drop."""
+        unc = getattr(self, "unclaimed", None)
+        if not unc:
+            return
+        import difflib
+        key = re.sub(r"[^a-z]", "", (item or "").lower())
+        for k in list(unc):
+            if k == key or difflib.SequenceMatcher(None, k, key).ratio() > 0.75:
+                del unc[k]
+                break
 
     def add_toast_drop(self, t: float, e: dict):
         with self.lock:

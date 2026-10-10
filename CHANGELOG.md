@@ -2,6 +2,16 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.29 – 2026-10-10
+
+### Fixed
+- **The same Legendary in two runs in a row now counts twice.** v1.0.28 treated a second drop with the same name within 15 minutes as the same item. The time limit is gone. Now:
+  - The same name within one run is the same item, e.g. when its name on the ground was hidden for a while.
+  - A Legendary stays "not picked up yet" until its "Obtained" or "Sold" pop-up shows. If its name appears on the ground again before that, it is the carriage unloading it, not a new drop.
+  - If the same item drops again while the first is still in the carriage, the stage end screen ("Legendary +1") gives its sound and count.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.28 – 2026-10-10
 
 ### Fixed
