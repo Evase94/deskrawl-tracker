@@ -43,6 +43,42 @@ def level_factor(level_from: int, level_to: int, per_level: float) -> float:
     return per_level ** max(level_to - level_from, 0)
 
 
+# EXP per enemy (wiki "Offline rewards"): 100 + 10 per level above 1 (790 at level 70), x 1.5 on Nightmare and
+# x 2 on Inferno, where enemies are level 70. A hero above the enemies' level gets 1/6 less per level above it.
+XP_DIFF = {"Normal": 1.0, "Nightmare": 1.5, "Inferno": 2.0}
+
+
+def xp_per_enemy(level: int, difficulty: str) -> float:
+    base = base_difficulty(difficulty)
+    lvl = 70 if base in ("Nightmare", "Inferno") else max(int(level or 1), 1)
+    return (100 + 10 * (lvl - 1)) * XP_DIFF.get(base, 1.0)
+
+
+def overlevel_factor(hero_level: int, stage_level: int) -> float:
+    """Share of the EXP a hero gets from enemies below his level: 1/6 less per level above, at least ~0."""
+    above = (hero_level or 0) - (stage_level or 0)
+    return 1.0 if above <= 0 else max(1 - above / 6, 0.01)
+
+
+def offline_rates(stage_level: int, difficulty: str, lowest_level: int | None = None) -> dict:
+    """Offline rewards (Expedition Camp) per hour at the furthest stage: {"enemies", "xp", "gold"}."""
+    base = base_difficulty(difficulty)
+    lvl = 70 if base in ("Nightmare", "Inferno") else max(int(stage_level or 1), 1)
+    pts = [(5, 70), (20, 470), (40, 470), (60, 690)]
+    if lvl <= 5:
+        en = 70.0
+    elif lvl >= 60:
+        en = 690.0
+    else:
+        en = next(e0 + (e1 - e0) * (lvl - l0) / (l1 - l0) for (l0, e0), (l1, e1) in zip(pts, pts[1:])
+                  if l0 <= lvl <= l1)
+    if base == "Normal":
+        gold = 0.15 * lvl * en
+    else:
+        gold = 7245 * (1 + (lowest_level or 70) * (0.005 if base == "Nightmare" else 0.01))
+    return {"enemies": en, "xp": en * xp_per_enemy(lvl, base), "gold": gold}
+
+
 class StageStats:
     FIELDS = ("runs", "seconds", "xp", "gold", "sold_gold", "items", "deaths", "damage", "dmg_seconds")
     # legendaries / leg_seconds: legendary + divine drops, counted since the tracker records them per run
@@ -260,7 +296,7 @@ def damage_profile(stage: dict | None) -> dict:
 
 # ----------------------------------------------------------------------------- forecast (item 3)
 
-def forecast(row: dict, stage_level: int | None) -> dict | None:
+def forecast(row: dict, stage_level: int | None, hero_level: int | None = None) -> dict | None:
     """What the same stage would give on the next difficulty, at today's gear."""
     cur = base_difficulty(row["difficulty"])
     nxt = NEXT.get(cur)
@@ -271,7 +307,12 @@ def forecast(row: dict, stage_level: int | None) -> dict | None:
     hp = b["hp"] / a["hp"] * level_factor(lvl_from, 70, 1.06)
     dmg = b["dmg"] / a["dmg"] * level_factor(lvl_from, 70, 1.03)
     run_s = row["avg_s"] * (FIGHT_SHARE * hp + (1 - FIGHT_SHARE))
-    xp_run = row["xp_run"] * b["xp"] / a["xp"]
+    # EXP per enemy: on Normal the stage's own level (less when the hero is above it), from Nightmare on level 70
+    if cur == "Normal" and stage_level:
+        xp_run = row["xp_run"] * xp_per_enemy(70, nxt) / (xp_per_enemy(stage_level, cur) *
+                                                          overlevel_factor(hero_level or 0, stage_level))
+    else:
+        xp_run = row["xp_run"] * b["xp"] / a["xp"]
     find = (1 + b["find_per_lvl"] * 70 / 100) / (1 + a["find_per_lvl"] * 70 / 100)
     return {"difficulty": nxt, "hp_factor": hp, "dmg_factor": dmg, "run_s": run_s,
             "xp_h": xp_run / run_s * 3600, "gold_h": row["gold_h"] * find * row["avg_s"] / run_s,

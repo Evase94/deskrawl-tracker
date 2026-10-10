@@ -12,9 +12,20 @@ DEATH_SCALE = 4  # a 25 % death rate costs the whole safety weight
 
 
 def rank(rows: list, w_xp: float, w_gold: float, w_leg: float, w_safe: float, min_runs: int = 1,
-         boss_info: dict | None = None) -> list:
-    """rows: stages.StageStats.rows(). -> [{row, score, parts, notes}] best first."""
-    rows = [r for r in rows if r.get("runs", 0) >= min_runs and not r["stage"].startswith("Unknown")]
+         boss_info: dict | None = None, hero_level: int = 0, stage_levels: dict | None = None) -> list:
+    """rows: stages.StageStats.rows(). -> [{row, score, parts, notes}] best first.
+    hero_level / stage_levels ({stage: enemy level}): on Normal a hero above a stage gets 1/6 less EXP per level
+    above it, so its EXP/h counts as it would be now."""
+    out_rows = []
+    for r in rows:
+        if r.get("runs", 0) < min_runs or r["stage"].startswith("Unknown"):
+            continue
+        lvl = (stage_levels or {}).get(r["stage"])
+        if lvl and hero_level and stages.base_difficulty(r["difficulty"]) == "Normal" and hero_level > lvl:
+            f = stages.overlevel_factor(hero_level, lvl)
+            r = dict(r, xp_h=r["xp_h"] * f, _over=(f, hero_level - lvl))
+        out_rows.append(r)
+    rows = out_rows
     if not rows:
         return []
     keys = {"xp_h": w_xp, "gold_h": w_gold, "leg_h": w_leg}
@@ -40,6 +51,10 @@ def rank(rows: list, w_xp: float, w_gold: float, w_leg: float, w_safe: float, mi
             notes.append("Gold boss: 1 skull of the difficulty per run")
         if rift.is_rift(r["stage"]):
             notes.append("Mythic Rift: 3 Skull of Inferno per completed run")
+        if r.get("_over"):
+            f, n = r["_over"]
+            notes.insert(0, f"you are {n} level{'s' if n != 1 else ''} above this stage: "
+                            f"{(1 - f) * 100:.0f} % less EXP now")
         if r["runs"] < MIN_SURE:
             notes.append(f"only {r['runs']} run{'s' if r['runs'] != 1 else ''} – not sure yet")
         if r.get("leg_h") is None:

@@ -361,6 +361,9 @@ class GameState:
                         r.stage_name = ps[1]
                         if ps[2].get("rarities"):
                             self._end_legendaries(r, ps[1], ps[2]["rarities"])
+                        if ps[2].get("seconds"):
+                            r.game_seconds = ps[2]["seconds"]
+                        r.end_screen.update({k: v for k, v in ps[2].items() if v is not None and k != "rarities"})
                         self.stage_key = (r.difficulty, r.waves)
                         self.pending_stage = None
                     if self.stage_name and self.stage_key == (r.difficulty, r.waves):
@@ -398,8 +401,17 @@ class GameState:
         """Stage end screen: name the run that just ended (or remember it until the commit arrives)."""
         name = f"{info['stage']}: {info['n']}"
         with self.lock:
-            r = next((o for o in reversed(self.runs) if o.end and t - o.end < 120), None)
             self.stage_name = name
+            cur = self.current
+            if cur is not None and cur.start and t - cur.start > 8:
+                # the run in the log is still open: the game shows its end screen before the commit arrives -
+                # keep it for that run (the run before is not the one that just ended)
+                ps = getattr(self, "pending_stage", None)
+                if ps and ps[1] == name:
+                    info = {**ps[2], **{k: v for k, v in info.items() if v is not None}}
+                self.pending_stage = (t, name, info)
+                return
+            r = next((o for o in reversed(self.runs) if o.end and t - o.end < 120), None)
             if r is None:
                 self.pending_stage = (t, name, info)
                 return
@@ -511,7 +523,9 @@ class GameState:
         killer: needed after a death, while no stage is known, or when the run's settings
         (difficulty, waves) differ from the last stage the log named - then the stage changed."""
         with self.lock:
-            return not self.stage_name or self.stage_key != (r.difficulty, r.waves)
+            # the end screen of this run was not read: "Next Stage" keeps difficulty and waves, so only the log
+            # panel can tell whether the stage changed
+            return not self.stage_name or self.stage_key != (r.difficulty, r.waves) or not r.stage_name
 
     def add_casts(self, events):
         """Ability casts from the skill bar: count them on the running run."""
@@ -1476,6 +1490,7 @@ C_GOOD, C_BAD, C_MEH, C_RUN = ui.GOOD, ui.BAD, ui.WARN, ui.GOOD
 DEFAULT_REGION = (0.0, 0.42, 1.0, 0.52)  # lower part of the game window: the battle strip, full width
 ITEMS_CSV = os.path.join(APP_DIR, "items_history.csv")
 VERDICT_MARGIN = 2.0  # points; inside +/- margin counts as a sidegrade
+GUESS_TOLERANCE = 0.25  # a run's EXP may differ this much from its guessed stage's usual EXP
 
 
 class App:
@@ -3864,6 +3879,27 @@ class App:
         if sel:
             self._stage_detail(self._boss_rows[int(sel[0])])
 
+    def _check_guess(self, r):
+        """Stage of a run whose end screen and log panel were not read: the last known stage with the same
+        difficulty and waves - unless the run's EXP does not fit it ("Next Stage" keeps difficulty and waves).
+        Then the stage of this difficulty whose usual EXP per run fits best, or None (= Unknown)."""
+        g = r.stage_guess
+        if not g:
+            return None
+        if r.death or not r.xp:
+            return g  # a death cuts the EXP short: nothing to compare
+        rows = [x for x in self.stage_stats.rows(r.char or self.state.char_name)
+                if x["difficulty"] == r.difficulty and x["runs"] >= 3 and x["xp_run"] > 0
+                and not x["stage"].startswith("Unknown")]
+        fit = lambda x: abs(r.xp / x["xp_run"] - 1)
+        mine = next((x for x in rows if x["stage"] == g), None)
+        if mine is None or fit(mine) <= GUESS_TOLERANCE:
+            return g
+        close = sorted((x for x in rows if fit(x) <= GUESS_TOLERANCE / 2), key=fit)
+        if len(close) == 1 or (len(close) > 1 and fit(close[1]) - fit(close[0]) > 0.05):
+            return close[0]["stage"]
+        return None
+
     def _aggregate_stages(self):
         """Count runs into the persistent stage statistics once their stage is known (or 2.5 min passed)."""
         st = self.state
@@ -3880,7 +3916,7 @@ class App:
                 continue
             if not r.stage_name and now - r.end < 150:
                 break  # wait for the log panel to name the stage
-            stage = r.stage_name or r.stage_guess or f"Unknown ({r.waves} waves)"
+            stage = r.stage_name or self._check_guess(r) or f"Unknown ({r.waves} waves)"
             cycle = r.end - prev.end if prev and prev.end and 0 < r.end - prev.end < r.duration * 1.5 + 60 else r.duration
             t0 = prev.end if prev and prev.end else r.start
             sold_gold = sum(g for t, _, g, _ in sold if t0 < t <= r.end + 10)
@@ -3969,7 +4005,7 @@ class App:
         elif not dream:
             parts.append("Enemy data: this stage is not in data/enemies.json.")
         level = info.get("level_max") if info else None
-        fc = stages.forecast(x, level)
+        fc = stages.forecast(x, level, self.state.level or None)
         if fc:
             parts.append(
                 f"Forecast {fc['difficulty']} (same gear): enemies {fc['hp_factor']:.1f}× HP, "
@@ -5199,8 +5235,10 @@ class App:
             return
         a = self.cfg.get("advisor") or {}
         rows = self.stage_stats.rows(self.cfg.get("profile") or self.state.char_name)
+        levels = {s.get("stage"): s.get("level_max") for s in (getattr(self, "enemy_data", {}) or {}).get("stages", [])}
         ranked = advisor.rank(rows, a.get("xp", 10), a.get("gold", 5), a.get("leg", 5), a.get("safe", 5),
-                              int(a.get("min_runs", 2)), getattr(self, "boss_info", {}))
+                              int(a.get("min_runs", 2)), getattr(self, "boss_info", {}),
+                              self.state.level or 0, levels)
         t = self.adv_tree
         t.delete(*t.get_children())
         for i, e in enumerate(ranked[:60]):
@@ -5211,10 +5249,11 @@ class App:
                 i + 1, r["stage"], e["difficulty"], r["runs"], fmt(r["xp_h"]), fmt(r["gold_h"]),
                 "-" if r.get("leg_h") is None else f"{r['leg_h']:.1f}", f"{r['death_rate'] * 100:.0f} %",
                 f"{e['score']:.0f}", " · ".join(notes)))
+        off = self._offline_text(ranked[0] if ranked else None)
         if ranked:
             b = ranked[0]
             self.lbl_adv_best.configure(text=f"Farm now: {b['row']['stage']} ({b['difficulty']})", fg=C_GOOD)
-            self.lbl_adv_sub.configure(text=(
+            self.lbl_adv_sub.configure(text=off + (
                 f"{fmt(b['row']['xp_h'])} EXP/h · {fmt(b['row']['gold_h'])} gold/h · "
                 + ("" if b['row'].get('leg_h') is None else f"{b['row']['leg_h']:.1f} legendaries/h · ")
                 + f"{b['row']['death_rate'] * 100:.0f} % deaths over {b['row']['runs']} runs. "
@@ -5223,6 +5262,26 @@ class App:
         else:
             self.lbl_adv_best.configure(text="No stage with enough runs yet", fg=MUTED)
             self.lbl_adv_sub.configure(text="Play a few runs on different stages – every run is recorded.")
+
+    def _offline_text(self, best) -> str:
+        """One line: what offline rewards (Expedition Camp) give per hour, against farming the best stage."""
+        last = self.state.runs[-1] if self.state.runs else None
+        row = (best or {}).get("row") or {}
+        diff = row.get("difficulty") or (last.difficulty if last else None)
+        if not diff:
+            return ""
+        normal = stages.base_difficulty(diff) == "Normal"
+        lvl = 70
+        if normal:
+            info = stages.stage_info(row.get("stage", ""), getattr(self, "enemy_data", {}))
+            lvl = (info or {}).get("level_max") or self.state.level or 1
+        o = stages.offline_rates(lvl, diff)
+        xp = o["xp"] * stages.overlevel_factor(self.state.level or 0, lvl)
+        ratio = row.get("xp_h", 0) / xp if xp else 0
+        return (f"Offline (Expedition Camp, {stages.base_difficulty(diff)}): about {fmt(xp)} EXP/h and "
+                f"{fmt(o['gold'])} gold/h for up to 8 h (16 h with the Expedition Supplies), no items"
+                + (f" – 1 hour farming here is worth about {ratio:.0f} hours offline." if ratio >= 2 else ".")
+                + "\n")
 
     # -- mythic rift -----------------------------------------------------------
     def _build_rift(self, p):

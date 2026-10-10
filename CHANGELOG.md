@@ -2,6 +2,22 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.30 – 2026-10-11
+
+### Fixed
+- **Runs saved on the wrong stage after "Next Stage".** "Next Stage" keeps the difficulty and the number of waves, so when the end screen was missed, the run took the previous stage's name and the log panel was not checked. Now:
+  - An end screen that shows before the run is closed in the game log belongs to that run, not to the run before.
+  - A run without a read end screen opens the log panel (panel mode "with focus switch").
+  - A stage taken over from the previous run must fit the run's EXP (±25 %). Otherwise the run goes to the stage whose EXP clearly fits, or to "Unknown". Unknown is better than wrong.
+
+### Improved
+- **EXP follows the game's formula** (wiki "Offline rewards"): 100 EXP per enemy plus 10 per level above 1, ×1.5 on Nightmare and ×2 on Inferno with level-70 enemies, and 1/6 less per level the hero is above the enemies.
+  - The Stages forecast for the next difficulty now counts the higher enemy level. It was far too low for leveling stages, e.g. ×4 EXP per enemy from a level-20 stage on Normal.
+  - Farm advice lowers the EXP/h of Normal stages you have outleveled and says so.
+- **Offline rewards on Farm advice:** what the Expedition Camp gives per hour (EXP and gold, up to 8 or 16 hours, no items) compared with farming your best stage.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.29 – 2026-10-10
 
 ### Fixed
