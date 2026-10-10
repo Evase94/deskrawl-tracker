@@ -31,9 +31,10 @@ import skills
 import talents
 
 # assumptions where the game does not give numbers (shown on the Talents page)
-# % more Lightning damage taken per stack of Electrostatic: the game gives no number; 10 fits a DPS dummy test
-# (Sorcerer, Lightning Storm + Flame Lightning: 20M DPS with Static Charge + Plasma Conduction, 12M without)
-ELECTROSTATIC_PER_STACK = 10.0
+# % more Lightning damage taken per stack of Electrostatic: the game gives no number; 2 fits a DPS dummy test
+# (Sorcerer, Lightning Storm + Flame Lightning: 20M DPS with Static Charge + Plasma Conduction, 12M without;
+# fitted with the pre-patch values the test ran under)
+ELECTROSTATIC_PER_STACK = 2.0
 VULNERABLE_PCT = 30.0          # "Take 30% more damage" (status text)
 HEALTHY_SHARE = 0.7            # share of the time above 80% health
 ALONE_SHARE = 0.25             # share of the time with no enemy nearby (ranged heroes)
@@ -529,7 +530,9 @@ class Facts:
                 if self.abil[n].get("slot") == "Basic Attack" and self.sim_base.get(n, 0.0) > x["cps"]:
                     x["cps"] = self.sim_base[n]
                     changed = True
-            if changed:
+            # own damage shares (Edit rating values) would keep Basic Attacks small: with measured casts the
+            # shares always follow casts x damage
+            if changed or (self.measured and prof.get("overridden")):
                 tot = sum(x["cps"] * weight(self.abil[n]) for n, x in self.use.items()) or 1.0
                 for n, x in self.use.items():
                     x["share"] = x["cps"] * weight(self.abil[n]) / tot

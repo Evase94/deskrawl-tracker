@@ -85,22 +85,24 @@ class CombatSim:
             while kill_acc >= 1.0:
                 kill_acc -= 1.0
                 mana = min(max_mana, mana + mok)
-            timers = [max(x - DT, 0.0) for x in timers]
+            # timers run below 0 by less than a frame: the rest carries into the next interval, so a rate
+            # between two frame counts (attack speed 2.5 vs 2.65) comes out right on average
+            timers = [max(x - DT, -DT) for x in timers]
             gcd = max(gcd - DT, 0.0)
             busy = max(busy - DT, 0.0)
-            if busy <= 0 and gcd <= 0:
+            if busy <= 0:
                 for i in order:
                     s = self.slots[i]
-                    if timers[i] > 0:
-                        continue
+                    if timers[i] > 1e-9 or (gcd > 0 and not s["basic"]):
+                        continue  # the global cooldown holds Strong Attacks and Specials, not Basic Attacks
                     if s["basic"]:
-                        timers[i] = 1.0 / aps
+                        timers[i] += 1.0 / aps
                     else:
                         cost = s["mana"] * (1 - mcr) * mana_f[i]
                         if mana < cost:
                             continue
                         mana -= cost
-                        timers[i] = s["cooldown"] * cd_f[i] * (1 - cdr)
+                        timers[i] += s["cooldown"] * cd_f[i] * (1 - cdr)
                         gcd = GCD * (1 - cdr)
                         busy = s["channel"]
                     casts[i] += 1

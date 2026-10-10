@@ -5279,7 +5279,35 @@ class App:
         mine = [names.get(k, k) for k, v in (self.cfg.get("talents_mine") or {}).items() if v]
         aspd = (self.char_stats.get("Attack Speed") or (None,))[0] if self.cfg.get("estimate_basic") else None
         prof = build_profile.profile(casts, sec, runs, mine, aspd, basic, hero)
+        if not aspd and basic and prof.get("abilities"):
+            prof = self._basic_from_sim(prof, casts, sec, runs, mine, basic, hero)
         return prof if raw else build_profile.apply_overrides(prof, self.cfg.get("rating_overrides") or {})
+
+    def _basic_from_sim(self, prof, casts, sec, runs, mine, basic, hero):
+        """Basic Attacks fire with every attack and hardly flash on the skill bar, so skill tracking counts far
+        too few (a DPS dummy test: 7 a minute counted, ~100 real). Their number comes from the combat
+        simulation of the skill bar instead (attack speed, minus the frames the other casts take); damage
+        shares, statuses and damage per second follow from it. Used by the Item Comparer, Minions and Talents."""
+        bar = [s[0] for s in (self.skills.bar.slots if self.skills.bar else [])]
+        char = {k: v[0] for k, v in self.char_stats.items()}
+        try:
+            sim = self._combat_sim(bar, char, prof)
+        except Exception:
+            errlog.report("basic_sim", "combat simulation for Basic Attacks failed")
+            return prof
+        if sim is None:
+            return prof
+        stats = {k: float(char.get(k, 0) or 0) for k in combat_sim.STATS}
+        stats["Max Mana"] = stats.get("Max Mana") or 100.0
+        sim_cps = sim[0].run(stats, sim[1]).get(basic, 0.0)
+        if sim_cps * sec <= casts.get(basic, 0):
+            return prof
+        casts = dict(casts)
+        counted = casts.get(basic, 0)
+        casts[basic] = sim_cps * sec
+        out = build_profile.profile(casts, sec, runs, mine, None, basic, hero)
+        out["basic_simulated"] = (basic, counted / sec if sec else 0.0, sim_cps)
+        return out
 
     def _build_skills(self, p):
         hdr = ui.page_header(p, "Skill Tracking", (
@@ -5453,10 +5481,11 @@ class App:
         t.delete(*t.get_children())
         runs = max(prof["runs"], 1)
         for i, (name, x) in enumerate(sorted(prof["abilities"].items(), key=lambda kv: -kv[1]["share"])):
-            est = name == prof.get("basic_estimated")
+            est = name == prof.get("basic_estimated") or name == (prof.get("basic_simulated") or (None,))[0]
             t.insert("", "end", iid=str(i), image=self._item_photo(info.get(name, {}).get("icon_url"), 30) or "",
                      tags=("est",) if est else (), values=(
-                         name + (" (estimated)" if est else ""), x["slot"], x.get("element", ""),
+                         name + ((" (simulated)" if prof.get("basic_simulated") else " (estimated)") if est else ""),
+                         x["slot"], x.get("element", ""),
                          f"{x['casts'] / runs:.1f}", f"{x['cps'] * 60:.1f}", f"{x['wd_per_s']:.0f}",
                          f"{x['share'] * 100:.0f} %"))
         if not prof["abilities"]:
@@ -5475,6 +5504,11 @@ class App:
                      f"Damage over time: {prof['dot_share'] * 100:.0f}%",
                      "Enemies carry: " + (" · ".join(f"{k} {v['uptime'] * 100:.0f}% ({', '.join(v['sources'])})"
                                                      for k, v in st) or "no status from your abilities")]
+            if prof.get("basic_simulated"):
+                b, counted, simc = prof["basic_simulated"]
+                parts.append(f"{b}: Basic Attacks hardly flash on the skill bar ({counted * 60:.0f}/min counted) – "
+                             f"the combat simulation of your skill bar gives {simc * 60:.0f}/min, which the ratings "
+                             f"use (Item Comparer, Minions, Talents).")
             if prof.get("basic_estimated"):
                 parts.append(f"{prof['basic_estimated']}: Basic Attacks do not flash on the skill bar – estimated "
                              f"from your attack speed ({(self.char_stats.get('Attack Speed') or ('?',))[0]}/s).")

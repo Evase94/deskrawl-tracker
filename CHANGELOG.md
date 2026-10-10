@@ -2,6 +2,20 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.25 – 2026-10-10
+
+### Improved
+- **The Item Comparer, Minions and the Skill Tracking page now count Basic Attacks correctly.** Basic Attacks hardly flash on the skill bar, so skill tracking counted far too few of them. Their number now comes from the combat simulation of your skill bar (your attack speed). Damage shares, status uptimes and damage per second follow from it.
+  - Example (Sorcerer with Flame Lightning): +20 % Basic Attack Damage was rated +0.9 % damage, now +10.2 %. +10 % Attack Speed was rated +0.4 %, now +4.2 %.
+  - The Skill Tracking page marks the Basic Attack as "(simulated)" and shows the counted and the simulated rate.
+
+### Fixed
+- **The combat simulation held Basic Attacks during the global cooldown.** By the game's rules the global cooldown only holds Strong Attacks and Specials.
+- **The combat simulation rounded to whole frames**, which swallowed small attack speed gains.
+- **The talent calculator is calibrated again** with the corrected Basic Attack rate: Electrostatic is now +2 % per stack, which fits the training dummy test.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.24 – 2026-10-10
 
 ### Game patch 1.0.2
