@@ -2,6 +2,16 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.31 – 2026-10-11
+
+### New
+- **Minimize to tray** (Controls → "Minimize to tray: on/off"). When it is on, minimizing puts the tracker into the small icons at the right of the taskbar instead of the taskbar.
+  - Click the icon to bring the tracker back.
+  - Right-click it for "Show Deskrawl Tracker" or "Exit".
+- **The tracker's own icon:** gold bars on a dark disc, used for the window, the taskbar, the tray and the .exe file, so the tracker and the game are easy to tell apart.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.30 – 2026-10-11
 
 ### Fixed

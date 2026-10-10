@@ -37,6 +37,7 @@ import build_profile
 import combat_sim
 import paragon
 import loot_watch
+import tray
 import advisor
 import rift
 import runes
@@ -1543,6 +1544,15 @@ class App:
         if geo and "-32000" not in geo:  # never restore a minimized position
             root.geometry(geo)
         root.protocol("WM_DELETE_WINDOW", self.close)
+        try:  # the tracker's own icon (not the game's: both must be told apart in the taskbar)
+            from PIL import ImageTk
+            self._app_icons = [ImageTk.PhotoImage(tray.icon_image(n)) for n in (64, 32, 16)]
+            root.iconphoto(True, *self._app_icons)
+        except Exception:
+            pass
+        self.tray = tray.Tray("Deskrawl Tracker", lambda: self.events.put(("tray", "show")),
+                              lambda: self.events.put(("tray", "quit")))
+        root.bind("<Unmap>", self._root_unmap, add="+")
         root.bind("<Configure>", self._root_configure, add="+")
         try:  # 1 ms timer resolution: Tk's after() callbacks run on time instead of every ~16 ms
             ctypes.windll.winmm.timeBeginPeriod(1)
@@ -1670,6 +1680,9 @@ class App:
                                                        "(about 15 pictures a second – costs some CPU). Results: Stages "
                                                        "page.")
         self.btn_top = ctl("", self.toggle_topmost, "Keep the tracker window on top of other windows.")
+        self.btn_tray = ctl("", self.toggle_tray, "When on, minimizing the tracker puts it into the small icons at "
+                                                  "the right of the taskbar instead of the taskbar. Click the icon "
+                                                  "there to bring it back; right-click for Exit.")
         ctl("Change log file", self.open_setup, "Choose the path to Deskrawl's Game.log and check that "
                                                  "Windows' English text recognition is installed.")
         ctl("Check for updates", lambda: self.check_updates(manual=True),
@@ -1695,6 +1708,7 @@ class App:
         self._update_panels_btn()
         self._update_hide_btn()
         self._update_top_btn()
+        self._update_tray_btn()
         self.btn_ocr.configure(text="DPS meter: off")
 
     def _root_configure(self, e):
@@ -4483,6 +4497,11 @@ class App:
                             self._fill_skills()
                             self._sk_slot_sig = None
                         self.root.after(300, refill)
+                elif ev[0] == "tray":
+                    if ev[1] == "show":
+                        self._from_tray()
+                    else:
+                        self.close()
                 elif ev[0] == "status":
                     self.lbl_status.configure(text=ev[1])
                 elif ev[0] == "hotkey":
@@ -6423,6 +6442,36 @@ class App:
         elif u.IsIconic(hwnd) and now < self.boss_grace_until:
             u.ShowWindow(hwnd, 4)  # just shown via F10: make sure it is not left minimized
 
+    def toggle_tray(self):
+        self._set_cfg("tray_minimize", not self.cfg.get("tray_minimize", False))
+        self._update_tray_btn()
+
+    def _update_tray_btn(self):
+        self.btn_tray.configure(text="Minimize to tray: " + ("on" if self.cfg.get("tray_minimize", False) else "off"))
+
+    def _root_unmap(self, e):
+        """Minimized: into the tray instead of the taskbar, when switched on."""
+        if e.widget is not self.root or not self.cfg.get("tray_minimize", False):
+            return
+        if self.root.state() == "iconic" and not getattr(self, "_in_tray", False):
+            self.root.after(10, self._to_tray)
+
+    def _to_tray(self):
+        if self.tray.show():
+            self._in_tray = True
+            self.root.withdraw()
+
+    def _from_tray(self):
+        self.tray.hide()
+        self._in_tray = False
+        self.root.deiconify()
+        self.root.state("normal")
+        self.root.lift()
+        try:
+            self.root.focus_force()
+        except tk.TclError:
+            pass
+
     def toggle_topmost(self):
         self.cfg["topmost"] = not self.cfg.get("topmost", False)
         self.root.attributes("-topmost", self.cfg["topmost"])
@@ -6432,6 +6481,7 @@ class App:
         self.btn_top.configure(text="Always on top: " + ("on" if self.cfg.get("topmost", False) else "off"))
 
     def close(self):
+        self.tray.hide()
         if self.cfg.get("game_hidden"):  # never leave the game invisible without the tracker
             hwnd = self.capture.find()
             if hwnd:
