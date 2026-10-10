@@ -164,6 +164,7 @@ class Run:
     end_screen: dict = field(default_factory=dict)  # what the stage end screen showed for this run
     death_info: dict = field(default_factory=dict)
     ground_legendaries: int = 0  # orange item names seen on the ground during this run (LootWatcher)
+    leg_sounds: int = 0          # Legendary sounds played for this run (ground and end screen together)
 
     @property
     def duration(self):
@@ -443,7 +444,12 @@ class GameState:
             last[k] = total
             n += plus
         r.end_screen["legendaries"] = n
-        for _ in range(max(n - r.ground_legendaries, 0)):
+        # names still waiting on the ground (GROUND_WAIT_S) belong to this run too: they get their own sound,
+        # the end screen only sounds for drops nobody saw
+        pending = sum(1 for _t, _x, pr in self.ground_pending if pr is r)
+        extra = max(n - r.leg_sounds - pending, 0)
+        r.leg_sounds += extra
+        for _ in range(extra):
             self.legendary_q.put(("end screen", ""))
 
     def in_run(self, t: float) -> bool:
@@ -452,6 +458,7 @@ class GameState:
             return self.current is not None or bool(self.runs and self.runs[-1].end and t - self.runs[-1].end < 8)
 
     GROUND_WAIT_S = 4.0  # an item the carriage unloads shows its name too, followed by an "Obtained" pop-up
+    SAME_ITEM_S = 900.0  # a Legendary with the same name within this time is the same item
 
     def ground_legendary(self, text: str, t: float):
         """LootWatcher saw a new orange item name on the ground. It counts once no pop-up with that name
@@ -459,6 +466,10 @@ class GameState:
         with self.lock:
             if self._popup_named(text, t - 6):
                 return
+            key = re.sub(r"[^a-z]", "", text.lower())
+            self.leg_names = {k: v for k, v in getattr(self, "leg_names", {}).items() if t - v < self.SAME_ITEM_S}
+            if key in self.leg_names or any(re.sub(r"[^a-z]", "", x.lower()) == key for _t, x, _r in self.ground_pending):
+                return  # the same item again: label hidden for a while, or the carriage unloading it later
             r = self.current or next((o for o in reversed(self.runs) if o.end and t - o.end < 20), None)
             self.ground_pending.append((t, text, r))
 
@@ -478,8 +489,13 @@ class GameState:
                 if now - t < self.GROUND_WAIT_S:
                     keep.append((t, text, r))
                     continue
+                self.leg_names = getattr(self, "leg_names", {})
+                self.leg_names[re.sub(r"[^a-z]", "", text.lower())] = t
                 if r is not None:
                     r.ground_legendaries += 1
+                    if r.ground_legendaries <= r.leg_sounds:
+                        continue  # the end screen already sounded for this drop
+                    r.leg_sounds += 1
                 self.legendary_q.put(("ground", text))
             self.ground_pending = keep
 

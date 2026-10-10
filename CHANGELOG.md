@@ -2,6 +2,15 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.28 – 2026-10-10
+
+### Fixed
+- **Legendary sound played twice, and the Legendary counted twice.** When a boss dropped a Legendary at the end of a run, the tracker read the end screen while the name on the ground was still waiting for its check. Both then reported the same drop.
+  - Now every run keeps track of the sounds already played, so each Legendary gives one sound, one Space press and one count.
+  - A Legendary with the same name within 15 minutes counts as the same item, e.g. a name that was hidden for a while or the carriage unloading it later.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.27 – 2026-10-10
 
 ### Improved
