@@ -176,6 +176,77 @@ def parse(text: str, hero: str) -> list:
 
     f = lambda m, i: float(m.group(i))
 
+    # rune set bonuses (data/runes.json); estimates where the text names no number are marked in the comments
+    take(rf"When a Stun you inflicted ends, the enemy is left (\w+) for {_N} seconds, taking \+{_N}% Critical Hit Damage from you",
+         lambda m: [{"k": "apply", "status": m.group(1), "src": "status:Stunned", "p": 1.0, "every": 1, "dur": f(m, 2)},
+                    {"k": "crit_dmg", "target": "all", "v": f(m, 3), "cond": m.group(1)}])
+    take(rf"Each enemy struck by ([A-Z][\w' ]+?) grants a stack of [\w ]+? for {_N} seconds, up to (\d+) stacks\. Each stack "
+         rf"grants \+{_N} Mana Regeneration and \+{_N}% Critical Hit Chance",
+         lambda m: [{"k": "buff", "trigger": target(m.group(1)), "per": "hit", "every": 1, "dur": f(m, 2),
+                     "stacks": int(m.group(3)), "give": {"k": "stat", "stat": "Mana Regeneration"}, "v": f(m, 4)},
+                    {"k": "buff", "trigger": target(m.group(1)), "per": "hit", "every": 1, "dur": f(m, 2),
+                     "stacks": int(m.group(3)), "give": {"k": "stat", "stat": "Critical Hit Chance"}, "v": f(m, 5)}])
+    take(rf"Each stack of ([A-Z][\w' ]+?) also grants \+{_N}% (\w+) Damage, up to \+{_N}% at (\d+) stacks",
+         lambda m: {"k": "buff", "trigger": target(m.group(1)), "per": "cast", "every": 1, "dur": 4.0,
+                    "stacks": int(m.group(5)), "give": {"k": "stat", "stat": f"{m.group(3)} Damage"}, "v": f(m, 2)})
+    take(rf"\+{_N}% Attack Speed\. ([A-Z][\w' ]+?) also applies (\w+)",
+         lambda m: [{"k": "stat", "stat": "Attack Speed Bonus", "v": f(m, 1)},
+                    {"k": "apply", "status": _status(m.group(3)), "src": target(m.group(2)), "p": 1.0, "every": 1}])
+    take(r"While channeling [A-Z][\w' ]+?, all \w+ abilities can be cast[^.]*\.?",
+         lambda m: {"k": "none", "why": "changes which abilities can be cast – not simulated"})
+    take(rf"Critical Hits? heals? {_N}% of Max Health", lambda m: {"k": "heal_crit", "v": f(m, 1)})
+    take(rf"([A-Z][\w' ]+?) provides an additional {_N}% Critical Hit Chance and {_N}% Critical Hit Damage",
+         lambda m: [{"k": "while", "ability": target(m.group(1)) or m.group(1), "stat": "Critical Hit Chance", "v": f(m, 2)},
+                    {"k": "while", "ability": target(m.group(1)) or m.group(1), "stat": "Critical Hit Damage", "v": f(m, 3)}])
+    take(rf"Each (Basic Attack|Strong Attack) cast reduces ([A-Z][\w' ]+?)'s cooldown by {_N} seconds",
+         lambda m: {"k": "cd_flat", "trigger": m.group(1), "target": target(m.group(2)), "v": f(m, 3)})
+    take(rf"([A-Z][\w' ]+?)'s blades no longer fly past\. They hunt the enemies around where you aimed for (\d+) seconds\. "
+         rf"Hits the same enemy every: {_N}s Weapon damage per hit: {_N}%",
+         lambda m: {"k": "proc", "src": target(m.group(1)), "per": "cast", "p": 1.0, "every": 1,
+                    "wd": float(m.group(2)) / f(m, 3) * f(m, 4), "targets": PROC_TARGETS})
+    take(rf"Direct damage from (\w+)s? increased by {_N}%", lambda m: {"k": "dmg", "target": m.group(1), "v": f(m, 2)})
+    take(rf"Enemies hit by your (\w+)s? receive your ([\w ]+?) for {_N} seconds, granting you \+{_N}% Critical Chance against them",
+         lambda m: [{"k": "apply", "status": m.group(2).strip(), "src": m.group(1), "p": 1.0, "every": 1, "dur": f(m, 3)},
+                    {"k": "crit_chance", "target": "all", "v": f(m, 4), "cond": m.group(2).strip()}])
+    take(rf"(\w+)s can be retriggered (\d+) additional times",  # not every retrigger finds an enemy: half counted
+         lambda m: {"k": "dmg", "target": m.group(1), "v": float(m.group(2)) * 100 * 0.5})
+    take(rf"While channeling ([A-Z][\w' ]+?), gain {_N}% damage reduction",
+         lambda m: {"k": "while", "ability": target(m.group(1)) or m.group(1), "stat": "Damage Reduction", "v": f(m, 2)})
+    take(rf"([A-Z][\w' ]+?) shoots {_N}% faster, deals double damage, and its arrows now pierce up to (\d+) targets",
+         lambda m: {"k": "dmg", "target": target(m.group(1)),
+                    "v": ((1 + f(m, 2) / 100) * 2 * (1 + 0.5 * (int(m.group(3)) - 1) / 2) - 1) * 100})
+    take(rf"Damage against (\w+) enemies increased by {_N}%",
+         lambda m: ({"k": "dmg", "target": "all", "v": f(m, 2), "cond": _status(m.group(1))} if _status(m.group(1)) else None))
+    take(r"Applying poison reduces the target's movement speed[^.]*\.( Reapplying poison refreshes the slow\.)?",
+         lambda m: {"k": "none", "why": "slows enemies – not part of the damage model"})
+    take(rf"Casting ([A-Z][\w' ]+?) has a {_N}% chance to launch [\w ]+? that deals {_N}% weapon damage as \w+ in a small area"
+         rf"(?: and applies (\d+) stacks of (\w+))?",
+         lambda m: [{"k": "proc", "src": target(m.group(1)), "per": "cast", "p": f(m, 2) / 100, "every": 1,
+                     "wd": f(m, 3), "targets": PROC_TARGETS}] +
+         ([{"k": "apply", "status": _status(m.group(5)), "src": target(m.group(1)),
+            "p": f(m, 2) / 100 * int(m.group(4)), "every": 1}] if m.group(4) and _status(m.group(5)) else []))
+    take(rf"([A-Z][\w' ]+?) gains ([A-Z][\w' ]+?) as an additional ability",  # damage not stated: twice the damage
+         lambda m: {"k": "dmg", "target": target(m.group(1)), "v": 100.0})
+    take(rf"([A-Z][\w' ]+?) fires (\d+) additional projectiles\. Each projectile can pierce through (\d+) target",
+         lambda m: {"k": "dmg", "target": target(m.group(1)), "v": float(m.group(2)) * 100})
+    take(rf"Each ([A-Z][\w' ]+?) strike deals splash damage",  # no number: one more enemy at half the damage
+         lambda m: {"k": "dmg", "target": target(m.group(1)), "v": 50.0})
+    take(rf"Each ([A-Z][\w' ]+?) strike creates a [\w ]+? that pulses (\d+) times at [\d.]+ ?-second intervals, each dealing "
+         rf"{_N}% weapon damage",
+         lambda m: {"k": "proc", "src": target(m.group(1)), "per": "hit", "p": 1.0, "every": 1,
+                    "wd": float(m.group(2)) * f(m, 3), "targets": PROC_TARGETS})
+    take(rf"Your ([A-Z][\w' ]+?) has a {_N}% chance to unleash ([A-Z][\w' ]+?) for free",
+         lambda m: {"k": "free_cast", "src": target(m.group(1)), "dst": target(m.group(3)), "v": f(m, 2)})
+    take(rf"([A-Z][\w' ]+?) conjures one additional (\w+)", lambda m: {"k": "dmg", "target": target(m.group(1)), "v": 100.0})
+    take(rf"When a ([A-Z][\w' ]+?)'s time runs out .*? bursts for {_N}% weapon damage",
+         lambda m: {"k": "proc", "src": target(m.group(1).rstrip("s")) or target(m.group(1) + "s"), "per": "cast", "p": 1.0,
+                    "every": 1, "wd": f(m, 2), "targets": PROC_TARGETS})
+    take(rf"([A-Z][\w' ]+?) costs half as much Mana", lambda m: {"k": "mana_cost", "target": target(m.group(1)), "v": 50.0})
+    take(rf"([A-Z][\w' ]+?)'s airflow pierces through enemies behind the target, inflicting (\w+)\. Each cast also reduces the "
+         rf"remaining cooldown of a random (\w+) ability by {_N} second\. Weapon damage per hit: {_N}%",
+         lambda m: [{"k": "proc", "src": target(m.group(1)), "per": "cast", "p": 1.0, "every": 1, "wd": f(m, 5), "targets": 1},
+                    {"k": "apply", "status": _status(m.group(2)), "src": target(m.group(1)), "p": 1.0, "every": 1},
+                    {"k": "cd_flat", "trigger": target(m.group(1)), "target": m.group(3), "v": f(m, 4) / 2}])
     # patch 1.0.2 texts
     take(rf"\+{_N}% Critical Hit Chance and \+{_N}% Critical Hit Damage against (\w+) enemies",
          lambda m: ([{"k": "crit_chance", "target": "all", "v": f(m, 1), "cond": _status(m.group(3))},
@@ -526,8 +597,10 @@ class Facts:
         # simulation (attack speed, minus the frames other casts take); the damage shares follow from it.
         if self.sim_base:
             changed = False
+            basics = [n for n in self.use if self.abil[n].get("slot") == "Basic Attack"]
+            main = max(basics, key=lambda n: self.use[n]["cps"]) if basics else None  # one Basic Attack is slotted
             for n, x in self.use.items():
-                if self.abil[n].get("slot") == "Basic Attack" and self.sim_base.get(n, 0.0) > x["cps"]:
+                if n == main and self.sim_base.get(n, 0.0) > x["cps"]:
                     x["cps"] = self.sim_base[n]
                     changed = True
             # own damage shares (Edit rating values) would keep Basic Attacks small: with measured casts the
@@ -575,9 +648,10 @@ class Facts:
 class Model:
     """Numbers of one build (absolute, so two builds can be divided)."""
 
-    def __init__(self, facts: Facts, build: dict):
+    def __init__(self, facts: Facts, build: dict, extra: list | tuple = ()):
+        """extra: effects on top of the build (rune set bonuses, items), in parse() form with absolute values."""
         self.F = F = facts
-        self.fx = build_effects(build, F.hero)
+        self.fx = build_effects(build, F.hero) + [dict(e, talent=e.get("talent", "extra")) for e in extra]
         self.notes = []
         self.stats = {}
         for e in self.fx:
@@ -690,6 +764,8 @@ class Model:
             if e["k"] != "apply" or not e.get("status"):
                 continue
             src, st = e["src"], e["status"]
+            if e.get("dur") and not self.dur.get(st):
+                self.dur[st] = e["dur"]
             if src.startswith("crit:"):
                 chc = min(F.char.get("Critical Hit Chance", 0.0) + self.stats.get("Critical Hit Chance", 0.0),
                           item_eval.CAP) / 100
@@ -844,6 +920,12 @@ class Model:
             elif k == "heal_cast":
                 casts = sum(self.cps(n) for n in F.use if match(e["target"], F.abil[n])) / e["every"]
                 d["Life Regeneration"] = d.get("Life Regeneration", 0.0) + casts * F.char.get("Max Health", 0.0) * e["v"] / 100
+            elif k == "heal_crit":
+                chc = min(F.char.get("Critical Hit Chance", 0.0), item_eval.CAP) / 100
+                hits = sum(self.cps(n) * skills.targets(F.abil[n]) * bolts(F.abil[n]) for n in F.use)
+                # healing above what keeps you alive is wasted: count a third of it
+                d["Life Regeneration"] = d.get("Life Regeneration", 0.0) + \
+                    hits * chc * F.char.get("Max Health", 0.0) * e["v"] / 100 / 3
             elif k == "heal_per_mana":
                 spent = sum(self.cps(n) * float(F.abil[n].get("mana") or 0) for n in F.use)
                 d["Life Regeneration"] = d.get("Life Regeneration", 0.0) + spent * e["v"]
@@ -872,6 +954,15 @@ def _ctx_with(ctx, conditions: dict):
     return c
 
 
+def evaluate_extra(facts: Facts, current: dict, extra: list, mode: str, extra_stats: dict | None = None):
+    """(damage %, survival %, income %, score) of effects added to the current build (a rune set bonus, a rune's
+    stats): the same model as for talents. extra_stats: plain sheet stats {stat: value} on top."""
+    cur = Model(facts, current).finish(None)
+    fx = list(extra) + [{"k": "stat", "stat": k, "v": v} for k, v in (extra_stats or {}).items()]
+    new = Model(facts, current, fx).finish(cur)
+    return _compare(facts, cur, new, mode)[:4]
+
+
 def evaluate(facts: Facts, build: dict, current: dict, mode: str, cur_model: Model | None = None):
     """(damage %, survival %, income %, score, Model) of build against the current build."""
     F = facts
@@ -880,6 +971,13 @@ def evaluate(facts: Facts, build: dict, current: dict, mode: str, cur_model: Mod
         return F._cache[key]
     cur = cur_model or Model(F, current).finish(None)
     new = Model(F, build).finish(cur)
+    res = _compare(F, cur, new, mode)
+    F._cache[key] = res
+    return res
+
+
+def _compare(F: Facts, cur: Model, new: Model, mode: str):
+    """(damage %, survival %, income %, score, new) of model new against model cur."""
     # damage: abilities x their talent bonuses x casts, global factor from the damage formula
     tot = 0.0
     for n, x in F.use.items():
@@ -917,9 +1015,7 @@ def evaluate(facts: Facts, build: dict, current: dict, mode: str, cur_model: Mod
         item_eval.OTHER_DEFAULTS["Bonus Move Speed"][1]
     w = item_eval.MODES.get(mode, item_eval.MODES["Damage"])
     score = w["dps"] * dps + w["surv"] * surv + w["farm"] * farm
-    res = (dps, surv, farm, score, new)
-    F._cache[key] = res
-    return res
+    return dps, surv, farm, score, new
 
 
 # ----------------------------------------------------------------------------- the best build

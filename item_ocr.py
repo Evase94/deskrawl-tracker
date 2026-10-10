@@ -1070,7 +1070,13 @@ def find_stage_end(lines: list[Line]) -> dict | None:
         else:
             row.append(l)
     stage = None
-    for row in rows:
+    for row in rows:  # Mythic Rift: the title names the tier ("MYTHIC RIFT: TIER 37", "Mythic Rift 37")
+        text = " ".join(x.text for x in sorted(row, key=lambda x: x.x))
+        m = re.search(r"r\s*[i1l]\s*f\s*t\W*(?:t\s*[i1l]\s*e\s*r)?\W*(\d{1,3})\b", text, re.I)
+        if m and 1 <= int(m.group(1)) <= 100:
+            stage = ("Mythic Rift", int(m.group(1)), min(row, key=lambda x: x.y))
+            break
+    for row in rows if stage is None else []:
         text = " ".join(x.text for x in sorted(row, key=lambda x: x.x))
         m = re.search(r"([A-Za-z' ]{4,}?)\s*[:;.]\s*(\d{1,2})\s*$", text)
         if not m:
@@ -1455,24 +1461,69 @@ def read_toast(frame) -> dict | None:
 _LEVEL_HUD = re.compile(r"(?:l[vu]\W{0,2}\s*)?(\d{1,2})\s*[\(\[{]\s*(\d{1,4})\s*[\)\]}]", re.I)
 
 
+def paragon_bar(frame, ln: Line) -> float | None:
+    """Fill of the bar right of the "Lv. 70 (14)" label (0..1). At level 70 it is the Paragon bar (blue fill,
+    dark rest, thin separators every few pixels); below 70 the character's level bar (orange) - None then."""
+    H, W = frame.shape[:2]
+    h = max(ln.h, 6)
+    x0 = int(ln.x + ln.w)
+    x1 = int(min(x0 + h * 30, W))
+    y0, y1 = int(ln.y + ln.h * 0.3), int(min(ln.y + ln.h * 1.8, H))
+    if x1 - x0 < 20 or y1 <= y0:
+        return None
+    hsv = cv2.cvtColor(frame[y0:y1, x0:x1], cv2.COLOR_BGR2HSV)
+    hh, ss, vv = hsv[..., 0], hsv[..., 1], hsv[..., 2]
+    blue = (hh >= 90) & (hh <= 125) & (ss > 70) & (vv > 110)
+    dark = vv < 60
+    fills = []
+    for r in range(blue.shape[0]):
+        if blue[r].sum() < 3:
+            continue
+        bar = blue[r] | dark[r]
+        cols = np.nonzero(bar)[0]
+        if not len(cols):
+            continue
+        start, end, gap = cols[0], cols[0], 0
+        for c in range(cols[0], len(bar)):  # the bar ends where 4 pixels in a row are neither fill nor track
+            if bar[c]:
+                end, gap = c, 0
+            else:
+                gap += 1
+                if gap >= 4:
+                    break
+        length = end - start + 1
+        if length < h * 8:
+            continue
+        fb = np.nonzero(blue[r][start:end + 1])[0]
+        fills.append((fb[-1] + 1) / length if len(fb) else 0.0)
+    if len(fills) < 2:
+        return None
+    return float(np.median(fills))
+
+
 def find_paragon(lines: list[Line], frame) -> dict | None:
-    """{"level": Paragon level} from the HUD label "Lv. 70 (3)" at the bottom left of the game window.
-    (The bar next to it is the character's level bar, empty at level 70 - it shows no Paragon XP.)"""
+    """{"level": Paragon level, "char_level": level, "fill": Paragon bar 0..1 or None} from the HUD label
+    "Lv. 53 (20)" at the bottom of the game window. The Paragon level is account-wide: every character shows
+    it in brackets; the bar next to the label is the Paragon bar only at level 70."""
     H, W = frame.shape[:2]
     for ln in lines:
-        if ln.y < H * 0.85 or ln.x > W * 0.45:
+        if ln.y < H * 0.80:
             continue
         m = _LEVEL_HUD.search(ln.text)
-        if m and m.group(1) == "70":
-            return {"level": int(m.group(2))}
+        if m and 1 <= int(m.group(1)) <= 70:
+            lvl = int(m.group(1))
+            return {"level": int(m.group(2)), "char_level": lvl,
+                    "fill": paragon_bar(frame, ln) if lvl == 70 else None}
     return None
 
 
 def read_paragon(frame) -> dict | None:
-    """find_paragon on an enlarged crop of the bottom left corner (the label is small; OCR of the
-    whole window often misses it)."""
+    """find_paragon on an enlarged strip along the bottom of the window (the label is small; OCR of the whole
+    window often misses it). The whole width: the game strip can sit anywhere on a wide screen."""
     H, W = frame.shape[:2]
-    y0, x1 = int(H * 0.88), int(W * 0.45)
-    crop = cv2.resize(frame[y0:H, 0:x1], None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+    y0 = int(H * 0.86)
+    crop = cv2.resize(frame[y0:H, 0:W], None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
     lines = [Line(l.text, l.x / 2, l.y / 2 + y0, l.w / 2, l.h / 2) for l in ocr_windows(crop)]
     return find_paragon(lines, frame)
+
+

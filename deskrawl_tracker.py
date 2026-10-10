@@ -37,6 +37,9 @@ import build_profile
 import combat_sim
 import paragon
 import loot_watch
+import advisor
+import rift
+import runes
 import sound
 from version import VERSION
 import item_ocr  # first: loads onnxruntime before WinRT/winocr (avoids a crash)
@@ -314,6 +317,11 @@ class GameState:
 
     # ---- log events -------------------------------------------------------
     def handle_line(self, line: str, live: bool, now: float):
+        if live and "rift" in line.lower() and getattr(self, "_rift_lines", 0) < 40:
+            # the game's log lines for the Mythic Rift are not known yet: keep the first ones so the tracker can
+            # learn them (tracker_errors.log)
+            self._rift_lines = getattr(self, "_rift_lines", 0) + 1
+            errlog.log.info("Mythic Rift log line: %s", re.sub(r"<[^>]+>", "", line).strip()[:400])
         if "run/" in line:
             m = RE_START.search(line)
             if m:
@@ -674,7 +682,7 @@ class GameState:
 
     def observe_paragon(self, t: float, hud: dict):
         with self.lock:
-            self.paragon.observe_hud(hud["level"])
+            self.paragon.observe_hud(hud["level"], hud.get("fill"))
 
     def observe_gold(self, t: float, balance: int):
         with self.lock:
@@ -711,7 +719,7 @@ class GameState:
                 level, xp = pg.level, pg.xp
                 need = paragon.xp_to_next(level)
                 out = {"paragon": True, "level": level, "xp": xp, "need": need, "left": max(need - xp, 0),
-                       "exact": pg.exact(), "complete": pg.complete, "total": pg.total}
+                       "exact": pg.exact(), "complete": pg.complete, "total": pg.total, "from_bar": pg.from_bar}
             else:
                 if xm.xp is None or not xm.level:
                     return None
@@ -1134,10 +1142,10 @@ class GoldWatcher(threading.Thread):
                 death = item_ocr.find_death_text(lines, (frame.shape[1], frame.shape[0]))
                 if death:
                     self.state.mark_death_seen(time.time(), death)
-                if self.state.level >= 70:  # Paragon level + XP bar at the bottom left
-                    hud = item_ocr.read_paragon(frame)
-                    if hud:
-                        self.state.observe_paragon(time.time(), hud)
+                # Paragon level (every character shows it) and, at level 70, the Paragon bar
+                hud = item_ocr.read_paragon(frame)
+                if hud:
+                    self.state.observe_paragon(time.time(), hud)
                 hdr = item_ocr.find_log_header(lines)
                 if hdr is not None:
                     self.state.ingest_log(item_ocr.read_log_panel(frame, hdr), time.time())
@@ -1533,9 +1541,14 @@ class App:
         self.tab_db = tk.Frame(self.nb, bg=BG)
         self.tab_mn = tk.Frame(self.nb, bg=BG)
         self.tab_sk = tk.Frame(self.nb, bg=BG)
+        self.tab_adv = tk.Frame(self.nb, bg=BG)
+        self.tab_rift = tk.Frame(self.nb, bg=BG)
+        self.tab_rn = tk.Frame(self.nb, bg=BG)
         self.nb.add(self.tab_farm, text="Overview")
         self.nb.add(self.tab_char, text="Character Stats")
         self.nb.add(self.tab_stages, text="Stages")
+        self.nb.add(self.tab_adv, text="Farm advice")
+        self.nb.add(self.tab_rift, text="Mythic Rift")
         self.nb.add(self.tab_drops, text="Drops")
         self.nb.add(self.tab_death, text="Deaths")
         self.nb.add(self.tab_items, text="Item Comparer")
@@ -1543,6 +1556,7 @@ class App:
         self.nb.add(self.tab_mn, text="Minions")
         self.nb.add(self.tab_sk, text="Skill Tracking")
         self.nb.add(self.tab_tal, text="Talents")
+        self.nb.add(self.tab_rn, text="Runes")
         # BiS Gear and Weights are hidden for now: still built (their settings keep feeding the
         # item rating), just not in the menu. Add them to the menu again to show them.
         self.nb.add(self.tab_gems, text="Gems")
@@ -1559,6 +1573,9 @@ class App:
         self._build_itemdb(self.tab_db)
         self._build_minions(self.tab_mn)
         self._build_skills(self.tab_sk)
+        self._build_advisor(self.tab_adv)
+        self._build_rift(self.tab_rift)
+        self._build_runes(self.tab_rn)
 
         side = self.nb.bottom
         head = tk.Label(side, text="", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w", cursor="hand2")
@@ -3858,6 +3875,8 @@ class App:
         self._stage_rows = sorted(rows, key=lambda x: -x["xp_h"])
         self._fill_bosses()
         self._fill_stages()
+        self._fill_advisor()
+        self._fill_rift()
         self._fill_skills()
         self._fill_minions()
 
@@ -4171,10 +4190,15 @@ class App:
 
     def _combat_sim(self, bar, char, prof):
         """(CombatSim of the skill bar, kills per second calibrated on the measured casts) or None."""
-        slots = bar or [n for n, _ in sorted(prof.get("abilities", {}).items(),
-                                             key=lambda kv: ["Basic Attack", "Strong Attack", "Special"].index(
-                                                 kv[1]["slot"]) if kv[1]["slot"] in ("Basic Attack", "Strong Attack",
-                                                                                      "Special") else 3)][:4]
+        if not bar:  # no skill bar read: the bar the counted casts suggest - one Basic and one Strong Attack (the
+            # most used), two Specials; an ability that was on the bar for a few runs only stays out
+            ab = prof.get("abilities", {})
+            pick = lambda slot, n: [k for k, _ in sorted(((k, v) for k, v in ab.items() if
+                                                          (v["slot"] if v["slot"] in ("Basic Attack", "Strong Attack")
+                                                           else "Special") == slot), key=lambda kv: -kv[1]["casts"])][:n]
+            slots = pick("Basic Attack", 1) + pick("Strong Attack", 1) + pick("Special", 2)
+        else:
+            slots = bar
         if not slots:
             return None
         key = (tuple(slots), self.state.hero, tuple(round(float(char.get(k, 0) or 0), 2) for k in combat_sim.STATS),
@@ -5083,6 +5107,391 @@ class App:
 
     # -- minions -----------------------------------------------------------------
     MN_SORTS = {"Score (mode)": "score", "Damage": "dps", "Survival": "surv", "Farming": "farm"}
+
+    # -- farm advice -----------------------------------------------------------
+    def _build_advisor(self, p):
+        ui.page_header(p, "Farm advice", (
+            "Where to farm now: every stage (and Mythic Rift tier) you have played, ranked by what matters to you. "
+            "Each value is compared with your best stage (best = 100) and mixed with the weights; deaths cost "
+            "points by the safety weight. Stages with few runs count less sure until they have 5 runs. Gold "
+            "bosses and the Mythic Rift cost skulls – shown under Notes."))
+        bar = tk.Frame(p, bg=BG)
+        bar.pack(fill="x", padx=14, pady=(0, 6))
+        self.adv_vars = {}
+        for key, label, default in (("xp", "EXP", 10), ("gold", "Gold", 5), ("leg", "Legendaries", 5),
+                                    ("safe", "Safety", 5)):
+            tk.Label(bar, text=label, bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+            v = tk.IntVar(value=int((self.cfg.get("advisor") or {}).get(key, default)))
+            sc = tk.Scale(bar, from_=0, to=10, orient="horizontal", variable=v, showvalue=True, length=110, width=10,
+                          sliderlength=16, bg=ui.ACCENT, fg=FG, troughcolor=ui.RAISED, highlightthickness=0, bd=0,
+                          sliderrelief="flat", activebackground=ui.ACCENT, font=ui.F_SMALL)
+            sc.pack(side="left", padx=(4, 14))
+            self.adv_vars[key] = v
+            v.trace_add("write", lambda *_: self._advisor_changed())
+        tk.Label(bar, text="Min. runs", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        self.var_adv_min = tk.StringVar(value=str((self.cfg.get("advisor") or {}).get("min_runs", 2)))
+        cb = ttk.Combobox(bar, textvariable=self.var_adv_min, values=["1", "2", "3", "5", "10"], width=4,
+                          state="readonly")
+        cb.pack(side="left", padx=(6, 0))
+        cb.bind("<<ComboboxSelected>>", lambda _e: self._advisor_changed())
+        top = ui.card(p, fill="x", padx=14, pady=(0, 8))
+        self.lbl_adv_best = tk.Label(top, text="", bg=PANEL, fg=FG, font=ui.F_HEAD, anchor="w")
+        self.lbl_adv_best.pack(fill="x", padx=14, pady=(10, 0))
+        self.lbl_adv_sub = ui.autowrap(tk.Label(top, text="", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w",
+                                                justify="left"), 30)
+        self.lbl_adv_sub.pack(fill="x", padx=14, pady=(0, 10))
+        cols = [("rank", "#", 30, "e"), ("stage", "Stage", 190, "w"), ("diff", "Diff", 60, "w"), ("runs", "Runs", 48, "e"),
+                ("xp", "EXP/h", 76, "e"), ("gold", "Gold/h", 76, "e"), ("leg", "Leg./h", 56, "e"),
+                ("dead", "Deaths", 56, "e"), ("score", "Score", 52, "e"), ("why", "Why / notes", 300, "w")]
+        f, self.adv_tree = self._tree(p, cols, 16)
+        f.pack(fill="both", expand=True, padx=14, pady=(0, 12))
+        self.adv_tree.tag_configure("unsure", foreground=MUTED)
+        self.adv_tree.tag_configure("top", foreground=C_GOOD)
+        self._adv_job = None
+
+    def _advisor_changed(self):
+        if self._adv_job:
+            self.root.after_cancel(self._adv_job)
+
+        def apply():
+            self._adv_job = None
+            try:
+                vals = {k: int(v.get()) for k, v in self.adv_vars.items()}
+            except (tk.TclError, ValueError):
+                return
+            vals["min_runs"] = int(self.var_adv_min.get() or 1)
+            self._set_cfg("advisor", vals)
+            self._fill_advisor()
+        self._adv_job = self.root.after(150, apply)
+
+    def _fill_advisor(self):
+        if not hasattr(self, "adv_tree"):
+            return
+        a = self.cfg.get("advisor") or {}
+        rows = self.stage_stats.rows(self.cfg.get("profile") or self.state.char_name)
+        ranked = advisor.rank(rows, a.get("xp", 10), a.get("gold", 5), a.get("leg", 5), a.get("safe", 5),
+                              int(a.get("min_runs", 2)), getattr(self, "boss_info", {}))
+        t = self.adv_tree
+        t.delete(*t.get_children())
+        for i, e in enumerate(ranked[:60]):
+            r = e["row"]
+            notes = [advisor.why(e)] + e["notes"]
+            tag = "top" if i == 0 else ("unsure" if r["runs"] < advisor.MIN_SURE else "")
+            t.insert("", "end", tags=(tag,), values=(
+                i + 1, r["stage"], e["difficulty"], r["runs"], fmt(r["xp_h"]), fmt(r["gold_h"]),
+                "-" if r.get("leg_h") is None else f"{r['leg_h']:.1f}", f"{r['death_rate'] * 100:.0f} %",
+                f"{e['score']:.0f}", " · ".join(notes)))
+        if ranked:
+            b = ranked[0]
+            self.lbl_adv_best.configure(text=f"Farm now: {b['row']['stage']} ({b['difficulty']})", fg=C_GOOD)
+            self.lbl_adv_sub.configure(text=(
+                f"{fmt(b['row']['xp_h'])} EXP/h · {fmt(b['row']['gold_h'])} gold/h · "
+                + ("" if b['row'].get('leg_h') is None else f"{b['row']['leg_h']:.1f} legendaries/h · ")
+                + f"{b['row']['death_rate'] * 100:.0f} % deaths over {b['row']['runs']} runs. "
+                + (f"Next best: {ranked[1]['row']['stage']} ({ranked[1]['difficulty']}), "
+                   f"{ranked[1]['score']:.0f} vs {b['score']:.0f} points." if len(ranked) > 1 else "")))
+        else:
+            self.lbl_adv_best.configure(text="No stage with enough runs yet", fg=MUTED)
+            self.lbl_adv_sub.configure(text="Play a few runs on different stages – every run is recorded.")
+
+    # -- mythic rift -----------------------------------------------------------
+    def _build_rift(self, p):
+        ui.page_header(p, "Mythic Rift", (
+            "Tiers 1–100 on Inferno, entered at The Brave Memorial in Veldak. Each completed run costs 3 Skull of "
+            "Inferno; leaving or dying costs nothing. From tier 75 the boss enrages after 15 minutes.\n\n"
+            "Your rift runs are recorded like stages – the tier is read from the end screen. From the tier you "
+            "played most the others are forecast: fight time grows with the enemies' health (wiki tier table), "
+            "rewards with the gold and EXP multipliers, danger with the enemies' damage."))
+        bar = tk.Frame(p, bg=BG)
+        bar.pack(fill="x", padx=14, pady=(0, 6))
+        c = self.cfg.get("rift") or {}
+        self.var_rift_key = tk.StringVar(value=c.get("key", "EXP/h"))
+        self.var_rift_dmg = tk.DoubleVar(value=float(c.get("max_damage", 1.5)))
+        self.var_rift_min = tk.StringVar(value=str(c.get("max_min", 10)))
+        tk.Label(bar, text="Best by", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        cb = ttk.Combobox(bar, textvariable=self.var_rift_key, values=["EXP/h", "Gold/h"], width=8, state="readonly")
+        cb.pack(side="left", padx=(6, 14))
+        cb.bind("<<ComboboxSelected>>", lambda _e: self._rift_changed())
+        tk.Label(bar, text="Enemies may hit up to", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        sc = tk.Scale(bar, from_=1.0, to=4.0, resolution=0.1, orient="horizontal", variable=self.var_rift_dmg,
+                      showvalue=True, length=120, width=10, sliderlength=16, bg=ui.ACCENT, fg=FG, troughcolor=ui.RAISED,
+                      highlightthickness=0, bd=0, sliderrelief="flat", activebackground=ui.ACCENT, font=ui.F_SMALL)
+        sc.pack(side="left", padx=4)
+        tk.Label(bar, text="× as hard as on your tier · run at most", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        cb2 = ttk.Combobox(bar, textvariable=self.var_rift_min, values=["3", "5", "8", "10", "15"], width=4,
+                           state="readonly")
+        cb2.pack(side="left", padx=6)
+        tk.Label(bar, text="min", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+        cb2.bind("<<ComboboxSelected>>", lambda _e: self._rift_changed())
+        self.var_rift_dmg.trace_add("write", lambda *_: self._rift_changed())
+        top = ui.card(p, fill="x", padx=14, pady=(0, 8))
+        self.lbl_rift_best = tk.Label(top, text="", bg=PANEL, fg=FG, font=ui.F_HEAD, anchor="w")
+        self.lbl_rift_best.pack(fill="x", padx=14, pady=(10, 0))
+        self.lbl_rift_sub = ui.autowrap(tk.Label(top, text="", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w",
+                                                 justify="left"), 30)
+        self.lbl_rift_sub.pack(fill="x", padx=14, pady=(0, 10))
+        self._section(p, "Your tiers")
+        cols = [("tier", "Tier", 50, "e"), ("runs", "Runs", 50, "e"), ("t", "Run time", 70, "e"), ("xp", "EXP/h", 80, "e"),
+                ("gold", "Gold/h", 80, "e"), ("dead", "Deaths", 60, "e"), ("leg", "Leg./h", 56, "e"),
+                ("sk", "Skulls/h", 64, "e")]
+        f, self.rift_own = self._tree(p, cols, 4)
+        f.pack(fill="x", padx=14, pady=(0, 6))
+        self._section(p, "All tiers")
+        cols = [("tier", "Tier", 50, "e"), ("hp", "Enemy health", 96, "e"), ("dmg", "Enemy damage", 96, "e"),
+                ("xpm", "EXP ×", 60, "e"), ("gm", "Gold ×", 60, "e"), ("t", "Run time", 76, "e"),
+                ("xp", "EXP/h", 80, "e"), ("gold", "Gold/h", 80, "e"), ("sk", "Skulls/h", 64, "e"),
+                ("note", "Note", 220, "w")]
+        f, self.rift_tree = self._tree(p, cols, 12)
+        f.pack(fill="both", expand=True, padx=14, pady=(0, 12))
+        self.rift_tree.tag_configure("best", foreground=C_GOOD)
+        self.rift_tree.tag_configure("bad", foreground=MUTED)
+        self.rift_tree.tag_configure("played", foreground=ui.ACCENT)
+        self._rift_job = None
+
+    def _rift_changed(self):
+        if self._rift_job:
+            self.root.after_cancel(self._rift_job)
+
+        def apply():
+            self._rift_job = None
+            try:
+                self._set_cfg("rift", {"key": self.var_rift_key.get(), "max_damage": round(self.var_rift_dmg.get(), 1),
+                                       "max_min": int(self.var_rift_min.get() or 10)})
+            except (tk.TclError, ValueError):
+                return
+            self._fill_rift()
+        self._rift_job = self.root.after(150, apply)
+
+    def _fill_rift(self):
+        if not hasattr(self, "rift_tree"):
+            return
+        c = self.cfg.get("rift") or {}
+        rows = [r for r in self.stage_stats.rows(self.cfg.get("profile") or self.state.char_name) if rift.is_rift(r["stage"])]
+        rows.sort(key=lambda r: rift.tier_of(r["stage"]) or 0)
+        t = self.rift_own
+        t.delete(*t.get_children())
+        for r in rows:
+            cyc = r.get("avg_s") or 0
+            t.insert("", "end", values=(rift.tier_of(r["stage"]), r["runs"], fmt_dur(r.get("run_s") or r.get("avg_s")),
+                                        fmt(r["xp_h"]), fmt(r["gold_h"]), f"{r['death_rate'] * 100:.0f} %",
+                                        "-" if r.get("leg_h") is None else f"{r['leg_h']:.1f}",
+                                        f"{3 * 3600 / cyc:.0f}" if cyc else "-"))
+        t.configure(height=min(max(len(rows), 2), 8))
+        ref = max(rows, key=lambda r: r["runs"]) if rows else None
+        fc = rift.forecast(ref) if ref else []
+        key = "gold_h" if c.get("key") == "Gold/h" else "xp_h"
+        best = rift.recommend(fc, float(c.get("max_damage", 1.5)), 60 * float(c.get("max_min", 10)), key) if fc else None
+        t = self.rift_tree
+        t.delete(*t.get_children())
+        for tier in range(1, 101):
+            h, dm, xm, gm = (rift.factor(k, tier) for k in ("health", "damage", "xp", "gold"))
+            f = fc[tier - 1] if fc else None
+            note, tag = "", ""
+            if f:
+                if f["played"]:
+                    note, tag = "your tier", "played"
+                if f["enrage"]:
+                    note, tag = "boss enrages before you finish", "bad"
+                elif f["damage"] > float(c.get("max_damage", 1.5)):
+                    note, tag = f"enemies hit {f['damage']:.1f}× as hard", "bad"
+                elif f["run_s"] > 60 * float(c.get("max_min", 10)):
+                    note, tag = "run too long", "bad"
+                if best and tier == best["tier"]:
+                    note, tag = "recommended", "best"
+            t.insert("", "end", iid=str(tier), tags=(tag,), values=(
+                tier, f"×{h:,.0f}" if h >= 100 else f"×{h:.1f}", f"×{dm:.2f}", f"×{xm:.2f}", f"×{gm:.2f}",
+                fmt_dur(f["run_s"]) if f else "-", fmt(f["xp_h"]) if f else "-", fmt(f["gold_h"]) if f else "-",
+                f"{f['skulls_h']:.0f}" if f else "-", note))
+        if best:
+            self.lbl_rift_best.configure(text=f"Recommended: tier {best['tier']}", fg=C_GOOD)
+            self.lbl_rift_sub.configure(text=(
+                f"Forecast from tier {rift.tier_of(ref['stage'])} ({ref['runs']} runs): run ≈ {fmt_dur(best['run_s'])}, "
+                f"{fmt(best['xp_h'])} EXP/h, {fmt(best['gold_h'])} gold/h, {best['skulls_h']:.0f} Skull of Inferno "
+                f"per hour. Enemies hit {best['damage']:.1f}× as hard as on your tier – go up a few tiers at a time "
+                f"and let the forecast learn from your runs there."))
+            self.rift_tree.see(str(best["tier"]))
+        elif ref:
+            self.lbl_rift_best.configure(text="No tier fits your limits", fg=C_MEH)
+            self.lbl_rift_sub.configure(text="Allow harder enemies or longer runs above.")
+        else:
+            self.lbl_rift_best.configure(text="No Mythic Rift run recorded yet", fg=MUTED)
+            self.lbl_rift_sub.configure(text=(
+                "Play a tier – the tracker reads the tier from the end screen and forecasts every other tier from "
+                "it. Until then the table shows the wiki's tier multipliers."))
+
+    # -- runes -----------------------------------------------------------------
+    def _build_runes(self, p):
+        hdr = ui.page_header(p, "Runes", (
+            "Every rune and rune set of your class, rated for your character with the same model as talents "
+            "(character sheet, skill tracking, statuses, combat simulation). Set bonuses are read like talent "
+            "texts; where the game names no number the estimate is noted. A rune that raises an ability counts "
+            f"about +{runes.LEVEL_GAIN:g} % damage of that ability per level, by its share of your damage.\n\n"
+            "Rune slots open at hero level " + ", ".join(str(x) for x in runes.data().get("slots", [])) + "."))
+        self.var_rn_mode = tk.StringVar(value=self.cfg.get("rune_mode", "Damage"))
+        self.var_rn_level = tk.StringVar(value=str(self.cfg.get("rune_level", 6)))
+        b = ui.button(hdr, "Rate for my character", self._fill_runes, accent=True)
+        b.pack(side="right")
+        cb = ttk.Combobox(hdr, textvariable=self.var_rn_level, values=[str(i) for i in range(1, 7)], width=3,
+                          state="readonly")
+        cb.pack(side="right", padx=(6, 12))
+        cb.bind("<<ComboboxSelected>>", lambda _e: (self._set_cfg("rune_level", int(self.var_rn_level.get())),
+                                                     self._fill_runes()))
+        tk.Label(hdr, text="Rune level", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="right")
+        cb = ttk.Combobox(hdr, textvariable=self.var_rn_mode, values=list(item_eval.MODES), width=9, state="readonly")
+        cb.pack(side="right", padx=(6, 12))
+        cb.bind("<<ComboboxSelected>>", lambda _e: (self._set_cfg("rune_mode", self.var_rn_mode.get()),
+                                                     self._fill_runes()))
+        tk.Label(hdr, text="Mode", bg=BG, fg=MUTED, font=ui.F_SMALL).pack(side="right")
+        sf = ui.ScrollFrame(p)
+        sf.pack(fill="both", expand=True)
+        body = sf.inner
+        best = ui.card(body, fill="x", padx=14, pady=(0, 8))
+        self.lbl_rn_best = tk.Label(best, text="Best runes for your slots", bg=PANEL, fg=FG, font=ui.F_HEAD, anchor="w")
+        self.lbl_rn_best.pack(fill="x", padx=14, pady=(10, 0))
+        self.lbl_rn_load = ui.autowrap(tk.Label(best, text="Click “Rate for my character”.", bg=PANEL, fg=MUTED,
+                                                font=ui.F_SMALL, anchor="w", justify="left"), 30)
+        self.lbl_rn_load.pack(fill="x", padx=14, pady=(0, 10))
+        self._section(body, "Rune sets")
+        cols = [("set", "Set", 170, "w"), ("pc", "Runes", 50, "e"), ("dps", "Damage", 70, "e"), ("surv", "Survival", 70, "e"),
+                ("text", "Bonus", 520, "w")]
+        f, self.rn_sets = self._tree(body, cols, 9)
+        f.pack(fill="x", padx=14, pady=(0, 6))
+        self.rn_sets.tag_configure("off", foreground=MUTED)
+        self._section(body, "Single runes")
+        cols = [("name", "Rune", 200, "w"), ("kind", "Type", 110, "w"), ("gives", "Gives (rune level 1 → 6)", 300, "w"),
+                ("dps", "Damage", 70, "e"), ("surv", "Survival", 70, "e"), ("note", "Note", 200, "w")]
+        f, self.rn_tree = self._tree(body, cols, 12, icons=True)
+        f.pack(fill="x", padx=14, pady=(0, 6))
+        self.rn_tree.tag_configure("grand", foreground=ui.RARITY["Legendary"])
+        self.rn_tree.tag_configure("rare", foreground=ui.RARITY["Rare"])
+        self.rn_tree.tag_configure("uncommon", foreground=ui.RARITY["Uncommon"])
+        self.rn_tree.tag_configure("set", foreground=ui.RARITY.get("Gem", C_GOOD))
+        self._section(body, "Rune Transmute (Alchemists)")
+        tm = ui.card(body, fill="x", padx=14, pady=(0, 12))
+        row = tk.Frame(tm, bg=PANEL)
+        row.pack(fill="x", padx=14, pady=(10, 4))
+        self.rn_tm = {}
+        for kind in ("uncommon", "rare", "grand", "set"):
+            tk.Label(row, text=runes.KIND_NAMES[kind], bg=PANEL, fg=MUTED, font=ui.F_SMALL).pack(side="left")
+            v = tk.StringVar(value="0")
+            e = tk.Entry(row, textvariable=v, width=5, bg=ui.RAISED, fg=FG, insertbackground=FG, relief="flat",
+                         justify="right", font=ui.F_SMALL)
+            e.pack(side="left", padx=(6, 14), ipady=2)
+            v.trace_add("write", lambda *_: self._rune_transmute())
+            self.rn_tm[kind] = v
+        self.lbl_rn_tm = ui.autowrap(tk.Label(tm, text="", bg=PANEL, fg=FG, font=ui.F_SMALL, anchor="w",
+                                              justify="left"), 30)
+        self.lbl_rn_tm.pack(fill="x", padx=14, pady=(0, 10))
+        self._rune_transmute()
+        self._rune_static()
+
+    @staticmethod
+    def _rune_gives(r) -> str:
+        parts = []
+        for st in r.get("stats", []):
+            if st.get("l1") is None:
+                parts.append(st["stat"])
+                continue
+            u = "%" if st["pct"] else ""
+            v = f"+{st['l1']:g}{u}" + (f" → +{st['l6']:g}{u}" if st["l6"] != st["l1"] else "")
+            parts.append(f"{v} {st['stat']}")
+        if r.get("raises"):
+            parts.append(f"+level {r['raises']}")
+        return ", ".join(parts)
+
+    def _rune_static(self, rated=None, bonus=None):
+        """Fill the rune tables (values once rated)."""
+        hero = self._tal_hero() or self.state.hero
+        t = self.rn_tree
+        t.delete(*t.get_children())
+        rs = [r for r in runes.runes_of(hero) if not r.get("set")]
+        if rated:
+            rs.sort(key=lambda r: -rated[r["id"]]["score"])
+        for i, r in enumerate(rs):
+            v = (rated or {}).get(r["id"])
+            t.insert("", "end", iid=str(i), tags=(r["kind"],), image=self._item_photo(r.get("icon_url"), 30) or "",
+                     values=(r["name"], runes.KIND_NAMES.get(r["kind"], r["kind"]), self._rune_gives(r),
+                             f"{v['dps']:+.1f} %" if v else "", f"{v['surv']:+.1f} %" if v else "",
+                             " · ".join(v["notes"]) if v else ""))
+        t = self.rn_sets
+        t.delete(*t.get_children())
+        for s in runes.sets_of(hero):
+            for k, text in s["bonus"].items():
+                v = (bonus or {}).get((s["name"], int(k)))
+                tag = "off" if v is not None and not v["rated"] else ""
+                t.insert("", "end", tags=(tag,), values=(
+                    s["name"], k, f"{v['dps']:+.1f} %" if v and v["rated"] else ("not rated" if v else ""),
+                    f"{v['surv']:+.1f} %" if v and v["rated"] else "", text))
+        t.configure(height=min(max(len(runes.sets_of(hero)) * 3, 3), 15))
+
+    def _fill_runes(self):
+        if not hasattr(self, "rn_tree"):
+            return
+        F = self._talent_facts()
+        if F is None:
+            self.lbl_rn_load.configure(text="Needs your class (start the game once) and your character sheet (F9).",
+                                       fg=C_MEH)
+            self._rune_static()
+            return
+        mode = self.var_rn_mode.get() if self.var_rn_mode.get() in item_eval.MODES else "Damage"
+        level = int(self.var_rn_level.get() or 6)
+        mine = dict(self.cfg.get("talents_mine") or {})
+        hero = F.hero
+        self.lbl_rn_load.configure(text="Rating…", fg=MUTED)
+
+        def work():
+            try:
+                rated = {r["id"]: runes.rate_rune(F, mine, r, level, mode) for r in runes.runes_of(hero)}
+                bonus = {(s["name"], int(k)): runes.rate_bonus(F, mine, t, mode)
+                         for s in runes.sets_of(hero) for k, t in s["bonus"].items()}
+                pts = self._tal_points() or self.state.level
+                slots = runes.slots_open(int(pts or 70))
+                loads = runes.best_loadout(F, mine, hero, level, slots, mode)
+                out = (rated, bonus, loads, slots, level, mode)
+            except Exception as e:
+                errlog.log.error("rune rating failed", exc_info=True)
+                out = str(e)
+            self.root.after(0, lambda: self._runes_done(out))
+        threading.Thread(target=work, daemon=True).start()
+
+    def _runes_done(self, out):
+        if isinstance(out, str):
+            self.lbl_rn_load.configure(text=f"Failed: {out}", fg=C_BAD)
+            return
+        rated, bonus, loads, slots, level, mode = out
+        self._rune_static(rated, bonus)
+        if not slots:
+            self.lbl_rn_best.configure(text="Rune slots open from hero level 40")
+            self.lbl_rn_load.configure(text="", fg=MUTED)
+            return
+        lines = []
+        for i, (sc, rs, sets, d, s_) in enumerate(loads[:3]):
+            sets_txt = " + ".join(f"{n} {k}" for n, k in sets if k) or "no set"
+            lines.append(f"{i + 1}. {sets_txt}:  {d:+.1f} % damage, {s_:+.1f} % survival  –  "
+                         + ", ".join(r["name"] for r in rs))
+        self.lbl_rn_best.configure(text=f"Best runes for your {slots} slots (rune level {level}, {mode})")
+        self.lbl_rn_load.configure(text="\n".join(lines) + "\n\nValues add up the single parts; set bonuses that "
+                                   "depend on each other (statuses) are rated with your current build.", fg=FG)
+
+    def _rune_transmute(self):
+        counts = {}
+        for k, v in self.rn_tm.items():
+            try:
+                counts[k] = max(int(v.get() or 0), 0)
+            except ValueError:
+                counts[k] = 0
+        r = runes.transmute(counts)
+        if not any(r["batches"].values()):
+            self.lbl_rn_tm.configure(text="9 runes of one rarity give 1 random rune your class can use: "
+                                          "Uncommon → 50 % Rare, Rare → 15 % Legendary (Grand), Legendary → 50 % "
+                                          "Rune Set, Rune Set → another Rune Set. Enter how many you have.",
+                                     fg=MUTED)
+            return
+        parts = [f"{b}× {runes.KIND_NAMES[k]}" for k, b in r["batches"].items() if b]
+        exp = [f"{v:.2f} {runes.KIND_NAMES[k]}" for k, v in sorted(r["expect"].items(), key=lambda kv: -kv[1]) if v]
+        left = [f"{v} {runes.KIND_NAMES[k]}" for k, v in r["left"].items() if v]
+        self.lbl_rn_tm.configure(text=f"{' + '.join(parts)} transmutes give on average: {', '.join(exp)}."
+                                      + (f"  Left over: {', '.join(left)}." if left else ""), fg=FG)
 
     def _build_minions(self, p):
         hdr = ui.page_header(p, "Minions", (
@@ -6038,8 +6447,10 @@ class App:
         tail = ""
         if e.get("paragon"):
             tail = (f"   ·   total {fmt(e['total'])} Paragon EXP from the log" if e["complete"] else
-                    "   ·   estimate: the log starts after level 70, counted from the start of the Paragon "
-                    "level shown in the game")
+                    "   ·   read from the Paragon bar in the game (the log starts after level 70), then counted "
+                    "on from the runs" if e.get("from_bar") else
+                    "   ·   estimate: the log starts after level 70 – play a level-70 character so the tracker can "
+                    "read the Paragon bar; until then counted from the start of the Paragon level shown in the game")
         self.lbl_lvl_sub.configure(
             text=f"{head}{approx}{fmt(e['xp'])} of {fmt(e['need'])} EXP ({frac * 100:.1f} %), "
                  f"{approx}{fmt(e['left'])} to go   ·   by EXP per hour: {fmt_dur(eta_rate) if eta_rate else '-'}"

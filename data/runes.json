@@ -1,0 +1,3931 @@
+{
+ "source": "https://afkmeta.com/en/deskrawl/runes",
+ "slots": [
+  40,
+  45,
+  50,
+  55,
+  60,
+  65
+ ],
+ "max_level": 6,
+ "sets": [
+  {
+   "id": "strong-shield-of-the-atheron",
+   "name": "Strong Shield of the Atheron",
+   "class": "Warrior",
+   "bonus": {
+    "2": "+10% Critical Hit Chance.",
+    "4": "Critical Hit heals 5% of Max Health.",
+    "6": "Rage Shield provides an additional 20% Critical Hit Chance and 50% Critical Hit Damage."
+   },
+   "runes": [
+    "Rune of Atheron's Shield (I)",
+    "Rune of Atheron's Shield (II)",
+    "Rune of Atheron's Shield (III)",
+    "Rune of Atheron's Shield (IV)",
+    "Rune of Atheron's Shield (V)",
+    "Rune of Atheron's Shield (VI)"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rune-of-atherons-shield-i.webp"
+  },
+  {
+   "id": "eye-of-the-storm",
+   "name": "Eye of the Storm",
+   "class": "Warrior",
+   "bonus": {
+    "2": "+50% Physical Damage.",
+    "4": "Whirlwind strikes and spins 25% faster and lasts 3 seconds longer. Channel speed: 25% Extra channel time: 3s",
+    "6": "While channeling Whirlwind, all [Special] abilities can be cast in addition to [Warcry] abilities."
+   },
+   "runes": [
+    "Eye of the Storm Rune (I)",
+    "Eye of the Storm Rune (II)",
+    "Eye of the Storm Rune (III)",
+    "Eye of the Storm Rune (IV)",
+    "Eye of the Storm Rune (V)",
+    "Eye of the Storm Rune (VI)"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/eye-of-the-storm-rune-i.webp"
+  },
+  {
+   "id": "weight-of-the-mountain",
+   "name": "Weight of the Mountain",
+   "class": "Warrior",
+   "bonus": {
+    "2": "+100% Special Ability Damage.",
+    "4": "Each [Basic Attack] cast reduces Earthstrike's cooldown by 0.8 seconds. Cooldown reduced: 0.8s",
+    "6": "When a Stun you inflicted ends, the enemy is left [Fractured] for 8 seconds, taking +250% Critical Hit Damage from you."
+   },
+   "runes": [
+    "Weight of the Mountain Rune (I)",
+    "Weight of the Mountain Rune (II)",
+    "Weight of the Mountain Rune (III)",
+    "Weight of the Mountain Rune (IV)",
+    "Weight of the Mountain Rune (V)",
+    "Weight of the Mountain Rune (VI)"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/weight-of-the-mountain-rune-i.webp"
+  },
+  {
+   "id": "harvest-moon",
+   "name": "Harvest Moon",
+   "class": "Warrior",
+   "bonus": {
+    "2": "+50% Strong Attack Damage.",
+    "4": "Each enemy struck by Half Moon Slash grants a stack of [Crescent Momentum] for 3 seconds, up to 20 stacks. Each stack grants +1 Mana Regeneration and +1% Critical Hit Chance.",
+    "6": "Half Moon Slash's blades no longer fly past. They hunt the enemies around where you aimed for 3 seconds. Hits the same enemy every: 1.4s Weapon damage per hit: 157% → 220% ( Half Moon Slash , level 1 → 10) to be confirmed in play"
+   },
+   "runes": [
+    "Harvest Moon Rune (I)",
+    "Harvest Moon Rune (II)",
+    "Harvest Moon Rune (III)",
+    "Harvest Moon Rune (IV)",
+    "Harvest Moon Rune (V)",
+    "Harvest Moon Rune (VI)"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/harvest-moon-rune-i.webp"
+  },
+  {
+   "id": "trapper-s-legacy",
+   "name": "Trapper’s Legacy",
+   "class": "Hunter",
+   "bonus": {
+    "2": "Direct damage from traps increased by 60%.",
+    "4": "Enemies hit by your traps receive your Death Mark for 3.5 seconds, granting you +30% Critical Chance against them.",
+    "6": "Traps can be retriggered 3 additional times. Extra triggers: 3 Seconds between triggers: 0.3s"
+   },
+   "runes": [
+    "Trapper’s Legacy I",
+    "Trapper’s Legacy II",
+    "Trapper’s Legacy III",
+    "Trapper’s Legacy IV",
+    "Trapper’s Legacy V",
+    "Trapper’s Legacy VI"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/trapper-s-legacy-i.webp"
+  },
+  {
+   "id": "deadeye-s-resolve",
+   "name": "Deadeye’s Resolve",
+   "class": "Hunter",
+   "bonus": {
+    "2": "Physical damage increased by 50%.",
+    "4": "While channeling Rapid Fire, gain 25% damage reduction.",
+    "6": "Your deadeye focus sharpens. Rapid Fire shoots 30% faster, deals double damage, and its arrows now pierce up to 3 targets. Enemies pierced: 3 Weapon damage per hit: 72.4% → 94% ( Rapid Fire , level 1 → 10) to be confirmed in play Channel speed: 30%"
+   },
+   "runes": [
+    "Deadeye’s Resolve I",
+    "Deadeye’s Resolve II",
+    "Deadeye’s Resolve III",
+    "Deadeye’s Resolve IV",
+    "Deadeye’s Resolve V",
+    "Deadeye’s Resolve VI"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/deadeye-s-resolve-i.webp"
+  },
+  {
+   "id": "venomfang",
+   "name": "Venomfang",
+   "class": "Hunter",
+   "bonus": {
+    "2": "Damage against poisoned enemies increased by 70%.",
+    "4": "Applying poison reduces the target's movement speed by 25% and attack speed by 20% for 5 seconds. Reapplying poison refreshes the slow.",
+    "6": "Casting Poison Shot has a 50% chance to launch an arcing venom projectile that deals 420% weapon damage as Poison in a small area and applies 2 stacks of poison to all enemies hit."
+   },
+   "runes": [
+    "Venomfang I",
+    "Venomfang II",
+    "Venomfang III",
+    "Venomfang IV",
+    "Venomfang V",
+    "Venomfang VI"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/venomfang-i.webp"
+  },
+  {
+   "id": "infernal-covenant",
+   "name": "Infernal Covenant",
+   "class": "Sorcerer",
+   "bonus": {
+    "2": "+65% Damage to Burning enemies.",
+    "4": "Fire Elemental gains Pyroblast as an additional ability.",
+    "6": "Fire Elemental gains Fire Meteor as an additional ability."
+   },
+   "runes": [
+    "Infernal Covenant Rune (I)",
+    "Infernal Covenant Rune (II)",
+    "Infernal Covenant Rune (III)",
+    "Infernal Covenant Rune (IV)",
+    "Infernal Covenant Rune (V)",
+    "Infernal Covenant Rune (VI)"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/infernal-covenant-rune-i.webp"
+  },
+  {
+   "id": "frozen-barrage",
+   "name": "Frozen Barrage",
+   "class": "Sorcerer",
+   "bonus": {
+    "2": "+65% Damage to Slowed enemies.",
+    "4": "+60% Attack Speed. Ice Shards also applies [Chill].",
+    "6": "Ice Shards fires 4 additional projectiles. Each projectile can pierce through 1 target. Extra projectiles: 4 Angle between projectiles: 5° Enemies pierced: 1 Weapon damage per hit: 118.5% → 150% ( Ice Shards , level 1 → 10) to be confirmed in play"
+   },
+   "runes": [
+    "Frozen Barrage Rune (I)",
+    "Frozen Barrage Rune (II)",
+    "Frozen Barrage Rune (III)",
+    "Frozen Barrage Rune (IV)",
+    "Frozen Barrage Rune (V)",
+    "Frozen Barrage Rune (VI)"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/frozen-barrage-rune-i.webp"
+  },
+  {
+   "id": "stormcaller",
+   "name": "Stormcaller",
+   "class": "Sorcerer",
+   "bonus": {
+    "2": "+50% Lightning Damage.",
+    "4": "Each Lightning Storm strike deals splash damage. Splash radius: 1m",
+    "6": "Each Lightning Storm strike creates a Lightning Ball that pulses 3 times at 0.75 -second intervals, each dealing 75% weapon damage as Lightning damage in a small radius. Weapon damage per hit: 157.5% → 225% ( Lightning Storm , level 1 → 10) to be confirmed in play Pulses of the zone: 3 Seconds between pulses: 0.75s Radius of the zone: 1.5m Weapon damage per pulse of the zone: 75% ( Lightning Storm , any level) to be confirmed in play"
+   },
+   "runes": [
+    "Stormcaller Rune (I)",
+    "Stormcaller Rune (II)",
+    "Stormcaller Rune (III)",
+    "Stormcaller Rune (IV)",
+    "Stormcaller Rune (V)",
+    "Stormcaller Rune (VI)"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/stormcaller-rune-i.webp"
+  },
+  {
+   "id": "hundred-hands",
+   "name": "Hundred Hands",
+   "class": "Monk",
+   "bonus": {
+    "2": "+100% Basic Attack Damage.",
+    "4": "Each stack of [Furious Fist] also grants +3% Physical Damage, up to +60% at 20 stacks.",
+    "6": "Your Furious Fist has a 25% chance to unleash Golden Palms for free, without knockback. These Golden Palms inflict [Dazed] and deal 0.5% more damage per point of current Mana."
+   },
+   "runes": [
+    "Hundred Hands Rune (I)",
+    "Hundred Hands Rune (II)",
+    "Hundred Hands Rune (III)",
+    "Hundred Hands Rune (IV)",
+    "Hundred Hands Rune (V)",
+    "Hundred Hands Rune (VI)"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/hundred-hands-rune-i.webp"
+  },
+  {
+   "id": "wheel-of-nine-heavens",
+   "name": "Wheel of Nine Heavens",
+   "class": "Monk",
+   "bonus": {
+    "2": "+100% Special Ability Damage.",
+    "4": "Sacred Orbs conjures one additional orb. Extra projectiles: 1 Angle between projectiles: 15°",
+    "6": "When a Sacred Orb's time runs out it no longer fades. It breaks orbit, streaks to the nearest enemy and bursts for 300% weapon damage as Lightning damage in a 3 m radius. Hits the same enemy every: 0.5s Weapon damage per hit: 88% → 101.5% ( Sacred Orbs , level 1 → 10) to be confirmed in play Weapon damage of the burst: 310% → 400% ( Sacred Orbs , level 1 → 10) to be confirmed in play"
+   },
+   "runes": [
+    "Wheel of Nine Heavens Rune (I)",
+    "Wheel of Nine Heavens Rune (II)",
+    "Wheel of Nine Heavens Rune (III)",
+    "Wheel of Nine Heavens Rune (IV)",
+    "Wheel of Nine Heavens Rune (V)",
+    "Wheel of Nine Heavens Rune (VI)"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/wheel-of-nine-heavens-rune-i.webp"
+  },
+  {
+   "id": "serpents-tongue",
+   "name": "Serpent's Tongue",
+   "class": "Monk",
+   "bonus": {
+    "2": "+50% Strong Attack Damage.",
+    "4": "Piercing Lunge costs half as much Mana.",
+    "6": "Piercing Lunge's airflow pierces through enemies behind the target, inflicting [Vulnerable]. Each cast also reduces the remaining cooldown of a random [Special] ability by 1 second. Weapon damage per hit: 210% → 300% ( Piercing Lunge , level 1 → 10) to be confirmed in play Cooldown reduced: 1s"
+   },
+   "runes": [
+    "Serpent's Tongue Rune (I)",
+    "Serpent's Tongue Rune (II)",
+    "Serpent's Tongue Rune (III)",
+    "Serpent's Tongue Rune (IV)",
+    "Serpent's Tongue Rune (V)",
+    "Serpent's Tongue Rune (VI)"
+   ],
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/serpents-tongue-rune-i.webp"
+  }
+ ],
+ "runes": [
+  {
+   "id": "rune-of-atherons-shield-i",
+   "name": "Rune of Atheron's Shield (I)",
+   "class": "Warrior",
+   "set": "Strong Shield of the Atheron",
+   "kind": "set",
+   "stats": [],
+   "raises": "Rage Shield",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rune-of-atherons-shield-i.webp"
+  },
+  {
+   "id": "rune-of-atherons-shield-ii",
+   "name": "Rune of Atheron's Shield (II)",
+   "class": "Warrior",
+   "set": "Strong Shield of the Atheron",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 100.0,
+     "l6": 150.0,
+     "pct": false
+    },
+    {
+     "stat": "Armor",
+     "l1": 50.0,
+     "l6": 75.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rune-of-atherons-shield-ii.webp"
+  },
+  {
+   "id": "rune-of-atherons-shield-iii",
+   "name": "Rune of Atheron's Shield (III)",
+   "class": "Warrior",
+   "set": "Strong Shield of the Atheron",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 250.0,
+     "l6": 300.0,
+     "pct": false
+    }
+   ],
+   "raises": "Rage Shield",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rune-of-atherons-shield-iii.webp"
+  },
+  {
+   "id": "rune-of-atherons-shield-iv",
+   "name": "Rune of Atheron's Shield (IV)",
+   "class": "Warrior",
+   "set": "Strong Shield of the Atheron",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Armor",
+     "l1": 50.0,
+     "l6": 75.0,
+     "pct": false
+    },
+    {
+     "stat": "Magic Resist",
+     "l1": 50.0,
+     "l6": 75.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rune-of-atherons-shield-iv.webp"
+  },
+  {
+   "id": "rune-of-atherons-shield-v",
+   "name": "Rune of Atheron's Shield (V)",
+   "class": "Warrior",
+   "set": "Strong Shield of the Atheron",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 20.0,
+     "l6": 25.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rune-of-atherons-shield-v.webp"
+  },
+  {
+   "id": "rune-of-atherons-shield-vi",
+   "name": "Rune of Atheron's Shield (VI)",
+   "class": "Warrior",
+   "set": "Strong Shield of the Atheron",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 500.0,
+     "l6": 600.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rune-of-atherons-shield-vi.webp"
+  },
+  {
+   "id": "eye-of-the-storm-rune-i",
+   "name": "Eye of the Storm Rune (I)",
+   "class": "Warrior",
+   "set": "Eye of the Storm",
+   "kind": "set",
+   "stats": [],
+   "raises": "Whirlwind",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/eye-of-the-storm-rune-i.webp"
+  },
+  {
+   "id": "eye-of-the-storm-rune-ii",
+   "name": "Eye of the Storm Rune (II)",
+   "class": "Warrior",
+   "set": "Eye of the Storm",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Critical Hit Damage",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": true
+    }
+   ],
+   "raises": "Whirlwind",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/eye-of-the-storm-rune-ii.webp"
+  },
+  {
+   "id": "eye-of-the-storm-rune-iii",
+   "name": "Eye of the Storm Rune (III)",
+   "class": "Warrior",
+   "set": "Eye of the Storm",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Strength",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/eye-of-the-storm-rune-iii.webp"
+  },
+  {
+   "id": "eye-of-the-storm-rune-iv",
+   "name": "Eye of the Storm Rune (IV)",
+   "class": "Warrior",
+   "set": "Eye of the Storm",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Physical Damage",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/eye-of-the-storm-rune-iv.webp"
+  },
+  {
+   "id": "eye-of-the-storm-rune-v",
+   "name": "Eye of the Storm Rune (V)",
+   "class": "Warrior",
+   "set": "Eye of the Storm",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 500.0,
+     "l6": 600.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/eye-of-the-storm-rune-v.webp"
+  },
+  {
+   "id": "eye-of-the-storm-rune-vi",
+   "name": "Eye of the Storm Rune (VI)",
+   "class": "Warrior",
+   "set": "Eye of the Storm",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Life on Hit",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/eye-of-the-storm-rune-vi.webp"
+  },
+  {
+   "id": "weight-of-the-mountain-rune-i",
+   "name": "Weight of the Mountain Rune (I)",
+   "class": "Warrior",
+   "set": "Weight of the Mountain",
+   "kind": "set",
+   "stats": [],
+   "raises": "Earthstrike",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/weight-of-the-mountain-rune-i.webp"
+  },
+  {
+   "id": "weight-of-the-mountain-rune-ii",
+   "name": "Weight of the Mountain Rune (II)",
+   "class": "Warrior",
+   "set": "Weight of the Mountain",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Basic Attack Damage",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Earthstrike",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/weight-of-the-mountain-rune-ii.webp"
+  },
+  {
+   "id": "weight-of-the-mountain-rune-iii",
+   "name": "Weight of the Mountain Rune (III)",
+   "class": "Warrior",
+   "set": "Weight of the Mountain",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Attack Speed",
+     "l1": 8.0,
+     "l6": 14.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/weight-of-the-mountain-rune-iii.webp"
+  },
+  {
+   "id": "weight-of-the-mountain-rune-iv",
+   "name": "Weight of the Mountain Rune (IV)",
+   "class": "Warrior",
+   "set": "Weight of the Mountain",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Critical Hit Damage",
+     "l1": 25.0,
+     "l6": 50.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/weight-of-the-mountain-rune-iv.webp"
+  },
+  {
+   "id": "weight-of-the-mountain-rune-v",
+   "name": "Weight of the Mountain Rune (V)",
+   "class": "Warrior",
+   "set": "Weight of the Mountain",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 500.0,
+     "l6": 600.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/weight-of-the-mountain-rune-v.webp"
+  },
+  {
+   "id": "weight-of-the-mountain-rune-vi",
+   "name": "Weight of the Mountain Rune (VI)",
+   "class": "Warrior",
+   "set": "Weight of the Mountain",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Strength",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/weight-of-the-mountain-rune-vi.webp"
+  },
+  {
+   "id": "harvest-moon-rune-i",
+   "name": "Harvest Moon Rune (I)",
+   "class": "Warrior",
+   "set": "Harvest Moon",
+   "kind": "set",
+   "stats": [],
+   "raises": "Half Moon Slash",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/harvest-moon-rune-i.webp"
+  },
+  {
+   "id": "harvest-moon-rune-ii",
+   "name": "Harvest Moon Rune (II)",
+   "class": "Warrior",
+   "set": "Harvest Moon",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": true
+    }
+   ],
+   "raises": "Half Moon Slash",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/harvest-moon-rune-ii.webp"
+  },
+  {
+   "id": "harvest-moon-rune-iii",
+   "name": "Harvest Moon Rune (III)",
+   "class": "Warrior",
+   "set": "Harvest Moon",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Mana Regeneration",
+     "l1": 600.0,
+     "l6": 1200.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/harvest-moon-rune-iii.webp"
+  },
+  {
+   "id": "harvest-moon-rune-iv",
+   "name": "Harvest Moon Rune (IV)",
+   "class": "Warrior",
+   "set": "Harvest Moon",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 40.0,
+     "l6": 60.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/harvest-moon-rune-iv.webp"
+  },
+  {
+   "id": "harvest-moon-rune-v",
+   "name": "Harvest Moon Rune (V)",
+   "class": "Warrior",
+   "set": "Harvest Moon",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Critical Hit Damage",
+     "l1": 25.0,
+     "l6": 50.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/harvest-moon-rune-v.webp"
+  },
+  {
+   "id": "harvest-moon-rune-vi",
+   "name": "Harvest Moon Rune (VI)",
+   "class": "Warrior",
+   "set": "Harvest Moon",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Strength",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/harvest-moon-rune-vi.webp"
+  },
+  {
+   "id": "valiant-strike-rune-grand",
+   "name": "Valiant Strike Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Strength",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Valiant Strike",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/valiant-strike-rune-grand.webp"
+  },
+  {
+   "id": "cleave-rune-grand",
+   "name": "Cleave Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": true
+    }
+   ],
+   "raises": "Cleave",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/cleave-rune-grand.webp"
+  },
+  {
+   "id": "blood-strike-rune-grand",
+   "name": "Blood Strike Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Bloodblade",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/blood-strike-rune-grand.webp"
+  },
+  {
+   "id": "steady-blow-rune-grand",
+   "name": "Steady Blow Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Strength",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Steady Blow",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/steady-blow-rune-grand.webp"
+  },
+  {
+   "id": "flame-strike-rune-grand",
+   "name": "Flame Strike Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Flame Strike",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/flame-strike-rune-grand.webp"
+  },
+  {
+   "id": "half-moon-slash-rune-grand",
+   "name": "Half Moon Slash Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Half Moon Slash",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/half-moon-slash-rune-grand.webp"
+  },
+  {
+   "id": "whirlwind-rune-grand",
+   "name": "Whirlwind Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 6.5,
+     "l6": 9.0,
+     "pct": true
+    }
+   ],
+   "raises": "Whirlwind",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/whirlwind-rune-grand.webp"
+  },
+  {
+   "id": "rending-onslaught-rune-grand",
+   "name": "Rending Onslaught Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Rending Onslaught",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rending-onslaught-rune-grand.webp"
+  },
+  {
+   "id": "rage-shield-rune-grand",
+   "name": "Rage Shield Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Strength",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Rage Shield",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rage-shield-rune-grand.webp"
+  },
+  {
+   "id": "rage-shout-rune-grand",
+   "name": "Rage Shout Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Health Potion Find",
+     "l1": 47.5,
+     "l6": 72.5,
+     "pct": true
+    }
+   ],
+   "raises": "Rage Shout",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rage-shout-rune-grand.webp"
+  },
+  {
+   "id": "deadly-hook-rune-grand",
+   "name": "Deadly Hook Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 6.5,
+     "l6": 9.0,
+     "pct": true
+    }
+   ],
+   "raises": "Deadly Hook",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/deadly-hook-rune-grand.webp"
+  },
+  {
+   "id": "earthstrike-rune-grand",
+   "name": "Earthstrike Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": true
+    }
+   ],
+   "raises": "Earthstrike",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/earthstrike-rune-grand.webp"
+  },
+  {
+   "id": "iron-thorn-rune-grand",
+   "name": "Iron Thorn Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Iron Thorn",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/iron-thorn-rune-grand.webp"
+  },
+  {
+   "id": "molten-might-rune-grand",
+   "name": "Molten Might Rune (Grand)",
+   "class": "Warrior",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Molten Might",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/molten-might-rune-grand.webp"
+  },
+  {
+   "id": "valiant-strike-rune",
+   "name": "Valiant Strike Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Strength",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Valiant Strike",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/valiant-strike-rune.webp"
+  },
+  {
+   "id": "cleave-rune",
+   "name": "Cleave Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": true
+    }
+   ],
+   "raises": "Cleave",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/cleave-rune.webp"
+  },
+  {
+   "id": "blood-strike-rune",
+   "name": "Blood Strike Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Bloodblade",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/blood-strike-rune.webp"
+  },
+  {
+   "id": "steady-blow-rune",
+   "name": "Steady Blow Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Strength",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Steady Blow",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/steady-blow-rune.webp"
+  },
+  {
+   "id": "flame-strike-rune",
+   "name": "Flame Strike Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Flame Strike",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/flame-strike-rune.webp"
+  },
+  {
+   "id": "half-moon-slash-rune",
+   "name": "Half Moon Slash Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Half Moon Slash",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/half-moon-slash-rune.webp"
+  },
+  {
+   "id": "whirlwind-rune",
+   "name": "Whirlwind Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 5.0,
+     "l6": 7.5,
+     "pct": true
+    }
+   ],
+   "raises": "Whirlwind",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/whirlwind-rune.webp"
+  },
+  {
+   "id": "rending-onslaught-rune",
+   "name": "Rending Onslaught Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Rending Onslaught",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rending-onslaught-rune.webp"
+  },
+  {
+   "id": "rage-shield-rune",
+   "name": "Rage Shield Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Strength",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Rage Shield",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rage-shield-rune.webp"
+  },
+  {
+   "id": "rage-shout-rune",
+   "name": "Rage Shout Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Health Potion Find",
+     "l1": 40.0,
+     "l6": 60.0,
+     "pct": true
+    }
+   ],
+   "raises": "Rage Shout",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rage-shout-rune.webp"
+  },
+  {
+   "id": "deadly-hook-rune",
+   "name": "Deadly Hook Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 5.0,
+     "l6": 7.5,
+     "pct": true
+    }
+   ],
+   "raises": "Deadly Hook",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/deadly-hook-rune.webp"
+  },
+  {
+   "id": "earthstrike-rune",
+   "name": "Earthstrike Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": true
+    }
+   ],
+   "raises": "Earthstrike",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/earthstrike-rune.webp"
+  },
+  {
+   "id": "iron-thorn-rune",
+   "name": "Iron Thorn Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Iron Thorn",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/iron-thorn-rune.webp"
+  },
+  {
+   "id": "molten-might-rune",
+   "name": "Molten Might Rune",
+   "class": "Warrior",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Molten Might",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/molten-might-rune.webp"
+  },
+  {
+   "id": "trapper-s-legacy-i",
+   "name": "Trapper’s Legacy I",
+   "class": "Hunter",
+   "set": "Trapper’s Legacy",
+   "kind": "set",
+   "stats": [],
+   "raises": "Poison Trap",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/trapper-s-legacy-i.webp"
+  },
+  {
+   "id": "trapper-s-legacy-ii",
+   "name": "Trapper’s Legacy II",
+   "class": "Hunter",
+   "set": "Trapper’s Legacy",
+   "kind": "set",
+   "stats": [],
+   "raises": "Arcane Trap",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/trapper-s-legacy-ii.webp"
+  },
+  {
+   "id": "trapper-s-legacy-iii",
+   "name": "Trapper’s Legacy III",
+   "class": "Hunter",
+   "set": "Trapper’s Legacy",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/trapper-s-legacy-iii.webp"
+  },
+  {
+   "id": "trapper-s-legacy-iv",
+   "name": "Trapper’s Legacy IV",
+   "class": "Hunter",
+   "set": "Trapper’s Legacy",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Critical Hit Damage",
+     "l1": 30.0,
+     "l6": 37.5,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/trapper-s-legacy-iv.webp"
+  },
+  {
+   "id": "trapper-s-legacy-v",
+   "name": "Trapper’s Legacy V",
+   "class": "Hunter",
+   "set": "Trapper’s Legacy",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 500.0,
+     "l6": 600.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/trapper-s-legacy-v.webp"
+  },
+  {
+   "id": "trapper-s-legacy-vi",
+   "name": "Trapper’s Legacy VI",
+   "class": "Hunter",
+   "set": "Trapper’s Legacy",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Damage Over Time",
+     "l1": 40.0,
+     "l6": 47.5,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/trapper-s-legacy-vi.webp"
+  },
+  {
+   "id": "deadeye-s-resolve-i",
+   "name": "Deadeye’s Resolve I",
+   "class": "Hunter",
+   "set": "Deadeye’s Resolve",
+   "kind": "set",
+   "stats": [],
+   "raises": "Rapid Fire",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/deadeye-s-resolve-i.webp"
+  },
+  {
+   "id": "deadeye-s-resolve-ii",
+   "name": "Deadeye’s Resolve II",
+   "class": "Hunter",
+   "set": "Deadeye’s Resolve",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Critical Hit Damage",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/deadeye-s-resolve-ii.webp"
+  },
+  {
+   "id": "deadeye-s-resolve-iii",
+   "name": "Deadeye’s Resolve III",
+   "class": "Hunter",
+   "set": "Deadeye’s Resolve",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/deadeye-s-resolve-iii.webp"
+  },
+  {
+   "id": "deadeye-s-resolve-iv",
+   "name": "Deadeye’s Resolve IV",
+   "class": "Hunter",
+   "set": "Deadeye’s Resolve",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Physical Damage",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/deadeye-s-resolve-iv.webp"
+  },
+  {
+   "id": "deadeye-s-resolve-v",
+   "name": "Deadeye’s Resolve V",
+   "class": "Hunter",
+   "set": "Deadeye’s Resolve",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 500.0,
+     "l6": 600.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/deadeye-s-resolve-v.webp"
+  },
+  {
+   "id": "deadeye-s-resolve-vi",
+   "name": "Deadeye’s Resolve VI",
+   "class": "Hunter",
+   "set": "Deadeye’s Resolve",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Life on Hit",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/deadeye-s-resolve-vi.webp"
+  },
+  {
+   "id": "venomfang-i",
+   "name": "Venomfang I",
+   "class": "Hunter",
+   "set": "Venomfang",
+   "kind": "set",
+   "stats": [],
+   "raises": "Poison Shot",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/venomfang-i.webp"
+  },
+  {
+   "id": "venomfang-ii",
+   "name": "Venomfang II",
+   "class": "Hunter",
+   "set": "Venomfang",
+   "kind": "set",
+   "stats": [],
+   "raises": "Poison Shot",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/venomfang-ii.webp"
+  },
+  {
+   "id": "venomfang-iii",
+   "name": "Venomfang III",
+   "class": "Hunter",
+   "set": "Venomfang",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Damage Over Time",
+     "l1": 12.0,
+     "l6": 15.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/venomfang-iii.webp"
+  },
+  {
+   "id": "venomfang-iv",
+   "name": "Venomfang IV",
+   "class": "Hunter",
+   "set": "Venomfang",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/venomfang-iv.webp"
+  },
+  {
+   "id": "venomfang-v",
+   "name": "Venomfang V",
+   "class": "Hunter",
+   "set": "Venomfang",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 500.0,
+     "l6": 600.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/venomfang-v.webp"
+  },
+  {
+   "id": "venomfang-vi",
+   "name": "Venomfang VI",
+   "class": "Hunter",
+   "set": "Venomfang",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Attack Speed",
+     "l1": 30.0,
+     "l6": 35.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/venomfang-vi.webp"
+  },
+  {
+   "id": "poison-shot-rune-grand",
+   "name": "Poison Shot Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Poison Shot",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/poison-shot-rune-grand.webp"
+  },
+  {
+   "id": "arcane-bomb-rune-grand",
+   "name": "Arcane Bomb Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": true
+    }
+   ],
+   "raises": "Arcane Bomb",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/arcane-bomb-rune-grand.webp"
+  },
+  {
+   "id": "knife-barrage-rune-grand",
+   "name": "Knife Barrage Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Knife Barrage",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/knife-barrage-rune-grand.webp"
+  },
+  {
+   "id": "twin-arrows-rune-grand",
+   "name": "Twin Arrows Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Twin Arrows",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/twin-arrows-rune-grand.webp"
+  },
+  {
+   "id": "steady-shot-rune-grand",
+   "name": "Steady Shot Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Steady Shot",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/steady-shot-rune-grand.webp"
+  },
+  {
+   "id": "multishot-rune-grand",
+   "name": "Multishot Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Multishot",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/multishot-rune-grand.webp"
+  },
+  {
+   "id": "rapid-fire-rune-grand",
+   "name": "Rapid Fire Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 6.5,
+     "l6": 9.0,
+     "pct": true
+    }
+   ],
+   "raises": "Rapid Fire",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rapid-fire-rune-grand.webp"
+  },
+  {
+   "id": "venom-bolt-rune-grand",
+   "name": "Venom Bolt Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Venom Bolt",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/venom-bolt-rune-grand.webp"
+  },
+  {
+   "id": "poison-trap-rune-grand",
+   "name": "Poison Trap Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Health Potion Find",
+     "l1": 47.5,
+     "l6": 72.5,
+     "pct": true
+    }
+   ],
+   "raises": "Poison Trap",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/poison-trap-rune-grand.webp"
+  },
+  {
+   "id": "shockwave-rune-grand",
+   "name": "Shockwave Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Shockwave",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/shockwave-rune-grand.webp"
+  },
+  {
+   "id": "arcane-trap-rune-grand",
+   "name": "Arcane Trap Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Arcane Trap",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/arcane-trap-rune-grand.webp"
+  },
+  {
+   "id": "arcane-arrowstorm-rune-grand",
+   "name": "Arcane Arrowstorm Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": true
+    }
+   ],
+   "raises": "Arcane Arrowstorm",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/arcane-arrowstorm-rune-grand.webp"
+  },
+  {
+   "id": "phantom-form-rune-grand",
+   "name": "Phantom Form Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Phantom Form",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/phantom-form-rune-grand.webp"
+  },
+  {
+   "id": "flare-rune-grand",
+   "name": "Flare Rune (Grand)",
+   "class": "Hunter",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 6.5,
+     "l6": 9.0,
+     "pct": true
+    }
+   ],
+   "raises": "Flare",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/flare-rune-grand.webp"
+  },
+  {
+   "id": "poison-shot-rune",
+   "name": "Poison Shot Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Poison Shot",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/poison-shot-rune.webp"
+  },
+  {
+   "id": "arcane-bomb-rune",
+   "name": "Arcane Bomb Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": true
+    }
+   ],
+   "raises": "Arcane Bomb",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/arcane-bomb-rune.webp"
+  },
+  {
+   "id": "knife-barrage-rune",
+   "name": "Knife Barrage Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Knife Barrage",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/knife-barrage-rune.webp"
+  },
+  {
+   "id": "twin-arrows-rune",
+   "name": "Twin Arrows Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Twin Arrows",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/twin-arrows-rune.webp"
+  },
+  {
+   "id": "steady-shot-rune",
+   "name": "Steady Shot Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Steady Shot",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/steady-shot-rune.webp"
+  },
+  {
+   "id": "multishot-rune",
+   "name": "Multishot Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Multishot",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/multishot-rune.webp"
+  },
+  {
+   "id": "rapid-fire-rune",
+   "name": "Rapid Fire Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 5.0,
+     "l6": 7.5,
+     "pct": true
+    }
+   ],
+   "raises": "Rapid Fire",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/rapid-fire-rune.webp"
+  },
+  {
+   "id": "venom-bolt-rune",
+   "name": "Venom Bolt Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Venom Bolt",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/venom-bolt-rune.webp"
+  },
+  {
+   "id": "poison-trap-rune",
+   "name": "Poison Trap Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Health Potion Find",
+     "l1": 40.0,
+     "l6": 60.0,
+     "pct": true
+    }
+   ],
+   "raises": "Poison Trap",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/poison-trap-rune.webp"
+  },
+  {
+   "id": "shockwave-rune",
+   "name": "Shockwave Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Shockwave",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/shockwave-rune.webp"
+  },
+  {
+   "id": "arcane-trap-rune",
+   "name": "Arcane Trap Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Arcane Trap",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/arcane-trap-rune.webp"
+  },
+  {
+   "id": "arcane-arrowstorm-rune",
+   "name": "Arcane Arrowstorm Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": true
+    }
+   ],
+   "raises": "Arcane Arrowstorm",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/arcane-arrowstorm-rune.webp"
+  },
+  {
+   "id": "phantom-form-rune",
+   "name": "Phantom Form Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Phantom Form",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/phantom-form-rune.webp"
+  },
+  {
+   "id": "flare-rune",
+   "name": "Flare Rune",
+   "class": "Hunter",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 5.0,
+     "l6": 7.5,
+     "pct": true
+    }
+   ],
+   "raises": "Flare",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/flare-rune.webp"
+  },
+  {
+   "id": "infernal-covenant-rune-i",
+   "name": "Infernal Covenant Rune (I)",
+   "class": "Sorcerer",
+   "set": "Infernal Covenant",
+   "kind": "set",
+   "stats": [],
+   "raises": "Fire Elemental",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/infernal-covenant-rune-i.webp"
+  },
+  {
+   "id": "infernal-covenant-rune-ii",
+   "name": "Infernal Covenant Rune (II)",
+   "class": "Sorcerer",
+   "set": "Infernal Covenant",
+   "kind": "set",
+   "stats": [],
+   "raises": "Fire Elemental",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/infernal-covenant-rune-ii.webp"
+  },
+  {
+   "id": "infernal-covenant-rune-iii",
+   "name": "Infernal Covenant Rune (III)",
+   "class": "Sorcerer",
+   "set": "Infernal Covenant",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Intelligence",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/infernal-covenant-rune-iii.webp"
+  },
+  {
+   "id": "infernal-covenant-rune-iv",
+   "name": "Infernal Covenant Rune (IV)",
+   "class": "Sorcerer",
+   "set": "Infernal Covenant",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 50.0,
+     "l6": 60.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/infernal-covenant-rune-iv.webp"
+  },
+  {
+   "id": "infernal-covenant-rune-v",
+   "name": "Infernal Covenant Rune (V)",
+   "class": "Sorcerer",
+   "set": "Infernal Covenant",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 500.0,
+     "l6": 600.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/infernal-covenant-rune-v.webp"
+  },
+  {
+   "id": "infernal-covenant-rune-vi",
+   "name": "Infernal Covenant Rune (VI)",
+   "class": "Sorcerer",
+   "set": "Infernal Covenant",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Life on Hit",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/infernal-covenant-rune-vi.webp"
+  },
+  {
+   "id": "frozen-barrage-rune-i",
+   "name": "Frozen Barrage Rune (I)",
+   "class": "Sorcerer",
+   "set": "Frozen Barrage",
+   "kind": "set",
+   "stats": [],
+   "raises": "Ice Shards",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/frozen-barrage-rune-i.webp"
+  },
+  {
+   "id": "frozen-barrage-rune-ii",
+   "name": "Frozen Barrage Rune (II)",
+   "class": "Sorcerer",
+   "set": "Frozen Barrage",
+   "kind": "set",
+   "stats": [],
+   "raises": "Ice Shards",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/frozen-barrage-rune-ii.webp"
+  },
+  {
+   "id": "frozen-barrage-rune-iii",
+   "name": "Frozen Barrage Rune (III)",
+   "class": "Sorcerer",
+   "set": "Frozen Barrage",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Intelligence",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/frozen-barrage-rune-iii.webp"
+  },
+  {
+   "id": "frozen-barrage-rune-iv",
+   "name": "Frozen Barrage Rune (IV)",
+   "class": "Sorcerer",
+   "set": "Frozen Barrage",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Basic Attack Damage",
+     "l1": 20.0,
+     "l6": 25.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/frozen-barrage-rune-iv.webp"
+  },
+  {
+   "id": "frozen-barrage-rune-v",
+   "name": "Frozen Barrage Rune (V)",
+   "class": "Sorcerer",
+   "set": "Frozen Barrage",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Attack Speed",
+     "l1": 8.0,
+     "l6": 14.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/frozen-barrage-rune-v.webp"
+  },
+  {
+   "id": "frozen-barrage-rune-vi",
+   "name": "Frozen Barrage Rune (VI)",
+   "class": "Sorcerer",
+   "set": "Frozen Barrage",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 500.0,
+     "l6": 600.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/frozen-barrage-rune-vi.webp"
+  },
+  {
+   "id": "stormcaller-rune-i",
+   "name": "Stormcaller Rune (I)",
+   "class": "Sorcerer",
+   "set": "Stormcaller",
+   "kind": "set",
+   "stats": [],
+   "raises": "Lightning Storm",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/stormcaller-rune-i.webp"
+  },
+  {
+   "id": "stormcaller-rune-ii",
+   "name": "Stormcaller Rune (II)",
+   "class": "Sorcerer",
+   "set": "Stormcaller",
+   "kind": "set",
+   "stats": [],
+   "raises": "Lightning Storm",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/stormcaller-rune-ii.webp"
+  },
+  {
+   "id": "stormcaller-rune-iii",
+   "name": "Stormcaller Rune (III)",
+   "class": "Sorcerer",
+   "set": "Stormcaller",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Intelligence",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/stormcaller-rune-iii.webp"
+  },
+  {
+   "id": "stormcaller-rune-iv",
+   "name": "Stormcaller Rune (IV)",
+   "class": "Sorcerer",
+   "set": "Stormcaller",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/stormcaller-rune-iv.webp"
+  },
+  {
+   "id": "stormcaller-rune-v",
+   "name": "Stormcaller Rune (V)",
+   "class": "Sorcerer",
+   "set": "Stormcaller",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Strong Attack Damage",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/stormcaller-rune-v.webp"
+  },
+  {
+   "id": "stormcaller-rune-vi",
+   "name": "Stormcaller Rune (VI)",
+   "class": "Sorcerer",
+   "set": "Stormcaller",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Damage vs Healthy",
+     "l1": 20.0,
+     "l6": 25.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/stormcaller-rune-vi.webp"
+  },
+  {
+   "id": "fire-ball-rune-grand",
+   "name": "Fire Ball Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Intelligence",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Fire Ball",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/fire-ball-rune-grand.webp"
+  },
+  {
+   "id": "ice-shards-rune-grand",
+   "name": "Ice Shards Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": true
+    }
+   ],
+   "raises": "Ice Shards",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/ice-shards-rune-grand.webp"
+  },
+  {
+   "id": "electrocute-rune-grand",
+   "name": "Electrocute Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Electrocute",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/electrocute-rune-grand.webp"
+  },
+  {
+   "id": "flame-lightning-rune-grand",
+   "name": "Flame Lightning Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Intelligence",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Flame Lightning",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/flame-lightning-rune-grand.webp"
+  },
+  {
+   "id": "ice-nova-rune-grand",
+   "name": "Ice Nova Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Health Potion Find",
+     "l1": 47.5,
+     "l6": 72.5,
+     "pct": true
+    }
+   ],
+   "raises": "Ice Nova",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/ice-nova-rune-grand.webp"
+  },
+  {
+   "id": "fire-elemental-rune-grand",
+   "name": "Fire Elemental Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Intelligence",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Fire Elemental",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/fire-elemental-rune-grand.webp"
+  },
+  {
+   "id": "ice-block-rune-grand",
+   "name": "Ice Block Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 6.5,
+     "l6": 9.0,
+     "pct": true
+    }
+   ],
+   "raises": "Ice Block",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/ice-block-rune-grand.webp"
+  },
+  {
+   "id": "fire-meteor-rune-grand",
+   "name": "Fire Meteor Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": true
+    }
+   ],
+   "raises": "Fire Meteor",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/fire-meteor-rune-grand.webp"
+  },
+  {
+   "id": "flame-aura-rune-grand",
+   "name": "Flame Aura Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Flame Aura",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/flame-aura-rune-grand.webp"
+  },
+  {
+   "id": "lightning-cloud-rune-grand",
+   "name": "Lightning Cloud Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Lightning Cloud",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/lightning-cloud-rune-grand.webp"
+  },
+  {
+   "id": "flame-breath-rune-grand",
+   "name": "Flame Breath Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Flame Breath",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/flame-breath-rune-grand.webp"
+  },
+  {
+   "id": "ice-meteor-rune-grand",
+   "name": "Ice Meteor Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Ice Meteor",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/ice-meteor-rune-grand.webp"
+  },
+  {
+   "id": "lightning-storm-rune-grand",
+   "name": "Lightning Storm Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 6.5,
+     "l6": 9.0,
+     "pct": true
+    }
+   ],
+   "raises": "Lightning Storm",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/lightning-storm-rune-grand.webp"
+  },
+  {
+   "id": "frost-beam-rune-grand",
+   "name": "Frost Beam Rune (Grand)",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Frost Beam",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/frost-beam-rune-grand.webp"
+  },
+  {
+   "id": "fire-ball-rune",
+   "name": "Fire Ball Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Intelligence",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Fire Ball",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/fire-ball-rune.webp"
+  },
+  {
+   "id": "ice-shards-rune",
+   "name": "Ice Shards Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": true
+    }
+   ],
+   "raises": "Ice Shards",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/ice-shards-rune.webp"
+  },
+  {
+   "id": "electrocute-rune",
+   "name": "Electrocute Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Electrocute",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/electrocute-rune.webp"
+  },
+  {
+   "id": "flame-lightning-rune",
+   "name": "Flame Lightning Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Intelligence",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Flame Lightning",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/flame-lightning-rune.webp"
+  },
+  {
+   "id": "ice-nova-rune",
+   "name": "Ice Nova Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Health Potion Find",
+     "l1": 40.0,
+     "l6": 60.0,
+     "pct": true
+    }
+   ],
+   "raises": "Ice Nova",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/ice-nova-rune.webp"
+  },
+  {
+   "id": "fire-elemental-rune",
+   "name": "Fire Elemental Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Intelligence",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Fire Elemental",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/fire-elemental-rune.webp"
+  },
+  {
+   "id": "ice-block-rune",
+   "name": "Ice Block Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 5.0,
+     "l6": 7.5,
+     "pct": true
+    }
+   ],
+   "raises": "Ice Block",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/ice-block-rune.webp"
+  },
+  {
+   "id": "fire-meteor-rune",
+   "name": "Fire Meteor Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": true
+    }
+   ],
+   "raises": "Fire Meteor",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/fire-meteor-rune.webp"
+  },
+  {
+   "id": "flame-aura-rune",
+   "name": "Flame Aura Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Flame Aura",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/flame-aura-rune.webp"
+  },
+  {
+   "id": "lightning-cloud-rune",
+   "name": "Lightning Cloud Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Lightning Cloud",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/lightning-cloud-rune.webp"
+  },
+  {
+   "id": "flame-breath-rune",
+   "name": "Flame Breath Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Flame Breath",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/flame-breath-rune.webp"
+  },
+  {
+   "id": "ice-meteor-rune",
+   "name": "Ice Meteor Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Ice Meteor",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/ice-meteor-rune.webp"
+  },
+  {
+   "id": "lightning-storm-rune",
+   "name": "Lightning Storm Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 5.0,
+     "l6": 7.5,
+     "pct": true
+    }
+   ],
+   "raises": "Lightning Storm",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/lightning-storm-rune.webp"
+  },
+  {
+   "id": "frost-beam-rune",
+   "name": "Frost Beam Rune",
+   "class": "Sorcerer",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Frost Beam",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/frost-beam-rune.webp"
+  },
+  {
+   "id": "hundred-hands-rune-i",
+   "name": "Hundred Hands Rune (I)",
+   "class": "Monk",
+   "set": "Hundred Hands",
+   "kind": "set",
+   "stats": [],
+   "raises": "Furious Fist",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/hundred-hands-rune-i.webp"
+  },
+  {
+   "id": "hundred-hands-rune-ii",
+   "name": "Hundred Hands Rune (II)",
+   "class": "Monk",
+   "set": "Hundred Hands",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Basic Attack Damage",
+     "l1": 15.0,
+     "l6": 65.0,
+     "pct": true
+    }
+   ],
+   "raises": "Furious Fist",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/hundred-hands-rune-ii.webp"
+  },
+  {
+   "id": "hundred-hands-rune-iii",
+   "name": "Hundred Hands Rune (III)",
+   "class": "Monk",
+   "set": "Hundred Hands",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/hundred-hands-rune-iii.webp"
+  },
+  {
+   "id": "hundred-hands-rune-iv",
+   "name": "Hundred Hands Rune (IV)",
+   "class": "Monk",
+   "set": "Hundred Hands",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Attack Speed",
+     "l1": 8.0,
+     "l6": 14.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/hundred-hands-rune-iv.webp"
+  },
+  {
+   "id": "hundred-hands-rune-v",
+   "name": "Hundred Hands Rune (V)",
+   "class": "Monk",
+   "set": "Hundred Hands",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Life on Hit",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/hundred-hands-rune-v.webp"
+  },
+  {
+   "id": "hundred-hands-rune-vi",
+   "name": "Hundred Hands Rune (VI)",
+   "class": "Monk",
+   "set": "Hundred Hands",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 500.0,
+     "l6": 600.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/hundred-hands-rune-vi.webp"
+  },
+  {
+   "id": "wheel-of-nine-heavens-rune-i",
+   "name": "Wheel of Nine Heavens Rune (I)",
+   "class": "Monk",
+   "set": "Wheel of Nine Heavens",
+   "kind": "set",
+   "stats": [],
+   "raises": "Sacred Orbs",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/wheel-of-nine-heavens-rune-i.webp"
+  },
+  {
+   "id": "wheel-of-nine-heavens-rune-ii",
+   "name": "Wheel of Nine Heavens Rune (II)",
+   "class": "Monk",
+   "set": "Wheel of Nine Heavens",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Dodge Chance",
+     "l1": 2.0,
+     "l6": 3.0,
+     "pct": true
+    }
+   ],
+   "raises": "Sacred Orbs",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/wheel-of-nine-heavens-rune-ii.webp"
+  },
+  {
+   "id": "wheel-of-nine-heavens-rune-iii",
+   "name": "Wheel of Nine Heavens Rune (III)",
+   "class": "Monk",
+   "set": "Wheel of Nine Heavens",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/wheel-of-nine-heavens-rune-iii.webp"
+  },
+  {
+   "id": "wheel-of-nine-heavens-rune-iv",
+   "name": "Wheel of Nine Heavens Rune (IV)",
+   "class": "Monk",
+   "set": "Wheel of Nine Heavens",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Lightning Damage",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/wheel-of-nine-heavens-rune-iv.webp"
+  },
+  {
+   "id": "wheel-of-nine-heavens-rune-v",
+   "name": "Wheel of Nine Heavens Rune (V)",
+   "class": "Monk",
+   "set": "Wheel of Nine Heavens",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Cooldown Reduction",
+     "l1": 5.0,
+     "l6": 10.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/wheel-of-nine-heavens-rune-v.webp"
+  },
+  {
+   "id": "wheel-of-nine-heavens-rune-vi",
+   "name": "Wheel of Nine Heavens Rune (VI)",
+   "class": "Monk",
+   "set": "Wheel of Nine Heavens",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 500.0,
+     "l6": 600.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/wheel-of-nine-heavens-rune-vi.webp"
+  },
+  {
+   "id": "serpents-tongue-rune-i",
+   "name": "Serpent's Tongue Rune (I)",
+   "class": "Monk",
+   "set": "Serpent's Tongue",
+   "kind": "set",
+   "stats": [],
+   "raises": "Piercing Lunge",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/serpents-tongue-rune-i.webp"
+  },
+  {
+   "id": "serpents-tongue-rune-ii",
+   "name": "Serpent's Tongue Rune (II)",
+   "class": "Monk",
+   "set": "Serpent's Tongue",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Dodge Chance",
+     "l1": 2.0,
+     "l6": 3.0,
+     "pct": true
+    }
+   ],
+   "raises": "Piercing Lunge",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/serpents-tongue-rune-ii.webp"
+  },
+  {
+   "id": "serpents-tongue-rune-iii",
+   "name": "Serpent's Tongue Rune (III)",
+   "class": "Monk",
+   "set": "Serpent's Tongue",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 20.0,
+     "l6": 35.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/serpents-tongue-rune-iii.webp"
+  },
+  {
+   "id": "serpents-tongue-rune-iv",
+   "name": "Serpent's Tongue Rune (IV)",
+   "class": "Monk",
+   "set": "Serpent's Tongue",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Physical Damage",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/serpents-tongue-rune-iv.webp"
+  },
+  {
+   "id": "serpents-tongue-rune-v",
+   "name": "Serpent's Tongue Rune (V)",
+   "class": "Monk",
+   "set": "Serpent's Tongue",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Damage vs Vulnerable",
+     "l1": 15.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/serpents-tongue-rune-v.webp"
+  },
+  {
+   "id": "serpents-tongue-rune-vi",
+   "name": "Serpent's Tongue Rune (VI)",
+   "class": "Monk",
+   "set": "Serpent's Tongue",
+   "kind": "set",
+   "stats": [
+    {
+     "stat": "Max Health",
+     "l1": 500.0,
+     "l6": 600.0,
+     "pct": false
+    }
+   ],
+   "raises": null,
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/serpents-tongue-rune-vi.webp"
+  },
+  {
+   "id": "threefold-strike-rune-grand",
+   "name": "Threefold Strike Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Threefold Strike",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/threefold-strike-rune-grand.webp"
+  },
+  {
+   "id": "furious-fist-rune-grand",
+   "name": "Furious Fist Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": true
+    }
+   ],
+   "raises": "Furious Fist",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/furious-fist-rune-grand.webp"
+  },
+  {
+   "id": "seismic-strike-rune-grand",
+   "name": "Seismic Strike Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Seismic Strike",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/seismic-strike-rune-grand.webp"
+  },
+  {
+   "id": "chi-bolt-rune-grand",
+   "name": "Chi Bolt Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Chi Bolt",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/chi-bolt-rune-grand.webp"
+  },
+  {
+   "id": "sacred-judgment-rune-grand",
+   "name": "Sacred Judgment Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Sacred Judgment",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/sacred-judgment-rune-grand.webp"
+  },
+  {
+   "id": "piercing-lunge-rune-grand",
+   "name": "Piercing Lunge Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Piercing Lunge",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/piercing-lunge-rune-grand.webp"
+  },
+  {
+   "id": "whirlwind-staff-rune-grand",
+   "name": "Whirlwind Staff Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 6.5,
+     "l6": 9.0,
+     "pct": true
+    }
+   ],
+   "raises": "Whirlwind Staff",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/whirlwind-staff-rune-grand.webp"
+  },
+  {
+   "id": "golden-palms-rune-grand",
+   "name": "Golden Palms Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Golden Palms",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/golden-palms-rune-grand.webp"
+  },
+  {
+   "id": "sacred-orbs-rune-grand",
+   "name": "Sacred Orbs Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Health Potion Find",
+     "l1": 47.5,
+     "l6": 72.5,
+     "pct": true
+    }
+   ],
+   "raises": "Sacred Orbs",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/sacred-orbs-rune-grand.webp"
+  },
+  {
+   "id": "spirit-stream-rune-grand",
+   "name": "Spirit Stream Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": false
+    }
+   ],
+   "raises": "Spirit Stream",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/spirit-stream-rune-grand.webp"
+  },
+  {
+   "id": "charge-rune-grand",
+   "name": "Charge Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 6.5,
+     "l6": 9.0,
+     "pct": true
+    }
+   ],
+   "raises": "Charge",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/charge-rune-grand.webp"
+  },
+  {
+   "id": "spirit-twin-rune-grand",
+   "name": "Spirit Twin Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 15.0,
+     "l6": 20.0,
+     "pct": true
+    }
+   ],
+   "raises": "Spirit Twin",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/spirit-twin-rune-grand.webp"
+  },
+  {
+   "id": "wind-steps-rune-grand",
+   "name": "Wind Steps Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Wind Steps",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/wind-steps-rune-grand.webp"
+  },
+  {
+   "id": "divine-thunder-rune-grand",
+   "name": "Divine Thunder Rune (Grand)",
+   "class": "Monk",
+   "set": null,
+   "kind": "grand",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 24.0,
+     "l6": 36.5,
+     "pct": true
+    }
+   ],
+   "raises": "Divine Thunder",
+   "tradable": true,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/divine-thunder-rune-grand.webp"
+  },
+  {
+   "id": "threefold-strike-rune",
+   "name": "Threefold Strike Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Threefold Strike",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/threefold-strike-rune.webp"
+  },
+  {
+   "id": "furious-fist-rune",
+   "name": "Furious Fist Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": true
+    }
+   ],
+   "raises": "Furious Fist",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/furious-fist-rune.webp"
+  },
+  {
+   "id": "seismic-strike-rune",
+   "name": "Seismic Strike Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Seismic Strike",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/seismic-strike-rune.webp"
+  },
+  {
+   "id": "chi-bolt-rune",
+   "name": "Chi Bolt Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Chi Bolt",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/chi-bolt-rune.webp"
+  },
+  {
+   "id": "sacred-judgment-rune",
+   "name": "Sacred Judgment Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Sacred Judgment",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/sacred-judgment-rune.webp"
+  },
+  {
+   "id": "piercing-lunge-rune",
+   "name": "Piercing Lunge Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Piercing Lunge",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/piercing-lunge-rune.webp"
+  },
+  {
+   "id": "whirlwind-staff-rune",
+   "name": "Whirlwind Staff Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 5.0,
+     "l6": 7.5,
+     "pct": true
+    }
+   ],
+   "raises": "Whirlwind Staff",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/whirlwind-staff-rune.webp"
+  },
+  {
+   "id": "golden-palms-rune",
+   "name": "Golden Palms Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Max Mana",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Golden Palms",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/golden-palms-rune.webp"
+  },
+  {
+   "id": "sacred-orbs-rune",
+   "name": "Sacred Orbs Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Health Potion Find",
+     "l1": 40.0,
+     "l6": 60.0,
+     "pct": true
+    }
+   ],
+   "raises": "Sacred Orbs",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/sacred-orbs-rune.webp"
+  },
+  {
+   "id": "spirit-stream-rune",
+   "name": "Spirit Stream Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Dexterity",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": false
+    }
+   ],
+   "raises": "Spirit Stream",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/spirit-stream-rune.webp"
+  },
+  {
+   "id": "charge-rune",
+   "name": "Charge Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Move Speed",
+     "l1": 5.0,
+     "l6": 7.5,
+     "pct": true
+    }
+   ],
+   "raises": "Charge",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/charge-rune.webp"
+  },
+  {
+   "id": "spirit-twin-rune",
+   "name": "Spirit Twin Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Health",
+     "l1": 10.0,
+     "l6": 15.0,
+     "pct": true
+    }
+   ],
+   "raises": "Spirit Twin",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/spirit-twin-rune.webp"
+  },
+  {
+   "id": "wind-steps-rune",
+   "name": "Wind Steps Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Armor",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Wind Steps",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/wind-steps-rune.webp"
+  },
+  {
+   "id": "divine-thunder-rune",
+   "name": "Divine Thunder Rune",
+   "class": "Monk",
+   "set": null,
+   "kind": "rare",
+   "stats": [
+    {
+     "stat": "Bonus Magic Resist",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": "Divine Thunder",
+   "tradable": false,
+   "sells": 5000.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/divine-thunder-rune.webp"
+  },
+  {
+   "id": "bloodletting",
+   "name": "Bloodletting",
+   "class": "All",
+   "set": null,
+   "kind": "uncommon",
+   "stats": [
+    {
+     "stat": "Damage vs Bleeding",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": false,
+   "sells": 500.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/bloodletting.webp"
+  },
+  {
+   "id": "longshot",
+   "name": "Longshot",
+   "class": "All",
+   "set": null,
+   "kind": "uncommon",
+   "stats": [
+    {
+     "stat": "Damage vs Distant",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": false,
+   "sells": 500.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/longshot.webp"
+  },
+  {
+   "id": "giantslayer",
+   "name": "Giantslayer",
+   "class": "All",
+   "set": null,
+   "kind": "uncommon",
+   "stats": [
+    {
+     "stat": "Damage vs Elite",
+     "l1": 15.0,
+     "l6": 22.5,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": false,
+   "sells": 500.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/giantslayer.webp"
+  },
+  {
+   "id": "ambush",
+   "name": "Ambush",
+   "class": "All",
+   "set": null,
+   "kind": "uncommon",
+   "stats": [
+    {
+     "stat": "Damage vs Healthy",
+     "l1": 30.0,
+     "l6": 45.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": false,
+   "sells": 500.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/ambush.webp"
+  },
+  {
+   "id": "execution",
+   "name": "Execution",
+   "class": "All",
+   "set": null,
+   "kind": "uncommon",
+   "stats": [
+    {
+     "stat": "Damage vs Injured",
+     "l1": 30.0,
+     "l6": 45.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": false,
+   "sells": 500.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/execution.webp"
+  },
+  {
+   "id": "blight",
+   "name": "Blight",
+   "class": "All",
+   "set": null,
+   "kind": "uncommon",
+   "stats": [
+    {
+     "stat": "Damage vs Poisoned",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": false,
+   "sells": 500.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/blight.webp"
+  },
+  {
+   "id": "snare",
+   "name": "Snare",
+   "class": "All",
+   "set": null,
+   "kind": "uncommon",
+   "stats": [
+    {
+     "stat": "Damage vs Slowed",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": false,
+   "sells": 500.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/snare.webp"
+  },
+  {
+   "id": "daze",
+   "name": "Daze",
+   "class": "All",
+   "set": null,
+   "kind": "uncommon",
+   "stats": [
+    {
+     "stat": "Damage vs Immobilized",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": false,
+   "sells": 500.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/daze.webp"
+  },
+  {
+   "id": "frailty",
+   "name": "Frailty",
+   "class": "All",
+   "set": null,
+   "kind": "uncommon",
+   "stats": [
+    {
+     "stat": "Damage vs Vulnerable",
+     "l1": 20.0,
+     "l6": 30.0,
+     "pct": true
+    }
+   ],
+   "raises": null,
+   "tradable": false,
+   "sells": 500.0,
+   "icon_url": "https://afkmeta.com/assets/deskrawl/icons/runes/frailty.webp"
+  }
+ ],
+ "as_of": "10 October 2026"
+}

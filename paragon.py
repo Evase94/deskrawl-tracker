@@ -60,11 +60,12 @@ class Paragon:
         self.hud_level = saved.get("hud_level")
         self.seen_list = list(saved.get("seen") or [])[-MAX_SEEN:]
         self.seen = set(self.seen_list)
+        self.from_bar = bool(saved.get("from_bar"))   # total taken from the HUD bar (history incomplete)
         self.changed = False
 
     def to_dict(self) -> dict:
         return {"total": self.total, "complete": self.complete, "hud_level": self.hud_level,
-                "seen": self.seen_list[-MAX_SEEN:]}
+                "seen": self.seen_list[-MAX_SEEN:], "from_bar": self.from_bar}
 
     def known(self) -> bool:
         return self.total is not None
@@ -97,9 +98,22 @@ class Paragon:
         self.changed = True
         return True
 
-    def observe_hud(self, level: int):
-        """Paragon level read from the game's HUD: raises an incomplete total to that level's start."""
-        if level < 1 or level == self.hud_level and (self.total is None or split(self.total)[0] >= level):
+    def observe_hud(self, level: int, fill: float | None = None):
+        """Paragon level (and bar fill 0..1 at level 70) read from the game's HUD.
+        A history that is not complete (the run that reached 70 is not in the logs - e.g. the tracker was
+        installed later) takes its total from the HUD: start of the level plus the bar's share of it. Runs
+        counted afterwards add to it; the bar keeps correcting it while it is the only source."""
+        if level < 1:
+            return
+        if fill is not None and not self.complete and 0.0 <= fill <= 1.0:
+            est = level_start(level) + int(fill * xp_to_next(level))
+            cur_level = split(self.total)[0] if self.total is not None else None
+            # small bar steps (separators, a run not committed yet) are noise; a different level or a clear
+            # difference is taken
+            if self.total is None or cur_level != level or abs(est - self.total) > 0.03 * xp_to_next(level):
+                self.total, self.hud_level, self.from_bar, self.changed = est, level, True, True
+                return
+        if level == self.hud_level and (self.total is None or split(self.total)[0] >= level):
             return
         self.hud_level = level
         if self.total is None or split(self.total)[0] < level:

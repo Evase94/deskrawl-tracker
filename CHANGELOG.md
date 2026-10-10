@@ -2,6 +2,28 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.26 – 2026-10-10
+
+### New
+- **Runes page.** Every rune and rune set of your class (199 runes, 13 sets, patch 1.0.2), rated for your character with the same model as talents. Set bonuses are read like talent texts, and a rune that raises an ability counts for that ability's share of your damage.
+  - **Best runes for your open slots:** each set at 2, 4 or 6 pieces, two sets combined (4 + 2, 2 + 2), and the best single runes in the remaining slots.
+  - **Rune Transmute calculator:** enter how many runes you have per rarity and see what the Alchemists give on average.
+- **Mythic Rift page.** Tiers 1–100 with enemy health and damage, gold and EXP multipliers, the entry cost (3 Skull of Inferno per completed run) and the boss enrage from tier 75.
+  - Your rift runs are recorded per tier; the tier is read from the end screen.
+  - From the tier you played most, every other tier is forecast (run time, EXP/h, gold/h, skulls/h).
+  - The page recommends the best tier within your limits: how much harder enemies may hit, the longest run you accept, and no boss enrage.
+- **Farm advice page.** Every stage you have played, ranked by your weights for EXP, gold, legendaries and safety, with a reason for each.
+  - Stages with only a few runs count less sure.
+  - Skull costs of Gold bosses and the Mythic Rift are noted.
+
+### Fixed
+- **Paragon for players who installed the tracker after reaching Paragon.** The tracker only added up level-70 runs from the game log, so the earlier Paragon EXP was missing. Now:
+  - It reads the Paragon level from the HUD for every character, across the whole window width.
+  - At level 70 it reads the Paragon bar, so the progress inside the level is known too.
+- **Combat simulation.** Without a skill bar read, only the most used Basic Attack counts. An ability that was on the bar for a few runs only no longer counts as a second Basic Attack.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.25 – 2026-10-10
 
 ### Improved
