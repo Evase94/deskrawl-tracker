@@ -24,3 +24,6 @@ dist/
 *.spec.bak
 *.spec
 cache/
+
+# your own sounds (Drops page) – not part of the repository
+sounds/

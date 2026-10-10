@@ -37,6 +37,7 @@ import build_profile
 import combat_sim
 import paragon
 import loot_watch
+import sound
 from version import VERSION
 import item_ocr  # first: loads onnxruntime before WinRT/winocr (avoids a crash)
 import item_eval
@@ -2537,7 +2538,8 @@ class App:
         if F.measured:
             lines.append("Your abilities, measured by skill tracking: " + ", ".join(
                 f"{n} {x['share'] * 100:.0f} % of the damage ({x['cps'] * 60:.0f}/min)"
-                for n, x in sorted(F.use.items(), key=lambda kv: -kv[1]["share"])) + ".")
+                for n, x in sorted(F.use.items(), key=lambda kv: -kv[1]["share"])) + ". Basic Attacks hardly "
+                "flash on the skill bar, so their rate comes from the combat simulation (your attack speed).")
         elif F.use:
             lines.append("Your abilities from the shares set on the right (switch on skill tracking to measure "
                          "them): " + ", ".join(f"{n} {x['share'] * 100:.0f} %" for n, x in F.use.items()) + ".")
@@ -2546,7 +2548,10 @@ class App:
                          "count as nothing until then.")
         if F.sim is not None:
             lines.append(f"Cooldown, mana and free-cast talents: combat simulation of your skill bar "
-                         f"({F.kills:.2f} kills per second).")
+                         f"({F.kills:.2f} kills per second{', capped – the measured casts did not fit your sheet' if F.kills_capped else ''}).")
+        if (self.cfg.get("rating_overrides") or {}).get("shares"):
+            lines.append("⚠ Your own damage shares (Skill Tracking → Edit rating values) are set; for talents the "
+                         "Basic Attack rate comes from the simulation anyway – consider “Reset to measured”.")
         c = F.char
         lines.append(f"Character sheet: {c.get('Critical Hit Chance', 0):g} % crit chance, "
                      f"{c.get('Critical Hit Damage', 0):g} % crit damage, {c.get('Max Mana', 0):g} Max Mana, "
@@ -2556,8 +2561,10 @@ class App:
                          "current build” – your sheet already holds the talents you have, so without it they "
                          "count twice.")
         lines.append(f"Assumed (the game gives no numbers): Electrostatic +{talent_model.ELECTROSTATIC_PER_STACK:g} % "
-                     f"Lightning damage taken per stack; “while Healthy” {talent_model.HEALTHY_SHARE * 100:.0f} % of "
-                     f"the time; explosions hit {talent_model.PROC_TARGETS:g} enemies.")
+                     f"Lightning damage taken per stack (fitted to a training dummy test); “while Healthy” "
+                     f"{talent_model.HEALTHY_SHARE * 100:.0f} % of the time; explosions hit "
+                     f"{talent_model.PROC_TARGETS:g} enemies. The numbers are a forecast – check a new build at the "
+                     f"training dummy (Damage Overall / Current DPS).")
         hero = F.hero
         nr = [f"{t['name']} ({talent_model.why_not(t, hero)})" for t in talents.tree(hero)
               if not talent_model.rated(t, hero)]
@@ -3951,6 +3958,17 @@ class App:
                        activebackground=PANEL, activeforeground=FG, font=ui.F_LABEL, highlightthickness=0,
                        bd=0).pack(side="left")
         ui.button(row, "Play sound", self._play_legendary, small=True).pack(side="right")
+        b_dir = ui.button(row, "Sounds folder", self._open_sounds, small=True)
+        b_dir.pack(side="right", padx=(0, 8))
+        ui.Tooltip(b_dir, "Put your own .mp3 or .wav files into this folder – they show up in the list. They stay on "
+                          "your PC.")
+        self.var_leg_file = tk.StringVar(value=self._leg_sound_choice())
+        self.cb_leg_file = ttk.Combobox(row, textvariable=self.var_leg_file, values=sound.choices(), width=28,
+                                        state="readonly", postcommand=lambda: self.cb_leg_file.configure(
+                                            values=sound.choices()))
+        self.cb_leg_file.pack(side="right", padx=(0, 8))
+        self.cb_leg_file.bind("<<ComboboxSelected>>", lambda _e: (
+            self._set_cfg("legendary_sound_file", self.var_leg_file.get()), self._play_legendary()))
         row2 = tk.Frame(leg, bg=PANEL)
         row2.pack(fill="x", padx=12, pady=(0, 2))
         self.var_leg_space = tk.BooleanVar(value=self.cfg.get("legendary_space", True))
@@ -4449,12 +4467,20 @@ class App:
         game_input.restore_focus(prev)
         return True
 
+    def _leg_sound_choice(self) -> str:
+        """The sound chosen on the Drops page; without a choice your own sound (sounds folder), else the chime."""
+        c = self.cfg.get("legendary_sound_file")
+        own = sound.own_sounds()
+        if c in own or c == sound.BUILTIN:
+            return c
+        return own[0] if own else sound.BUILTIN
+
     def _play_legendary(self):
-        try:
-            import winsound
-            winsound.PlaySound(paths.res("data", "legendary.wav"), winsound.SND_FILENAME | winsound.SND_ASYNC)
-        except Exception:
-            errlog.report("sound", "legendary sound could not be played")
+        sound.play(self._leg_sound_choice())
+
+    def _open_sounds(self):
+        os.makedirs(sound.folder(), exist_ok=True)
+        os.startfile(sound.folder())
 
     def _toggle_leg_sound(self):
         self._set_cfg("legendary_sound", bool(self.var_leg_sound.get()))
@@ -4688,8 +4714,9 @@ class App:
 
     def _load_item_db(self):
         try:
+            import patch_data
             with open(paths.res("data", "item_db.json"), encoding="utf-8") as f:
-                return json.load(f)["items"]
+                return patch_data.items(json.load(f)["items"], db=True)
         except Exception:
             errlog.log.error("cannot read data/item_db.json", exc_info=True)
             return []

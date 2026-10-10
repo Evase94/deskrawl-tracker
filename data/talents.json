@@ -18,13 +18,14 @@
     "points": 0,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+5 Strength",
+    "rank1": null,
     "rank_max": "+50 Strength",
     "note": "",
     "x": 0.04,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/strength.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Vitality",
@@ -32,13 +33,14 @@
     "points": 0,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+50 Max HP and +3 Life Regen",
+    "rank1": null,
     "rank_max": "+300 Max HP and +18 Life Regen",
     "note": "",
     "x": 0.27,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/vitality-2.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Armor",
@@ -46,13 +48,14 @@
     "points": 0,
     "ranks": 5,
     "capstone": "",
-    "rank1": "+40 Armor and +40 Magic Resist",
+    "rank1": null,
     "rank_max": "+200 Armor and +200 Magic Resist",
     "note": "",
     "x": 0.5,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/armor.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Hold the Line",
@@ -60,13 +63,14 @@
     "points": 5,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Take 3% less damage while at least 3 living enemies are nearby.",
+    "rank1": null,
     "rank_max": "Take 15% less damage while at least 3 living enemies are nearby.",
     "note": "",
     "x": 0.5,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/hold-the-line.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Critical Hit Chance",
@@ -74,13 +78,14 @@
     "points": 0,
     "ranks": 5,
     "capstone": "",
-    "rank1": "+2% Critical Hit Chance",
+    "rank1": null,
     "rank_max": "+10% Critical Hit Chance",
     "note": "",
     "x": 0.73,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/critical-hit-chance.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Critical Hit Damage",
@@ -88,13 +93,14 @@
     "points": 5,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+10% Critical Hit Damage",
+    "rank1": null,
     "rank_max": "+80% Critical Hit Damage",
     "note": "",
     "x": 0.04,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/critical-hit-damage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Thorn",
@@ -102,13 +108,14 @@
     "points": 0,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+8 Thorn",
+    "rank1": null,
     "rank_max": "+64 Thorn",
     "note": "5 points spent",
     "x": 0.96,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/thorn.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Demoralizing Shout",
@@ -116,13 +123,14 @@
     "points": 40,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Casting a Warcry reduces nearby enemies’ damage dealt by 5% for 3s.",
+    "rank1": null,
     "rank_max": "Casting a Warcry reduces nearby enemies’ damage dealt by 30% for 3s.",
     "note": "",
     "x": 0.73,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/demoralizing-shout.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Weakness Mastery",
@@ -130,13 +138,14 @@
     "points": 20,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+10% Damage to Vulnerable targets",
+    "rank1": null,
     "rank_max": "+80% Damage to Vulnerable targets",
     "note": "",
     "x": 0.73,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/weakness-mastery.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Cleaving Rage",
@@ -144,13 +153,14 @@
     "points": 5,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Casting a Basic Attack ability grants +1% Attack Speed per stack (up to 10 stacks).",
+    "rank1": null,
     "rank_max": "Casting a Basic Attack ability grants +6% Attack Speed per stack (up to 10 stacks).",
     "note": "",
     "x": 0.27,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/cleaving-rage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Battle Inspiration",
@@ -164,7 +174,15 @@
     "x": 0.5,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/battle-inspiration.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Rage Shout",
+     "Rage Shield",
+     "Deadly Hook",
+     "Earthstrike",
+     "Iron Thorn",
+     "Molten Might"
+    ]
    },
    {
     "name": "Heavy Blow",
@@ -178,7 +196,8 @@
     "x": 0.04,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/heavy-blow.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Thorn Boost",
@@ -186,13 +205,14 @@
     "points": 5,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+10% Thorn",
+    "rank1": null,
     "rank_max": "+100% Thorn",
     "note": "10 points spent · Choose 1 · Capstone Talent I",
     "x": 0.96,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/thorn-boost.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Enhance Strong Attack: Mana",
@@ -200,13 +220,19 @@
     "points": 15,
     "ranks": 5,
     "capstone": "",
-    "rank1": "+5% Strong Attack Mana Cost reduction.",
+    "rank1": null,
     "rank_max": "+25% Strong Attack Mana Cost reduction.",
     "note": "20 points spent",
     "x": 0.96,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-strong-attack-mana.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Flame Strike",
+     "Half Moon Slash",
+     "Whirlwind",
+     "Rending Onslaught"
+    ]
    },
    {
     "name": "Rage Infusion",
@@ -214,13 +240,19 @@
     "points": 50,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+15% Strong Attack Damage, but also +10% Mana Cost.",
+    "rank1": null,
     "rank_max": "+150% Strong Attack Damage, but also +100% Mana Cost.",
     "note": "",
     "x": 0.04,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/rage-infusion.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Flame Strike",
+     "Half Moon Slash",
+     "Whirlwind",
+     "Rending Onslaught"
+    ]
    },
    {
     "name": "Enhance Warcry: Cooldown",
@@ -228,13 +260,18 @@
     "points": 20,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+5% Warcry Abilities Cooldown reduction.",
+    "rank1": null,
     "rank_max": "+30% Warcry Abilities Cooldown reduction.",
     "note": "",
     "x": 0.04,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-warcry-cooldown.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Rage Shout",
+     "Rage Shield",
+     "Molten Might"
+    ]
    },
    {
     "name": "Rage Channeling",
@@ -242,13 +279,14 @@
     "points": 15,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Generate 8 Mana upon activating Rage Shield",
+    "rank1": null,
     "rank_max": "Generate 64 Mana upon activating Rage Shield",
     "note": "",
     "x": 0.27,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/rage-channeling.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Defensive Stance",
@@ -256,13 +294,14 @@
     "points": 15,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+10% Armor",
+    "rank1": null,
     "rank_max": "+55% Armor",
     "note": "",
     "x": 0.04,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/defensive-stance.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Second Wind",
@@ -270,13 +309,14 @@
     "points": 50,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Heal 10% when HP drop below 50% Max HP. (6 seconds cooldown)",
+    "rank1": null,
     "rank_max": "Heal 50% when HP drop below 50% Max HP. (6 seconds cooldown)",
     "note": "",
     "x": 0.73,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/second-wind-2.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Concussive Strikes",
@@ -284,13 +324,14 @@
     "points": 20,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Basic Attack have 3% to stun the enemy.",
+    "rank1": null,
     "rank_max": "Basic Attack have 15% to stun the enemy.",
     "note": "",
     "x": 0.27,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/concussive-strikes.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Press the Advantage",
@@ -298,13 +339,14 @@
     "points": 40,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+20% Damage on Stunned targets.",
+    "rank1": null,
     "rank_max": "+160% Damage on Stunned targets.",
     "note": "",
     "x": 0.04,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/press-the-advantage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Spreading Flame",
@@ -312,13 +354,14 @@
     "points": 20,
     "ranks": 10,
     "capstone": "",
-    "rank1": "Flame Strike splashes 20% weapon damage as Fire to nearby enemies.",
+    "rank1": null,
     "rank_max": "Flame Strike splashes 200% weapon damage as Fire to nearby enemies.",
     "note": "",
     "x": 0.5,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/spreading-flame.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Enhance Valiant Strike: Mana Gain",
@@ -326,13 +369,16 @@
     "points": 15,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+2 Mana Gain from Valiant Strike.",
+    "rank1": null,
     "rank_max": "+16 Mana Gain from Valiant Strike.",
     "note": "",
     "x": 0.73,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-valiant-strike-mana-gain.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Valiant Strike"
+    ]
    },
    {
     "name": "Vicious Thorns",
@@ -346,7 +392,8 @@
     "x": 0.5,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/vicious-thorns.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Hemorrhage",
@@ -354,13 +401,14 @@
     "points": 40,
     "ranks": 10,
     "capstone": "",
-    "rank1": "When you kill a Bleeding enemy, deal 15% of its remaining Bleed damage as a Physical blood explosion to other enemies within 3 meters.",
+    "rank1": null,
     "rank_max": "When you kill a Bleeding enemy, deal 150% of its remaining Bleed damage as a Physical blood explosion to other enemies within 3 meters.",
     "note": "",
     "x": 0.27,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/hemorrhage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Enhance Rage Shout",
@@ -368,13 +416,14 @@
     "points": 15,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Rage Shout's Attack Speed bonus is 15% stronger and lasts 0.5s longer.",
+    "rank1": null,
     "rank_max": "Rage Shout's Attack Speed bonus is 75% stronger and lasts 2.5s longer.",
     "note": "",
     "x": 0.5,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-rage-shout.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Crescent Harvest",
@@ -382,13 +431,16 @@
     "points": 20,
     "ranks": 10,
     "capstone": "",
-    "rank1": "Half Moon Slash deals +10% Damage. Each enemy killed by Half Moon Slash restores 3% of your Max Mana.",
+    "rank1": null,
     "rank_max": "Half Moon Slash deals +100% Damage. Each enemy killed by Half Moon Slash restores 30% of your Max Mana.",
     "note": "30 points spent · Choose 1 · Capstone Talent II",
     "x": 0.96,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/crescent-harvest.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Half Moon Slash"
+    ]
    },
    {
     "name": "Charged and Ready",
@@ -402,7 +454,8 @@
     "x": 0.04,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/charged-and-ready.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Ironward",
@@ -416,7 +469,8 @@
     "x": 0.6533,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/ironward.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Peak Condition",
@@ -424,13 +478,14 @@
     "points": 40,
     "ranks": 5,
     "capstone": "",
-    "rank1": "+15% All Damage while you are Healthy (above 80% HP).",
+    "rank1": null,
     "rank_max": "+75% All Damage while you are Healthy (above 80% HP).",
     "note": "",
     "x": 0.5,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/peak-condition.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Deepening Wounds",
@@ -438,13 +493,14 @@
     "points": 50,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Bleed Ability hits have a 5% chance to execute non-Boss enemies below 30% HP.",
+    "rank1": null,
     "rank_max": "Bleed Ability hits have a 30% chance to execute non-Boss enemies below 30% HP.",
     "note": "",
     "x": 0.27,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/deepening-wounds.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Enhance Valiant Strike: Vulnerable Chance",
@@ -452,13 +508,16 @@
     "points": 5,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Valiant Strike has an additional 10% chance to inflict Vulnerable.",
+    "rank1": null,
     "rank_max": "Valiant Strike has an additional 50% chance to inflict Vulnerable.",
     "note": "",
     "x": 0.73,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-valiant-strike-vulnerable-chance.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Valiant Strike"
+    ]
    },
    {
     "name": "Returning Fury",
@@ -472,7 +531,8 @@
     "x": 0.96,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/returning-fury.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Butcher's Rhythm",
@@ -480,13 +540,16 @@
     "points": 50,
     "ranks": 3,
     "capstone": "",
-    "rank1": "Rending Onslaught carves 1 additional cuts.",
+    "rank1": null,
     "rank_max": "Rending Onslaught carves 3 additional cuts.",
     "note": "",
     "x": 0.5,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/butchers-rhythm.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Rending Onslaught"
+    ]
    },
    {
     "name": "Focused Technique",
@@ -500,7 +563,13 @@
     "x": 0.96,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/focused-technique.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Valiant Strike",
+     "Cleave",
+     "Bloodblade",
+     "Steady Blow"
+    ]
    },
    {
     "name": "Forge Within",
@@ -514,7 +583,8 @@
     "x": 0.04,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/forge-within.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Bloodlust",
@@ -528,7 +598,8 @@
     "x": 0.3467,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/bloodlust.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Counterattack Storm",
@@ -542,7 +613,8 @@
     "x": 0.96,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/counterattack-storm.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Ironblood",
@@ -550,13 +622,14 @@
     "points": 50,
     "ranks": 10,
     "capstone": "",
-    "rank1": "3% of your Max HP is added to your Thorn.",
+    "rank1": null,
     "rank_max": "30% of your Max HP is added to your Thorn.",
     "note": "60 points spent · Choose 1 · Capstone Talent III",
     "x": 0.96,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/ironblood.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Reaper's Toll",
@@ -564,13 +637,16 @@
     "points": 40,
     "ranks": 10,
     "capstone": "",
-    "rank1": "Whirlwind strikes and spins 10% faster. +5% Movement Speed while channeling Whirlwind.",
+    "rank1": null,
     "rank_max": "Whirlwind strikes and spins 100% faster. +50% Movement Speed while channeling Whirlwind.",
     "note": "50 points spent",
     "x": 0.96,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/reapers-toll.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Whirlwind"
+    ]
    }
   ],
   "Sorcerer": [
@@ -580,13 +656,14 @@
     "points": 0,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+5 Intelligence",
+    "rank1": null,
     "rank_max": "+50 Intelligence",
     "note": "",
     "x": 0.04,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/arcane-insight.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Mana Flow",
@@ -594,13 +671,14 @@
     "points": 0,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+4 Max Mana",
+    "rank1": null,
     "rank_max": "+32 Max Mana",
     "note": "5 points spent",
     "x": 0.96,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/mana-flow.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Frost Armor",
@@ -608,13 +686,14 @@
     "points": 0,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Gain 35 Armor and increase your total Armor by 3%.",
+    "rank1": null,
     "rank_max": "Gain 280 Armor and increase your total Armor by 24%.",
     "note": "",
     "x": 0.5,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/frost-armor.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Arcane Reach",
@@ -622,13 +701,19 @@
     "points": 0,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+6% Basic Attack Range.",
+    "rank1": null,
     "rank_max": "+36% Basic Attack Range.",
     "note": "",
     "x": 0.73,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/arcane-reach.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Fire Ball",
+     "Ice Shards",
+     "Electrocute",
+     "Flame Lightning"
+    ]
    },
    {
     "name": "Searing Edge",
@@ -636,13 +721,19 @@
     "points": 0,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+2.5% Basic Attack Critical Hit Chance.",
+    "rank1": null,
     "rank_max": "+15% Basic Attack Critical Hit Chance.",
     "note": "The in-game text shows +3% for +2.5% at rank 1.",
     "x": 0.27,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/searing-edge.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Fire Ball",
+     "Ice Shards",
+     "Electrocute",
+     "Flame Lightning"
+    ]
    },
    {
     "name": "Ignite",
@@ -656,7 +747,8 @@
     "x": 0.3467,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/ignite.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Cold Retribution",
@@ -670,7 +762,8 @@
     "x": 0.6533,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/cold-retribution.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Shattering Ice",
@@ -678,13 +771,14 @@
     "points": 60,
     "ranks": 1,
     "capstone": "Capstone Talent III",
-    "rank1": "+50% Critical Hit Chance against Frozen enemies.",
-    "rank_max": "+50% Critical Hit Chance against Frozen enemies.",
+    "rank1": "+50% Critical Hit Chance and +250% Critical Hit Damage against Frozen enemies.",
+    "rank_max": "+50% Critical Hit Chance and +250% Critical Hit Damage against Frozen enemies.",
     "note": "",
     "x": 0.6533,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/shattering-ice.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Immolation",
@@ -698,7 +792,8 @@
     "x": 0.3467,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/immolation.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Frost Mastery",
@@ -706,13 +801,14 @@
     "points": 5,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+7% Cold Damage",
+    "rank1": null,
     "rank_max": "+70% Cold Damage",
     "note": "",
     "x": 0.5,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/frost-mastery.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Conflagration",
@@ -720,13 +816,14 @@
     "points": 20,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+12% Damage to Burning targets",
+    "rank1": null,
     "rank_max": "+96% Damage to Burning targets",
     "note": "",
     "x": 0.27,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/conflagration.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Mana Regeneration",
@@ -734,13 +831,14 @@
     "points": 5,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+1 Mana Regen",
+    "rank1": null,
     "rank_max": "+6 Mana Regen",
     "note": "10 points spent · Choose 1 · Capstone Talent I",
     "x": 0.96,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/mana-regeneration.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Flash Freeze",
@@ -754,7 +852,8 @@
     "x": 0.6533,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/flash-freeze.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Combustion",
@@ -762,13 +861,14 @@
     "points": 60,
     "ranks": 1,
     "capstone": "Capstone Talent III",
-    "rank1": "When you kill an enemy affected by Burn, there is a 50% chance to trigger a fiery explosion, dealing 100% weapon damage to nearby enemies.",
-    "rank_max": "When you kill an enemy affected by Burn, there is a 50% chance to trigger a fiery explosion, dealing 100% weapon damage to nearby enemies.",
+    "rank1": "When you kill an enemy affected by Burn, there is a 50% chance to trigger a fiery explosion, dealing 300% weapon damage to nearby enemies.",
+    "rank_max": "When you kill an enemy affected by Burn, there is a 50% chance to trigger a fiery explosion, dealing 300% weapon damage to nearby enemies.",
     "note": "",
     "x": 0.3467,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/combustion.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Deep Chill",
@@ -776,13 +876,14 @@
     "points": 15,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Your Chill is 6% more potent, slowing enemies more and lasting longer.",
+    "rank1": null,
     "rank_max": "Your Chill is 48% more potent, slowing enemies more and lasting longer.",
     "note": "",
     "x": 0.73,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/deep-chill.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Thunderstruck",
@@ -796,7 +897,8 @@
     "x": 0.96,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/thunderstruck.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Mana Conduit",
@@ -804,13 +906,19 @@
     "points": 5,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Basic Attack generates +1 Mana.",
+    "rank1": null,
     "rank_max": "Basic Attack generates +6 Mana.",
     "note": "",
     "x": 0.27,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/mana-conduit.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Fire Ball",
+     "Ice Shards",
+     "Electrocute",
+     "Flame Lightning"
+    ]
    },
    {
     "name": "Electrical Shield",
@@ -818,13 +926,14 @@
     "points": 15,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+2% Armor. Melee attackers have a 4% chance to grant you 5 Mana.",
+    "rank1": null,
     "rank_max": "+16% Armor. Melee attackers have a 32% chance to grant you 5 Mana.",
     "note": "20 points spent",
     "x": 0.96,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/electrical-shield.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Storm Executioner",
@@ -832,13 +941,14 @@
     "points": 5,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+4% Lightning Damage. +3% Damage to Elite enemies.",
+    "rank1": null,
     "rank_max": "+40% Lightning Damage. +30% Damage to Elite enemies.",
     "note": "",
     "x": 0.73,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/storm-executioner.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Flame Ward",
@@ -846,13 +956,14 @@
     "points": 5,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+5% Fire Damage. +4% Magic Resist.",
+    "rank1": null,
     "rank_max": "+40% Fire Damage. +32% Magic Resist.",
     "note": "",
     "x": 0.04,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/flame-ward.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Enhance Ice Shards: Damage",
@@ -860,13 +971,16 @@
     "points": 20,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+10% Ice Shards Damage.",
+    "rank1": null,
     "rank_max": "+80% Ice Shards Damage.",
     "note": "",
     "x": 0.73,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-ice-shards-damage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Ice Shards"
+    ]
    },
    {
     "name": "Enhance Electrocute: Mana Gain",
@@ -874,13 +988,16 @@
     "points": 40,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+2 Mana Gain from Electrocute.",
+    "rank1": null,
     "rank_max": "+12 Mana Gain from Electrocute.",
     "note": "50 points spent",
     "x": 0.96,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-electrocute-mana-gain.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Electrocute"
+    ]
    },
    {
     "name": "Enhance Ice Meteor: Mana Cost",
@@ -888,13 +1005,16 @@
     "points": 20,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+4% Ice Meteor Mana Cost reduction.",
+    "rank1": null,
     "rank_max": "+32% Ice Meteor Mana Cost reduction.",
     "note": "",
     "x": 0.5,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-ice-meteor-mana-cost.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Ice Meteor"
+    ]
    },
    {
     "name": "Enhance Flame Breath: Crit Damage",
@@ -902,13 +1022,16 @@
     "points": 15,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+20% Flame Breath Critical Hit Damage.",
+    "rank1": null,
     "rank_max": "+120% Flame Breath Critical Hit Damage.",
     "note": "",
     "x": 0.04,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-flame-breath-crit-damage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Flame Breath"
+    ]
    },
    {
     "name": "Storm Conduit",
@@ -916,13 +1039,14 @@
     "points": 60,
     "ranks": 1,
     "capstone": "Capstone Talent III",
-    "rank1": "Electrocute has a 20% chance to also cast Lightning Storm.",
-    "rank_max": "Electrocute has a 20% chance to also cast Lightning Storm.",
+    "rank1": "Electrocute has a 30% chance to also cast Lightning Storm.",
+    "rank_max": "Electrocute has a 30% chance to also cast Lightning Storm.",
     "note": "Rows open at 0, 5, 10, 15, 20, 30, 40, 50 and 60 points spent in the tree. The rows at 10, 30 and 60 points hold capstones: one capstone per row can be chosen. Capstones are highlighted. List view Tree view Arcane Insight 0/10 Arcane Insight Searing Edge 0/6 Searing Edge Frost Armor 0/8 Frost Armor ",
     "x": 0.96,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/storm-conduit.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Static Charge",
@@ -936,7 +1060,8 @@
     "x": 0.96,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/static-charge.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Frost Alacrity",
@@ -944,13 +1069,20 @@
     "points": 15,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Reduces the cooldown of Frost abilities by 4%.",
+    "rank1": null,
     "rank_max": "Reduces the cooldown of Frost abilities by 24%.",
     "note": "",
     "x": 0.5,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/frost-alacrity.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Ice Shards",
+     "Ice Meteor",
+     "Frost Beam",
+     "Ice Nova",
+     "Ice Block"
+    ]
    },
    {
     "name": "Plasma Conduction",
@@ -958,13 +1090,14 @@
     "points": 50,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Flame Lightning deals +6% damage to enemies affected by Burn and +6% damage per stack of Electrostatic on the enemy. Both bonuses apply when the enemy has both effects.",
+    "rank1": null,
     "rank_max": "Flame Lightning deals +48% damage to enemies affected by Burn and +48% damage per stack of Electrostatic on the enemy. Both bonuses apply when the enemy has both effects.",
     "note": "",
     "x": 0.04,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/plasma-conduction.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Frost Beam Expansion",
@@ -972,13 +1105,16 @@
     "points": 50,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Frost Beam's length and width are increased by 10%.",
+    "rank1": null,
     "rank_max": "Frost Beam's length and width are increased by 50%.",
     "note": "",
     "x": 0.5,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/frost-beam-expansion.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Frost Beam"
+    ]
    },
    {
     "name": "Frozen Reservoir",
@@ -986,13 +1122,14 @@
     "points": 40,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Casting Ice Nova has a 12.5% chance to restore 60 Mana.",
+    "rank1": null,
     "rank_max": "Casting Ice Nova has a 100% chance to restore 130 Mana.",
     "note": "The in-game text shows 13% for 12.5% at rank 1.",
     "x": 0.27,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/frozen-reservoir.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Elemental Fury",
@@ -1000,13 +1137,16 @@
     "points": 15,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Fire Elemental attacks 15% faster.",
+    "rank1": null,
     "rank_max": "Fire Elemental attacks 90% faster.",
     "note": "",
     "x": 0.27,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/elemental-fury.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Fire Elemental"
+    ]
    },
    {
     "name": "Frozen Renewal",
@@ -1014,13 +1154,14 @@
     "points": 40,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Restore 5% of your maximum Health every second during Ice Block.",
+    "rank1": null,
     "rank_max": "Restore 25% of your maximum Health every second during Ice Block.",
     "note": "",
     "x": 0.73,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/frozen-renewal.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Cataclysm",
@@ -1028,13 +1169,16 @@
     "points": 40,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Fire Meteor deals +8% Damage but has a 5% longer Cooldown.",
+    "rank1": null,
     "rank_max": "Fire Meteor deals +64% Damage but has a 40% longer Cooldown.",
     "note": "",
     "x": 0.04,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/cataclysm.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Fire Meteor"
+    ]
    },
    {
     "name": "Flame Ward",
@@ -1043,12 +1187,13 @@
     "ranks": 8,
     "capstone": "",
     "rank1": null,
-    "rank_max": "While [Flame Aura] is active, gain +80% Armor and Magic Resist.",
+    "rank_max": "While Flame Aura is active, gain +80% Armor and Magic Resist.",
     "note": "",
     "x": 0.27,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/flame-ward-2.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Lingering Storm",
@@ -1056,13 +1201,16 @@
     "points": 50,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Lightning Cloud's ground effect lasts 10% longer.",
+    "rank1": null,
     "rank_max": "Lightning Cloud's ground effect lasts 80% longer.",
     "note": "60 points spent · Choose 1 · Capstone Talent III",
     "x": 0.96,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/lingering-storm.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Lightning Cloud"
+    ]
    },
    {
     "name": "Permafrost",
@@ -1070,13 +1218,14 @@
     "points": 40,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Frozen applied by you lasts 8% longer.",
+    "rank1": null,
     "rank_max": "Frozen applied by you lasts 48% longer.",
     "note": "",
     "x": 0.5,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/permafrost.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Arcane Exposure",
@@ -1084,13 +1233,14 @@
     "points": 60,
     "ranks": 1,
     "capstone": "Capstone Talent III",
-    "rank1": "Every 6 casts of Strong Attack apply Vulnerable to targets hit.",
-    "rank_max": "Every 6 casts of Strong Attack apply Vulnerable to targets hit.",
+    "rank1": "Every 4 casts of Strong Attack apply Vulnerable to targets hit. +150% damage against Vulnerable enemies.",
+    "rank_max": "Every 4 casts of Strong Attack apply Vulnerable to targets hit. +150% damage against Vulnerable enemies.",
     "note": "",
     "x": 0.04,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/arcane-exposure.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Arcane Reservoir",
@@ -1098,13 +1248,14 @@
     "points": 20,
     "ranks": 8,
     "capstone": "",
-    "rank1": "5% of your Max Mana is added to Intelligence.",
+    "rank1": null,
     "rank_max": "40% of your Max Mana is added to Intelligence.",
     "note": "",
     "x": 0.04,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/arcane-reservoir.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Arcane Momentum",
@@ -1118,7 +1269,8 @@
     "x": 0.04,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/arcane-momentum.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Current Transfer",
@@ -1126,13 +1278,14 @@
     "points": 50,
     "ranks": 5,
     "capstone": "",
-    "rank1": "When an enemy affected by Electrostatic dies, it has a 20% chance to apply Electrostatic to enemies within 1.",
+    "rank1": null,
     "rank_max": "When an enemy affected by Electrostatic dies, it has a 100% chance to apply Electrostatic to enemies within 1.",
     "note": "",
     "x": 0.73,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/current-transfer.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Storm Mastery",
@@ -1140,13 +1293,19 @@
     "points": 20,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Gain +12% Critical Hit Damage to Lightning Abilities and +3% Lightning Damage Reduction.",
+    "rank1": null,
     "rank_max": "Gain +96% Critical Hit Damage to Lightning Abilities and +24% Lightning Damage Reduction.",
     "note": "30 points spent · Choose 1 · Capstone Talent II",
     "x": 0.96,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/storm-mastery.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Electrocute",
+     "Flame Lightning",
+     "Lightning Storm",
+     "Lightning Cloud"
+    ]
    }
   ],
   "Hunter": [
@@ -1156,13 +1315,14 @@
     "points": 0,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+5 Dexterity",
+    "rank1": null,
     "rank_max": "+50 Dexterity",
     "note": "",
     "x": 0.04,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/dexterity.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Dodge Chance",
@@ -1170,13 +1330,14 @@
     "points": 0,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+1.5% Dodge Chance",
+    "rank1": null,
     "rank_max": "+12% Dodge Chance",
     "note": "",
     "x": 0.73,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/dodge-chance.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Attack Speed",
@@ -1184,13 +1345,14 @@
     "points": 0,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+2.5% Attack Speed and +0.5 Damage.",
+    "rank1": null,
     "rank_max": "+25% Attack Speed and +5 Damage.",
     "note": "The in-game text shows +3% for +2.5% at rank 1.",
     "x": 0.27,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/attack-speed.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Long Shot",
@@ -1198,13 +1360,14 @@
     "points": 0,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+15% Damage to Distant enemies.",
+    "rank1": null,
     "rank_max": "+120% Damage to Distant enemies.",
     "note": "",
     "x": 0.5,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/long-shot.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Fleet Footed",
@@ -1212,13 +1375,14 @@
     "points": 0,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+4% Move Speed.",
+    "rank1": null,
     "rank_max": "+24% Move Speed.",
     "note": "5 points spent",
     "x": 0.96,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/fleet-footed.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Steady Aim",
@@ -1226,13 +1390,23 @@
     "points": 5,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+6% Strong Attack Range.",
-    "rank_max": "+36% Strong Attack Range.",
+    "rank1": null,
+    "rank_max": "+30% Basic Attack and Strong Attack Range.",
     "note": "",
     "x": 0.04,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/steady-aim.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Steady Shot",
+     "Multishot",
+     "Rapid Fire",
+     "Venom Bolt",
+     "Poison Shot",
+     "Arcane Bomb",
+     "Knife Barrage",
+     "Twin Arrows"
+    ]
    },
    {
     "name": "Sharpshooter",
@@ -1240,13 +1414,14 @@
     "points": 5,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+3% Critical Hit Chance against Distant enemies.",
+    "rank1": null,
     "rank_max": "+18% Critical Hit Chance against Distant enemies.",
     "note": "",
     "x": 0.27,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/sharpshooter.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Venom Lore",
@@ -1254,13 +1429,14 @@
     "points": 5,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+8% Damage to Poisoned enemies and +2% Poison Damage Reduction.",
+    "rank1": null,
     "rank_max": "+64% Damage to Poisoned enemies and +16% Poison Damage Reduction.",
     "note": "",
     "x": 0.73,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/venom-lore.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Hardened Hide",
@@ -1268,13 +1444,14 @@
     "points": 40,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+6% Critical Damage Reduction.",
+    "rank1": null,
     "rank_max": "+48% Critical Damage Reduction.",
     "note": "",
     "x": 0.5,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/hardened-hide.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Survival Instinct",
@@ -1282,13 +1459,14 @@
     "points": 20,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+3% Dodge Chance while surrounded by at least 3 enemies.",
+    "rank1": null,
     "rank_max": "+24% Dodge Chance while surrounded by at least 3 enemies.",
     "note": "30 points spent · Choose 1 · Capstone Talent II",
     "x": 0.96,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/survival-instinct.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Forceful Volley",
@@ -1296,13 +1474,14 @@
     "points": 20,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Multishot hits have a 4% chance to knock enemies back 2.",
+    "rank1": null,
     "rank_max": "Multishot hits have a 24% chance to knock enemies back 2.",
     "note": "",
     "x": 0.27,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/forceful-volley.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Deadly Toxin",
@@ -1310,13 +1489,14 @@
     "points": 5,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+6% Poisoned Damage and +0.2s Duration.",
+    "rank1": null,
     "rank_max": "+48% Poisoned Damage and +1.6s Duration.",
     "note": "10 points spent · Choose 1 · Capstone Talent I",
     "x": 0.96,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/deadly-toxin.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Quick Traps",
@@ -1324,13 +1504,17 @@
     "points": 20,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+5% Trap Abilities Cooldown reduction.",
+    "rank1": null,
     "rank_max": "+30% Trap Abilities Cooldown reduction.",
     "note": "",
     "x": 0.73,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/quick-traps.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Poison Trap",
+     "Arcane Trap"
+    ]
    },
    {
     "name": "Arcane Knowledge",
@@ -1338,13 +1522,14 @@
     "points": 5,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+5% Arcane Damage and +2% Magic Resist.",
+    "rank1": null,
     "rank_max": "+50% Arcane Damage and +20% Magic Resist.",
     "note": "",
     "x": 0.5,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/arcane-knowledge.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Concussive Force",
@@ -1352,13 +1537,14 @@
     "points": 15,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Shockwave knocks enemies back an additional 0.5.",
+    "rank1": null,
     "rank_max": "Shockwave knocks enemies back an additional 2.5.",
     "note": "",
     "x": 0.5,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/concussive-force.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Exposing Traps",
@@ -1366,13 +1552,17 @@
     "points": 60,
     "ranks": 1,
     "capstone": "Capstone Talent III",
-    "rank1": "Trap hits have a 100% chance to inflict Vulnerable for 3s.",
-    "rank_max": "Trap hits have a 100% chance to inflict Vulnerable for 3s.",
+    "rank1": "Trap hits have a 100% chance to inflict Vulnerable for 3s. Trap abilities gain +160% Critical Hit Damage.",
+    "rank_max": "Trap hits have a 100% chance to inflict Vulnerable for 3s. Trap abilities gain +160% Critical Hit Damage.",
     "note": "Rows open at 0, 5, 10, 15, 20, 30, 40, 50 and 60 points spent in the tree. The rows at 10, 30 and 60 points hold capstones: one capstone per row can be chosen. Capstones are highlighted. List view Tree view Dexterity 0/10 Dexterity Attack Speed 0/10 Attack Speed Long Shot 0/8 Long Shot Dodge Chance ",
     "x": 0.845,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/exposing-traps.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Poison Trap",
+     "Arcane Trap"
+    ]
    },
    {
     "name": "Double Tap",
@@ -1386,7 +1576,8 @@
     "x": 0.04,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/double-tap.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Lone Hunter",
@@ -1394,13 +1585,14 @@
     "points": 60,
     "ranks": 1,
     "capstone": "Capstone Talent III",
-    "rank1": "While no enemies are nearby, gain 30% Attack Speed and 70% Physical, Poison, and Arcane Damage.",
-    "rank_max": "While no enemies are nearby, gain 30% Attack Speed and 70% Physical, Poison, and Arcane Damage.",
+    "rank1": "While no enemies are nearby, gain 80% Attack Speed, 120% Bonus All Damage, and 150% Strong Attack Damage.",
+    "rank_max": "While no enemies are nearby, gain 80% Attack Speed, 120% Bonus All Damage, and 150% Strong Attack Damage.",
     "note": "",
     "x": 0.155,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/lone-hunter.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Rapid Reset",
@@ -1414,7 +1606,11 @@
     "x": 0.5,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/rapid-reset.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Poison Trap",
+     "Arcane Trap"
+    ]
    },
    {
     "name": "Efficient Assault",
@@ -1428,7 +1624,13 @@
     "x": 0.04,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/efficient-assault.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Steady Shot",
+     "Multishot",
+     "Rapid Fire",
+     "Venom Bolt"
+    ]
    },
    {
     "name": "Second Wind",
@@ -1436,27 +1638,32 @@
     "points": 15,
     "ranks": 8,
     "capstone": "",
-    "rank1": "While out of combat, gain +3 Mana Regeneration.",
+    "rank1": null,
     "rank_max": "While out of combat, gain +24 Mana Regeneration.",
     "note": "20 points spent",
     "x": 0.96,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/second-wind.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
-    "name": "Oversized Traps",
-    "id": "oversized-traps",
+    "name": "Lethal Traps",
+    "id": "lethal-traps",
     "points": 15,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Trap size and trigger range increased by 10%.",
-    "rank_max": "Trap size and trigger range increased by 60%.",
+    "rank1": null,
+    "rank_max": "Trap damage increased by 60%.",
     "note": "",
     "x": 0.73,
     "y": 0.3889,
-    "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/oversized-traps.webp",
-    "node_class": "dk-node dk-node-c"
+    "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/lethal-traps.webp",
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Poison Trap",
+     "Arcane Trap"
+    ]
    },
    {
     "name": "Improved Poison Shot",
@@ -1464,13 +1671,16 @@
     "points": 20,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Poison Shot has +5% chance to apply Poisoned.",
+    "rank1": null,
     "rank_max": "Poison Shot has +30% chance to apply Poisoned.",
     "note": "",
     "x": 0.5,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/improved-poison-shot.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Poison Shot"
+    ]
    },
    {
     "name": "Improved Arcane Bomb",
@@ -1478,13 +1688,16 @@
     "points": 15,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Arcane Bomb splash radius increased by 8%.",
+    "rank1": null,
     "rank_max": "Arcane Bomb splash radius increased by 48%.",
     "note": "",
     "x": 0.27,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/improved-arcane-bomb.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Arcane Bomb"
+    ]
    },
    {
     "name": "Marked for Death",
@@ -1492,13 +1705,14 @@
     "points": 40,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Vulnerable applied by you lasts 6% longer.",
+    "rank1": null,
     "rank_max": "Vulnerable applied by you lasts 36% longer.",
     "note": "50 points spent",
     "x": 0.96,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/marked-for-death.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Deadly Traps",
@@ -1506,13 +1720,17 @@
     "points": 50,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+4.0% Critical Hit Chance to Trap Abilities",
-    "rank_max": "+32.0% Critical Hit Chance to Trap Abilities",
+    "rank1": null,
+    "rank_max": "+32% Critical Hit Chance to Trap Abilities",
     "note": "",
     "x": 0.5,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/deadly-traps.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Poison Trap",
+     "Arcane Trap"
+    ]
    },
    {
     "name": "Deadly Knife Barrage",
@@ -1520,13 +1738,16 @@
     "points": 40,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Knife Barrage gains +4.0% Critical Hit Chance.",
-    "rank_max": "Knife Barrage gains +24.0% Critical Hit Chance.",
+    "rank1": null,
+    "rank_max": "Knife Barrage gains +24% Critical Hit Chance.",
     "note": "",
     "x": 0.27,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/deadly-knife-barrage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Knife Barrage"
+    ]
    },
    {
     "name": "Knife Storm",
@@ -1534,13 +1755,16 @@
     "points": 50,
     "ranks": 3,
     "capstone": "",
-    "rank1": "Knife Barrage targets 1 additional enemies.",
+    "rank1": null,
     "rank_max": "Knife Barrage targets 3 additional enemies.",
     "note": "",
     "x": 0.04,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/knife-storm.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Knife Barrage"
+    ]
    },
    {
     "name": "Improved Twin Arrows",
@@ -1548,13 +1772,16 @@
     "points": 50,
     "ranks": 6,
     "capstone": "",
-    "rank1": "After hitting an enemy each Twin Arrows projectile ricochets to another random enemy. Twin Arrows deals 5% more damage.",
+    "rank1": null,
     "rank_max": "After hitting an enemy each Twin Arrows projectile ricochets to another random enemy. Twin Arrows deals 80% more damage.",
     "note": "",
     "x": 0.27,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/improved-twin-arrows.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Twin Arrows"
+    ]
    },
    {
     "name": "Improved Steady Shot",
@@ -1562,13 +1789,14 @@
     "points": 20,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Steady Shot deals 3% more damage for each enemy its projectile has already pierced.",
+    "rank1": null,
     "rank_max": "Steady Shot deals 24% more damage for each enemy its projectile has already pierced.",
     "note": "",
     "x": 0.04,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/improved-steady-shot.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Empowered Phantom Form",
@@ -1576,13 +1804,14 @@
     "points": 50,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Phantom Form's Dodge Chance and Attack Speed bonuses are increased by 8%.",
+    "rank1": null,
     "rank_max": "Phantom Form's Dodge Chance and Attack Speed bonuses are increased by 64%.",
     "note": "60 points spent · Choose 1 · Capstone Talent III",
     "x": 0.96,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/empowered-phantom-form.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Physical Brutality",
@@ -1590,13 +1819,19 @@
     "points": 15,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+15% Critical Hit Damage to Physical Abilities",
+    "rank1": null,
     "rank_max": "+120% Critical Hit Damage to Physical Abilities",
     "note": "",
     "x": 0.04,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/physical-brutality.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Knife Barrage",
+     "Twin Arrows",
+     "Steady Shot",
+     "Rapid Fire"
+    ]
    },
    {
     "name": "Venomous Leech",
@@ -1610,7 +1845,8 @@
     "x": 0.96,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/venomous-leech.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Sustained Fire",
@@ -1618,13 +1854,16 @@
     "points": 40,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Rapid Fire's channel duration is increased by 6%.",
+    "rank1": null,
     "rank_max": "Rapid Fire's channel duration is increased by 48%.",
     "note": "It also makes Deadeye’s Resolve last 6% longer per rank (48% at rank 8); the in-game text does not say so.",
     "x": 0.04,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/sustained-fire.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Rapid Fire"
+    ]
    },
    {
     "name": "Critical Injection",
@@ -1632,13 +1871,14 @@
     "points": 60,
     "ranks": 1,
     "capstone": "Capstone Talent III",
-    "rank1": "Critical Hits with Poison abilities have a 100% chance to apply an additional stack of Poisoned.",
-    "rank_max": "Critical Hits with Poison abilities have a 100% chance to apply an additional stack of Poisoned.",
+    "rank1": "Critical Hits with Poison abilities have a 100% chance to apply 3 additional stacks of Poisoned.",
+    "rank_max": "Critical Hits with Poison abilities have a 100% chance to apply 3 additional stacks of Poisoned.",
     "note": "",
     "x": 0.615,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/critical-injection.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Arcane Corrosion",
@@ -1646,13 +1886,14 @@
     "points": 60,
     "ranks": 1,
     "capstone": "Capstone Talent III",
-    "rank1": "Arcane Arrowstorm hits have a 100% chance to apply Arcane Corrosion. A hit from Arcane Bomb or Multishot consumes all stacks and deals 250% weapon damage at 1 stack or 400% at 2 stacks as Arcane damage.",
-    "rank_max": "Arcane Arrowstorm hits have a 100% chance to apply Arcane Corrosion. A hit from Arcane Bomb or Multishot consumes all stacks and deals 250% weapon damage at 1 stack or 400% at 2 stacks as Arcane damage.",
+    "rank1": "Arcane Arrowstorm hits have a 100% chance to apply Arcane Corrosion. A hit from Arcane Bomb or Multishot consumes all stacks and deals 400% weapon damage at 1 stack or 700% at 2 stacks as Arcane damage.",
+    "rank_max": "Arcane Arrowstorm hits have a 100% chance to apply Arcane Corrosion. A hit from Arcane Bomb or Multishot consumes all stacks and deals 400% weapon damage at 1 stack or 700% at 2 stacks as Arcane damage.",
     "note": "A Multishot hit deals 250% weapon damage at 1 stack and 400% at 2 stacks; the in-game text shows Arcane Bomb's 250% and 400% for both.",
     "x": 0.385,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/arcane-corrosion.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Cornered Beast",
@@ -1666,7 +1907,8 @@
     "x": 0.96,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/cornered-beast.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Dazzling Recovery",
@@ -1674,13 +1916,14 @@
     "points": 50,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Casting a Blinding Shot ability restores 10 Mana.",
+    "rank1": null,
     "rank_max": "Casting a Blinding Shot ability restores 80 Mana.",
     "note": "",
     "x": 0.73,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/dazzling-recovery.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Rapid Flare",
@@ -1688,13 +1931,16 @@
     "points": 40,
     "ranks": 5,
     "capstone": "",
-    "rank1": "+6% Flare Cooldown reduction.",
+    "rank1": null,
     "rank_max": "+30% Flare Cooldown reduction.",
     "note": "",
     "x": 0.73,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/rapid-flare.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Flare"
+    ]
    },
    {
     "name": "Arcane Charge",
@@ -1708,7 +1954,8 @@
     "x": 0.5,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/arcane-charge.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    }
   ],
   "Monk": [
@@ -1718,13 +1965,14 @@
     "points": 0,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+5 Dexterity",
+    "rank1": null,
     "rank_max": "+50 Dexterity",
     "note": "",
     "x": 0.5,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/dexterity-2.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Dodge Chance",
@@ -1732,13 +1980,14 @@
     "points": 0,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+1.5% Dodge Chance",
+    "rank1": null,
     "rank_max": "+12% Dodge Chance",
     "note": "",
     "x": 0.04,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/dodge-chance-2.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Movement Speed",
@@ -1746,13 +1995,14 @@
     "points": 5,
     "ranks": 5,
     "capstone": "",
-    "rank1": "+5% Movement Speed",
+    "rank1": null,
     "rank_max": "+25% Movement Speed",
     "note": "",
     "x": 0.04,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/movement-speed.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Vitality",
@@ -1760,13 +2010,14 @@
     "points": 0,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+75 Max HP",
+    "rank1": null,
     "rank_max": "+600 Max HP",
     "note": "",
     "x": 0.27,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/vitality.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Max Mana",
@@ -1774,13 +2025,14 @@
     "points": 0,
     "ranks": 5,
     "capstone": "",
-    "rank1": "+6 Max Mana",
+    "rank1": null,
     "rank_max": "+30 Max Mana",
     "note": "5 points spent",
     "x": 0.96,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/max-mana.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Attack Speed",
@@ -1788,13 +2040,14 @@
     "points": 5,
     "ranks": 6,
     "capstone": "",
-    "rank1": "+4% Attack Speed",
+    "rank1": null,
     "rank_max": "+24% Attack Speed",
     "note": "",
     "x": 0.5,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/attack-speed-2.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Physical Damage",
@@ -1802,13 +2055,14 @@
     "points": 0,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+8% Physical Damage",
+    "rank1": null,
     "rank_max": "+80% Physical Damage",
     "note": "",
     "x": 0.73,
     "y": 0.0556,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/physical-damage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Healing & Magic Resist",
@@ -1816,13 +2070,14 @@
     "points": 5,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+5% Healing Received and +40 Magic Resist",
+    "rank1": null,
     "rank_max": "+40% Healing Received and +320 Magic Resist",
     "note": "",
     "x": 0.27,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/healing-magic-resist.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Mana On Kill",
@@ -1830,13 +2085,14 @@
     "points": 5,
     "ranks": 5,
     "capstone": "",
-    "rank1": "+2 Mana On Kill",
+    "rank1": null,
     "rank_max": "+10 Mana On Kill",
     "note": "",
     "x": 0.73,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/mana-on-kill.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Sweeping Discipline",
@@ -1844,13 +2100,19 @@
     "points": 40,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+10% Damage to AOE abilities",
+    "rank1": null,
     "rank_max": "+100% Damage to AOE abilities",
     "note": "",
     "x": 0.73,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/sweeping-discipline.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Seismic Strike",
+     "Piercing Lunge",
+     "Golden Palms",
+     "Divine Thunder"
+    ]
    },
    {
     "name": "Enhance Lightning Abilities: Critical Hit Chance",
@@ -1858,13 +2120,18 @@
     "points": 15,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+2.5% Critical Hit Chance to Lightning Abilities",
-    "rank_max": "+20.0% Critical Hit Chance to Lightning Abilities",
+    "rank1": null,
+    "rank_max": "+20% Critical Hit Chance to Lightning Abilities",
     "note": "20 points spent",
     "x": 0.96,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-lightning-abilities-critical-hit-chance.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Sacred Judgment",
+     "Sacred Orbs",
+     "Divine Thunder"
+    ]
    },
    {
     "name": "Lightning Damage",
@@ -1872,13 +2139,14 @@
     "points": 5,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+8% Lightning Damage",
+    "rank1": null,
     "rank_max": "+80% Lightning Damage",
     "note": "10 points spent · Choose 1 · Capstone Talent I",
     "x": 0.96,
     "y": 0.16670000000000001,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/lightning-damage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Chain Force",
@@ -1886,13 +2154,14 @@
     "points": 10,
     "ranks": 1,
     "capstone": "Capstone Talent I",
-    "rank1": "Every 7 casts of Basic Attack inflicts Vulnerable on enemies hit.",
-    "rank_max": "Every 7 casts of Basic Attack inflicts Vulnerable on enemies hit.",
+    "rank1": "Every 3 casts of Basic Attack, that attack deals 100% more direct damage.",
+    "rank_max": "Every 3 casts of Basic Attack, that attack deals 100% more direct damage.",
     "note": "",
-    "x": 0.5,
+    "x": 0.3467,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/chain-force.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Aftershock",
@@ -1900,13 +2169,14 @@
     "points": 40,
     "ranks": 8,
     "capstone": "",
-    "rank1": "The third strike from Seismic Strike has a 10% chance to inflict Dazed status",
+    "rank1": null,
     "rank_max": "The third strike from Seismic Strike has a 80% chance to inflict Dazed status",
     "note": "",
     "x": 0.5,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/aftershock.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Illumination",
@@ -1920,7 +2190,8 @@
     "x": 0.96,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/illumination.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Thunderclap",
@@ -1928,13 +2199,14 @@
     "points": 15,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Sacred Judgment's shockwave has a 15% chance to stun the enemies it strikes",
+    "rank1": null,
     "rank_max": "Sacred Judgment's shockwave has a 75% chance to stun the enemies it strikes",
     "note": "",
     "x": 0.5,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/thunderclap.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Cyclone Repulse",
@@ -1942,13 +2214,14 @@
     "points": 50,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Whirlwind Staff hits knock enemies back 0.1 meters.",
+    "rank1": null,
     "rank_max": "Whirlwind Staff hits knock enemies back 0.5 meters.",
     "note": "",
     "x": 0.5,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/cyclone-repulse.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Enhance Threefold Strike: Critical Damage",
@@ -1956,13 +2229,16 @@
     "points": 20,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+20% Critical Damage to Threefold Strike",
+    "rank1": null,
     "rank_max": "+160% Critical Damage to Threefold Strike",
     "note": "",
     "x": 0.27,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-threefold-strike-critical-damage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Threefold Strike"
+    ]
    },
    {
     "name": "Zephyr's Flow",
@@ -1970,13 +2246,14 @@
     "points": 15,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Each Dodge will generate 2 Mana",
+    "rank1": null,
     "rank_max": "Each Dodge will generate 10 Mana",
     "note": "",
     "x": 0.04,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/zephyrs-flow.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Exploit Weakness",
@@ -1984,13 +2261,14 @@
     "points": 50,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+15% Damage to Dazed enemies.",
+    "rank1": null,
     "rank_max": "+150% Damage to Dazed enemies.",
     "note": "60 points spent · Choose 1 · Capstone Talent III",
     "x": 0.96,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/exploit-weakness.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Sheltering Breath",
@@ -1998,13 +2276,14 @@
     "points": 20,
     "ranks": 5,
     "capstone": "",
-    "rank1": "Casting Spirit Stream reduces damage taken by 3% for 3s.",
+    "rank1": null,
     "rank_max": "Casting Spirit Stream reduces damage taken by 15% for 3s.",
     "note": "",
     "x": 0.04,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/sheltering-breath.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Enhance Piercing Lunge: Damage",
@@ -2012,13 +2291,16 @@
     "points": 20,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+20% Damage to Piercing Lunge",
+    "rank1": null,
     "rank_max": "+160% Damage to Piercing Lunge",
     "note": "",
     "x": 0.73,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-piercing-lunge-damage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Piercing Lunge"
+    ]
    },
    {
     "name": "Enhance Sacred Orbs: Speed",
@@ -2026,13 +2308,14 @@
     "points": 15,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+20% rotation speed to Sacred Orbs",
+    "rank1": null,
     "rank_max": "+200% rotation speed to Sacred Orbs",
     "note": "",
     "x": 0.73,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-sacred-orbs-speed.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Gathered Force",
@@ -2046,7 +2329,8 @@
     "x": 0.04,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/gathered-force.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Heavy Hands",
@@ -2054,13 +2338,19 @@
     "points": 20,
     "ranks": 5,
     "capstone": "",
-    "rank1": "+20% Critical Damage to Strong Attack abilities",
+    "rank1": null,
     "rank_max": "+100% Critical Damage to Strong Attack abilities",
     "note": "",
     "x": 0.5,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/heavy-hands.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Sacred Judgment",
+     "Piercing Lunge",
+     "Whirlwind Staff",
+     "Golden Palms"
+    ]
    },
    {
     "name": "Slipstream",
@@ -2068,13 +2358,14 @@
     "points": 40,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Charge grants +5% Dodge Chance for 4s",
+    "rank1": null,
     "rank_max": "Charge grants +30% Dodge Chance for 4s",
     "note": "",
     "x": 0.04,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/slipstream.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Enhance Spirit Twin: Duration",
@@ -2082,13 +2373,16 @@
     "points": 40,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Spirit Twin lingers 5% longer",
+    "rank1": null,
     "rank_max": "Spirit Twin lingers 30% longer",
     "note": "",
     "x": 0.27,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-spirit-twin-duration.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Spirit Twin"
+    ]
    },
    {
     "name": "Vigor",
@@ -2096,13 +2390,23 @@
     "points": 15,
     "ranks": 8,
     "capstone": "",
-    "rank1": "+2.5% Critical Hit Chance to Physical Abilities",
+    "rank1": null,
     "rank_max": "+20% Critical Hit Chance to Physical Abilities",
     "note": "",
     "x": 0.27,
     "y": 0.3889,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/vigor.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Threefold Strike",
+     "Furious Fist",
+     "Seismic Strike",
+     "Chi Bolt",
+     "Piercing Lunge",
+     "Whirlwind Staff",
+     "Golden Palms",
+     "Charge"
+    ]
    },
    {
     "name": "Fundamentals",
@@ -2110,13 +2414,19 @@
     "points": 20,
     "ranks": 10,
     "capstone": "",
-    "rank1": "+10% Damage to Basic Attack Abilities",
+    "rank1": null,
     "rank_max": "+100% Damage to Basic Attack Abilities",
     "note": "30 points spent · Choose 1 · Capstone Talent II",
     "x": 0.96,
     "y": 0.5,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/fundamentals.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Threefold Strike",
+     "Furious Fist",
+     "Seismic Strike",
+     "Chi Bolt"
+    ]
    },
    {
     "name": "Enhance Golden Palms: Damage & Mana Cost",
@@ -2124,13 +2434,16 @@
     "points": 50,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Golden Palms costs 5% less Mana and deals +10% Damage",
+    "rank1": null,
     "rank_max": "Golden Palms costs 40% less Mana and deals +80% Damage",
     "note": "",
     "x": 0.27,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-golden-palms-damage-mana-cost.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Golden Palms"
+    ]
    },
    {
     "name": "Formless",
@@ -2144,7 +2457,8 @@
     "x": 0.3467,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/formless.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Enhance Chi Bolt: Healing",
@@ -2152,13 +2466,16 @@
     "points": 50,
     "ranks": 6,
     "capstone": "",
-    "rank1": "Chi Bolt's third bolt restores an additional 4% of your Max Health",
+    "rank1": null,
     "rank_max": "Chi Bolt's third bolt restores an additional 24% of your Max Health",
     "note": "",
     "x": 0.04,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-chi-bolt-healing.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Chi Bolt"
+    ]
    },
    {
     "name": "Enhance Divine Thunder: Damage",
@@ -2166,13 +2483,16 @@
     "points": 50,
     "ranks": 5,
     "capstone": "",
-    "rank1": "+40% Damage to Divine Thunder",
+    "rank1": null,
     "rank_max": "+200% Damage to Divine Thunder",
     "note": "",
     "x": 0.73,
     "y": 0.8332999999999999,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/enhance-divine-thunder-damage.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": [
+     "Divine Thunder"
+    ]
    },
    {
     "name": "Shared Chi",
@@ -2186,7 +2506,8 @@
     "x": 0.5,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/shared-chi.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Charged Orb",
@@ -2194,13 +2515,14 @@
     "points": 40,
     "ranks": 8,
     "capstone": "",
-    "rank1": "Sacred Orbs hits have a 10% chance to apply 1 stack of Electrostatic.",
+    "rank1": null,
     "rank_max": "Sacred Orbs hits have a 80% chance to apply 1 stack of Electrostatic.",
     "note": "50 points spent",
     "x": 0.96,
     "y": 0.7222,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/charged-orb.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Thundering",
@@ -2214,7 +2536,8 @@
     "x": 0.04,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/thundering.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Mirror Steps",
@@ -2228,7 +2551,8 @@
     "x": 0.04,
     "y": 0.2778,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/mirror-steps.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Iron Constitution",
@@ -2236,13 +2560,14 @@
     "points": 60,
     "ranks": 1,
     "capstone": "Capstone Talent III",
-    "rank1": "A lethal blow restores you to full health and reduces damage taken by 20% for 3s. Cooldown: 30s.",
-    "rank_max": "A lethal blow restores you to full health and reduces damage taken by 20% for 3s. Cooldown: 30s.",
+    "rank1": "A lethal blow restores you to full health, reduces damage taken by 60% for 6s, and resets all ability cooldowns. Cooldown: 20s.",
+    "rank_max": "A lethal blow restores you to full health, reduces damage taken by 60% for 6s, and resets all ability cooldowns. Cooldown: 20s.",
     "note": "",
     "x": 0.6533,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/iron-constitution.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Chi Ward",
@@ -2256,7 +2581,8 @@
     "x": 0.96,
     "y": 0.6111,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/chi-ward.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    },
    {
     "name": "Chi Expenditure",
@@ -2270,7 +2596,23 @@
     "x": 0.96,
     "y": 0.9444,
     "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/chi-expenditure.webp",
-    "node_class": "dk-node dk-node-c"
+    "node_class": "dk-node dk-node-c",
+    "affects": []
+   },
+   {
+    "name": "Exposing Strikes",
+    "id": "exposing-strikes",
+    "points": 10,
+    "ranks": 1,
+    "capstone": "Capstone Talent I",
+    "rank1": "Every 7 casts of Basic Attack inflicts Vulnerable on enemies hit.",
+    "rank_max": "Every 7 casts of Basic Attack inflicts Vulnerable on enemies hit.",
+    "note": "",
+    "x": 0.6533,
+    "y": 0.2778,
+    "icon_url": "https://afkmeta.com/assets/deskrawl/icons/talents/exposing-strikes.webp",
+    "node_class": "dk-node dk-node-c",
+    "affects": []
    }
   ]
  }

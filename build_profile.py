@@ -20,8 +20,9 @@ MIN_SECONDS = 120  # less measured fight time than this: too little to rely on
 
 def _statuses() -> dict:
     try:
+        import patch_data
         with open(paths.res("data", "status_effects.json"), encoding="utf-8") as f:
-            return {s["name"]: s for s in json.load(f)["status_effects"]}
+            return {s["name"]: s for s in patch_data.statuses(json.load(f)["status_effects"])}
     except Exception:
         return {}
 
@@ -32,7 +33,7 @@ STATUSES = _statuses()
 CONDITIONS = {
     "Burning": ["Burn"], "Burned": ["Burn"], "Poisoned": ["Poisoned"], "Bleeding": ["Bleeding"],
     "Vulnerable": ["Vulnerable"], "Slowed": ["Chill", "Dazed", "Frozen"], "Chilled": ["Chill"],
-    "Stunned": ["Stunned", "Short Stun", "Frozen"], "Immobilized": ["Frozen", "Stunned"],
+    "Stunned": ["Stunned", "Short Stun", "Frozen"], "Immobilized": ["Frozen", "Stunned", "Arcane Grip"],
     "Frozen": ["Frozen"],
 }
 AREA = re.compile(r"all enemies|every enemy|nearby enemies|in its path|in front|in a (?:small )?area|in the "

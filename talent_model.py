@@ -31,24 +31,36 @@ import skills
 import talents
 
 # assumptions where the game does not give numbers (shown on the Talents page)
-ELECTROSTATIC_PER_STACK = 5.0  # % more Lightning damage taken per stack of Electrostatic
+# % more Lightning damage taken per stack of Electrostatic: the game gives no number; 10 fits a DPS dummy test
+# (Sorcerer, Lightning Storm + Flame Lightning: 20M DPS with Static Charge + Plasma Conduction, 12M without)
+ELECTROSTATIC_PER_STACK = 10.0
 VULNERABLE_PCT = 30.0          # "Take 30% more damage" (status text)
 HEALTHY_SHARE = 0.7            # share of the time above 80% health
 ALONE_SHARE = 0.25             # share of the time with no enemy nearby (ranged heroes)
 LOW_HEALTH_SHARE = 0.15        # share of the time below 50-60% health (heals that need low health)
+MAX_KILLS = 3.0                # kills per second at most (higher = calibration failed)
 PROC_TARGETS = 2.0             # enemies an explosion "to nearby enemies" reaches
 
 STATUS_ALIASES = {"burning": "Burn", "burned": "Burn", "burn": "Burn", "chill": "Chill", "chilled": "Chill",
                   "frozen": "Frozen", "vulnerable": "Vulnerable", "electrostatic": "Electrostatic",
                   "poisoned": "Poisoned", "poison": "Poisoned", "bleeding": "Bleeding", "bleed": "Bleeding",
                   "stunned": "Stunned", "stun": "Stunned", "short stun": "Short Stun", "dazed": "Dazed",
-                  "slowed": "Slowed", "immobilized": "Immobilized"}
+                  "slowed": "Slowed", "immobilized": "Immobilized", "arcane grip": "Arcane Grip",
+                  "dizzy": "Dizzy"}
 # conditions that several statuses cause
-COND_OF = {"Slowed": ["Chill", "Dazed", "Frozen"], "Immobilized": ["Frozen", "Stunned"],
+COND_OF = {"Slowed": ["Chill", "Dazed", "Frozen"], "Immobilized": ["Frozen", "Stunned", "Arcane Grip"],
            "Stunned": ["Stunned", "Short Stun", "Frozen"]}
 ITEM_CONDITIONS = {"Damage vs Burned": "Burn", "Damage vs Slowed": "Slowed", "Damage vs Immobilized": "Immobilized",
                    "Damage vs Bleeding": "Bleeding", "Damage vs Poisoned": "Poisoned",
                    "Damage vs Vulnerable": "Vulnerable"}
+
+
+def max_stacks(status: str) -> int:
+    """How many stacks of a status an enemy can carry (status data, "stacks up to 10 times"); 1 if it does not
+    stack."""
+    import build_profile
+    m = re.search(r"stacks up to (\d+)", (build_profile.STATUSES.get(status) or {}).get("duration", ""))
+    return int(m.group(1)) if m else 1
 
 
 def _status(word: str) -> str | None:
@@ -163,6 +175,29 @@ def parse(text: str, hero: str) -> list:
 
     f = lambda m, i: float(m.group(i))
 
+    # patch 1.0.2 texts
+    take(rf"\+{_N}% Critical Hit Chance and \+{_N}% Critical Hit Damage against (\w+) enemies",
+         lambda m: ([{"k": "crit_chance", "target": "all", "v": f(m, 1), "cond": _status(m.group(3))},
+                     {"k": "crit_dmg", "target": "all", "v": f(m, 2), "cond": _status(m.group(3))}]
+                    if _status(m.group(3)) else None))
+    take(rf"\+{_N}% damage against (\w+) enemies",
+         lambda m: ({"k": "dmg", "target": "all", "v": f(m, 1), "cond": _status(m.group(2))} if _status(m.group(2))
+                    else None))
+    take(rf"([A-Z][\w' ]+?) abilities gain \+{_N}% Critical Hit Damage",
+         lambda m: {"k": "crit_dmg", "target": target(m.group(1)), "v": f(m, 2)})
+    take(rf"While no enemies are nearby, gain {_N}% Attack Speed, {_N}% Bonus All Damage, and {_N}% ([A-Z][\w ]+?) Damage",
+         lambda m: [{"k": "stat", "stat": "Attack Speed Bonus", "v": f(m, 1) * ALONE_SHARE},
+                    {"k": "stat", "stat": "All Damage", "v": f(m, 2) * ALONE_SHARE},
+                    {"k": "dmg", "target": target(m.group(4)) or m.group(4), "v": f(m, 3) * ALONE_SHARE}])
+    take(rf"([A-Z][\w' ]+?) damage increased by {_N}%", lambda m: {"k": "dmg", "target": target(m.group(1)), "v": f(m, 2)})
+    take(rf"Critical Hits with (\w+) abilities have a {_N}% chance to apply (\d+) additional stacks? of (\w+)",
+         lambda m: {"k": "apply", "status": _status(m.group(4)), "src": f"crit:{m.group(1)}",
+                    "p": f(m, 2) / 100 * int(m.group(3)), "every": 1})
+    take(rf"Every (\d+) casts of ([A-Z][\w' ]+?), that attack deals {_N}% more direct damage",
+         lambda m: {"k": "dmg", "target": target(m.group(2)), "v": f(m, 3) / int(m.group(1))})
+    take(rf"A lethal blow restores you to full health, reduces damage taken by {_N}% for (\d+)s, and resets all ability "
+         rf"cooldowns\. Cooldown: (\d+)s",
+         lambda m: {"k": "heal_every", "v": 100.0, "every": float(m.group(3)), "share": LOW_HEALTH_SHARE})
     # --- conversions and specials first (their wording contains plain "+N% X" parts)
     take(rf"{_N}% of your Max Mana is added to Intelligence", lambda m: {"k": "mana_to_int", "v": f(m, 1)})
     take(rf"{_N}% of your Max HP is added to your Thorns?", lambda m: {"k": "hp_to_thorns", "v": f(m, 1)})
@@ -456,7 +491,10 @@ class Facts:
         self.hero, self.ctx = hero, ctx
         self.char = dict(ctx.char)
         self.abil = hero_abilities(hero)
-        self.sim, self.kills = sim, max(kills_per_s or 0.0, 0.05)
+        # kills per second come from the simulation's calibration; a failed one (e.g. a sheet of another
+        # character) lands on its upper bound - kill procs such as Combustion would explode, so cap it
+        self.kills_capped = (kills_per_s or 0.0) > MAX_KILLS
+        self.sim, self.kills = sim, min(max(kills_per_s or 0.0, 0.05), MAX_KILLS)
         # used abilities: measured (skill tracking) or the shares set by hand
         self.measured = bool(prof.get("ok"))
         self.use = {}
@@ -481,9 +519,20 @@ class Facts:
                 a = self.abil[n]
                 cd = _seconds(a.get("cooldown"))
                 x["cps"] = (1 / cd) if cd else float(self.char.get("Attack Speed", 1.0) or 1.0)
-        # the simulation fires Basic Attacks at full attack speed; skill tracking may count fewer: mana per
-        # cast of an ability counts with the measured share of its simulated casts
         self.sim_base = sim.run(self._sim_stats({}), self.kills) if sim is not None and sim.ok() else {}
+        # Basic Attacks fire with every attack and hardly flash on the skill bar, so skill tracking counts far too
+        # few of them (7 a minute instead of ~100 in the DPS dummy test). Their rate comes from the combat
+        # simulation (attack speed, minus the frames other casts take); the damage shares follow from it.
+        if self.sim_base:
+            changed = False
+            for n, x in self.use.items():
+                if self.abil[n].get("slot") == "Basic Attack" and self.sim_base.get(n, 0.0) > x["cps"]:
+                    x["cps"] = self.sim_base[n]
+                    changed = True
+            if changed:
+                tot = sum(x["cps"] * weight(self.abil[n]) for n, x in self.use.items()) or 1.0
+                for n, x in self.use.items():
+                    x["share"] = x["cps"] * weight(self.abil[n]) / tot
         self.wd_total = sum(x["cps"] * weight(self.abil[n]) for n, x in self.use.items()) or 1.0
         self.ok = bool(self.use)
         self._cache = {}
@@ -665,7 +714,9 @@ class Model:
             return 1 - miss
         return self._raw_uptime(status)
 
-    def stacks(self, status: str, cap: int = 5) -> float:
+    def stacks(self, status: str, cap: int | None = None) -> float:
+        if cap is None:
+            cap = max_stacks(status)
         return min(self.rates.get(status, 0.0) * self.dur.get(status, 0.0), cap)
 
     def conditions(self) -> dict:
@@ -1036,7 +1087,7 @@ def explain(F: Facts, build: dict, current: dict, mode: str) -> dict:
         srcs = status_sources(F, m, st)
         up = m.uptime(st)
         if st == "Electrostatic":
-            level = f"{m.stacks(st):.1f} of 5 stacks on average"
+            level = f"{m.stacks(st):.1f} of {max_stacks(st)} stacks on average"
         else:
             level = f"on enemies {up * 100:.0f} % of the time"
         if not srcs or up < 0.03:

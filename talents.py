@@ -28,7 +28,7 @@ def _load(name, key):
 
 
 HEROES = _load("talents.json", "heroes")
-ABILITIES = _load("abilities.json", "abilities")
+ABILITIES = __import__("patch_data").abilities(_load("abilities.json", "abilities"))
 ELEMENTS = ["Fire", "Cold", "Lightning", "Poison", "Arcane", "Physical"]
 TAG_ELEMENT = {"Frost": "Cold"}
 

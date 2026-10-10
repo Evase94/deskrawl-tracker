@@ -1,0 +1,79 @@
+{
+ "game_version": "1.0.2a",
+ "source": "Steam patch notes 1.0.1, 1.0.2 and hotfix 1.0.2a (the wiki pages behind abilities.json and status_effects.json were not updated yet); item effects from patch 1.0.2",
+ "abilities": {
+  "Ice Shards": {
+   "description": "Hurl an icy shard that strikes a single enemy for 115% weapon damage.",
+   "damage_l1": 115.0,
+   "damage_l10": 146.5
+  },
+  "Flame Lightning": {
+   "description": "Call down a bolt of flame and lightning on a random enemy, dealing 60% weapon damage as Fire and 60% weapon damage as Lightning.",
+   "damage_l1": 120.0
+  },
+  "Venom Bolt": {
+   "description": "Fire a powerful poisoned projectile that bursts on impact, dealing 160% weapon damage as Poison damage to all nearby enemies and inflicting 2 stacks of Poisoned.",
+   "damage_l1": 160.0,
+   "damage_l10": 205.0
+  },
+  "Poison Trap": {
+   "description": "Throw a trap that detonates when an enemy steps on it, dealing 200% weapon damage as Poison damage to everything nearby with a 100% chance to inflict 3 stacks of Poisoned."
+  },
+  "Frost Trap": {
+   "name": "Arcane Trap",
+   "slug": "arcane-trap",
+   "tags": [
+    "Arcane",
+    "Trap"
+   ],
+   "description": "Throw a trap that detonates when an enemy steps on it, dealing 300% weapon damage as Arcane damage to everything nearby, immobilizing them with Arcane Grip for 5 seconds and applying Dizzy."
+  },
+  "Golden Palms": {
+   "description": "Send two golden palms travelling forward through every enemy in their path for 160% weapon damage, knocking them back."
+  }
+ },
+ "statuses": {
+  "Burn": {
+   "duration_s": 4.0,
+   "duration": "Lasts 4 s, ticks every 0.5 s"
+  },
+  "Electrostatic": {
+   "duration": "Lasts 4 s, stacks up to 10 times"
+  },
+  "Poisoned": {
+   "text": "Take 75% weapon damage as Poison damage every 2 seconds. Stacks up to 150 times.",
+   "duration": "Lasts 6 s at level 1, +0.5 s per level, stacks up to 150 times, ticks every 2 s"
+  },
+  "Frozen": {
+   "applied_by_remove": [
+    "Frost Trap"
+   ]
+  },
+  "Arcane Grip": {
+   "name": "Arcane Grip",
+   "slug": "arcane-grip",
+   "text": "Immobilized: cannot move.",
+   "duration_s": 5.0,
+   "duration": "Lasts 5 s",
+   "applied_by": [
+    {
+     "name": "Arcane Trap",
+     "kind": "Hunter ability, Special"
+    }
+   ]
+  }
+ },
+ "items": {
+  "Staff of the Frostwyrm": {
+   "effect": "Ice Shards deflect to 2 additional enemies on hit."
+  },
+  "Violet Skybow": {
+   "effect_db": "Your attack hits have a 20% chance to rain multiple Arcane daggers down at the target's position. Each dagger hit deals 275% weapon damage as Arcane.",
+   "effect": "Attack hits have a 20% chance to rain Arcane daggers, each dealing 275% weapon damage."
+  },
+  "Soulrender": {
+   "effect_db": "Every hit grants a stack of Harvest of Souls. Consumes 25 stacks to release Soul Impact, a forward-travelling soul wave dealing 800% Weapon Damage as Physical Damage to every enemy in its path (range 15) and applying Dazed to them.",
+   "effect": "Every hit grants a stack of Harvest of Souls. Consumes 25 stacks to release Soul Impact, dealing 800% Weapon Damage."
+  }
+ }
+}

@@ -29,8 +29,9 @@ MIN_GAP_S = 0.25                # one cast cannot flash twice within this time
 
 def _abilities():
     try:
+        import patch_data
         with open(paths.res("data", "abilities.json"), encoding="utf-8") as f:
-            return json.load(f)["abilities"]
+            return patch_data.abilities(json.load(f)["abilities"])
     except Exception:
         return []
 

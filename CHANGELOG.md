@@ -2,6 +2,29 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.24 – 2026-10-10
+
+### Game patch 1.0.2
+- **Talents updated to patch 1.0.2** (from the afkmeta.com planner), e.g.:
+  - Sorcerer: Combustion 300 %, Storm Conduit 30 %, Arcane Exposure every 4th Strong Attack plus +150 % damage vs Vulnerable, Shattering Ice +250 % Critical Hit Damage vs Frozen.
+  - Hunter: Lone Hunter, Exposing Traps, Critical Injection, Arcane Corrosion; Lethal Traps replaces Oversized Traps.
+  - Monk: Chain Force, Exposing Strikes, Iron Constitution.
+  - The best build counts all of the new effects.
+- **Abilities, statuses and items from the patch notes:**
+  - Ice Shards 115 %, Flame Lightning 60 % + 60 %, Venom Bolt 160 % with 2 Poisoned stacks, Poison Trap 3 stacks.
+  - Frost Trap is now Arcane Trap (Arcane Grip holds enemies for 5 s).
+  - Burn lasts 4 s, Electrostatic stacks up to 10, Poisoned deals 75 % per stack (up to 150 stacks).
+  - Staff of the Frostwyrm, Violet Skybow and Soulrender changes.
+  - Critical Damage Reduction is capped at 100 %.
+
+### Improved
+- **More accurate best build.** Basic Attacks hardly flash on the skill bar, so they were counted far too rarely (e.g. Flame Lightning 7 instead of ~100 a minute). The talent calculator now takes their rate from the combat simulation. Electrostatic's value is fitted to a training dummy test.
+  - Kill-based talents are capped so a calibration that failed (e.g. stats of another character) cannot inflate them.
+  - A note appears when your own damage shares are set under "Edit rating values".
+- **Your own Legendary sound.** Put .mp3 or .wav files into the "sounds" folder next to the tracker (**Sounds folder** button on the Drops page) and choose one there. MP3 now plays too. The built-in chime stays the default.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.23 – 2026-10-07
 
 ### Improved

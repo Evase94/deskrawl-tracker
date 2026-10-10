@@ -70,8 +70,9 @@ VERDICT_MARGIN = 1.0  # % of the weighted score; inside = sidegrade
 
 def load_legendaries() -> list:
     try:
+        import patch_data
         with open(paths.res("legendaries.json"), encoding="utf-8") as f:
-            return json.load(f)["items"]
+            return patch_data.items(json.load(f)["items"])
     except Exception:
         return []
 
@@ -192,7 +193,7 @@ def defense(v: dict, base: dict, ctx: Context) -> dict:
     incoming = sum(w.get(e, 0) * mult[e] for e in ELEMENTS) / max(sum(w.values()), 1e-9)
     # enemy critical hits: Critical Damage Reduction = Dexterity / (Dexterity + 1500) + the stat itself
     dex = v.get("Dexterity", 0.0)
-    cdr = min(dex / (dex + 1500) + v.get("Critical Damage Reduction", 0.0) / 100, 0.85)
+    cdr = min(dex / (dex + 1500) + v.get("Critical Damage Reduction", 0.0) / 100, 1.0)  # cap 100 % since 1.0.2
     incoming *= 1 + ENEMY_CRIT[0] * ENEMY_CRIT[1] / 100 * (1 - cdr)
     # the game's own Toughness and Recovery (no damage reductions, hero level)
     hl = ctx.level or lvl
