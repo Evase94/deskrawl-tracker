@@ -2,6 +2,16 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.33 – 2026-10-11
+
+### Changed
+- **Stage statistics keep only the last 100 runs per stage.** When a new run comes in, the oldest one is deleted, so old runs with weaker gear or another build no longer pull the rates down.
+  - EXP/h, gold/h, Legendaries/h, death rate and run time come from these 100 runs only.
+  - On the first start, stages with more runs are cut back to 100. The full statistics are saved once as `stage_stats_before_trim.json` next to the tracker.
+  - Runs from very old tracker versions were not stored one by one. They go completely as soon as a stage is over 100 runs.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.32 – 2026-10-11
 
 ### Fixed

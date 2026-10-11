@@ -10,6 +10,7 @@ import paths
 import json
 import os
 import re
+import shutil
 
 import storage
 
@@ -81,6 +82,7 @@ def offline_rates(stage_level: int, difficulty: str, lowest_level: int | None = 
 
 class StageStats:
     FIELDS = ("runs", "seconds", "xp", "gold", "sold_gold", "items", "deaths", "damage", "dmg_seconds")
+    MAX_RUNS = 100  # runs kept per stage, newest; older ones are deleted
     # legendaries / leg_seconds: legendary + divine drops, counted since the tracker records them per run
 
     def __init__(self):
@@ -94,6 +96,34 @@ class StageStats:
                     self.data[new][f] = self.data[new].get(f, 0) + v
             else:
                 self.data[new] = old
+        trimmed = [d for d in self.data.values() if isinstance(d, dict) and self._trim(d)]
+        if trimmed:
+            # first trim of an older file: keep the full statistics once, then save the trimmed one
+            backup = paths.user("stage_stats_before_trim.json")
+            if not os.path.exists(backup):
+                try:
+                    shutil.copyfile(STATS_PATH, backup)
+                except OSError:
+                    pass
+            self.save()
+
+    @classmethod
+    def _trim(cls, d: dict) -> bool:
+        """Keep only the last MAX_RUNS runs of a stage: old runs (weaker gear, other build) would skew its rates.
+        Runs from before runs were kept one by one cannot be taken out singly - once the stage is over the limit
+        they go too, and the totals are rebuilt from the runs kept."""
+        log = d.get("log", [])
+        if d.get("runs", 0) <= cls.MAX_RUNS:
+            return False
+        log = sorted(log, key=lambda e: e.get("t", 0))[-cls.MAX_RUNS:]
+        for f in cls.FIELDS:
+            d[f] = 0
+        for f in ("legendaries", "leg_seconds", "run_seconds", "timed_runs", "casts", "cast_runs"):
+            d.pop(f, None)
+        for e in log:
+            cls._apply(d, e, 1)
+        d["log"] = log
+        return True
 
     def save(self):
         storage.write_json(STATS_PATH, self.data, indent=1, ensure_ascii=False)
@@ -117,6 +147,7 @@ class StageStats:
              "casts": dict(casts) if casts else None}
         self._apply(d, e, 1)
         d.setdefault("log", []).append(e)  # every run on its own, so single runs can be removed again
+        self._trim(d)
 
     @staticmethod
     def _apply(d: dict, e: dict, sign: int):
