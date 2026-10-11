@@ -12,6 +12,7 @@ import json
 import os
 import queue
 import re
+import statistics
 import sys
 import threading
 import time
@@ -65,6 +66,7 @@ RUNS_CSV = os.path.join(APP_DIR, "runs_history.csv")
 
 ROLLING_WINDOW_S = 15 * 60
 LIVE_DPS_WINDOW_S = 5.0
+MAX_RUN_GAP_S = 60.0  # wait between two runs that still counts as farming (longer = a pause)
 
 
 # --------------------------------------------------------------------------- helpers
@@ -784,12 +786,21 @@ class GameState:
             out.update({"stage": None, "runs_left": None, "eta_stage": None})
             if ref is None:
                 return out
+            # time per run: its own duration plus the short wait before it (loading, carriage); a longer gap is a
+            # pause (town, another stage in between) and counts only up to MAX_RUN_GAP_S - the span from the
+            # first to the last run would put whole pauses into every run
+            gap = {}
+            prev = None
+            for r in self.runs:
+                if r.start and r.end:
+                    gap[id(r)] = min(max(r.start - prev.end, 0.0), MAX_RUN_GAP_S) if prev and prev.end else 0.0
+                    prev = r
             same = [r for r in self.runs if r.difficulty == ref.difficulty and r.waves == ref.waves
                     and r.start and r.end and r.xp and not r.death][-10:]
             out["stage"] = f"{ref.difficulty} · {ref.waves} Waves"
             if same:
                 xp_run = sum(r.xp for r in same) / len(same)
-                cycle = (same[-1].end - same[0].start) / len(same) if len(same) > 1 else same[0].duration
+                cycle = statistics.median(r.duration + gap.get(id(r), 0.0) for r in same)
                 out["xp_run"] = xp_run
                 out["n_runs"] = len(same)
                 out["runs_left"] = left / xp_run

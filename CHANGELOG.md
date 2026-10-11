@@ -2,6 +2,16 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.32 – 2026-10-11
+
+### Fixed
+- **Time to the next level no longer jumps around** (for example from 10 minutes to an hour and back).
+  - The time per run used to be the span from the first to the last of the recent runs on the stage. A pause or a stretch on another stage in between was spread over every run.
+  - Now each run counts with its own length plus the short wait before it (at most 60 seconds). The typical value of the last 10 runs on the stage is used.
+  - Switching to a different stage still changes the time, because the stage gives a different amount of EXP per run.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.31 – 2026-10-11
 
 ### New
