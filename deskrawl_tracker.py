@@ -37,6 +37,7 @@ import build_profile
 import combat_sim
 import paragon
 import loot_watch
+import party
 import tray
 import advisor
 import rift
@@ -1461,6 +1462,28 @@ class App:
         self.btn_tray = ctl(c, "", self.toggle_tray,
                             "Minimizing puts the tracker into the small icons at the right of the taskbar. Click the "
                             "icon there to bring it back; right-click it for Exit.")
+        c = group("Fun")
+        self.party = party.Party(self.root)
+        self.btn_party = ctl(c, "Party mode: off", self.toggle_party,
+                             "The whole screen glows in wild patterns and colours. Clicks go through it, so the game "
+                             "and the tracker stay usable. Colours jump at most 3 times a second (the safety limit "
+                             "for flashing light) – still, leave it off if flashing light bothers you.")
+        row = tk.Frame(c, bg=PANEL)
+        row.pack(fill="x", padx=12, pady=(0, 8))
+        tk.Label(row, text="Music", bg=PANEL, fg=FG, font=ui.F_SMALL, width=26, anchor="w", padx=10).pack(side="left")
+        NO_MUSIC = "No music"
+        music_list = lambda: [NO_MUSIC] + sound.music_choices()
+        cur = self.cfg.get("party_music") or sound.PARTY_BUILTIN
+        self.var_party_music = tk.StringVar(value=cur if cur in music_list() else sound.PARTY_BUILTIN)
+        cb = ttk.Combobox(row, textvariable=self.var_party_music, values=music_list(), width=30, state="readonly",
+                          postcommand=lambda: cb.configure(values=music_list()))
+        cb.pack(side="left", padx=(12, 0))
+        cb.bind("<<ComboboxSelected>>", lambda _e: self._party_music_chosen())
+        ui.autowrap(tk.Label(row, text="Plays in a loop while the party runs. “Party” comes with the tracker; your "
+                                       "own .mp3 or .wav from the sounds folder (Drops page → Sounds folder) show "
+                                       "up here too and stay on your PC.",
+                             bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w", justify="left")).pack(
+            side="left", fill="x", expand=True, padx=(12, 0))
         c = group("Data and updates")
         ctl(c, "Change log file", self.open_setup,
             "The path to Deskrawl's Game.log, and a check that Windows' English text recognition is installed.")
@@ -1470,6 +1493,25 @@ class App:
         ctl(c, "What's new", self.show_changelog, "All versions and their changes, newest first.")
         ctl(c, "Reset session", self.reset,
             "Clears the rates and the run list of the current session. Stage statistics and histories are kept.")
+
+    def _party_music(self):
+        m = self.var_party_music.get()
+        return m if m in sound.music_choices() else None
+
+    def _party_music_chosen(self):
+        self._set_cfg("party_music", self.var_party_music.get())
+        if self.party.on:  # switch the song right away
+            sound.stop_loop()
+            if self._party_music():
+                sound.loop(self._party_music())
+
+    def toggle_party(self):
+        if self.party.on:
+            self.party.stop()
+        else:
+            self.party.start(self._party_music())
+        self.btn_party.configure(text="Party mode: " + ("on" if self.party.on else "off"),
+                                 fg=C_RUN if self.party.on else FG)
 
     def _root_configure(self, e):
         if e.widget is self.root:  # the window itself moved or changed size
@@ -3884,7 +3926,7 @@ class App:
 
     LEG_DIR = os.path.join(APP_DIR, "legendary_checks")
     LEG_CSV = os.path.join(APP_DIR, "legendary_checks.csv")
-    LEG_KEEP = 60  # pictures and rows kept
+    LEG_KEEP = 60  # rows kept in the list and the CSV (pictures: only the newest)
 
     def _build_leg_checks(self, leg):
         """The last Legendary detections with the picture the tracker saw, to check sound and count."""
@@ -3922,7 +3964,18 @@ class App:
             pass
         except Exception:
             errlog.report("legendary_checks", "legendary_checks.csv could not be read")
+        self._leg_prune()
         self._leg_fill()
+
+    def _leg_prune(self):
+        """Only the newest picture is kept - the folder must not fill up; older rows keep their text."""
+        try:
+            for old in sorted(os.listdir(self.LEG_DIR))[:-1]:
+                os.remove(os.path.join(self.LEG_DIR, old))
+        except FileNotFoundError:
+            pass
+        except OSError:
+            errlog.report("legendary_checks", "old Legendary pictures could not be removed")
 
     def _leg_record(self, source, text, shot, status):
         now = datetime.now()
@@ -3937,8 +3990,7 @@ class App:
                     img = cv2.resize(img, None, fx=k, fy=k, interpolation=cv2.INTER_AREA)
                 path = os.path.join(self.LEG_DIR, f"{now:%Y%m%d_%H%M%S_%f}_{source.replace(' ', '_')}.png")
                 cv2.imwrite(path, img)
-                for old in sorted(os.listdir(self.LEG_DIR))[:-self.LEG_KEEP]:
-                    os.remove(os.path.join(self.LEG_DIR, old))
+                self._leg_prune()
             except Exception:
                 errlog.report("legendary_checks", "picture of a Legendary could not be saved")
                 path = ""
@@ -6343,6 +6395,7 @@ class App:
         self.btn_top.configure(text="Always on top: " + ("on" if self.cfg.get("topmost", False) else "off"))
 
     def close(self):
+        self.party.stop()
         self.tray.hide()
         if self.cfg.get("game_hidden"):  # never leave the game invisible without the tracker
             hwnd = self.capture.find()

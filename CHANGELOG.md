@@ -2,6 +2,19 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.35 – 2026-10-11
+
+### New
+- **Party mode** (Settings → Fun). The whole screen glows in wild patterns and colours: racing rings, colour tiles, rushing stripes, a spinning sunburst, flying bubbles and rolling colour waves, changing every 5 seconds.
+  - Clicks go through it, so the game and the tracker stay usable. Click the button again to stop it.
+  - Colours jump at most 3 times a second – the safety limit for flashing light.
+  - **Music** plays in a loop while the party runs: "Party" comes with the tracker. Your own .mp3 or .wav from the sounds folder can be picked too.
+
+### Changed
+- **Legendary pictures:** only the newest picture is kept in `legendary_checks`, so the folder does not fill up. The list on the Drops page keeps the last 60 entries as text.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.34 – 2026-10-11
 
 ### New
@@ -10,7 +23,7 @@ All changes of the Deskrawl Tracker, newest first. Also shown in the app under *
 - **Check every Legendary on the Drops page.** The last Legendary is shown with the picture the tracker saw: the label on the ground (framed), or the end screen.
   - The list also shows labels that were seen but not counted, for example items the carriage unloads, with the reason.
   - "Not a drop" marks a false alarm. It then no longer counts in this session.
-  - The pictures and `legendary_checks.csv` are kept next to the tracker (the last 60).
+  - The pictures and `legendary_checks.csv` are kept next to the tracker.
 
 ### Fixed
 - **Deaths are recognised again.** The death screen ("You died! – Auto revive after 2 seconds") shows only 3–4 seconds. The tracker now looks for it twice a second during runs, and reads its gold text reliably. A death is credited to the run that ended, also when the stage has already restarted.

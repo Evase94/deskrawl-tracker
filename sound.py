@@ -44,6 +44,38 @@ def path_of(choice: str) -> str:
     return paths.res("data", "legendary.wav")
 
 
+_MUSIC = "deskrawl_music"
+PARTY_BUILTIN = "Party (built in)"  # data/party.mp3, copyright-free, ships with the tracker
+
+
+def music_choices() -> list:
+    return [PARTY_BUILTIN] + own_sounds()
+
+
+def loop(choice: str):
+    """Play PARTY_BUILTIN or a file from the sounds folder over and over (party music) until stop_loop()."""
+    p = paths.res("data", "party.mp3") if choice == PARTY_BUILTIN else os.path.join(folder(), choice or "")
+    if not choice or not os.path.isfile(p):
+        return
+    with _lock:
+        try:
+            _mci(f"close {_MUSIC}")
+            kind = "mpegvideo" if p.lower().endswith(".mp3") else "waveaudio"
+            if _mci(f'open "{p}" type {kind} alias {_MUSIC}') == 0:
+                if _mci(f"play {_MUSIC} repeat") != 0:  # waveaudio cannot repeat: once is better than nothing
+                    _mci(f"play {_MUSIC}")
+        except Exception:
+            errlog.report("sound", "party music could not be played")
+
+
+def stop_loop():
+    with _lock:
+        try:
+            _mci(f"close {_MUSIC}")
+        except Exception:
+            pass
+
+
 def _mci(cmd: str) -> int:
     return ctypes.windll.winmm.mciSendStringW(cmd, None, 0, None)
 
