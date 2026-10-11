@@ -28,3 +28,5 @@ cache/
 # your own sounds (Drops page) – not part of the repository
 sounds/
 stage_stats_before_trim.json
+legendary_checks/
+legendary_checks.csv

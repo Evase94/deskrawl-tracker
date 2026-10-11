@@ -2,6 +2,27 @@
 
 All changes of the Deskrawl Tracker, newest first. Also shown in the app under **Controls → What's new**.
 
+## v1.0.34 – 2026-10-11
+
+### New
+- **Grouped menu.** The pages on the left are sorted into Farming, Gear and Character, each with a gold heading.
+- **Settings page** (bottom left) instead of the fold-out controls. Every switch has its explanation right next to it. "Hide Deskrawl (F10)" stays in the menu for quick access.
+- **Check every Legendary on the Drops page.** The last Legendary is shown with the picture the tracker saw: the label on the ground (framed), or the end screen.
+  - The list also shows labels that were seen but not counted, for example items the carriage unloads, with the reason.
+  - "Not a drop" marks a false alarm. It then no longer counts in this session.
+  - The pictures and `legendary_checks.csv` are kept next to the tracker (the last 60).
+
+### Fixed
+- **Deaths are recognised again.** The death screen ("You died! – Auto revive after 2 seconds") shows only 3–4 seconds. The tracker now looks for it twice a second during runs, and reads its gold text reliably. A death is credited to the run that ended, also when the stage has already restarted.
+- **Fewer Legendary sounds without a drop.**
+  - Orange text must be the name of a Legendary or Divine item, not a longer text that merely contains a short item name.
+  - A misread "(+1)" on the end screen no longer sounds when the Legendary total did not change.
+
+### Removed
+- **DPS meter.** The game shows DPS itself at the training dummy. Reading the damage numbers stopped, which saves CPU. The switches, the "DPS" status dot, the DPS tile and the DPS columns are gone. `runs_history.csv` keeps its columns.
+
+Your settings, character data and histories are kept when you update.
+
 ## v1.0.33 – 2026-10-11
 
 ### Changed

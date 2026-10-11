@@ -326,16 +326,26 @@ class SideNav(tk.Frame):
         self.rowconfigure(0, weight=1)
         self.pages = {}
         self.current = None
+        self._indent = False  # pages after a group() heading are indented under it
 
-    def add(self, page, text=""):
+    def group(self, title):
+        """Heading of a group of pages in the sidebar: a rule across, the title in gold, the pages below
+        it indented - the groups must read as sections, not as more pages."""
+        tk.Frame(self.nav, bg=LINE, height=1).pack(fill="x", padx=12, pady=(10, 0))
+        tk.Label(self.nav, text=title, bg=PANEL, fg=ACCENT, font=F_LABEL, anchor="w",
+                 padx=15).pack(fill="x", pady=(6, 1))
+        self._indent = True
+
+    def add(self, page, text="", bottom=False):
+        """bottom: the page's entry goes below the others, at the foot of the sidebar (Settings)."""
         page.grid(row=0, column=1, sticky="nsew")
         page.grid_remove()  # shown by select(); hidden pages are not laid out on every resize
-        row = tk.Frame(self.nav, bg=PANEL, cursor="hand2")
+        row = tk.Frame(self.bottom if bottom else self.nav, bg=PANEL, cursor="hand2")
         row.pack(fill="x")
         bar = tk.Frame(row, bg=PANEL, width=3)
         bar.pack(side="left", fill="y")
-        lab = tk.Label(row, text=text, bg=PANEL, fg=MUTED, font=F_NAV, anchor="w", padx=12, pady=7)
-        lab.pack(side="left", fill="x", expand=True)
+        lab = tk.Label(row, text=text, bg=PANEL, fg=MUTED, font=F_NAV, anchor="w", padx=12, pady=5)
+        lab.pack(side="left", fill="x", expand=True, padx=(10, 0) if self._indent and not bottom else 0)
         for w in (row, lab):
             w.bind("<Button-1>", lambda e, p=page: self.select(p))
             w.bind("<Enter>", lambda e, p=page: self._hover(p, True))

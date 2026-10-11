@@ -1,8 +1,7 @@
 """
-Deskrawl Tracker - live EXP/h, Gold/h, runs/h from Game.log plus OCR-based DPS meter.
+Deskrawl Tracker - live EXP/h, Gold/h, runs/h from Game.log.
 
 Run:  python deskrawl_tracker.py
-Test OCR offline against a recorded clip:  python deskrawl_tracker.py --video clip.mp4
 """
 import argparse
 import csv
@@ -50,7 +49,6 @@ import stages
 import copy
 import item_quality
 import ui_theme as ui
-import numpy as np
 import game_input
 from game_capture import GameCapture
 
@@ -65,7 +63,6 @@ CONFIG_PATH = os.path.join(APP_DIR, "tracker_config.json")
 RUNS_CSV = os.path.join(APP_DIR, "runs_history.csv")
 
 ROLLING_WINDOW_S = 15 * 60
-LIVE_DPS_WINDOW_S = 5.0
 MAX_RUN_GAP_S = 60.0  # wait between two runs that still counts as farming (longer = a pause)
 
 
@@ -307,6 +304,8 @@ class GameState:
         self.legendary_q: queue.Queue = queue.Queue()  # (source, text) -> sound + status line in the UI
         self.last_rarity: dict = {}  # stage -> {"Legendary": total, ...} from the last end screen
         self.ground_pending: list = []  # (t, name, run) orange names waiting for GROUND_WAIT_S
+        self.ground_shots: dict = {}    # compact name -> picture of its label (evidence on the Drops page)
+        self.last_end_shot = None       # (t, frame) of the last end screen whose rarities were read
 
     def reset(self):
         with getattr(self, "lock", threading.RLock()):
@@ -314,7 +313,6 @@ class GameState:
             self.runs: list[Run] = []
             self.by_id: dict[str, Run] = {}
             self.current: Run | None = None
-            self.hits: deque = deque()  # (t, value, crit) - all OCR hits of this session
             if hasattr(self, "gold_audit"):
                 self.gold_audit.reset()
                 self.sold = []
@@ -454,9 +452,14 @@ class GameState:
             if k not in rar:
                 continue
             total, plus = rar[k]
+            prev = last.get(k)
             if plus is None:
-                prev = last.get(k)
                 plus = total - prev if prev is not None and 0 < total - prev <= 5 else 0
+            elif prev is not None and 0 <= total - prev < plus:
+                # the total says fewer: "(+0)" / "(+1)" misread - the change of the total counts
+                errlog.log.info("End screen %s: (+%s) read, total %s -> %s - taking %s", k, plus, prev, total,
+                                total - prev)
+                plus = total - prev
             last[k] = total
             n += plus
         r.end_screen["legendaries"] = n
@@ -465,8 +468,9 @@ class GameState:
         pending = sum(1 for _t, _x, pr in self.ground_pending if pr is r)
         extra = max(n - r.leg_sounds - pending, 0)
         r.leg_sounds += extra
+        shot = self.last_end_shot[1] if self.last_end_shot and time.time() - self.last_end_shot[0] < 60 else None
         for _ in range(extra):
-            self.legendary_q.put(("end screen", ""))
+            self.legendary_q.put(("end screen", "", shot, ""))
 
     def in_run(self, t: float) -> bool:
         """A run is going on (or ended a few seconds ago: the boss loot lands right at the end)."""
@@ -476,11 +480,12 @@ class GameState:
     GROUND_WAIT_S = 4.0  # an item the carriage unloads shows its name too, followed by an "Obtained" pop-up
     UNCLAIMED_S = 3600.0  # a Legendary not picked up after this long is forgotten
 
-    def ground_legendary(self, text: str, t: float):
+    def ground_legendary(self, text: str, t: float, shot=None):
         """LootWatcher saw a new orange item name on the ground. It counts once no pop-up with that name
         followed within GROUND_WAIT_S (or came just before): then it was a drop, not the carriage unloading."""
         with self.lock:
             if self._popup_named(text, t - 6):
+                self.legendary_q.put(("ground", text, shot, "skipped: carriage (picked up)"))
                 return
             key = re.sub(r"[^a-z]", "", text.lower())
             r = self.current or next((o for o in reversed(self.runs) if o.end and t - o.end < 20), None)
@@ -490,8 +495,11 @@ class GameState:
                 return  # the same item in the same run: its label was hidden for a while
             self.unclaimed = {k: v for k, v in getattr(self, "unclaimed", {}).items() if t - v[0] < self.UNCLAIMED_S}
             if key in self.unclaimed and self.unclaimed[key][1] is not r:
-                return  # a Legendary of an earlier run not picked up yet: the carriage unloading it
+                # a Legendary of an earlier run not picked up yet: the carriage unloading it
+                self.legendary_q.put(("ground", text, shot, "skipped: carriage (earlier run)"))
+                return
             self.ground_pending.append((t, text, r))
+            self.ground_shots[key] = shot
 
     def _popup_named(self, text: str, since: float) -> bool:
         import difflib
@@ -504,21 +512,26 @@ class GameState:
         with self.lock:
             keep = []
             for t, text, r in self.ground_pending:
+                key = re.sub(r"[^a-z]", "", text.lower())
                 if self._popup_named(text, t - 6):
+                    self.legendary_q.put(("ground", text, self.ground_shots.pop(key, None),
+                                          "skipped: carriage (pop-up)"))
                     continue
                 if now - t < self.GROUND_WAIT_S:
                     keep.append((t, text, r))
                     continue
-                key = re.sub(r"[^a-z]", "", text.lower())
+                shot = self.ground_shots.pop(key, None)
                 self.unclaimed = getattr(self, "unclaimed", {})
                 self.unclaimed[key] = (t, r)  # until its "Obtained" / "Sold" pop-up shows
                 if r is not None:
                     r.leg_names.add(key)
                     r.ground_legendaries += 1
                     if r.ground_legendaries <= r.leg_sounds:
-                        continue  # the end screen already sounded for this drop
+                        # the end screen already sounded for this drop
+                        self.legendary_q.put(("ground", text, shot, "counted by end screen"))
+                        continue
                     r.leg_sounds += 1
-                self.legendary_q.put(("ground", text))
+                self.legendary_q.put(("ground", text, shot, ""))
             self.ground_pending = keep
 
     def log_needed(self, r) -> bool:
@@ -542,6 +555,10 @@ class GameState:
     def mark_death_seen(self, t: float, text: str, extra: dict | None = None, max_age: float = 15):
         with self.lock:
             r = self.current or (self.runs[-1] if self.runs else None)
+            if r is not None and r is self.current and r.start and t - r.start < 2 and self.runs \
+                    and self.runs[-1].end and t - self.runs[-1].end < 8:
+                # the stage restarted while the death screen was still fading: the death is the run before
+                r = self.runs[-1]
             if r is None or (r.end and t - r.end > max_age):
                 return
             if extra:
@@ -575,8 +592,6 @@ class GameState:
         elif suspicious:
             r.death = "suspected"
         if r.death:
-            info["dps_before"] = r.avg_dps
-            info["peak_dps"] = r.peak_dps or None
             info["level"] = r.level
 
     def death_stats(self) -> dict:
@@ -742,25 +757,6 @@ class GameState:
         with self.lock:
             self.gold_audit.observe(t, balance, self.committed_gold)
 
-    def add_hit(self, t: float, value: float, crit: bool):
-        with self.lock:
-            self.hits.append((t, value, crit))
-            r = self.current
-            if r is not None and r.start is not None and t >= r.start:
-                r.damage += value
-                r.hits += 1
-                r.crits += int(crit)
-                r.peak_dps = max(r.peak_dps, self.live_dps(t))
-
-    def live_dps(self, now: float | None = None) -> float:
-        now = now or time.time()
-        with self.lock:
-            cutoff = now - LIVE_DPS_WINDOW_S
-            while self.hits and self.hits[0][0] < now - 3600:
-                self.hits.popleft()
-            total = sum(v for t, v, _ in reversed(self.hits) if t >= cutoff)
-        return total / LIVE_DPS_WINDOW_S
-
     # ---- aggregates --------------------------------------------------------
     def level_eta(self) -> dict | None:
         """Time to next level, from the XP rate of recent runs on the current stage."""
@@ -825,7 +821,6 @@ class GameState:
             gold = sum(r.gold for r in runs)
             items = sum(r.items for r in runs)
             durs = [r.duration for r in runs if r.start and r.end]
-            dmg_runs = [r for r in runs if r.start and r.end and r.damage]
             return {
                 "span": span, "runs": len(runs), "xp": xp, "gold": gold, "items": items,
                 "xp_h": xp / span * 3600, "gold_h": gold / span * 3600,
@@ -833,7 +828,6 @@ class GameState:
                 "avg_run": sum(durs) / len(durs) if durs else None,
                 "avg_xp_run": xp / len(runs) if runs else None,
                 "avg_gold_run": gold / len(runs) if runs else None,
-                "avg_dps": (sum(r.damage for r in dmg_runs) / sum(r.duration for r in dmg_runs)) if dmg_runs else None,
             }
 
 
@@ -933,247 +927,6 @@ class LogTailer(threading.Thread):
             time.sleep(0.5)
 
 
-# --------------------------------------------------------------------------- OCR DPS meter
-
-RE_DMG = re.compile(r"^\d{1,3}(?:[,.]\d{3})+$|^\d{2,9}$")
-
-
-@dataclass
-class Track:
-    x: float
-    y: float
-    h: float
-    first: float
-    last: float
-    readings: Counter = field(default_factory=Counter)
-    crit_votes: int = 0
-    seen: int = 0
-    y0: float = 0.0
-    formatted: bool = False
-
-
-def digits_similar(a: str, b: str) -> bool:
-    if a == b or a in b or b in a:
-        return True
-    if abs(len(a) - len(b)) > 1:
-        return False
-    if len(a) == len(b):
-        return sum(c1 != c2 for c1, c2 in zip(a, b)) <= 2
-    return False
-
-
-class DamageOCR:
-    """Turns screenshots into unique damage hits.
-
-    Floating numbers live ~1 s and drift upward, so each one is seen in several frames.
-    Detections are grouped into tracks by position + similar digits; a track is counted once,
-    after it disappears, with its most frequent reading. Long-lived motionless tracks are
-    static text (not damage) and get dropped.
-    """
-
-    def __init__(self, on_hit, min_value: int = 10):
-        import numpy as np  # noqa: F401  (fail early if missing)
-        import cv2  # noqa: F401
-        import winocr  # noqa: F401
-        self.on_hit = on_hit
-        self.min_value = min_value
-        self.tracks: list[Track] = []
-        self.static_spots: list = []  # (until, digits, x, y): UI numbers seen standing still
-        self.recent_values: deque = deque(maxlen=200)
-        self.rejected = 0
-        self.scale = 1.0
-
-    def preprocess(self, bgr):
-        import cv2
-        import numpy as np
-        hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
-        b, g, r = [c.astype(np.int16) for c in cv2.split(bgr)]
-        white = (hsv[..., 2] > 200) & (hsv[..., 1] < 60)
-        yellow = (r > 200) & (g > 170) & (b < 140)
-        mask = (white | yellow).astype(np.uint8) * 255
-        h = bgr.shape[0]
-        self.scale = 2.0 if h < 500 else 1.0
-        if self.scale != 1.0:
-            mask = cv2.resize(mask, None, fx=self.scale, fy=self.scale, interpolation=cv2.INTER_NEAREST)
-        return cv2.cvtColor(255 - mask, cv2.COLOR_GRAY2BGR), yellow
-
-    def detect(self, bgr):
-        import winocr
-        img, yellow = self.preprocess(bgr)
-        res = winocr.recognize_cv2_sync(img, "en")
-        out = []
-        for line in res.get("lines", []):
-            words = line.get("words", [])
-            ltext = line.get("text", "")
-            if re.search(r"[A-Za-z]{3,}", ltext.replace("XP", "")):
-                continue  # damage numbers stand alone; numbers inside text are UI (log, panels)
-            i = 0
-            while i < len(words):
-                w = words[i]
-                text = w["text"].strip()
-                br = w["bounding_rect"]
-                x, y, ww, hh = br["x"], br["y"], br["width"], br["height"]
-                # glue split leading digit: "1 74,435"
-                if re.fullmatch(r"\d{1,2}", text) and i + 1 < len(words):
-                    nb = words[i + 1]["bounding_rect"]
-                    nt = words[i + 1]["text"].strip()
-                    if re.fullmatch(r"\d{1,3}(?:[,.]\d{3})+", nt) and nb["x"] - (x + ww) < hh * 0.6:
-                        text = text + nt
-                        ww = nb["x"] + nb["width"] - x
-                        i += 1
-                i += 1
-                if text.startswith("+") or "XP" in ltext[ltext.find(text):ltext.find(text) + len(text) + 4]:
-                    continue
-                if not RE_DMG.match(text):
-                    continue
-                digits = re.sub(r"\D", "", text)
-                if int(digits) < self.min_value:
-                    continue
-                s = self.scale
-                cx, cy, ch = (x + ww / 2) / s, (y + hh / 2) / s, hh / s
-                y0, y1 = int(y / s), int((y + hh) / s)
-                x0, x1 = int(x / s), int((x + ww) / s)
-                patch = yellow[max(y0, 0):y1, max(x0, 0):x1]
-                crit = bool(patch.size) and patch.mean() > 0.08
-                formatted = bool(re.fullmatch(r"\d{1,3}(?:,\d{3})+", text))
-                out.append((digits, cx, cy, ch, crit, formatted))
-        return out
-
-    def feed(self, bgr, now: float):
-        dets = self.detect(bgr)
-        for digits, cx, cy, ch, crit, formatted in dets:
-            best = None
-            for tr in self.tracks:
-                if now - tr.last > 0.8:
-                    continue
-                if abs(cx - tr.x) > max(ch * 2.5, 40):
-                    continue
-                if not (tr.y - ch * 4 - 30 <= cy <= tr.y + ch * 0.8 + 5):
-                    continue
-                top = tr.readings.most_common(1)[0][0]
-                if digits_similar(digits, top):
-                    best = tr
-                    break
-            if best is None:
-                best = Track(x=cx, y=cy, h=ch, first=now, last=now, y0=cy)
-                self.tracks.append(best)
-            best.x, best.y, best.last = cx, cy, now
-            best.readings[digits] += 1
-            best.crit_votes += 1 if crit else -1
-            best.seen += 1
-            best.formatted = best.formatted or formatted
-        self.flush(now)
-        return dets
-
-    # Measured on recorded gameplay: damage numbers stay on screen <= ~0.5 s and barely move.
-    # Anything visible longer is UI (panels, tooltips, gold counter) and must not count.
-    MAX_LIFETIME_S = 1.2
-    STATIC_MEMORY_S = 60.0
-    OUTLIER_FACTOR = 25.0
-
-    def _known_static(self, digits: str, x: float, y: float, now: float) -> bool:
-        self.static_spots = [sp for sp in self.static_spots if sp[0] > now]
-        return any(d == digits and abs(x - sx) < 15 and abs(y - sy) < 15 for _, d, sx, sy in self.static_spots)
-
-    def flush(self, now: float, force: bool = False):
-        keep = []
-        for tr in self.tracks:
-            if not force and now - tr.last < 0.6:
-                keep.append(tr)
-                continue
-            # most frequent reading; ties -> longest (partial reads lose digits)
-            value = max(tr.readings.items(), key=lambda kv: (kv[1], len(kv[0])))[0]
-            if tr.last - tr.first > self.MAX_LIFETIME_S:
-                # UI number: remember the spot, it may flicker back as a "new" short track
-                self.static_spots.append((now + self.STATIC_MEMORY_S, value, tr.x, tr.y))
-                continue
-            if self._known_static(value, tr.x, tr.y, now):
-                continue
-            # single sightings only count when cleanly read as "123,456"
-            if not (tr.seen >= 2 or tr.formatted):
-                continue
-            v = float(value)
-            if len(self.recent_values) >= 20:
-                med = sorted(self.recent_values)[len(self.recent_values) // 2]
-                if v > med * self.OUTLIER_FACTOR:  # misread (merged numbers, UI) - not a hit
-                    self.rejected += 1
-                    continue
-            self.recent_values.append(v)
-            self.on_hit(tr.first, v, tr.crit_votes > 0)
-        self.tracks = keep
-
-
-class OCRWorker(threading.Thread):
-    """Live DPS: grabs the game window directly (works while covered) and feeds DamageOCR."""
-
-    def __init__(self, state: GameState, capture: GameCapture, get_region):
-        super().__init__(daemon=True)
-        self.state = state
-        self.capture = capture
-        self.get_region = get_region  # fractions (x, y, w, h) of the game client area
-        self.enabled = threading.Event()
-        self.status = "DPS OCR off"
-        self.fps = 0.0
-        self.ocr = None
-        self.suspend_until = 0.0
-
-    def suspend(self, seconds: float):
-        """Ignore the screen for a while (auto-opened panels show numbers that are not damage)."""
-        self.suspend_until = max(self.suspend_until, time.time() + seconds)
-
-    def run(self):
-        try:
-            self.ocr = DamageOCR(on_hit=self.state.add_hit)
-        except Exception as e:
-            self.status = f"OCR not available: {e}"
-            errlog.log.error("OCR not available", exc_info=True)
-            return
-        last = time.time()
-        while True:
-            if not self.enabled.is_set():
-                self.status = "DPS OCR off"
-                if self.ocr.tracks:
-                    self.ocr.flush(time.time(), force=True)
-                self.enabled.wait(1.0)
-                continue
-            t = time.time()
-            if t < self.suspend_until or self.state.ui_busy():
-                self.ocr.tracks = []  # drop half-seen numbers instead of counting them
-                time.sleep(0.2)
-                continue
-            try:
-                hwnd = self.capture.find()
-                u = ctypes.windll.user32
-                sig = (bool(hwnd and u.IsIconic(hwnd)), game_input.is_foreground(hwnd),
-                       bool(hwnd and game_input.is_hidden(hwnd)))
-                if sig != getattr(self, "_win_sig", sig):
-                    self.suspend(2.0)  # window state changed: next frames may be stale or half-drawn
-                self._win_sig = sig
-                if t < self.suspend_until:
-                    self.ocr.tracks = []
-                    time.sleep(0.2)
-                    continue
-                frame = self.capture.grab()
-                if frame is None:
-                    self.status = self.capture.status
-                    time.sleep(1.0)
-                    continue
-                H, W = frame.shape[:2]
-                fx, fy, fw, fh = self.get_region()
-                x0, y0 = int(fx * W), int(fy * H)
-                x1, y1 = int((fx + fw) * W), int((fy + fh) * H)
-                self.ocr.feed(np.ascontiguousarray(frame[y0:y1, x0:x1]), t)
-                dt = time.time() - last
-                last = time.time()
-                self.fps = 0.8 * self.fps + 0.2 * (1 / dt if dt > 0 else 0)
-                self.status = f"DPS OCR on · {self.fps:.1f} fps"
-            except Exception as e:
-                self.status = f"OCR error: {e}"
-                errlog.report("dps_ocr", "DPS OCR failed")
-                time.sleep(1.0)
-            time.sleep(max(0.0, 0.15 - (time.time() - t)))
-
-
 class GoldWatcher(threading.Thread):
     """Every few seconds, OCRs the whole game window: reads the gold balance when the inventory
     footer is visible, and looks for a death screen text."""
@@ -1201,6 +954,7 @@ class GoldWatcher(threading.Thread):
                 if end:
                     if self.state.wants_rarities(time.time()):
                         end["rarities"] = item_ocr.read_end_rarities(frame, lines)
+                        self.state.last_end_shot = (time.time(), frame)
                     self.state.apply_stage_end(end, time.time())
                 death = item_ocr.find_death_text(lines, (frame.shape[1], frame.shape[0]))
                 if death:
@@ -1228,9 +982,9 @@ class PanelReader(threading.Thread):
     """
     MODES = {"always": "with focus switch", "fg": "foreground only", "off": "off"}
 
-    def __init__(self, state: GameState, capture: GameCapture, ocr: OCRWorker, cfg: dict):
+    def __init__(self, state: GameState, capture: GameCapture, cfg: dict):
         super().__init__(daemon=True)
-        self.state, self.capture, self.ocr, self.cfg = state, capture, ocr, cfg
+        self.state, self.capture, self.cfg = state, capture, cfg
         self.status = ""
         self.lock = threading.Lock()
         self.focus_until = 0.0  # focus switch in progress until this time
@@ -1259,6 +1013,7 @@ class PanelReader(threading.Thread):
                 if end:
                     if self.state.wants_rarities(time.time()):
                         end["rarities"] = item_ocr.read_end_rarities(frame, lines)
+                        self.state.last_end_shot = (time.time(), frame)
                     self.state.apply_stage_end(end, time.time())
                     self.status = f"Stage from the end screen: {end['stage']}: {end['n']} " \
                                   f"({datetime.now().strftime('%H:%M:%S')}) – log panel not needed"
@@ -1303,7 +1058,6 @@ class PanelReader(threading.Thread):
             self.status = f"Log panel: not needed, stage known ({datetime.now().strftime('%H:%M:%S')})"
         how, prev = None, None
         if keys:
-            self.ocr.suspend(5.0)
             how, prev = self._press(keys, True, mode)
             if how is None:
                 self.status = "Log panel: Deskrawl not in the foreground – skipped"
@@ -1331,7 +1085,58 @@ class PanelReader(threading.Thread):
                     game_input.press_keys(hwnd, keys, allow_focus_switch=(how == "focus"))
                 game_input.restore_focus(prev)
                 self.focus_until = time.time() + 1
-                self.ocr.suspend(1.0)
+
+
+class DeathWatcher(threading.Thread):
+    """The death screen ("YOU DIED! – Auto revive after 2 seconds." with a TOWN button) stays only 3-4 seconds
+    before the stage starts again, so it is looked for twice a second during runs. A quick read of the middle
+    of the picture (Windows OCR, ~15 ms) looks for its words; when it finds only part of them, RapidOCR
+    (~400 ms, reads the gold text reliably) confirms it - the stage end screen has a TOWN button too."""
+
+    INTERVAL_S = 0.5
+    QUICK = re.compile(r"revive|rev[il1]ve|econds|died|y[o0]u\s*d", re.I)
+    SURE = re.compile(r"auto\W*rev[il1]ve|rev[il1]ve\W*after|y[o0]u\W*d[il1]ed", re.I)
+
+    def __init__(self, state: GameState, capture: GameCapture):
+        super().__init__(daemon=True)
+        self.state, self.capture = state, capture
+        self.last_hit = 0.0
+
+    @staticmethod
+    def middle(frame):
+        H, W = frame.shape[:2]
+        return frame[int(H * 0.25):int(H * 0.7), int(W * 0.33):int(W * 0.67)]
+
+    def check(self, frame) -> str | None:
+        """The death screen's text, or None."""
+        mid = self.middle(frame)
+        quick = " ".join(l.text for l in item_ocr.ocr_windows(mid))
+        if self.SURE.search(quick):
+            return quick
+        if not (self.QUICK.search(quick) or re.search(r"\bT\s*[O0]\s*W\s*N\b", quick)):
+            return None
+        if re.search(r"rerun|next\s*stage|clears|duration", quick, re.I):
+            return None  # stage end screen
+        sure = " ".join(l.text for l in item_ocr.ocr_scaled(mid, 1.5, "rapid"))
+        return sure if self.SURE.search(sure.replace(" ", "")) or self.SURE.search(sure) else None
+
+    def run(self):
+        while True:
+            time.sleep(self.INTERVAL_S)
+            t = time.time()
+            if t - self.last_hit < 8 or self.state.ui_busy() or not self.state.in_run(t):
+                continue
+            try:
+                frame = self.capture.grab()
+                if frame is None:
+                    continue
+                text = self.check(frame)
+                if text:
+                    self.last_hit = t
+                    errlog.log.info("Death screen: %s", text[:120])
+                    self.state.mark_death_seen(t, "You died")
+            except Exception:
+                errlog.report("death_watcher", "death screen reader failed")
 
 
 # --------------------------------------------------------------------------- hotkeys
@@ -1443,63 +1248,11 @@ class HotkeyThread(threading.Thread):
                 self.out.put(("hotkey", ids[msg.wParam]))
 
 
-# --------------------------------------------------------------------------- region picker
-
-class GameRegionPicker(tk.Toplevel):
-    """Shows a snapshot of the game window; drag a rectangle over the area with damage numbers."""
-
-    def __init__(self, master, frame, current, on_done):
-        super().__init__(master)
-        from PIL import Image, ImageTk
-        self.title("Choose DPS area")
-        self.configure(bg=BG)
-        self.attributes("-topmost", True)
-        H, W = frame.shape[:2]
-        self.k = min(1100 / W, 650 / H, 1.0)
-        img = Image.fromarray(frame[:, :, ::-1]).resize((int(W * self.k), int(H * self.k)))
-        self.photo = ImageTk.PhotoImage(img)
-        tk.Label(self, text="Drag a rectangle over the area where damage numbers appear  ·  ESC = cancel",
-                 bg=BG, fg=FG, font=("Segoe UI", 10)).pack(padx=8, pady=6)
-        self.c = tk.Canvas(self, width=img.width, height=img.height, highlightthickness=0, cursor="crosshair")
-        self.c.pack(padx=8, pady=(0, 8))
-        self.c.create_image(0, 0, image=self.photo, anchor="nw")
-        self.iw, self.ih = img.width, img.height
-        fx, fy, fw, fh = current
-        self.c.create_rectangle(fx * self.iw, fy * self.ih, (fx + fw) * self.iw, (fy + fh) * self.ih,
-                                outline="#e0af68", width=2, dash=(4, 3))
-        self.on_done = on_done
-        self.start = None
-        self.rect = None
-        self.c.bind("<ButtonPress-1>", self._down)
-        self.c.bind("<B1-Motion>", self._move)
-        self.c.bind("<ButtonRelease-1>", self._up)
-        self.bind("<Escape>", lambda e: self.destroy())
-        self.focus_force()
-
-    def _down(self, e):
-        self.start = (e.x, e.y)
-        self.rect = self.c.create_rectangle(e.x, e.y, e.x, e.y, outline="#00e5ff", width=3)
-
-    def _move(self, e):
-        if self.rect:
-            self.c.coords(self.rect, *self.start, e.x, e.y)
-
-    def _up(self, e):
-        if not self.start:
-            return
-        x0, x1 = sorted((max(0, min(self.start[0], self.iw)), max(0, min(e.x, self.iw))))
-        y0, y1 = sorted((max(0, min(self.start[1], self.ih)), max(0, min(e.y, self.ih))))
-        self.destroy()
-        if x1 - x0 > 20 and y1 - y0 > 15:
-            self.on_done((x0 / self.iw, y0 / self.ih, (x1 - x0) / self.iw, (y1 - y0) / self.ih))
-
-
 # --------------------------------------------------------------------------- UI
 
 BG, PANEL, FG, MUTED, LINE = ui.BG, ui.PANEL, ui.FG, ui.MUTED, ui.LINE
 C_XP = C_GOLD = C_ITEM = C_DPS = ui.ACCENT
 C_GOOD, C_BAD, C_MEH, C_RUN = ui.GOOD, ui.BAD, ui.WARN, ui.GOOD
-DEFAULT_REGION = (0.0, 0.42, 1.0, 0.52)  # lower part of the game window: the battle strip, full width
 ITEMS_CSV = os.path.join(APP_DIR, "items_history.csv")
 VERDICT_MARGIN = 2.0  # points; inside +/- margin counts as a sidegrade
 GUESS_TOLERANCE = 0.25  # a run's EXP may differ this much from its guessed stage's usual EXP
@@ -1514,16 +1267,15 @@ class App:
         self.tailer = LogTailer(self.state, self.cfg.get("log_path") or LOG_PATH)
         self.tailer.start()
         self.capture = GameCapture()
-        self.region = tuple(self.cfg.get("game_region") or DEFAULT_REGION)
-        self.ocr = OCRWorker(self.state, self.capture, lambda: self.region)
-        self.ocr.start()
         GoldWatcher(self.state, self.capture).start()
-        self.panels = PanelReader(self.state, self.capture, self.ocr, self.cfg)
+        DeathWatcher(self.state, self.capture).start()
+        self.panels = PanelReader(self.state, self.capture, self.cfg)
         self.panels.start()
         ClickThroughGuard(self.capture, self.cfg).start()
         ToastWatcher(self.state, self.capture).start()
         self.loot = loot_watch.LootWatcher(self.state, self.capture,
-                                           lambda text: self.state.ground_legendary(text, time.time()))
+                                           lambda text, shot=None: self.state.ground_legendary(
+                                               text, time.time(), shot))
         self.loot.enabled = bool(self.cfg.get("legendary_sound", True) or self.cfg.get("legendary_space", True))
         self.loot.start()
         self._leg_session = 0
@@ -1572,8 +1324,6 @@ class App:
         self._build()
         root.update_idletasks()
         self.hwnd = ctypes.windll.user32.GetParent(root.winfo_id())
-        if self.cfg.get("ocr_on"):
-            self.toggle_ocr()
         self.toggle_skills(bool(self.cfg.get("skills_on")))
         self._fill_char()
         self._fill_eval_tab()
@@ -1593,7 +1343,7 @@ class App:
         dots = tk.Frame(head, bg=BG)
         dots.pack(side="right")
         self.dots = {}
-        for key, label in (("log", "Log"), ("game", "Game"), ("dps", "DPS"), ("panels", "Panels"), ("keys", "Hotkeys")):
+        for key, label in (("log", "Log"), ("game", "Game"), ("panels", "Panels"), ("keys", "Hotkeys")):
             d = ui.StatusDot(dots, label)
             d.pack(side="left", padx=(10, 0))
             self.dots[key] = d
@@ -1617,22 +1367,27 @@ class App:
         self.tab_adv = tk.Frame(self.nb, bg=BG)
         self.tab_rift = tk.Frame(self.nb, bg=BG)
         self.tab_rn = tk.Frame(self.nb, bg=BG)
+        self.tab_set = tk.Frame(self.nb, bg=BG)
+        # menu in groups: what the session brings, gear, the character's build
         self.nb.add(self.tab_farm, text="Overview")
-        self.nb.add(self.tab_char, text="Character Stats")
+        self.nb.group("Farming")
         self.nb.add(self.tab_stages, text="Stages")
         self.nb.add(self.tab_adv, text="Farm advice")
         self.nb.add(self.tab_rift, text="Mythic Rift")
         self.nb.add(self.tab_drops, text="Drops")
         self.nb.add(self.tab_death, text="Deaths")
+        self.nb.group("Gear")
         self.nb.add(self.tab_items, text="Item Comparer")
         self.nb.add(self.tab_db, text="Item Database")
-        self.nb.add(self.tab_mn, text="Minions")
-        self.nb.add(self.tab_sk, text="Skill Tracking")
-        self.nb.add(self.tab_tal, text="Talents")
+        self.nb.add(self.tab_gems, text="Gems")
         self.nb.add(self.tab_rn, text="Runes")
+        self.nb.group("Character")
+        self.nb.add(self.tab_char, text="Character Stats")
+        self.nb.add(self.tab_tal, text="Talents")
+        self.nb.add(self.tab_sk, text="Skill Tracking")
+        self.nb.add(self.tab_mn, text="Minions")
         # BiS Gear and Weights are hidden for now: still built (their settings keep feeding the
         # item rating), just not in the menu. Add them to the menu again to show them.
-        self.nb.add(self.tab_gems, text="Gems")
         self._build_farm(self.tab_farm)
         self._build_items(self.tab_items)
         self._build_char(self.tab_char)
@@ -1651,58 +1406,13 @@ class App:
         self._build_runes(self.tab_rn)
 
         side = self.nb.bottom
-        head = tk.Label(side, text="", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w", cursor="hand2")
-        head.pack(fill="x", padx=14, pady=(0, 4))
-        body = tk.Frame(side, bg=PANEL)
-
-        def show_controls(open_):
-            head.configure(text=("▾  Controls" if open_ else "▸  Controls"))
-            if open_:
-                body.pack(fill="x")
-            else:
-                body.pack_forget()
-
-        def toggle_controls(_e=None):
-            open_ = not self.cfg.get("controls_open", False)
-            self._set_cfg("controls_open", open_)
-            show_controls(open_)
-        head.bind("<Button-1>", toggle_controls)
-        head.bind("<Enter>", lambda e: head.configure(fg=FG))
-        head.bind("<Leave>", lambda e: head.configure(fg=MUTED))
-        ui.Tooltip(head, "Show or hide the controls.")
-
-        def ctl(text, cmd, tip):
-            b = ui.button(body, text, cmd, small=True)
-            b.configure(anchor="w", bg=PANEL)
-            b.bind("<Leave>", lambda e: b.configure(bg=PANEL))
-            b.pack(fill="x", padx=6, pady=1)
-            ui.Tooltip(b, tip)
-            return b
-
-        self.btn_hide = ctl("", self.toggle_hide, "Keep Deskrawl running invisibly instead of minimizing it – "
-                                                  "only then can the tracker keep reading.")
-        self.btn_ocr = ctl("", self.toggle_ocr, "Read damage numbers in the game (for DPS per run).")
-        ctl("Choose DPS area", self.pick_region, "Area of the game picture where damage numbers appear.")
-        self.btn_panels = ctl("", self.cycle_panels, "Open the log panel (C) when the tracker needs the stage name or death details "
-                                                     "– after a death or a stage change. When it is open it is read "
-                                                     "without a key press. "
-                                                     "“with focus switch” briefly brings Deskrawl to the front for that.")
-        self.btn_skills = ctl("", self.toggle_skills, "Count which abilities you use per run from the skill bar "
-                                                       "(about 15 pictures a second – costs some CPU). Results: Stages "
-                                                       "page.")
-        self.btn_top = ctl("", self.toggle_topmost, "Keep the tracker window on top of other windows.")
-        self.btn_tray = ctl("", self.toggle_tray, "When on, minimizing the tracker puts it into the small icons at "
-                                                  "the right of the taskbar instead of the taskbar. Click the icon "
-                                                  "there to bring it back; right-click for Exit.")
-        ctl("Change log file", self.open_setup, "Choose the path to Deskrawl's Game.log and check that "
-                                                 "Windows' English text recognition is installed.")
-        ctl("Check for updates", lambda: self.check_updates(manual=True),
-            f"Version {VERSION}. Looks for a newer release on GitHub and installs it; your settings and "
-            f"histories stay. The tracker also checks once at every start.")
-        ctl("What's new", self.show_changelog, "All versions and their changes, newest first.")
-        ctl("Reset session", self.reset, "Clear the rates and run list of the current session. "
-                                                "Stage statistics and histories are kept.")
-        show_controls(self.cfg.get("controls_open", False))
+        self.btn_hide = ui.button(side, "", self.toggle_hide, small=True)
+        self.btn_hide.configure(anchor="w")
+        self.btn_hide.pack(fill="x", padx=8, pady=(0, 6))
+        ui.Tooltip(self.btn_hide, "Keep Deskrawl running invisibly instead of minimizing it – only then can the "
+                                  "tracker keep reading.")
+        self.nb.add(self.tab_set, text="Settings", bottom=True)
+        self._build_settings(self.tab_set)
         last = self.cfg.get("last_version")
         if last != VERSION:  # first start after an update: show what changed
             self._set_cfg("last_version", VERSION)
@@ -1720,7 +1430,46 @@ class App:
         self._update_hide_btn()
         self._update_top_btn()
         self._update_tray_btn()
-        self.btn_ocr.configure(text="DPS meter: off")
+
+    def _build_settings(self, p):
+        ui.page_header(p, "Settings")
+
+        def group(title):
+            self._section(p, title)
+            return ui.card(p, fill="x", padx=14, pady=(0, 6))
+
+        def ctl(card, text, cmd, desc):
+            row = tk.Frame(card, bg=PANEL)
+            row.pack(fill="x", padx=12, pady=5)
+            b = ui.button(row, text, cmd, small=True)
+            b.configure(width=26, anchor="w")
+            b.pack(side="left", anchor="n")
+            ui.autowrap(tk.Label(row, text=desc, bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w",
+                                 justify="left")).pack(side="left", fill="x", expand=True, padx=(12, 0))
+            return b
+
+        c = group("Reading the game")
+        self.btn_panels = ctl(c, "", self.cycle_panels,
+                              "Opens the log panel (C) when the tracker needs the stage name or death details – after a "
+                              "death or a stage change. When it is already open it is read without a key press. "
+                              "“with focus switch” briefly brings Deskrawl to the front for that.")
+        self.btn_skills = ctl(c, "", self.toggle_skills,
+                              "Counts which abilities you use per run from the skill bar (about 15 pictures a second – "
+                              "costs some CPU). Results on the Stages page.")
+        c = group("Tracker window")
+        self.btn_top = ctl(c, "", self.toggle_topmost, "Keeps the tracker window on top of other windows.")
+        self.btn_tray = ctl(c, "", self.toggle_tray,
+                            "Minimizing puts the tracker into the small icons at the right of the taskbar. Click the "
+                            "icon there to bring it back; right-click it for Exit.")
+        c = group("Data and updates")
+        ctl(c, "Change log file", self.open_setup,
+            "The path to Deskrawl's Game.log, and a check that Windows' English text recognition is installed.")
+        ctl(c, "Check for updates", lambda: self.check_updates(manual=True),
+            f"You have version {VERSION}. Looks for a newer release on GitHub and installs it; your settings and "
+            f"histories stay. The tracker also checks once at every start.")
+        ctl(c, "What's new", self.show_changelog, "All versions and their changes, newest first.")
+        ctl(c, "Reset session", self.reset,
+            "Clears the rates and the run list of the current session. Stage statistics and histories are kept.")
 
     def _root_configure(self, e):
         if e.widget is self.root:  # the window itself moved or changed size
@@ -1792,7 +1541,7 @@ class App:
         tiles.pack(fill="x", padx=10)
         self.tiles = {}
         spec = [("xp_h", "EXP per hour"), ("gold_h", "Gold per hour"), ("runs_h", "Runs per hour"),
-                ("items_h", "Items per hour"), ("run_dps", "Avg DPS per run"), ("deaths", "Deaths per hour")]
+                ("items_h", "Items per hour"), ("deaths", "Deaths per hour")]
         for i, (key, title) in enumerate(spec):
             f = ui.card(tiles)
             f.grid(row=i // 3, column=i % 3, sticky="nsew", padx=4, pady=4)
@@ -1808,8 +1557,7 @@ class App:
         self._section(p, "Recent runs", "“≈” before the stage: taken from the previous run because the log panel "
                                          "could not be read for this run.")
         cols = [("t", "End", 64, "e"), ("stage", "Stage", 150, "w"), ("diff", "Diff", 66, "w"),
-                ("dur", "Time", 46, "e"), ("xp", "EXP", 62, "e"), ("gold", "Gold", 54, "e"), ("it", "Items", 42, "e"),
-                ("dps", "Avg DPS", 62, "e"), ("peak", "Peak DPS", 66, "e")]
+                ("dur", "Time", 46, "e"), ("xp", "EXP", 62, "e"), ("gold", "Gold", 54, "e"), ("it", "Items", 42, "e")]
         f, self.tree = self._tree(p, cols, 8)
         f.pack(fill="both", expand=True, padx=14, pady=(0, 12))
 
@@ -3552,8 +3300,7 @@ class App:
         self._build_stage_filters(v_all)
         cols = [("stage", "Stage", 190, "w"), ("boss", "Boss", 66, "w"), ("diff", "Diff", 56, "w"),
                 ("runs", "Runs", 50, "e"), ("t", "Time", 56, "e"), ("xp", "EXP/h", 75, "e"),
-                ("gold", "Gold/h", 72, "e"), ("it", "Items/h", 66, "e"), ("dead", "Deaths", 60, "e"),
-                ("dps", "DPS", 66, "e")]
+                ("gold", "Gold/h", 72, "e"), ("it", "Items/h", 66, "e"), ("dead", "Deaths", 60, "e")]
         f, self.stage_tree = self._tree(v_all, cols, 9)
         f.pack(fill="both", expand=True, padx=14, pady=(0, 6))
         self.stage_tree.tag_configure("best", foreground=C_GOOD)
@@ -3613,7 +3360,6 @@ class App:
         "Run time (fastest)": (lambda x: x.get("run_s") or x["avg_s"] or 1e9, False),
         "Runs": (lambda x: x["runs"], True),
         "Deaths (fewest)": (lambda x: x["death_rate"], False),
-        "DPS": (lambda x: x["dps"] or 0, True),
     }
 
     def _build_stage_filters(self, p):
@@ -3760,8 +3506,7 @@ class App:
                 t.insert(parent, "end", iid=iid, tags=tags, values=(
                     x["stage"], kind, stages.short_difficulty(x["difficulty"]), x["runs"],
                     fmt_dur(x.get("run_s") or x["avg_s"]), fmt(x["xp_h"]) + star_x,
-                    fmt(x["gold_h"]) + star_g, f"{x['items_h']:.1f}", f"{x['death_rate'] * 100:.0f} %",
-                    fmt(x["dps"]) if x["dps"] else "-"))
+                    fmt(x["gold_h"]) + star_g, f"{x['items_h']:.1f}", f"{x['death_rate'] * 100:.0f} %"))
         n_data = len(self._stage_shown) - n_empty
         text = f"{n_data} rows with runs"
         if grouped and show_empty:
@@ -4095,6 +3840,7 @@ class App:
         self.lbl_leg = tk.Label(leg, text="No Legendary this session yet", bg=PANEL, fg=FG, font=ui.F_SMALL,
                                 anchor="w")
         self.lbl_leg.pack(fill="x", padx=12)
+        self._build_leg_checks(leg)
         ui.autowrap(tk.Label(leg, text="Plays when an orange item name appears on the ground. If one is missed "
                                        "there (it dropped off screen, or straight into the carriage), the stage "
                                        "end screen catches it: its “Legendary (+1)” is also what Legendaries/h "
@@ -4136,6 +3882,132 @@ class App:
             self.drop_list.insert("", "end", tags=(self.RARITY_TAG.get(rar, ""),), values=(
                 datetime.fromtimestamp(t).strftime("%H:%M"), item, rar, action, fmt(gold) if gold else "-"))
 
+    LEG_DIR = os.path.join(APP_DIR, "legendary_checks")
+    LEG_CSV = os.path.join(APP_DIR, "legendary_checks.csv")
+    LEG_KEEP = 60  # pictures and rows kept
+
+    def _build_leg_checks(self, leg):
+        """The last Legendary detections with the picture the tracker saw, to check sound and count."""
+        box = tk.Frame(leg, bg=PANEL)
+        box.pack(fill="x", padx=12, pady=(6, 8))
+        self.lbl_leg_img = tk.Label(box, bg=BG, text="no picture yet", fg=MUTED, font=ui.F_SMALL, width=48, height=8)
+        self.lbl_leg_img.pack(side="left", anchor="n")
+        right = tk.Frame(box, bg=PANEL)
+        right.pack(side="left", fill="both", expand=True, padx=(12, 0))
+        self.lbl_leg_last = tk.Label(right, text="Last Legendary: –", bg=PANEL, fg=ui.RARITY["Legendary"],
+                                     font=ui.F_LABEL, anchor="w")
+        self.lbl_leg_last.pack(fill="x")
+        self.lbl_leg_info = ui.autowrap(tk.Label(right, text="", bg=PANEL, fg=MUTED, font=ui.F_SMALL, anchor="w",
+                                                 justify="left"))
+        self.lbl_leg_info.pack(fill="x")
+        cols = [("t", "Time", 64, "w"), ("src", "Seen on", 74, "w"), ("item", "Item", 150, "w"),
+                ("st", "Result", 210, "w")]
+        f, self.leg_tree = self._tree(right, cols, 5)
+        f.pack(fill="x", pady=(4, 4))
+        self.leg_tree.tag_configure("leg", foreground=ui.RARITY["Legendary"])
+        self.leg_tree.bind("<<TreeviewSelect>>", lambda _e: self._leg_show())
+        btns = tk.Frame(right, bg=PANEL)
+        btns.pack(fill="x")
+        b = ui.button(btns, "Not a drop", self._leg_false, small=True)
+        b.pack(side="left")
+        ui.Tooltip(b, "The selected entry was no Legendary drop: it no longer counts this session and is marked "
+                      "in legendary_checks.csv – send that file and the picture so the detection can be improved.")
+        ui.button(btns, "Open pictures", lambda: (os.makedirs(self.LEG_DIR, exist_ok=True),
+                                                  os.startfile(self.LEG_DIR)), small=True).pack(side="left", padx=6)
+        self._leg_rows = []  # [time, source, item, result, stage, picture path]
+        try:
+            with open(self.LEG_CSV, encoding="utf-8", newline="") as fh:
+                self._leg_rows = [r for r in csv.reader(fh, delimiter=";")][1:][-self.LEG_KEEP:]
+        except FileNotFoundError:
+            pass
+        except Exception:
+            errlog.report("legendary_checks", "legendary_checks.csv could not be read")
+        self._leg_fill()
+
+    def _leg_record(self, source, text, shot, status):
+        now = datetime.now()
+        path = ""
+        if shot is not None:
+            try:
+                import cv2
+                os.makedirs(self.LEG_DIR, exist_ok=True)
+                img = shot
+                if img.shape[1] > 900:  # whole end screen: smaller is enough to read it
+                    k = 900 / img.shape[1]
+                    img = cv2.resize(img, None, fx=k, fy=k, interpolation=cv2.INTER_AREA)
+                path = os.path.join(self.LEG_DIR, f"{now:%Y%m%d_%H%M%S_%f}_{source.replace(' ', '_')}.png")
+                cv2.imwrite(path, img)
+                for old in sorted(os.listdir(self.LEG_DIR))[:-self.LEG_KEEP]:
+                    os.remove(os.path.join(self.LEG_DIR, old))
+            except Exception:
+                errlog.report("legendary_checks", "picture of a Legendary could not be saved")
+                path = ""
+        item = text or "(no name – end screen)"
+        self._leg_rows.append([now.strftime("%Y-%m-%d %H:%M:%S"), source, item, status or "counted",
+                               self.state.stage_name or "", path])
+        self._leg_rows = self._leg_rows[-self.LEG_KEEP:]
+        self._leg_save()
+        self._leg_fill()
+
+    def _leg_save(self):
+        try:
+            with open(self.LEG_CSV, "w", encoding="utf-8", newline="") as fh:
+                w = csv.writer(fh, delimiter=";")
+                w.writerow(["time", "seen_on", "item", "result", "stage", "picture"])
+                w.writerows(self._leg_rows)
+        except Exception:
+            errlog.report("legendary_checks", "legendary_checks.csv could not be written")
+
+    def _leg_fill(self):
+        t = self.leg_tree
+        t.delete(*t.get_children())
+        for i, r in reversed(list(enumerate(self._leg_rows))):
+            t.insert("", "end", iid=str(i), tags=("leg",) if r[3] == "counted" else (), values=(
+                r[0][11:], r[1], r[2], r[3]))
+        last = next((i for i in range(len(self._leg_rows) - 1, -1, -1) if self._leg_rows[i][3] == "counted"), None)
+        if self._leg_rows:
+            t.selection_set(str(last if last is not None else len(self._leg_rows) - 1))
+        self._leg_show()
+
+    def _leg_show(self):
+        sel = self.leg_tree.selection()
+        if not sel:
+            return
+        r = self._leg_rows[int(sel[0])]
+        counted = r[3] == "counted"
+        self.lbl_leg_last.configure(text=("Last Legendary: " if counted else "Seen, not counted: ") + r[2],
+                                    fg=ui.RARITY["Legendary"] if counted else MUTED)
+        self.lbl_leg_info.configure(text=f"{r[0]} · seen on the {r[1]}" + (f" · {r[4]}" if r[4] else "")
+                                         + ("" if counted else f"\n{r[3]}"))
+        self._leg_photo = None
+        if r[5] and os.path.exists(r[5]):
+            try:
+                from PIL import Image, ImageTk
+                im = Image.open(r[5])
+                im.thumbnail((380, 170))
+                self._leg_photo = ImageTk.PhotoImage(im)
+            except Exception:
+                self._leg_photo = None
+        if self._leg_photo is not None:
+            self.lbl_leg_img.configure(image=self._leg_photo, text="", width=0, height=0)
+        else:
+            self.lbl_leg_img.configure(image="", text="no picture", width=48, height=8)
+
+    def _leg_false(self):
+        sel = self.leg_tree.selection()
+        if not sel:
+            return
+        r = self._leg_rows[int(sel[0])]
+        if r[3] != "counted":
+            return
+        r[3] = "marked: not a drop"
+        if r[0][:10] == datetime.now().strftime("%Y-%m-%d") and self._leg_session > 0:
+            self._leg_session -= 1
+            self.lbl_leg.configure(text=f"{self._leg_session} this session")
+        errlog.log.info("Legendary marked as not a drop: %s", r)
+        self._leg_save()
+        self._leg_fill()
+
     def _build_deaths(self, p):
         top = ui.page_header(p, "Deaths", "The game writes deaths only to the log panel. “confirmed”: death line "
                                         "(“Killed by …”) or death text read. “suspected”: the run brought less than 60 % "
@@ -4147,8 +4019,7 @@ class App:
         self.lbl_deaths_sub.pack(fill="x", padx=16)
         cols = [("t", "Time", 62, "e"), ("st", "Status", 74, "w"), ("stage", "Stage", 130, "w"),
                 ("killer", "Killed by", 150, "w"),
-                ("wave", "Wave ≈", 60, "e"), ("dur", "Duration", 56, "e"), ("xp", "EXP share", 76, "e"),
-                ("dps", "Avg DPS", 66, "e")]
+                ("wave", "Wave ≈", 60, "e"), ("dur", "Duration", 56, "e"), ("xp", "EXP share", 76, "e")]
         f, self.death_tree = self._tree(p, cols, 10)
         f.pack(fill="both", expand=True, padx=14, pady=(6, 6))
         self.death_tree.bind("<<TreeviewSelect>>", self._death_select)
@@ -4182,7 +4053,7 @@ class App:
                 datetime.fromtimestamp(r.end).strftime("%H:%M:%S"), r.death,
                 r.stage_name or r.stage_guess or f"{r.difficulty} · {r.waves} W", i.get("killer", "-"),
                 f"{i['est_wave']}/{r.waves}" if i.get("est_wave") else "-", fmt_dur(r.duration),
-                f"{xr * 100:.0f} %" if xr is not None else "-", fmt(r.avg_dps) if r.damage else "-"))
+                f"{xr * 100:.0f} %" if xr is not None else "-"))
 
     def _death_select(self, _):
         sel = self.death_tree.selection()
@@ -4195,8 +4066,6 @@ class App:
                  f"Run time {fmt_dur(r.duration)} ({(i.get('dur_ratio') or 0) * 100:.0f} % of usual) · "
                  f"EXP {fmt(r.xp)} ({(i.get('xp_ratio') or 0) * 100:.0f} % of usual, based on {i.get('ref_runs', 0)} runs)",
                  f"Gold {fmt(r.gold)} · Items {r.items} · MF {r.mf:g} GF {r.gf:g}"]
-        if r.damage:
-            parts.append(f"Avg DPS in the run {fmt(r.avg_dps)} · peak {fmt(r.peak_dps)}")
         if i.get("killer"):
             parts.append(f"Killed by {i['killer']} (Lv. {i.get('killer_level', '?')})"
                          + (f" · {i['source']}" if i.get("source") else "")
@@ -4537,7 +4406,12 @@ class App:
             pass
         self.root.after(100, self.poll_events)
 
-    def _legendary_dropped(self, source: str, text: str):
+    def _legendary_dropped(self, source: str, text: str, shot=None, status: str = ""):
+        """status "": a counted drop (sound, Space); otherwise a label that was seen but not counted - only
+        recorded, so every sound and every skipped label can be checked on the Drops page."""
+        self._leg_record(source, text, shot, status)
+        if status:
+            return
         self._leg_session += 1
         what = f"Legendary dropped: {text}" if text else "Legendary dropped (end screen)"
         self.lbl_status.configure(text=f"{what} – {datetime.now().strftime('%H:%M:%S')}")
@@ -5121,7 +4995,7 @@ class App:
             cols = [("t", "Finished", 120, "w"), ("stage", "Stage", 170, "w"), ("diff", "Diff", 54, "w"),
                     ("run", "Run time", 62, "e"), ("cyc", "Cycle", 56, "e"), ("xp", "EXP", 70, "e"),
                     ("gold", "Gold", 60, "e"), ("it", "Items", 46, "e"), ("leg", "Leg.", 40, "e"),
-                    ("dead", "Died", 40, "center"), ("dps", "DPS", 64, "e")]
+                    ("dead", "Died", 40, "center")]
             f, self.runs_tree = self._tree(w, cols, 14)
             self.runs_tree.configure(selectmode="extended")
             self.runs_tree.tag_configure("died", foreground=C_BAD)
@@ -5166,12 +5040,10 @@ class App:
             iid = str(i)
             self._runs_rows[iid] = (stage, diff, e)
             when = datetime.fromtimestamp(e["t"]).strftime("%d.%m. %H:%M:%S") if e.get("t") else "-"
-            dps = e["damage"] / e["dmg_seconds"] if e.get("dmg_seconds") else None
             t.insert("", "end", iid=iid, tags=("died",) if e.get("died") else (), values=(
                 when, stage, stages.short_difficulty(diff), fmt_dur(e["run_s"]) if e.get("run_s") else "-",
                 fmt_dur(e["cycle_s"]), fmt(e["xp"]), fmt(e["gold"] + e.get("sold_gold", 0)), e["items"],
-                "-" if e.get("legendaries") is None else e["legendaries"], "✕" if e.get("died") else "",
-                fmt(dps) if dps else "-"))
+                "-" if e.get("legendaries") is None else e["legendaries"], "✕" if e.get("died") else ""))
         older = sum(self.stage_stats.untracked(char, s, d) for s, d in ([flt] if flt else keys))
         self.lbl_runs_info.configure(text=f"{len(rows)} runs" + (
             f" · {older} older runs only in the totals" if older else ""))
@@ -6372,27 +6244,6 @@ class App:
         if hasattr(self, "btn_sk_toggle"):
             self._skills_header()
 
-    def toggle_ocr(self):
-        if self.ocr.enabled.is_set():
-            self.ocr.enabled.clear()
-        else:
-            self.ocr.enabled.set()
-        on = self.ocr.enabled.is_set()
-        self.btn_ocr.configure(text="DPS meter: on" if on else "DPS meter: off", fg=C_RUN if on else FG)
-        self.cfg["ocr_on"] = on
-
-    def pick_region(self):
-        frame = self.capture.grab()
-        if frame is None:
-            self.lbl_status.configure(text=self.capture.status)
-            return
-
-        def done(rect):
-            self.region = rect
-            self.cfg["game_region"] = list(rect)
-            save_config(self.cfg)
-        GameRegionPicker(self.root, frame, self.region, done)
-
     def reset(self):
         self.state.reset()
         self.tree.delete(*self.tree.get_children())
@@ -6689,7 +6540,6 @@ class App:
         st = self.state
         s = st.stats()
         sr = st.stats(ROLLING_WINDOW_S)
-        dps = st.live_dps()
         with st.lock:
             cur = st.current
             runs = list(st.runs)
@@ -6707,9 +6557,6 @@ class App:
                               cap + (" (hidden)" if hidden else "") +
                               ("\nThe tracker cannot read a minimized game – hide it with F10 instead of minimizing."
                                if "minimized" in cap else ""))
-        ocr_on = self.ocr.enabled.is_set()
-        self.dots["dps"].set("ok" if ocr_on and "fps" in self.ocr.status else ("warn" if ocr_on else None),
-                             self.ocr.status)
         ps = self.panels.status or "not read yet"
         self.dots["panels"].set("ok" if " read" in ps or "not needed" in ps or "end screen" in ps else ("warn" if ps != "not read yet" else None), ps)
         self.dots["keys"].set("bad" if self.hotkeys.failed else "ok",
@@ -6719,8 +6566,8 @@ class App:
             self.lbl_status.configure(text="reading item…" if self.job_label == "item" else "reading attributes…")
         if cur:
             self.lbl_run.configure(
-                text=f"▶  Run in progress {fmt_dur(cur.duration)} – {cur.difficulty}, {cur.waves} waves, "
-                     f"damage {fmt(cur.damage)}      Bonus: MF {cur.mf:g}, GF {cur.gf:g}, XP {cur.xpm:g}")
+                text=f"▶  Run in progress {fmt_dur(cur.duration)} – {cur.difficulty}, {cur.waves} waves"
+                     f"      Bonus: MF {cur.mf:g}, GF {cur.gf:g}, XP {cur.xpm:g}")
         else:
             self.lbl_run.configure(text="Waiting for the next run")
 
@@ -6740,13 +6587,6 @@ class App:
             tile("gold_h", fmt(s["gold_h"]), f"run gold only\navg {fmt(s['avg_gold_run'])} per run")
         tile("runs_h", f"{s['runs_h']:.1f}", f"last 15 min {sr['runs_h']:.1f}\navg {fmt_dur(s['avg_run'])} per run")
         tile("items_h", f"{s['items_h']:.1f}", f"last 15 min {sr['items_h']:.1f}\n{s['items']} in total")
-        if not self.ocr.enabled.is_set():
-            tile("run_dps", "-", "DPS meter is off")
-        elif s["avg_dps"]:
-            peak = max((r.peak_dps for r in runs if r.start), default=0)
-            tile("run_dps", fmt(s["avg_dps"]), f"last 15 min {fmt(sr['avg_dps'])}\npeak {fmt(peak)}")
-        else:
-            tile("run_dps", "-", f"running · {fmt(cur.damage)} damage so far" if cur and cur.damage else "no run measured yet")
         dst = st.death_stats()
         tile("deaths", f"{dst['per_h']:.1f}", f"{dst['n']} {'death' if dst['n'] == 1 else 'deaths'}\n{dst['rate'] * 100:.0f} % of runs")
 
@@ -6769,50 +6609,11 @@ class App:
                 self.tree.insert("", "end", values=(
                     datetime.fromtimestamp(r.end).strftime("%H:%M:%S"),
                     r.stage_name or (f"≈ {r.stage_guess}" if r.stage_guess else "-"), r.difficulty,
-                    fmt_dur(r.game_seconds or r.duration), fmt(r.xp), fmt(r.gold), r.items,
-                    fmt(r.avg_dps) if r.damage else "-", fmt(r.peak_dps) if r.peak_dps else "-"))
-
-
-# --------------------------------------------------------------------------- offline OCR test
-
-def test_video(path: str, crop: str | None):
-    import cv2
-    hits = []
-    ocr = DamageOCR(on_hit=lambda t, v, c: hits.append((t, v, c)))
-    cap = cv2.VideoCapture(path)
-    fps = cap.get(cv2.CAP_PROP_FPS) or 60
-    step = max(1, int(round(fps * 0.15)))  # same ~6-7 fps as live mode
-    x = y = w = h = None
-    if crop:
-        x, y, w, h = map(int, crop.split(","))
-    i = 0
-    t_ocr = 0.0
-    while True:
-        ok, f = cap.read()
-        if not ok:
-            break
-        if i % step == 0:
-            if crop:
-                f = f[y:y + h, x:x + w]
-            t1 = time.perf_counter()
-            dets = ocr.feed(f, i / fps)
-            t_ocr = max(t_ocr, time.perf_counter() - t1)
-            print(f"t={i / fps:5.2f}s  " + "  ".join(f"{d[0]}{'*' if d[4] else ''}" for d in dets))
-        i += 1
-    ocr.flush(1e9, force=True)
-    total = sum(v for _, v, _ in hits)
-    print("\nUnique hits:")
-    for t, v, c in hits:
-        print(f"  t={t:5.2f}s  {int(v):>10,}{'  CRIT' if c else ''}")
-    dur = i / fps
-    print(f"\nslowest OCR frame {t_ocr * 1000:.0f} ms")
-    print(f"{len(hits)} hits, total {total:,.0f} dmg over {dur:.1f}s -> {total / dur:,.0f} DPS")
+                    fmt_dur(r.game_seconds or r.duration), fmt(r.xp), fmt(r.gold), r.items))
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--video", help="run OCR on a recorded clip instead of the live screen")
-    ap.add_argument("--crop", help="x,y,w,h crop for --video")
     ap.add_argument("--selftest", help="read a screenshot with both OCR engines, write selftest.txt and exit")
     a = ap.parse_args()
     if a.selftest:
@@ -6823,9 +6624,6 @@ def main():
         with open(os.path.join(APP_DIR, "selftest.txt"), "w", encoding="utf-8") as f:
             f.write(f"tooltip: mode={res.mode} name={res.name} deltas={res.deltas}\n")
             f.write(f"attributes (RapidOCR): {len(attrs)} values\n")
-        return
-    if a.video:
-        test_video(a.video, a.crop)
         return
     root = tk.Tk()
     root.minsize(720, 720)

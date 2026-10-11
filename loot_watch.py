@@ -78,22 +78,23 @@ def label_text(frame, box) -> str:
 _NAMES = None
 
 
-def _names() -> list:
-    """Compact names of every Legendary and Divine item (data/item_db.json, legendaries.json)."""
+def _names() -> dict:
+    """Every Legendary and Divine item (data/item_db.json, legendaries.json): compact name -> name."""
     global _NAMES
     if _NAMES is None:
         import json
         import paths
-        names = set()
+        names = {}
         for path, key in ((paths.res("data", "item_db.json"), "items"), (paths.res("legendaries.json"), "items")):
             try:
                 with open(path, encoding="utf-8") as f:
                     d = json.load(f)
                 for it in d.get(key, []):
-                    names.add(_compact(it.get("name", "")))
+                    if _compact(it.get("name", "")):
+                        names[_compact(it["name"])] = it["name"]
             except Exception:
                 pass
-        _NAMES = sorted(n for n in names if n)
+        _NAMES = names
     return _NAMES
 
 
@@ -101,19 +102,42 @@ def _compact(text: str) -> str:
     return re.sub(r"[^a-z]", "", text.lower())
 
 
-def is_item_name(text: str) -> bool:
-    """A Legendary or Divine item of the game (orange UI text such as "CHARACTER" or "Toughness" is not)."""
+def match_name(text: str) -> str | None:
+    """The Legendary or Divine item a label names, or None (orange UI text such as "CHARACTER" or "Toughness",
+    damage numbers). A ground label holds just the name, so the text may only be a little longer than it:
+    a short name found inside a longer text is some other orange text."""
     letters = sum(ch.isalpha() for ch in text)
     if letters < 4 or letters < len(text.replace(" ", "")) * 0.7:
-        return False  # damage numbers ("848,237", "2.7M")
+        return None  # damage numbers ("848,237", "2.7M")
     key = _compact(text)
     if key in NOT_NAMES:
-        return False
+        return None
     names = _names()
     if not names:
-        return True
+        return text
+    if key in names:
+        return names[key]
+    inside = [n for n in names if len(n) >= 6 and n in key and len(key) <= len(n) + 4]
+    if inside:
+        return names[max(inside, key=len)]
     import difflib
-    return any(n in key for n in names) or bool(difflib.get_close_matches(key, names, n=1, cutoff=0.8))
+    close = difflib.get_close_matches(key, list(names), n=1, cutoff=0.8)
+    return names[close[0]] if close else None
+
+
+def is_item_name(text: str) -> bool:
+    return match_name(text) is not None
+
+
+def evidence(frame, box):
+    """Picture of a label with the scene around it, to check a detection later."""
+    H, W = frame.shape[:2]
+    x, y, w, h = box
+    cw, ch = max(w * 3, int(360 * H / 1152)), max(h * 7, int(150 * H / 1152))
+    x0, y0 = max(int(x + w / 2 - cw / 2), 0), max(int(y + h / 2 - ch / 2), 0)
+    crop = frame[y0:min(y0 + ch, H), x0:min(x0 + cw, W)].copy()
+    cv2.rectangle(crop, (x - x0 - 3, y - y0 - 3), (x - x0 + w + 3, y - y0 + h + 3), (0, 229, 255), 1)
+    return crop
 
 
 class LootWatcher(threading.Thread):
@@ -145,10 +169,10 @@ class LootWatcher(threading.Thread):
                 k[0], k[1], k[2] = cx, cy, now
                 continue
             text = label_text(frame, box)
-            item = is_item_name(text)
-            self.known.append([cx, cy, now, item])
-            if item:
-                new.append((text, box))
+            name = match_name(text)
+            self.known.append([cx, cy, now, name is not None])
+            if name:
+                new.append((name, text, evidence(frame, box)))
         return new
 
     def run(self):
@@ -162,8 +186,10 @@ class LootWatcher(threading.Thread):
                 frame = self.capture.grab()
                 if frame is None:
                     continue
-                for text, _box in self.step(frame, time.time()):
+                for name, text, shot in self.step(frame, time.time()):
                     self.found += 1
-                    self.on_drop(text)
+                    if name != text:
+                        errlog.log.info("Legendary label read as %r, taken as %r", text, name)
+                    self.on_drop(name, shot)
             except Exception:
                 errlog.report("loot_watcher", "legendary label reader failed")

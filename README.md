@@ -1,4 +1,4 @@
-﻿# Deskrawl Tracker
+# Deskrawl Tracker
 
 Companion tool for **Deskrawl**: shows EXP/h, gold/h, runs, deaths, drops and stage comparisons live, and
 rates items at the press of a key – "equip or not?" in terms of damage, survival and income.
@@ -13,7 +13,7 @@ It does **not** read game memory, does not change any game files and sends nothi
 
 | Page | Content |
 |---|---|
-| Overview | EXP/h, gold/h (incl. sold items), runs/h, DPS per run, time to the next level – at level 70 to the next Paragon level (Paragon EXP added up from the level-70 runs in the game log) |
+| Overview | EXP/h, gold/h (incl. sold items), runs/h, deaths/h, time to the next level – at level 70 to the next Paragon level (Paragon EXP added up from the level-70 runs in the game log) |
 | Character Stats | Your character sheet, kept separately for each of your characters |
 | Stages | Every region and stage in map order (incl. Dream realms), stages without runs marked; **Runs…** lists single runs to delete them, **Clear this stage** starts a stage over; time, EXP/h, gold/h, enemy damage types, with search, type and difficulty filters and sorting (incl. map order). **Boss farming**: Silver and Gold bosses ranked by kills/h or efficiency (kill speed + EXP, adjustable weighting), with legendaries/h |
 | Farm advice | Every stage you played ranked by your weights for EXP, gold, legendaries and safety |
